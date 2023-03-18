@@ -15,7 +15,7 @@
 
 - 👨‍💻 All of my projects are available at **[My Portfolio](https://swadhinbiswas.netlify.app)**
 
-- 📫 How to reach me **swadhinbiswas3377@gmail.com**
+- 📫 How to reach me **swadhinbiswas.cse@gmail.com**
 
 - ⚡ Fun fact **I play games and watch so much movies .**
 
