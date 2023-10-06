@@ -154,15 +154,6 @@
 <!--END_SECTION:waka-->
 
 ```
-class Person:
-    def __init__(self):
-        self.name = " "
-        self.occupation = " "
-        self.languages_spoken = ["bn_BD", "en_US"]
-        self.skills = []
-        self.interests = []
-    
-    def say_hi(self):
-       
+
 
 ```
