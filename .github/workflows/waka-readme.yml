@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         # this action name
-      - uses: athul/waka-readme@master # do NOT replace with anything else
+      - uses: swadhinbiswas/waka-readme@master # do NOT replace with anything else
         with:
           GH_TOKEN: ${{ secrets.GH_TOKEN }} # optional if on profile readme
           WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }} # required
