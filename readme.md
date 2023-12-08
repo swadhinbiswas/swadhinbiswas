@@ -101,7 +101,7 @@
 <br>
 
 
-# Working Best On Last 3 days
+# Working Project activity
 ![PYTHON](https://img.shields.io/badge/Python-F0DB4F?style=for-the-badge&labelColor=black&logo=python&logoColor=F0DB4F) [![wakatime](https://wakatime.com/badge/user/d9081c06-f3fd-422d-981c-cd2acc46a3c7/project/018b7a28-8967-4b73-9d16-90ce16a65506.svg)](https://wakatime.com/badge/user/d9081c06-f3fd-422d-981c-cd2acc46a3c7/project/018b7a28-8967-4b73-9d16-90ce16a65506)
 
 
