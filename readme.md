@@ -38,7 +38,7 @@
 <br />
 
 <!-- About Section -->
- # █▓▒▒░░░About Me░░░▒▒▓█
+ # ░About Me░░
  
 <p>
  <img align="right" width="350" src="https://raw.githubusercontent.com/swadhinbiswas/lab/main/0_7Q3yvSIv_t0ioJ-Z.gif" alt="Coding gif" />
@@ -60,7 +60,7 @@
 <br/>
 <br/>
 
-## ✩░▒▓▆▅▃▂▁𝐔𝐬𝐞 𝐓𝐨 𝐂𝐨𝐝𝐞▁▂▃▅▆▓▒░✩
+## ✩░▒ 𝐔𝐬𝐞 𝐓𝐨 𝐂𝐨𝐝𝐞 ▒░✩
 
 ![PYTHON](https://img.shields.io/badge/Python-F0DB4F?style=for-the-badge&labelColor=black&logo=python&logoColor=F0DB4F)
 ![Tensorflow](https://img.shields.io/badge/TensorFlow-rgb(249,130,3)?style=for-the-badge&labelColor=black&logo=tensorflow&logoColor=)
