@@ -136,7 +136,7 @@
 
 ## Github Status
   <a href="https://github.com/swadhinbiswas">
-    <img src="https://github-readme-streak-stats.herokuapp.com/?user=alsiam&theme=blueberry&border=&background=0D1117" alt="Swadhin's GitHub streak"/>
+    <img src="https://github-readme-streak-stats.herokuapp.com/?user=swadhinbiswas&theme=blueberry&border=&background=0D1117" alt="Swadhin's GitHub streak"/>
   </a>
 
 
