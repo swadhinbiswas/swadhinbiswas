@@ -134,6 +134,9 @@
 ### Discord Bot
 [![wakatime](https://wakatime.com/badge/user/d9081c06-f3fd-422d-981c-cd2acc46a3c7/project/018df604-172b-4552-8405-daa3cb1a265c.svg)](https://wakatime.com/badge/user/d9081c06-f3fd-422d-981c-cd2acc46a3c7/project/018df604-172b-4552-8405-daa3cb1a265c)
 
+### Project-Phoenix
+[![wakatime](https://wakatime.com/badge/user/d9081c06-f3fd-422d-981c-cd2acc46a3c7/project/018e1dbf-ec40-4278-b658-754ca0c04e4b.svg)](https://wakatime.com/badge/user/d9081c06-f3fd-422d-981c-cd2acc46a3c7/project/018e1dbf-ec40-4278-b658-754ca0c04e4b)
+
 ## Github Status
   <a href="https://github.com/swadhinbiswas">
     <img src="https://github-readme-streak-stats.herokuapp.com/?user=swadhinbiswas&theme=blueberry&border=&background=0D1117" alt="Swadhin's GitHub streak"/>
