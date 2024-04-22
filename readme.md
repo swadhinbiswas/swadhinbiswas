@@ -37,22 +37,19 @@
 
 
 
-<p>
+
  <img align="right" width="350" src="https://raw.githubusercontent.com/swadhinbiswas/lab/main/0_7Q3yvSIv_t0ioJ-Z.gif" alt="Coding gif" />
   
 
 
-- I’m currently learning **Data Science,AI,SoftWare Engineering .**
+- I’m currently learning **Data Science,AI, Software Engineering .**
 
 - I’m looking to collaborate on **OpenSource Projects**
 
 - All of my projects are available at **[My Portfolio](https://swadhin.my.id)**
 
--  How to reach me **swadhinbiswas.cse@gmail.com**
+-  mail me **swadhinbiswas.cse@gmail.com** 
 
--  Fun fact **I play games and watch so much movies .**
-
-</p>
 
 <br/>
 <br/>
@@ -87,9 +84,7 @@
 ![PYTORCH](https://img.shields.io/badge/PyTorch-white?style=for-the-badge&logo=pytorch&logoColor=)
 ![OpenCV](https://img.shields.io/badge/opencv-%23white.svg?style=for-the-badge&logo=opencv&logoColor=white) ![OpenGL](https://img.shields.io/badge/OpenGL-%23FFFFFF.svg?style=for-the-badge&logo=opengl) 
 ![Keras](https://img.shields.io/badge/Keras-d10808?style=for-the-badge&logo=keras&logoColor=white)
-![Thenao](https://img.shields.io/badge/Theano-092749?style=for-the-badge&logo=theano&logoColor=06B6D4&labelColor=000000)
-![H2O](https://img.shields.io/badge/H2O-593D88?style=for-the-badge&logo=h2o&logoColor=white)
-![Caffe](https://img.shields.io/badge/Caffe-d10808?style=for-the-badge&logo=caffe&logoColor=white)
+
 
 ### Data Management
 
