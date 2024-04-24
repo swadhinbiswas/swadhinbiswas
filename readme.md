@@ -38,7 +38,7 @@
 
 
 
- <img align="right" width="350" src="https://raw.githubusercontent.com/swadhinbiswas/lab/main/0_7Q3yvSIv_t0ioJ-Z.gif" alt="Coding gif" />
+<a href="https://app.daily.dev/swadhinbiswas"><img src="https://api.daily.dev/devcards/v2/YaSZ7GVBTMSY5Lw9hJEAq.png?r=j12&type=wide" width="652" alt="Swadhin Biswas's Dev Card"/></a>
   
 
 
