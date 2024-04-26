@@ -38,7 +38,7 @@
 
 
 
-<a href="https://app.daily.dev/swadhinbiswas"><img src="https://api.daily.dev/devcards/v2/YaSZ7GVBTMSY5Lw9hJEAq.png?type=default&r=u6r" width="356" alt="Swadhin Biswas's Dev Card"/></a>
+<a href="https://app.daily.dev/swadhinbiswas"><img src="https://api.daily.dev/devcards/v2/YaSZ7GVBTMSY5Lw9hJEAq.png?type=wide&r=zrd" width="652" alt="Swadhin Biswas's Dev Card"/></a>
   
 
 
