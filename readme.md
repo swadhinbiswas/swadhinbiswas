@@ -42,7 +42,7 @@
   
 
 
-- I’m currently learning **Data Science,AI, Software Engineering .**
+- I’m learning **Data Science, AI, Software Engineering .**
 
 - I’m looking to collaborate on **OpenSource Projects**
 
