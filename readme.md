@@ -117,23 +117,6 @@
   <a href="https://github.com/swadhinbiswas?tab=repositories" target="_blank"><img alt="All Repositories" title="All Repositories" src="https://img.shields.io/badge/-All%20Repos-2962FF?style=for-the-badge&logo=koding&logoColor=white"/></a>
 </p>
 
-# Activity Section
-
-
-
-## Working Project activity
-
-#### The Professor
-
-[![wakatime](https://wakatime.com/badge/user/d9081c06-f3fd-422d-981c-cd2acc46a3c7/project/018d530a-87e1-462e-9cb7-b83bc4a44c00.svg)](https://wakatime.com/badge/user/d9081c06-f3fd-422d-981c-cd2acc46a3c7/project/018d530a-87e1-462e-9cb7-b83bc4a44c00)
-### Discord Bot
-[![wakatime](https://wakatime.com/badge/user/d9081c06-f3fd-422d-981c-cd2acc46a3c7/project/018df604-172b-4552-8405-daa3cb1a265c.svg)](https://wakatime.com/badge/user/d9081c06-f3fd-422d-981c-cd2acc46a3c7/project/018df604-172b-4552-8405-daa3cb1a265c)
-
-### Project-Phoenix
-[![wakatime](https://wakatime.com/badge/user/d9081c06-f3fd-422d-981c-cd2acc46a3c7/project/018e1dbf-ec40-4278-b658-754ca0c04e4b.svg)](https://wakatime.com/badge/user/d9081c06-f3fd-422d-981c-cd2acc46a3c7/project/018e1dbf-ec40-4278-b658-754ca0c04e4b)
-
-### Gellary
-[![wakatime](https://wakatime.com/badge/user/d9081c06-f3fd-422d-981c-cd2acc46a3c7/project/018e1a69-553a-40e4-8026-1be43368eb82.svg)](https://wakatime.com/badge/user/d9081c06-f3fd-422d-981c-cd2acc46a3c7/project/018e1a69-553a-40e4-8026-1be43368eb82)
 
 ## Github Status
   <a href="https://github.com/swadhinbiswas">
