@@ -154,9 +154,7 @@
 <!--START_SECTION:waka-->
 
 ```txt
-Python       1 hr 35 mins    █████████████████████████   99.49 %
-JSON         0 secs          ░░░░░░░░░░░░░░░░░░░░░░░░░   00.47 %
-JavaScript   0 secs          ░░░░░░░░░░░░░░░░░░░░░░░░░   00.04 %
+Python   10 mins         █████████████████████████   100.00 %
 ```
 
 <!--END_SECTION:waka-->
