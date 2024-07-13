@@ -58,7 +58,7 @@
 # 𝐔𝐬𝐞 𝐓𝐨 𝐂𝐨𝐝𝐞 ✩
 
 ### ⟹ Language
-![PYTHON](https://img.shields.io/badge/Python-ccca60?style=for-the-badge&labelColor=black&logo=python&logoColor=0092ff) ![javascript](https://img.shields.io/badge/javascript-efd81c?style=for-the-badge&logo=javascript&logoColor=black) ![C](https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white)
+![PYTHON](https://img.shields.io/badge/Python-ccca60?style=for-the-badge&labelColor=black&logo=python&logoColor=0092ff) ![Mojo](https://img.shields.io/badge/Mojo-ccca60?style=for-the-badge&labelColor=black&logo=mojo&logoColor=0092ff) ![javascript](https://img.shields.io/badge/javascript-efd81c?style=for-the-badge&logo=javascript&logoColor=black) ![C](https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white)
 ![C](https://img.shields.io/badge/C/C++-0078d7?style=for-the-badge&logo=c&logoColor=white)  ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white) 
 ![Markdown](https://img.shields.io/badge/Markdown-000000?style=for-the-badge&logo=markdown&logoColor=white)
 
