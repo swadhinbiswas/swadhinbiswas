@@ -50,10 +50,10 @@ class MySkill(Skills):
       'Mojo',]
 
     self.expertise:list=[
-      'Backend (pyhton)',
-      'Desktop Application (pyhton),
+      'Backend (python)',
+      'Desktop Application (python),
       'Data Analysis',
-      'WebApplication (pyhton & Javascript),
+      'WebApplication (python & Javascript),
       'Machine Learning [loading..]',
       'DEEP LEARNING [LOADING...]',
       'Artifical intelligence [LOADING...]',
