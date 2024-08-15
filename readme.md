@@ -91,12 +91,20 @@ INI          0 secs          ░░░░░░░░░░░░░░░░░
 
 ```
 
-<div style="display: flex; justify-content: space-between; align-items: center;">
-  <a href="https://git.io/streak-stats">
-    <img src="https://github-readme-streak-stats.herokuapp.com?user=swadhinbiswas&theme=transparent&hide_border=true&border_radius=4.4&card_width=454" alt="GitHub Streak" />
-  </a>
-  <img src="https://github-readme-stats.vercel.app/api?username=swadhinbiswas&show_icons=true&bg_color=00000000&hide_border=true" alt="Swadhin's GitHub stats" />
-</div>
+<table>
+  <tr>
+    <td>
+      <a href="https://git.io/streak-stats">
+        <img src="https://github-readme-streak-stats.herokuapp.com?user=swadhinbiswas&theme=transparent&hide_border=true&border_radius=4.4&card_width=454" alt="GitHub Streak" />
+      </a>
+    </td>
+    <td align="right">
+      <img src="https://github-readme-stats.vercel.app/api?username=swadhinbiswas&show_icons=true&bg_color=00000000" alt="Swadhin's GitHub stats" />
+    </td>
+  </tr>
+</table>
+
+
 
 
 
