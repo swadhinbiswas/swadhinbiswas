@@ -99,7 +99,7 @@ INI          0 secs          ░░░░░░░░░░░░░░░░░
       </a>
     </td>
     <td align="right">
-      <img src="https://github-readme-stats.vercel.app/api?username=swadhinbiswas&show_icons=true&bg_color=00000000" alt="Swadhin's GitHub stats" />
+      <img src="https://github-readme-stats.vercel.app/api?username=swadhinbiswas&show_icons=true&bg_color=00000000&hide_border=true" alt="Swadhin's GitHub stats" />
     </td>
   </tr>
 </table>
