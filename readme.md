@@ -40,12 +40,22 @@ from Brain import Skills
 class MySkill(Skills):
     def __init__(self,learning):
     super().__init__(Skills)
-    self.code=[
+    self.code:list =[
       'Python',
       'Javascript',
       'C/C++',
       'Java',
       'Mojo',]
+
+    self.expertise:list=[
+      'Backend (pyhton)',
+      'Desktop Application (pyhton),
+      'Data Analysis',
+      'WebApplication (pyhton & Javascript),
+      'Machine Learning [loading..]',
+      'DEEP LEARNING [LOADING...]',
+      'Artifical intelligence [LOADING...]',
+      'Neural Network Science[Pending]',]
 
 ```
 
