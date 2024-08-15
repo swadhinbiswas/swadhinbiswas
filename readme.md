@@ -1,7 +1,9 @@
 <a href="https://komarev.com/ghpvc/?username=swadhinbiswas">
   <img align="right" src="https://komarev.com/ghpvc/?username=swadhinbiswas&label=Visitors&color=0e75b6&style=flat" alt="Profile visitor" />
 </a>
-
+<a href="https://komarev.com/ghpvc/?username=swadhinbiswas">
+  <img align="left" src="https://img.shields.io/badge/wrote%20lines%20of%20code-30k-brightgreen" alt="I wrote" />
+</a>
 <!-- Intro  -->
 <h3 align="center">
         <samp>&gt; My self
@@ -88,6 +90,17 @@ INI          0 secs          ░░░░░░░░░░░░░░░░░
 
 
 ```
+
+<div style="display: flex; justify-content: space-between; align-items: center;">
+  <a href="https://git.io/streak-stats">
+    <img src="https://github-readme-streak-stats.herokuapp.com?user=swadhinbiswas&theme=transparent&hide_border=true&border_radius=4.4&card_width=454" alt="GitHub Streak" />
+  </a>
+  <img src="https://github-readme-stats.vercel.app/api?username=swadhinbiswas&show_icons=true&bg_color=00000000&hide_border=true" alt="Swadhin's GitHub stats" />
+</div>
+
+
+
+
 
  ## 💰 You can help me by Donating
   [![BuyMeACoffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/swadhinbiswas) [![Ko-Fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/swadhinbiswas) 
