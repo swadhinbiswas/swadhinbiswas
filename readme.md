@@ -56,7 +56,7 @@ class MySkill(Skills):
       'WebApplication (python & Javascript),
       'Machine Learning [loading..]',
       'DEEP LEARNING [LOADING...]',
-      'Artifical intelligence [LOADING...]',
+      'Artificial intelligence [LOADING...]',
       'Neural Network Science[Pending]',]
 
 ```
