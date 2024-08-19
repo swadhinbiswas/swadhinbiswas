@@ -51,7 +51,7 @@ class MySkill(Skills):
 
     self.expertise:list=[
       'Backend (python)',
-      'Desktop Application (python),
+      'Desktop Application (python)',
       'Data Analysis',
       'WebApplication (python & Javascript),
       'Machine Learning [loading..]',
