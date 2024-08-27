@@ -95,7 +95,7 @@ JSON          2 mins          ░░░░░░░░░░░░░░░░�
 <table>
   <tr>
     <td>
-      <a href="https://git.io/streak-stats">
+      <a href="https://github-readme-streak-stats.herokuapp.com?user=swadhinbiswas">
         <img src="https://github-readme-streak-stats.herokuapp.com?user=swadhinbiswas&theme=transparent&hide_border=true&border_radius=4.4&card_width=454" alt="GitHub Streak" />
       </a>
     </td>
