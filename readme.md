@@ -95,7 +95,7 @@ Text         0 secs          ░░░░░░░░░░░░░░░░░
 <table>
   <tr>
     <td>
-      <a href="https://github-readme-streak-stats.herokuapp.com?user=swadhinbiswas">
+      <a href="https://github-readme-streak-stats.herokuapp.com/?user=swadhinbiswas&theme=dracula&hide_border=true">
         <img src="https://github-readme-streak-stats.herokuapp.com?user=swadhinbiswas&theme=transparent&hide_border=true&border_radius=4.4&card_width=454" alt="GitHub Streak" />
       </a>
     </td>
