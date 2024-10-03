@@ -78,8 +78,8 @@ class MySkill(Skills):
 <!--START_SECTION:waka-->
 
 ```txt
-JavaScript   42 mins         ██████████████▒░░░░░░░░░░   57.04 %
-Python       32 mins         ██████████▓░░░░░░░░░░░░░░   42.96 %
+Python       3 hrs 5 mins    ████████████████████▒░░░░   81.31 %
+JavaScript   42 mins         ████▓░░░░░░░░░░░░░░░░░░░░   18.69 %
 ```
 
 <!--END_SECTION:waka-->
