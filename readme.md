@@ -81,7 +81,6 @@ class MySkill(Skills):
 Python             19 hrs 28 mins  ████████████████████████▓   99.17 %
 Text               4 mins          ░░░░░░░░░░░░░░░░░░░░░░░░░   00.42 %
 reStructuredText   4 mins          ░░░░░░░░░░░░░░░░░░░░░░░░░   00.41 %
-JavaScript         0 secs          ░░░░░░░░░░░░░░░░░░░░░░░░░   00.00 %
 ```
 
 <!--END_SECTION:waka-->
