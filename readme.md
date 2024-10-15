@@ -78,7 +78,10 @@ class MySkill(Skills):
 <!--START_SECTION:waka-->
 
 ```txt
-Python   0 secs          █████████████████████████   100.00 %
+Python       3 hrs 28 mins   ██████████████████████▓░░   90.81 %
+TOML         17 mins         ██░░░░░░░░░░░░░░░░░░░░░░░   07.62 %
+Other        3 mins          ▒░░░░░░░░░░░░░░░░░░░░░░░░   01.55 %
+Git Config   0 secs          ░░░░░░░░░░░░░░░░░░░░░░░░░   00.02 %
 ```
 
 <!--END_SECTION:waka-->
