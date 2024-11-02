@@ -78,11 +78,11 @@ class MySkill(Skills):
 <!--START_SECTION:waka-->
 
 ```txt
-Python                19 hrs 22 mins  ██████████████████████▓░░   90.64 %
-Other                 46 mins         █░░░░░░░░░░░░░░░░░░░░░░░░   03.63 %
-Markdown              34 mins         ▓░░░░░░░░░░░░░░░░░░░░░░░░   02.68 %
-Debian Control file   17 mins         ▒░░░░░░░░░░░░░░░░░░░░░░░░   01.37 %
-HTML                  15 mins         ▒░░░░░░░░░░░░░░░░░░░░░░░░   01.24 %
+Python                18 hrs 15 mins  █████████████████████▒░░░   84.74 %
+JavaScript            2 hrs 24 mins   ██▓░░░░░░░░░░░░░░░░░░░░░░   11.19 %
+Bash                  22 mins         ▒░░░░░░░░░░░░░░░░░░░░░░░░   01.76 %
+HTML                  15 mins         ▒░░░░░░░░░░░░░░░░░░░░░░░░   01.23 %
+Markdown              8 mins          ░░░░░░░░░░░░░░░░░░░░░░░░░   00.63 %
 ```
 
 <!--END_SECTION:waka-->
