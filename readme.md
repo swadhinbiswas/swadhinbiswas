@@ -78,11 +78,11 @@ class MySkill(Skills):
 <!--START_SECTION:waka-->
 
 ```txt
-JavaScript    9 hrs 25 mins   ███████████░░░░░░░░░░░░░░   43.80 %
-Python        8 hrs 57 mins   ██████████▒░░░░░░░░░░░░░░   41.65 %
-Text          59 mins         █░░░░░░░░░░░░░░░░░░░░░░░░   04.58 %
-TypeScript    57 mins         █░░░░░░░░░░░░░░░░░░░░░░░░   04.43 %
-Image (svg)   23 mins         ▒░░░░░░░░░░░░░░░░░░░░░░░░   01.86 %
+JavaScript    14 hrs 34 mins  ████████████████▓░░░░░░░░   66.64 %
+Python        3 hrs 51 mins   ████▒░░░░░░░░░░░░░░░░░░░░   17.66 %
+TypeScript    1 hr 9 mins     █▒░░░░░░░░░░░░░░░░░░░░░░░   05.31 %
+Text          59 mins         █░░░░░░░░░░░░░░░░░░░░░░░░   04.50 %
+Image (svg)   29 mins         ▓░░░░░░░░░░░░░░░░░░░░░░░░   02.25 %
 ```
 
 <!--END_SECTION:waka-->
