@@ -92,7 +92,7 @@ Python   1 hr 6 mins     ██████████████████�
   <tr>
     <td>
       <a href="https://github-readme-streak-stats.herokuapp.com/?user=swadhinbiswas&theme=dracula&hide_border=true">
-        <img src="https://github-readme-streak-stats.herokuapp.com/?user=swadhinbiswas&theme=dracula&hide_border=true" alt="GitHub Streak" />
+        <img src="https://streak-stats.demolab.com/?user=swadhinbiswas&theme=dracula&hide_border=true" alt="GitHub Streak" />
       </a>
     </td>
     <td align="right">
