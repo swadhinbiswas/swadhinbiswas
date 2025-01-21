@@ -1,5 +1,5 @@
 <a href="https://komarev.com/ghpvc/?username=swadhinbiswas">
-  <img align="right" src="https://komarev.com/ghpvc/?username=swadhinbiswas&label=Visitors&color=0e75b6&style=flat" alt="Profile visitor" />
+  <img align="right" src="https://komarev.com/ghpvc/?username=swadhinbiswas" alt="Profile visitor" />
 </a>
 <!-- <a href="https://komarev.com/ghpvc/?username=swadhinbiswas">
   <img align="left" src="https://img.shields.io/badge/wrote%20lines%20of%20code-97k-brightgreen" alt="I wrote" />
