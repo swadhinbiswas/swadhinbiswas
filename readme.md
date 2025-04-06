@@ -78,7 +78,10 @@ class MySkill(Skills):
 <!--START_SECTION:waka-->
 
 ```txt
-No activity tracked
+JavaScript   2 hrs 12 mins   ███████████████████████▓░   94.43 %
+TeX          4 mins          █░░░░░░░░░░░░░░░░░░░░░░░░   03.48 %
+Bash         2 mins          ▓░░░░░░░░░░░░░░░░░░░░░░░░   02.08 %
+TypeScript   0 secs          ░░░░░░░░░░░░░░░░░░░░░░░░░   00.01 %
 ```
 
 <!--END_SECTION:waka-->
