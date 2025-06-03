@@ -78,11 +78,11 @@ class MySkill(Skills):
 <!--START_SECTION:waka-->
 
 ```txt
-TypeScript    8 hrs 38 mins   ███████████▓░░░░░░░░░░░░░   46.06 %
-Other         4 hrs 44 mins   ██████▒░░░░░░░░░░░░░░░░░░   25.29 %
-Python        2 hrs 13 mins   ███░░░░░░░░░░░░░░░░░░░░░░   11.86 %
-Markdown      1 hr 16 mins    █▓░░░░░░░░░░░░░░░░░░░░░░░   06.81 %
-Bash          58 mins         █▒░░░░░░░░░░░░░░░░░░░░░░░   05.16 %
+TypeScript    7 hrs 54 mins   ██████████░░░░░░░░░░░░░░░   40.27 %
+Other         4 hrs 17 mins   █████▒░░░░░░░░░░░░░░░░░░░   21.86 %
+Python        2 hrs 52 mins   ███▓░░░░░░░░░░░░░░░░░░░░░   14.66 %
+Prisma        1 hr 44 mins    ██▒░░░░░░░░░░░░░░░░░░░░░░   08.86 %
+Markdown      1 hr 16 mins    █▓░░░░░░░░░░░░░░░░░░░░░░░   06.51 %
 ```
 
 <!--END_SECTION:waka-->
