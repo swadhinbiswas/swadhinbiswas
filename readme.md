@@ -78,11 +78,9 @@ class MySkill(Skills):
 <!--START_SECTION:waka-->
 
 ```txt
-Prisma       2 hrs 4 mins    ███████████████▒░░░░░░░░░   60.87 %
-Python       39 mins         ████▓░░░░░░░░░░░░░░░░░░░░   19.24 %
-TypeScript   18 mins         ██▒░░░░░░░░░░░░░░░░░░░░░░   08.97 %
-Markdown     12 mins         █▓░░░░░░░░░░░░░░░░░░░░░░░   06.22 %
-JSON         9 mins          █▒░░░░░░░░░░░░░░░░░░░░░░░   04.70 %
+Prisma     20 mins         ████████████░░░░░░░░░░░░░   47.62 %
+Markdown   12 mins         ███████▒░░░░░░░░░░░░░░░░░   29.85 %
+JSON       9 mins          █████▓░░░░░░░░░░░░░░░░░░░   22.53 %
 ```
 
 <!--END_SECTION:waka-->
