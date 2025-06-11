@@ -78,9 +78,7 @@ class MySkill(Skills):
 <!--START_SECTION:waka-->
 
 ```txt
-Prisma     20 mins         ████████████░░░░░░░░░░░░░   47.62 %
-Markdown   12 mins         ███████▒░░░░░░░░░░░░░░░░░   29.85 %
-JSON       9 mins          █████▓░░░░░░░░░░░░░░░░░░░   22.53 %
+No activity tracked
 ```
 
 <!--END_SECTION:waka-->
