@@ -78,11 +78,11 @@ class MySkill(Skills):
 <!--START_SECTION:waka-->
 
 ```txt
-Python        10 hrs 16 mins  █████████████░░░░░░░░░░░░   51.69 %
-Other         3 hrs 30 mins   ████▒░░░░░░░░░░░░░░░░░░░░   17.66 %
-TypeScript    1 hr 32 mins    ██░░░░░░░░░░░░░░░░░░░░░░░   07.76 %
-JavaScript    1 hr 12 mins    █▓░░░░░░░░░░░░░░░░░░░░░░░   06.10 %
-JSON          1 hr            █▒░░░░░░░░░░░░░░░░░░░░░░░   05.11 %
+Python        10 hrs 19 mins  ███████████████▓░░░░░░░░░   62.97 %
+Other         1 hr 35 mins    ██▒░░░░░░░░░░░░░░░░░░░░░░   09.76 %
+JavaScript    1 hr 12 mins    ██░░░░░░░░░░░░░░░░░░░░░░░   07.40 %
+JSON          1 hr            █▓░░░░░░░░░░░░░░░░░░░░░░░   06.20 %
+Bash          48 mins         █▒░░░░░░░░░░░░░░░░░░░░░░░   04.93 %
 ```
 
 <!--END_SECTION:waka-->
