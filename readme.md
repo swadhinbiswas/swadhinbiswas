@@ -1,82 +1,48 @@
-<a href="https://komarev.com/ghpvc/?username=swadhinbiswas">
-  <img align="right" src="https://komarev.com/ghpvc/?username=swadhinbiswas" alt="Profile visitor" />
-</a>
-<!-- <a href="https://komarev.com/ghpvc/?username=swadhinbiswas">
-  <img align="left" src="https://img.shields.io/badge/wrote%20lines%20of%20code-97k-brightgreen" alt="I wrote" />
-</a> -->
-<!-- Intro  -->
-<h3 align="center">
-        <samp>&gt; My self
-                <b><a target="_blank" href="#">Swadhin Biswas</a></b>
-        </samp>
-</h3>
+# 🌟 Swadhin Biswas
 
-<p align="center"> 
-  <samp>
-    <a href="https://www.google.com/search?q=swadhin+biswas">「 Google Me 」</a>
-    <br>
-   <b> <i> 「 𝗔𝗻 𝗜𝗻𝗾𝘂𝗶𝘀𝗶𝘁𝗶𝘃𝗲||𝗔 𝗣𝘆𝘁𝗵𝗼𝗻 𝗣𝗿𝗼𝗴𝗿𝗮𝗺𝗺𝗲𝗿 ||𝗔 𝗕𝗲𝗴𝗶𝗻𝗻𝗲𝗿 𝗼𝗳 𝗗𝗮𝘁𝗮 𝗦𝗰𝗶𝗲𝗻𝗰𝗲 」<br> 
-   
-    
-  </samp>
-</p>
+<div align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=28&duration=3000&pause=1000&color=00D9FF&background=00000000&center=true&vCenter=true&width=600&lines=An+Inquisitive+Mind;Python+Programmer;Data+Science+Enthusiast;Always+Learning+%26+Growing" alt="Typing SVG" />
+</div>
 
 <p align="center">
- <a href="#" target="blank">
-  <img src="https://img.shields.io/badge/Website-DC143C?style=for-the-badge&logo=medium&logoColor=white" alt="swadh1n" />
- </a>
-<a href="https://linkedin.com/in/swadh1n" target="_blank">
-  <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="swadh1n"/>
- </a>
- <a href="https://twitter.com/swadh1n" target="_blank">
-  <img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white" />
- </a>
- 
+  <img src="https://komarev.com/ghpvc/?username=swadhinbiswas&label=Profile%20views&color=0e75b6&style=flat" alt="Profile views" />
+  <img src="https://img.shields.io/github/followers/swadhinbiswas?label=Followers&style=social" alt="GitHub followers" />
 </p>
-<br />
 
-<!-- About Section -->
+---
 
-```pyhton3
+## 🚀 About Me
+
+```python
 from Brain import Skills
 class MySkill(Skills):
     def __init__(self,learning):
     super().__init__(Skills)
-    self.code:list =[
+    self.code: list =[
       'Python',
-      'Javascript',
-      'C/C++',
-      'Java',
+      'JavaScript',
+      'Rust[beginner]',
       'Mojo',]
 
     self.expertise:list=[
-      'Backend (python)',
-      'Desktop Application (python)',
+      'Backend (Python)',
+      'Desktop Application (Python)',
       'Data Analysis',
-      'WebApplication (python & Javascript),
-      'Machine Learning [loading..]',
-      'DEEP LEARNING [LOADING...]',
+      'WebApplication (Python & JavaScript),
+      'Machine Learning',
+      'DEEP LEARNING',
       'Artificial intelligence [LOADING...]',
       'Neural Network Science[Pending]',]
 
 ```
 
-
-- 🌱 Currently learning **Data Science, AI, and Software Engineering**.
-- 🤝 Looking to collaborate on **Open Source Projects**.
-- 💻 Check out my work at **[My Portfolio](https://swadhin.my.id)**.
-- 📧 Reach me at **[swadhinbiswas.cse@gmail.com](mailto:swadhinbiswas.cse@gmail.com)**.
+---
 
 
 
-
-
-
-
-
+## 📊 Coding Activity
 
 <!--START_SECTION:waka-->
-
 ```txt
 Python       9 hrs 39 mins   ███████████████████░░░░░░   75.96 %
 JavaScript   1 hr 14 mins    ██▒░░░░░░░░░░░░░░░░░░░░░░   09.71 %
@@ -84,32 +50,48 @@ JSON         1 hr 5 mins     ██░░░░░░░░░░░░░░░
 Bash         43 mins         █▒░░░░░░░░░░░░░░░░░░░░░░░   05.70 %
 TOML         0 secs          ░░░░░░░░░░░░░░░░░░░░░░░░░   00.08 %
 ```
-
 <!--END_SECTION:waka-->
 
-```
+---
+
+## 📈 GitHub Statistics
+
+<div align="center">
+  <img height="180em" src="https://github-readme-stats.vercel.app/api?username=swadhinbiswas&show_icons=true&theme=tokyonight&include_all_commits=true&count_private=true&hide_border=true&bg_color=0d1117"/>
+  <img height="180em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=swadhinbiswas&layout=compact&langs_count=8&theme=tokyonight&hide_border=true&bg_color=0d1117"/>
+</div>
+
+<div align="center">
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=swadhinbiswas&theme=tokyonight&hide_border=true&background=0d1117" alt="GitHub Streak"/>
+</div>
+
+---
+
+## 🎯 Current Goals
+
+- 🔭 **Working on:** Advanced Data Science projects and ML algorithms
+- 🌱 **Learning:** Deep Learning, Neural Networks, and AI technologies
+- 👯 **Collaborating:** Open source projects and innovative solutions
+- 💬 **Ask me about:** Python, Data Science, and Software Development
+- ⚡ **Fun fact:** I believe every problem has a solution; you need to find the right algorithm!
+
+---
+
+## 🌐 Connect with Me
+
+<div align="center">
+  
+[![Portfolio](https://img.shields.io/badge/Portfolio-FF5722?style=for-the-badge&logo=todoist&logoColor=white)](https://swadhin.my.id)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/swadh1n)
+[![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/swadh1n)
+[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:swadhinbiswas.cse@gmail.com)
+
+</div>
+
+---
 
 
-```
 
-<table>
-  <tr>
-    <td>
-      <a href="https://github-readme-streak-stats.herokuapp.com/?user=swadhinbiswas&theme=dracula&hide_border=true">
-        <img src="https://streak-stats.demolab.com/?user=swadhinbiswas&theme=dracula&hide_border=true" alt="GitHub Streak" />
-      </a>
-    </td>
-    <td align="right">
-      <img src="https://github-readme-stats.vercel.app/api?username=swadhinbiswas&show_icons=true&bg_color=00000000&hide_border=true" alt="Swadhin's GitHub stats" />
-    </td>
-  </tr>
-</table>
-
-
-
-
-
-
-
- ## 💰 You can help me by Donating
-  [![BuyMeACoffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/swadhinbiswas) [![Ko-Fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/swadhinbiswas) 
+<div align="center">
+  <i>⭐️ From <a href="https://github.com/swadhinbiswas">Swadhin Biswas</a> with ❤️</i>
+</div>
