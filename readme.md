@@ -28,11 +28,12 @@ class MySkill(Skills):
       'Backend (Python)',
       'Desktop Application (Python)',
       'Data Analysis',
-      'WebApplication (Python & JavaScript),
+      'WebApplication (Python & JavaScript)',
+      'MCP & AGENTS',
       'Machine Learning',
       'DEEP LEARNING',
-      'Artificial intelligence [LOADING...]',
-      'Neural Network Science[Pending]',]
+      'Artificial intelligence',
+      'Neural Network Science ',]
 
 ```
 
