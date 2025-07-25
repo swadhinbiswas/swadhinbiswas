@@ -39,8 +39,7 @@ class MySkill(Skills):
             'Neural Network Science',
         ]
 
-        if learning:
-            self.push_to_brain()
+
 
 ```
 
