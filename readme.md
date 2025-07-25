@@ -15,25 +15,43 @@
 
 ```python
 from Brain import Skills
-class MySkill(Skills):
-    def __init__(self,learning):
-    super().__init__(Skills)
-    self.code: list =[
-      'Python',
-      'JavaScript',
-      'Rust[beginner]',
-      'Mojo',]
 
-    self.expertise:list=[
-      'Backend (Python)',
-      'Desktop Application (Python)',
-      'Data Analysis',
-      'WebApplication (Python & JavaScript)',
-      'MCP & AGENTS',
-      'Machine Learning',
-      'DEEP LEARNING',
-      'Artificial intelligence',
-      'Neural Network Science ',]
+class MySkill(Skills):
+    def __init__(self, learning=True):
+        super().__init__()
+
+        self.code: list = [
+            'Python',
+            'JavaScript',
+            'Rust (beginner)',
+            'Mojo',
+        ]
+
+        self.expertise: list = [
+            'Backend (Python)',
+            'Desktop Application (Python)',
+            'Data Analysis',
+            'Web Application (Python & JavaScript)',
+            'MCP & AGENTS',
+            'Machine Learning',
+            'Deep Learning',
+            'Artificial Intelligence',
+            'Neural Network Science',
+        ]
+
+        if learning:
+            self.push_to_brain()
+
+    def push_to_brain(self):
+        print("🧠 Uploading skills to brain...")
+        for skill in self.code + self.expertise:
+            print(f"📥 Injecting: {skill}")
+        print("✅ Skills successfully uploaded to Brain!")
+
+# Example usage
+if __name__ == "__main__":
+    my_brain = MySkill(learning=True)
+
 
 ```
 
