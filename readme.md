@@ -42,17 +42,6 @@ class MySkill(Skills):
         if learning:
             self.push_to_brain()
 
-    def push_to_brain(self):
-        print("🧠 Uploading skills to brain...")
-        for skill in self.code + self.expertise:
-            print(f"📥 Injecting: {skill}")
-        print("✅ Skills successfully uploaded to Brain!")
-
-# Example usage
-if __name__ == "__main__":
-    my_brain = MySkill(learning=True)
-
-
 ```
 
 ---
