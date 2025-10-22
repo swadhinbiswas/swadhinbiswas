@@ -52,11 +52,11 @@ class MySkill(Skills):
 <!--START_SECTION:waka-->
 
 ```txt
-Python       13 hrs 33 mins  ██████████████▒░░░░░░░░░░   57.81 %
-Markdown     3 hrs 4 mins    ███▒░░░░░░░░░░░░░░░░░░░░░   13.10 %
-Other        2 hrs 19 mins   ██▒░░░░░░░░░░░░░░░░░░░░░░   09.94 %
-Bash         1 hr 53 mins    ██░░░░░░░░░░░░░░░░░░░░░░░   08.05 %
-TypeScript   35 mins         ▓░░░░░░░░░░░░░░░░░░░░░░░░   02.52 %
+Python     13 hrs 48 mins  ██████████████████▓░░░░░░   74.06 %
+Other      2 hrs 17 mins   ███░░░░░░░░░░░░░░░░░░░░░░   12.27 %
+Markdown   1 hr 18 mins    █▓░░░░░░░░░░░░░░░░░░░░░░░   07.02 %
+YAML       33 mins         ▓░░░░░░░░░░░░░░░░░░░░░░░░   03.03 %
+Bash       16 mins         ▒░░░░░░░░░░░░░░░░░░░░░░░░   01.49 %
 ```
 
 <!--END_SECTION:waka-->
