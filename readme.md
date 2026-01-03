@@ -1,11 +1,20 @@
 # Swadhin Biswas
 
+<table>
+<tr>
+<td width="200" valign="top">
+<img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/profile_swadhin_biswas.jpg" width="200" style="border-radius: 10px;" alt="Swadhin Biswas"/>
+</td>
+<td valign="top">
 <a href="https://github.com/swadhinbiswas/swadhinbiswas">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/dark_mode.svg">
     <img alt="Swadhin Biswas's GitHub Profile README" src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/light_mode.svg">
   </picture>
 </a>
+</td>
+</tr>
+</table>
 
 ---
 
