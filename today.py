@@ -294,14 +294,14 @@ def svg_overwrite(filename, age_data, commit_data, star_data, repo_data, contrib
     """
     tree = etree.parse(filename)
     root = tree.getroot()
-    justify_format(root, 'commit_data', commit_data, 22)
-    justify_format(root, 'star_data', star_data, 14)
-    justify_format(root, 'repo_data', repo_data, 6)
-    justify_format(root, 'contrib_data', contrib_data)
-    justify_format(root, 'follower_data', follower_data, 10)
-    justify_format(root, 'loc_data', loc_data[2], 9)
-    justify_format(root, 'loc_add', loc_data[0])
-    justify_format(root, 'loc_del', loc_data[1], 7)
+    # Update stats in the new card layout
+    find_and_replace(root, 'repo_data', '{:,}'.format(repo_data) if isinstance(repo_data, int) else str(repo_data))
+    find_and_replace(root, 'star_data', '{:,}'.format(star_data) if isinstance(star_data, int) else str(star_data))
+    find_and_replace(root, 'commit_data', '{:,}'.format(commit_data) if isinstance(commit_data, int) else str(commit_data))
+    find_and_replace(root, 'follower_data', '{:,}'.format(follower_data) if isinstance(follower_data, int) else str(follower_data))
+    find_and_replace(root, 'loc_data', loc_data[2] if isinstance(loc_data, list) else str(loc_data))
+    find_and_replace(root, 'loc_add', loc_data[0] if isinstance(loc_data, list) else '...')
+    find_and_replace(root, 'loc_del', loc_data[1] if isinstance(loc_data, list) else '...')
     tree.write(filename, encoding='utf-8', xml_declaration=True)
 
 def justify_format(root, element_id, new_text, length=0):
