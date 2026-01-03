@@ -33,9 +33,7 @@
     </clipPath>
   </defs>
   <rect x="25" y="25" width="110" height="110" fill="#21262d" rx="12" stroke="#30363d" stroke-width="1"/>
-  <image x="25" y="25" width="110" height="110" clip-path="url(#avatarClip)"
-         xlink:href="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/refs/heads/main/profile_swadhin_biswas.jpg"
-         preserveAspectRatio="xMidYMid slice"/>
+  <image x="25" y="25" width="110" height="110" clip-path="url(#avatarClip)" xlink:href="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/refs/heads/main/profile_swadhin_biswas.jpg" preserveAspectRatio="xMidYMid slice"/>
   
   <!-- Name and Info -->
   <text x="150" y="55" class="title">Swadhin Biswas</text>
@@ -45,13 +43,13 @@
   <text x="150" y="100">
     <tspan class="stat-label">Repos: </tspan><tspan class="stat-value" id="repo_data">69</tspan>
     <tspan class="stat-label" dx="15">Stars: </tspan><tspan class="stat-value" id="star_data">147</tspan>
-    <tspan class="stat-label" dx="15">Commits: </tspan><tspan class="stat-value" id="commit_data">732</tspan>
+    <tspan class="stat-label" dx="15">Commits: </tspan><tspan class="stat-value" id="commit_data">734</tspan>
     <tspan class="stat-label" dx="15">Followers: </tspan><tspan class="stat-value" id="follower_data">66</tspan>
   </text>
   <text x="150" y="120">
-    <tspan class="stat-label">Lines of Code: </tspan><tspan class="stat-value" id="loc_data">4,814,399</tspan>
-    <tspan style="fill:#3fb950; font-size:11px;" dx="5" id="loc_add">5,070,729</tspan><tspan style="fill:#3fb950; font-size:11px;">++</tspan>
-    <tspan style="fill:#f85149; font-size:11px;" dx="5" id="loc_del">256,330</tspan><tspan style="fill:#f85149; font-size:11px;">--</tspan>
+    <tspan class="stat-label">Lines of Code: </tspan><tspan class="stat-value" id="loc_data">4,814,521</tspan>
+    <tspan style="fill:#3fb950; font-size:11px;" dx="5" id="loc_add">5,070,893</tspan><tspan style="fill:#3fb950; font-size:11px;">++</tspan>
+    <tspan style="fill:#f85149; font-size:11px;" dx="5" id="loc_del">256,372</tspan><tspan style="fill:#f85149; font-size:11px;">--</tspan>
   </text>
 
   <!-- ═══════════════════════════════════════════════════════════════════════ -->
