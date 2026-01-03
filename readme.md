@@ -1,56 +1,71 @@
-# 🌟 Swadhin Biswas
+# Swadhin Biswas
 
-<div align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=28&duration=3000&pause=1000&color=00D9FF&background=00000000&center=true&vCenter=true&width=600&lines=An+Inquisitive+Mind;Python+Programmer;Data+Science+Enthusiast;Always+Learning+%26+Growing" alt="Typing SVG" />
-</div>
+<img src="https://github.com/swadhinbiswas/swadhinbiswas/blob/main/profile_swadhin_biswas.jpg?raw=true" align="right" width="150" alt="Swadhin Biswas Profile Picture">
 
-<p align="center">
-  <img src="https://komarev.com/ghpvc/?username=swadhinbiswas&label=Profile%20views&color=0e75b6&style=flat" alt="Profile views" />
-  <img src="https://img.shields.io/github/followers/swadhinbiswas?label=Followers&style=social" alt="GitHub followers" />
-</p>
+<a href="https://github.com/swadhinbiswas/swadhinbiswas">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/dark_mode.svg">
+    <img alt="Swadhin Biswas's GitHub Profile README" src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/light_mode.svg">
+  </picture>
+</a>
 
----
+**Python Developer | AI/ML Engineer | Problem Solver**
 
-## 🚀 About Me
-
-```python
-from Brain import Skills
-
-class MySkill(Skills):
-    def __init__(self, learning=True):
-        super().__init__()
-
-        self.code: list = [
-            'Python',
-            'JavaScript',
-            'Rust (beginner)',
-            'Mojo',
-        ]
-
-        self.expertise: list = [
-            'Backend (Python)',
-            'Desktop Application (Python)',
-            'Data Analysis',
-            'Web Application (Python & JavaScript)',
-            'MCP & AGENTS',
-            'Machine Learning',
-            'Deep Learning',
-            'Artificial Intelligence',
-            'Neural Network Science',
-        ]
-
-
-
-```
+I build things that work. No fluff, just functional code that solves real problems.
 
 ---
 
+## The Reality Check
 
+Most developers have fancy titles and buzzwords. Here's what I actually do:
 
-## 📊 Coding Activity
+I write Python code every day. I build backend systems, desktop applications, and web tools. I work with data - cleaning it, analyzing it, and extracting insights from it. I implement machine learning models that actually work in production, not just in Jupyter notebooks.
+
+I'm also learning Rust because Python isn't always the answer (shocking, I know). TypeScript and Go are in my toolkit because sometimes you need the right tool for the job, not just your favorite one.
+
+---
+
+## What I Actually Know
+
+**Core Skills:**
+- Python (Backend, Desktop Apps, Data Processing)
+- JavaScript/TypeScript (Web Development)
+- Data Analysis & Visualization
+- Machine Learning & Deep Learning
+- Neural Networks (both theory and implementation)
+- AI Agents & MCP (Model Context Protocol)
+
+**Languages & Tools:**
+- Python, JavaScript/TypeScript
+- Rust (learning, because memory safety matters)
+- Mojo (learning, because Python needs to be faster)
+- Go (learning, because concurrency is important)
+- **Roast-Lang** (my own creation - because sometimes you need to build your own tools)
+
+**What I'm Good At:**
+- Turning messy data into actionable insights
+- Building scalable backend systems
+- Creating practical ML solutions (not just POCs)
+- Automating repetitive tasks
+- Debugging things that shouldn't be broken but are
+
+---
+
+## Current Work & Focus
+
+Right now, I'm deep into:
+- Advanced data science projects with real-world applications
+- Deep learning architectures that aren't just ResNet clones
+- Building AI agents that can actually complete tasks
+- Contributing to open source when I'm not drowning in my own projects
+
+I'm not "exploring" or "dabbling" - I'm actively building and shipping.
+
+---
+
+## The Honest Stats
 
 <!--START_SECTION:waka-->
-
 ```txt
 TypeScript   3 hrs 8 mins    ████████▒░░░░░░░░░░░░░░░░   33.16 %
 Markdown     2 hrs 15 mins   ██████░░░░░░░░░░░░░░░░░░░   23.86 %
@@ -58,49 +73,56 @@ Go           1 hr 41 mins    ████▒░░░░░░░░░░░░
 Rust         53 mins         ██▒░░░░░░░░░░░░░░░░░░░░░░   09.37 %
 Astro        29 mins         █▒░░░░░░░░░░░░░░░░░░░░░░░   05.21 %
 ```
-
 <!--END_SECTION:waka-->
 
----
-
-## 📈 GitHub Statistics
-
-<div align="center">
-  <img height="180em" src="https://github-readme-stats.vercel.app/api?username=swadhinbiswas&show_icons=true&theme=tokyonight&include_all_commits=true&count_private=true&hide_border=true&bg_color=0d1117"/>
-  <img height="180em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=swadhinbiswas&layout=compact&langs_count=8&theme=tokyonight&hide_border=true&bg_color=0d1117"/>
-</div>
-
-<div align="center">
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=swadhinbiswas&theme=tokyonight&hide_border=true&background=0d1117" alt="GitHub Streak"/>
-</div>
+These are my actual coding hours, not inflated numbers. I write documentation (hence the Markdown), I'm learning systems languages (Rust and Go), and I build web interfaces (TypeScript).
 
 ---
 
-## 🎯 Current Goals
+## What I'm Looking For
 
-- 🔭 **Working on:** Advanced Data Science projects and ML algorithms
-- 🌱 **Learning:** Deep Learning, Neural Networks, and AI technologies
-- 👯 **Collaborating:** Open source projects and innovative solutions
-- 💬 **Ask me about:** Python, Data Science, and Software Development
-- ⚡ **Fun fact:** I believe every problem has a solution; you need to find the right algorithm!
+I'm interested in:
+- Projects that actually matter
+- Teams that ship code, not just have meetings
+- Problems that require thinking, not just googling
+- Opportunities to work with data and AI at scale
+- Collaborations where I can learn and contribute equally
 
----
-
-## 🌐 Connect with Me
-
-<div align="center">
-  
-[![Portfolio](https://img.shields.io/badge/Portfolio-FF5722?style=for-the-badge&logo=todoist&logoColor=white)](https://swadhin.my.id)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/swadh1n)
-[![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/swadh1n)
-[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:swadhinbiswas.cse@gmail.com)
-
-</div>
+Not interested in:
+- Another CRUD app tutorial
+- "Ideas" without implementation
+- Projects that died in 2019
+- Code that exists just to pad a portfolio
 
 ---
 
+## My Philosophy
 
+Every problem has a solution, but not every solution needs machine learning. Sometimes you just need a good algorithm and clean data. I believe in writing code that others can read, tests that actually test things, and documentation that doesn't lie.
 
-<div align="center">
-  <i>⭐️ From <a href="https://github.com/swadhinbiswas">Swadhin Biswas</a> with ❤️</i>
-</div>
+I'm always learning because this field moves fast. What worked yesterday might be deprecated tomorrow, and I'm okay with that.
+
+---
+
+## Let's Talk
+
+If you want to discuss:
+- Technical challenges in Python, ML, or data science
+- Collaboration on meaningful projects
+- Job opportunities (remote-friendly preferred)
+- Why your model isn't working (we've all been there)
+
+Reach out:
+
+**Portfolio:** [swadhin.my.id](https://swadhin.my.id)  
+**LinkedIn:** [linkedin.com/in/swadh1n](https://linkedin.com/in/swadh1n)  
+**Twitter:** [@swadh1n](https://twitter.com/swadh1n)  
+**Email:** swadhinbiswas.cse@gmail.com
+
+I actually respond to messages. Revolutionary, I know.
+
+---
+
+![Profile Views](https://komarev.com/ghpvc/?username=swadhinbiswas&label=Profile%20views&color=0e75b6&style=flat)
+
+*Built with Python, powered by curiosity, maintained by coffee.*

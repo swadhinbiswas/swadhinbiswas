@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" font-family="ConsolasFallback,Consolas,monospace" width="985px" height="530px" font-size="16px">
+<style>
+@font-face {
+src: local('Consolas'), local('Consolas Bold');
+font-family: 'ConsolasFallback';
+font-display: swap;
+-webkit-size-adjust: 109%;
+size-adjust: 109%;
+}
+.key {fill: #953800;}
+.value {fill: #0a3069;}
+.addColor {fill: #1a7f37;}
+.delColor {fill: #cf222e;}
+.cc {fill: #c2cfde;}
+.comment {fill: #6a737d;}
+.keyword {fill: #d73a49;}
+.string {fill: #032f62;}
+.class {fill: #6f42c1;}
+.func {fill: #6f42c1;}
+text, tspan {white-space: pre;}
+</style>
+<rect width="985px" height="530px" fill="#f6f8fa" rx="15"/>
+<text x="15" y="30" fill="#24292f" class="ascii">
+<tspan x="15" y="30" class="keyword">class</tspan> <tspan class="class">Swadhin</tspan>:<tspan class="comment"> # Developer &amp; Problem Solver</tspan>
+<tspan x="15" y="50">    <tspan class="keyword">def</tspan> <tspan class="func">__init__</tspan>(self):</tspan>
+<tspan x="15" y="70">        self.name = <tspan class="string">"Swadhin Biswas"</tspan></tspan>
+<tspan x="15" y="90">        self.role = <tspan class="string">"AI/ML Engineer"</tspan></tspan>
+<tspan x="15" y="110">        self.stack = [</tspan>
+<tspan x="15" y="130">            <tspan class="string">"Python"</tspan>, <tspan class="string">"Rust"</tspan>, <tspan class="string">"Go"</tspan>,</tspan>
+<tspan x="15" y="150">            <tspan class="string">"TypeScript"</tspan>, <tspan class="string">"Mojo"</tspan></tspan>
+<tspan x="15" y="170">        ]</tspan>
+<tspan x="15" y="190">        self.focus = [</tspan>
+<tspan x="15" y="210">            <tspan class="string">"Backend Systems"</tspan>,</tspan>
+<tspan x="15" y="230">            <tspan class="string">"AI Agents"</tspan>,</tspan>
+<tspan x="15" y="250">            <tspan class="string">"Deep Learning"</tspan></tspan>
+<tspan x="15" y="270">        ]</tspan>
+<tspan x="15" y="290"></tspan>
+<tspan x="15" y="310">    <tspan class="keyword">def</tspan> <tspan class="func">code</tspan>(self):</tspan>
+<tspan x="15" y="330">        <tspan class="keyword">while</tspan> <tspan class="keyword">True</tspan>:</tspan>
+<tspan x="15" y="350">            self.learn()</tspan>
+<tspan x="15" y="370">            self.build()</tspan>
+<tspan x="15" y="390">            self.ship()</tspan>
+<tspan x="15" y="410"></tspan>
+<tspan x="15" y="430">    <tspan class="keyword">def</tspan> <tspan class="func">philosophy</tspan>(self):</tspan>
+<tspan x="15" y="450">        <tspan class="keyword">return</tspan> <tspan class="string">"No fluff, just"</tspan> \</tspan>
+<tspan x="15" y="470">               <tspan class="string">"functional code."</tspan></tspan>
+<tspan x="15" y="510"><tspan class="comment"># Powered by coffee and curiosity</tspan></tspan>
+</text>
+<text x="390" y="30" fill="#24292f">
+<tspan x="390" y="30">swadhin@biswas</tspan> -——————————————————————————————————————————-—-
+<tspan x="390" y="50" class="cc">. </tspan><tspan class="key">OS</tspan>:<tspan class="cc"> ........................ </tspan><tspan class="value">Linux (Ubuntu/Arch)</tspan>
+<tspan x="390" y="70" class="cc">. </tspan><tspan class="key">Uptime</tspan>:<tspan class="cc" id="age_data_dots"> ...................... </tspan><tspan class="value" id="age_data">Loading...</tspan>
+<tspan x="390" y="90" class="cc">. </tspan><tspan class="key">Host</tspan>:<tspan class="cc"> ............................. </tspan><tspan class="value">Swadhin's Workstation</tspan>
+<tspan x="390" y="110" class="cc">. </tspan><tspan class="key">Kernel</tspan>:<tspan class="cc"> ...... </tspan><tspan class="value">AI/ML Engineer &amp; Python Developer</tspan>
+<tspan x="390" y="130" class="cc">. </tspan><tspan class="key">IDE</tspan>:<tspan class="cc"> ........................ </tspan><tspan class="value">VSCode, Cursor, PyCharm</tspan>
+<tspan x="390" y="150" class="cc">. </tspan>
+<tspan x="390" y="170" class="cc">. </tspan><tspan class="key">Languages</tspan>.<tspan class="key">Core</tspan>:<tspan class="cc"> ........ </tspan><tspan class="value">Python, Rust, Go, TypeScript</tspan>
+<tspan x="390" y="190" class="cc">. </tspan><tspan class="key">Frameworks</tspan>.<tspan class="key">Web</tspan>:<tspan class="cc"> .......... </tspan><tspan class="value">FastAPI, Django, React, Next.js</tspan>
+<tspan x="390" y="210" class="cc">. </tspan><tspan class="key">Frameworks</tspan>.<tspan class="key">AI</tspan>:<tspan class="cc"> ........... </tspan><tspan class="value">PyTorch, TensorFlow, LangChain</tspan>
+<tspan x="390" y="230" class="cc">. </tspan>
+<tspan x="390" y="250" class="cc">. </tspan><tspan class="key">Interests</tspan>.<tspan class="key">Tech</tspan>:<tspan class="cc"> ......... </tspan><tspan class="value">AI Agents, Roast-Lang, MCP</tspan>
+<tspan x="390" y="270" class="cc">. </tspan><tspan class="key">Interests</tspan>.<tspan class="key">Other</tspan>:<tspan class="cc"> ........ </tspan><tspan class="value">Data Visualization, Automation</tspan>
+<tspan x="390" y="310">- Contact</tspan> -——————————————————————————————————————————————-—-
+<tspan x="390" y="330" class="cc">. </tspan><tspan class="key">Email</tspan>:<tspan class="cc"> ................................. </tspan><tspan class="value">swadhinbiswas.cse@gmail.com</tspan>
+<tspan x="390" y="350" class="cc">. </tspan><tspan class="key">Website</tspan>:<tspan class="cc"> ............................... </tspan><tspan class="value">https://swadhin.my.id</tspan>
+<tspan x="390" y="370" class="cc">. </tspan><tspan class="key">LinkedIn</tspan>:<tspan class="cc"> .............................. </tspan><tspan class="value">/in/swadh1n</tspan>
+<tspan x="390" y="390" class="cc">. </tspan><tspan class="key">Twitter</tspan>:<tspan class="cc"> ............................... </tspan><tspan class="value">@swadh1n</tspan>
+<tspan x="390" y="410" class="cc">. </tspan><tspan class="key">Discord</tspan>:<tspan class="cc"> ............................... </tspan><tspan class="value">swadh1n</tspan>
+<tspan x="390" y="450">- GitHub Stats</tspan> -—————————————————————————————————————————-—-
+<tspan x="390" y="470" class="cc">. </tspan><tspan class="key">Repos</tspan>:<tspan class="cc" id="repo_data_dots"> .... </tspan><tspan class="value" id="repo_data">...</tspan> {<tspan class="key">Contributed</tspan>: <tspan class="value" id="contrib_data">...</tspan>} | <tspan class="key">Stars</tspan>:<tspan class="cc" id="star_data_dots"> ........... </tspan><tspan class="value" id="star_data">...</tspan>
+<tspan x="390" y="490" class="cc">. </tspan><tspan class="key">Commmits</tspan>:<tspan class="cc" id="commit_data_dots"> ................. </tspan><tspan class="value" id="commit_data">...</tspan> | <tspan class="key">Followers</tspan>:<tspan class="cc" id="follower_data_dots"> ....... </tspan><tspan class="value" id="follower_data">...</tspan>
+<tspan x="390" y="510" class="cc">. </tspan><tspan class="key">Lines of Code on GitHub</tspan>:<tspan class="cc" id="loc_data_dots">. </tspan><tspan class="value" id="loc_data">Loading...</tspan> ( <tspan class="addColor" id="loc_add">...</tspan><tspan class="addColor">++</tspan>, <tspan id="loc_del_dots"> </tspan><tspan class="delColor" id="loc_del">...</tspan><tspan class="delColor">--</tspan> )
+</text>
+</svg>
