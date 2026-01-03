@@ -30,11 +30,13 @@
   <!-- ═══════════════════════════════════════════════════════════════════════ -->
   <rect x="15" y="15" width="820" height="130" fill="#f9fafb" rx="10" stroke="#e5e7eb" stroke-width="1"/>
   
-  <!-- Profile Image -->
-  <rect x="30" y="30" width="100" height="100" fill="#f3f4f6" rx="12" stroke="#e5e7eb" stroke-width="1"/>
-  <image x="30" y="30" width="100" height="100" clip-path="url(#avatarClip)" 
-         href="https://github.com/swadhinbiswas/swadhinbiswas/blob/main/profile_swadhin_biswas.jpg?raw=true"
-         preserveAspectRatio="xMidYMid slice"/>
+  <!-- Profile Image using foreignObject for GitHub compatibility -->
+  <foreignObject x="30" y="30" width="100" height="100">
+    <img xmlns="http://www.w3.org/1999/xhtml" 
+         src="https://github.com/swadhinbiswas.png" 
+         width="100" height="100" 
+         style="border-radius: 12px; object-fit: cover;"/>
+  </foreignObject>
   
   <!-- Name and Info -->
   <text x="150" y="60" class="title">Swadhin Biswas</text>
@@ -131,12 +133,8 @@
   <!-- ═══════════════════════════════════════════════════════════════════════ -->
   <rect x="15" y="600" width="820" height="65" fill="#f9fafb" rx="10" stroke="#e5e7eb" stroke-width="1"/>
   
-  <!-- Profile Views Badge -->
-  <text x="35" y="630" class="stat-label">👁 Profile Views</text>
-  <text x="130" y="630" class="stat-value" id="profile_views">Loading...</text>
-  
   <!-- Footer message -->
-  <text x="425" y="645" text-anchor="middle" class="footer">
+  <text x="425" y="635" text-anchor="middle" class="footer">
     Built with Python, powered by curiosity, maintained by coffee. ☕
   </text>
 

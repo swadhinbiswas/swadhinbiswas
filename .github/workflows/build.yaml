@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,6 +24,12 @@ jobs:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/cache/requirements.txt') }}
           restore-keys: ${{ runner.os }}-pip-
+      - name: Cache LOC data
+        uses: actions/cache@v4
+        with:
+          path: cache/*.txt
+          key: ${{ runner.os }}-loc-${{ github.run_id }}
+          restore-keys: ${{ runner.os }}-loc-
       - name: Install dependencies
         run: python -m pip install -r cache/requirements.txt
       - name: Update README file

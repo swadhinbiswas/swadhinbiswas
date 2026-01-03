@@ -6,3 +6,5 @@
     <img alt="Swadhin Biswas's GitHub Profile README" src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/light_mode.svg">
   </picture>
 </a>
+
+![Profile Views](https://komarev.com/ghpvc/?username=swadhinbiswas&label=Profile%20Views&color=0e75b6&style=flat)
