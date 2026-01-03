@@ -1,10 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="850" height="680" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif">
-  <defs>
-    <clipPath id="avatarClip">
-      <rect x="30" y="30" width="100" height="100" rx="12"/>
-    </clipPath>
-  </defs>
   
   <style>
     .title { fill: #f3f4f6; font-size: 24px; font-weight: 600; }
@@ -26,30 +21,22 @@
   <rect x="5" y="5" width="840" height="670" fill="none" stroke="#30363d" stroke-width="1" rx="14"/>
 
   <!-- ═══════════════════════════════════════════════════════════════════════ -->
-  <!-- TOP SECTION: Profile Image + Info -->
+  <!-- TOP SECTION: Profile Info -->
   <!-- ═══════════════════════════════════════════════════════════════════════ -->
   <rect x="15" y="15" width="820" height="130" fill="#161b22" rx="10" stroke="#30363d" stroke-width="1"/>
   
-  <!-- Profile Image using foreignObject for GitHub compatibility -->
-  <foreignObject x="30" y="30" width="100" height="100">
-    <img xmlns="http://www.w3.org/1999/xhtml" 
-         src="https://github.com/swadhinbiswas.png" 
-         width="100" height="100" 
-         style="border-radius: 12px; object-fit: cover;"/>
-  </foreignObject>
-  
   <!-- Name and Info -->
-  <text x="150" y="60" class="title">Swadhin Biswas</text>
-  <text x="150" y="82" class="subtitle">swadhin@biswas • Linux (Ubuntu/Arch)</text>
+  <text x="30" y="55" class="title">Swadhin Biswas</text>
+  <text x="30" y="77" class="subtitle">swadhin@biswas • Linux (Ubuntu/Arch)</text>
   
   <!-- Quick Stats Row -->
-  <text x="150" y="105">
+  <text x="30" y="100">
     <tspan class="stat-label">Repos: </tspan><tspan class="stat-value" id="repo_data">...</tspan>
     <tspan class="stat-label" dx="15">Stars: </tspan><tspan class="stat-value" id="star_data">...</tspan>
     <tspan class="stat-label" dx="15">Commits: </tspan><tspan class="stat-value" id="commit_data">...</tspan>
     <tspan class="stat-label" dx="15">Followers: </tspan><tspan class="stat-value" id="follower_data">...</tspan>
   </text>
-  <text x="150" y="125">
+  <text x="30" y="120">
     <tspan class="stat-label">Lines of Code: </tspan><tspan class="stat-value" id="loc_data">...</tspan>
     <tspan style="fill:#3fb950; font-size:11px;" dx="5" id="loc_add">...</tspan><tspan style="fill:#3fb950; font-size:11px;">++</tspan>
     <tspan style="fill:#f85149; font-size:11px;" dx="5" id="loc_del">...</tspan><tspan style="fill:#f85149; font-size:11px;">--</tspan>

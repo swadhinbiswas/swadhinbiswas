@@ -1,5 +1,7 @@
 # Swadhin Biswas
 
+<img src="https://github.com/swadhinbiswas.png" align="right" width="150" style="border-radius: 12px;" alt="Swadhin Biswas"/>
+
 <a href="https://github.com/swadhinbiswas/swadhinbiswas">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/dark_mode.svg">
