@@ -215,6 +215,9 @@ def cache_builder(edges, comment_size, force_cache, loc_add=0, loc_del=0):
     Checks each repository in edges to see if it has been updated since the last time it was cached
     If it has, run recursive_loc on that repository to update the LOC count
     """
+    # Filter out None nodes (deleted/private repos)
+    edges = [e for e in edges if e.get('node') is not None and e['node'].get('nameWithOwner') is not None]
+    
     cached = True # Assume all repositories are cached
     filename = 'cache/'+hashlib.sha256(USER_NAME.encode('utf-8')).hexdigest()+'.txt' # Create a unique filename for each user
     try:
@@ -267,6 +270,9 @@ def flush_cache(edges, filename, comment_size):
     with open(filename, 'w') as f:
         f.writelines(data)
         for node in edges:
+            # Skip None nodes (deleted/private repos)
+            if node.get('node') is None or node['node'].get('nameWithOwner') is None:
+                continue
             f.write(hashlib.sha256(node['node']['nameWithOwner'].encode('utf-8')).hexdigest() + ' 0 0 0 0\n')
 
 def force_close_file(data, cache_comment):
