@@ -8,7 +8,8 @@
     .section-title { fill: #2563eb; font-size: 15px; font-weight: 600; }
     .content { fill: #374151; font-size: 12px; line-height: 1.5; }
     .highlight { fill: #059669; font-size: 12px; font-weight: 500; }
-    .link { fill: #6366f1; font-size: 12px; }
+    .link { fill: #6366f1; font-size: 12px; cursor: pointer; }
+    .link:hover { fill: #818cf8; text-decoration: underline; }
     .footer { fill: #6b7280; font-size: 11px; font-style: italic; }
     .stat-label { fill: #6b7280; font-size: 11px; }
     .stat-value { fill: #1f2937; font-size: 13px; font-weight: 600; }
@@ -21,22 +22,33 @@
   <rect x="5" y="5" width="840" height="670" fill="none" stroke="#e5e7eb" stroke-width="1" rx="14"/>
 
   <!-- ═══════════════════════════════════════════════════════════════════════ -->
-  <!-- TOP SECTION: Profile Info -->
+  <!-- TOP SECTION: Profile Image + Info -->
   <!-- ═══════════════════════════════════════════════════════════════════════ -->
   <rect x="15" y="15" width="820" height="130" fill="#f9fafb" rx="10" stroke="#e5e7eb" stroke-width="1"/>
   
+  <!-- Profile Image with rounded corners -->
+  <defs>
+    <clipPath id="avatarClip">
+      <rect x="25" y="25" width="110" height="110" rx="12"/>
+    </clipPath>
+  </defs>
+  <rect x="25" y="25" width="110" height="110" fill="#e5e7eb" rx="12" stroke="#d1d5db" stroke-width="1"/>
+  <image x="25" y="25" width="110" height="110" clip-path="url(#avatarClip)"
+         xlink:href="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/refs/heads/main/profile_swadhin_biswas.jpg"
+         preserveAspectRatio="xMidYMid slice"/>
+  
   <!-- Name and Info -->
-  <text x="30" y="55" class="title">Swadhin Biswas</text>
-  <text x="30" y="77" class="subtitle">swadhin@biswas • Linux (Ubuntu/Arch)</text>
+  <text x="150" y="55" class="title">Swadhin Biswas</text>
+  <text x="150" y="77" class="subtitle">swadhin@biswas • Linux (Ubuntu/Arch)</text>
   
   <!-- Quick Stats Row -->
-  <text x="30" y="100">
+  <text x="150" y="100">
     <tspan class="stat-label">Repos: </tspan><tspan class="stat-value" id="repo_data">69</tspan>
     <tspan class="stat-label" dx="15">Stars: </tspan><tspan class="stat-value" id="star_data">147</tspan>
     <tspan class="stat-label" dx="15">Commits: </tspan><tspan class="stat-value" id="commit_data">732</tspan>
     <tspan class="stat-label" dx="15">Followers: </tspan><tspan class="stat-value" id="follower_data">66</tspan>
   </text>
-  <text x="30" y="120">
+  <text x="150" y="120">
     <tspan class="stat-label">Lines of Code: </tspan><tspan class="stat-value" id="loc_data">4,814,399</tspan>
     <tspan style="fill:#1a7f37; font-size:11px;" dx="5" id="loc_add">5,070,729</tspan><tspan style="fill:#1a7f37; font-size:11px;">++</tspan>
     <tspan style="fill:#cf222e; font-size:11px;" dx="5" id="loc_del">256,330</tspan><tspan style="fill:#cf222e; font-size:11px;">--</tspan>
@@ -101,14 +113,22 @@
   <rect x="15" y="465" width="820" height="120" fill="#f9fafb" rx="10" stroke="#e5e7eb" stroke-width="1"/>
   <text x="35" y="495" class="section-title">📬 Reach Out</text>
   
-  <!-- Contact Links -->
-  <text x="35" y="525" class="content">
-    <tspan class="link">📧 swadhinbiswas.cse@gmail.com</tspan>
-    <tspan dx="30" class="link">🌐 swadhin.my.id</tspan>
-    <tspan dx="30" class="link">💼 /in/swadh1n</tspan>
-    <tspan dx="30" class="link">🐦 @swadh1n</tspan>
-    <tspan dx="30" class="link">💬 swadh1n</tspan>
-  </text>
+  <!-- Contact Links - Clickable -->
+  <a xlink:href="mailto:swadhinbiswas.cse@gmail.com" target="_blank">
+    <text x="35" y="525" class="link">📧 swadhinbiswas.cse@gmail.com</text>
+  </a>
+  <a xlink:href="https://swadhin.my.id" target="_blank">
+    <text x="265" y="525" class="link">🌐 swadhin.my.id</text>
+  </a>
+  <a xlink:href="https://linkedin.com/in/swadh1n" target="_blank">
+    <text x="405" y="525" class="link">💼 /in/swadh1n</text>
+  </a>
+  <a xlink:href="https://x.com/swadh1n" target="_blank">
+    <text x="525" y="525" class="link">🐦 @swadh1n</text>
+  </a>
+  <a xlink:href="https://discord.com/users/swadh1n" target="_blank">
+    <text x="635" y="525" class="link">💬 swadh1n</text>
+  </a>
   
   <!-- Humorous message -->
   <text x="35" y="560" class="content" style="fill: #059669; font-style: italic;">
