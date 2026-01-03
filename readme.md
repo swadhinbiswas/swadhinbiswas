@@ -1,8 +1,4 @@
-<h1 align="center">
-  <img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/profile_swadhin_biswas.jpg" width="150" height="150" style="border-radius: 50%;" alt="Swadhin Biswas"/>
-  <br/>
-  Swadhin Biswas
-</h1>
+
 
 <p align="center">
   <a href="https://github.com/swadhinbiswas/swadhinbiswas">
@@ -34,35 +30,14 @@
 </h3>
 
 **Core Skills:**
-<p>
-  <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"/>
-  <img src="https://img.shields.io/badge/Backend-2C3E50?style=flat-square&logo=fastapi&logoColor=white" alt="Backend"/>
-  <img src="https://img.shields.io/badge/Data_Processing-FF6F00?style=flat-square&logo=pandas&logoColor=white" alt="Data"/>
-</p>
-
-- JavaScript/TypeScript (Web Development)
+- Scaleable System
+- Networking 
 - Machine Learning & Deep Learning
 - AI Agents & MCP (Model Context Protocol)
+- DevOps
+- IoT
 
-**Languages & Tools:**
-<p>
-  <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"/>
-  <img src="https://img.shields.io/badge/Rust-000000?style=flat-square&logo=rust&logoColor=white" alt="Rust"/>
-  <img src="https://img.shields.io/badge/Go-00ADD8?style=flat-square&logo=go&logoColor=white" alt="Go"/>
-  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript"/>
-  <img src="https://img.shields.io/badge/Mojo-FF6F00?style=flat-square&logo=mojo&logoColor=white" alt="Mojo"/>
-</p>
-<p>
-  <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI"/>
-  <img src="https://img.shields.io/badge/Django-092E20?style=flat-square&logo=django&logoColor=white" alt="Django"/>
-  <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React"/>
-  <img src="https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=next.js&logoColor=white" alt="Next.js"/>
-</p>
-<p>
-  <img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white" alt="PyTorch"/>
-  <img src="https://img.shields.io/badge/TensorFlow-FF6F00?style=flat-square&logo=tensorflow&logoColor=white" alt="TensorFlow"/>
-  <img src="https://img.shields.io/badge/LangChain-1C3C3C?style=flat-square&logo=langchain&logoColor=white" alt="LangChain"/>
-</p>
+
 
 </td>
 <td width="50%" valign="top">
