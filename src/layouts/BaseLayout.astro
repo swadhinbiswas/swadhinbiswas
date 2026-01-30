@@ -9,6 +9,7 @@ import GoogleAnalytics from "../components/GoogleAnalytics.astro";
 import KonamiCode from "../components/fun/KonamiCode.astro";
 import ScrollProgress from "../components/ui/ScrollProgress.astro";
 import SupportModal from "../components/ui/SupportModal.astro";
+import VercelAnalytics from "../components/VercelAnalytics.astro";
 
 interface Props {
   title?: string;
@@ -79,6 +80,12 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url);
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:creator" content="@swadh1n" />
 
+    <!-- Twitter Card (Property Fallback for some scrapers) -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content={pageTitle} />
+    <meta property="twitter:description" content={pageDescription} />
+    <meta property="twitter:image" content={ogImage} />
+
     <title>{pageTitle}</title>
     <GoogleAnalytics />
     <slot name="head" />
@@ -110,5 +117,6 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url);
       // Essential scripts can go here if needed in the future
     </script>
     <SupportModal settings={settings} />
+    <VercelAnalytics />
   </body>
 </html>

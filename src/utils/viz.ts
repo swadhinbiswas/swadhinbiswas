@@ -2,25 +2,8 @@ import { createHash } from 'crypto';
 import { uploadImage, getOptimizedUrl } from '../lib/cloudinary';
 
 // Chart.js SSR Renderer
-const width = 800;
-const height = 400;
-let chartRenderer: any = null;
-
-async function getChartRenderer() {
-    if (chartRenderer) return chartRenderer;
-    try {
-        const { ChartJSNodeCanvas } = await import('chartjs-node-canvas');
-        chartRenderer = new ChartJSNodeCanvas({
-            width,
-            height,
-            backgroundColour: 'transparent'
-        });
-        return chartRenderer;
-    } catch (e) {
-        console.warn('ChartJSNodeCanvas not available (likely not in Node env)', e);
-        return null;
-    }
-}
+// Chart.js SSR Renderer removed due to Cloudflare incompatibility
+// Using client-side rendering fallback exclusively
 
 // Helper to generate hash
 function getHash(content: string): string {
@@ -109,59 +92,21 @@ export async function processVisualizations(content: string) {
                     // Check in-memory cache first
                     if (cloudinaryCache.has(cloudinaryPublicId)) {
                         const cachedUrl = cloudinaryCache.get(cloudinaryPublicId)!;
-                        replacement = `<img src="${cachedUrl}" alt="Chart Visualization" class="w-full h-auto" loading="lazy" />`;
+                        replacement = `<img src="${cachedUrl}" alt="Chart Visualization" class="w-full h-auto max-w-[600px] mx-auto" loading="lazy" />`;
                     } else {
-                        // Try server-side rendering
-                        let renderedUrl = null;
-                        try {
-                            // Apply dark theme defaults
-                            if (!config.options) config.options = {};
-                            const textColor = '#cdd6f4';
-                            const gridColor = 'rgba(255,255,255,0.1)';
+                        // Cloudflare Pages cannot run node-canvas (requires native bindings).
+                        // Fallback purely to client-side rendering.
 
-                            config.options.plugins = config.options.plugins || {};
-                            config.options.plugins.legend = config.options.plugins.legend || {};
-                            config.options.plugins.legend.labels = config.options.plugins.legend.labels || {};
-                            config.options.plugins.legend.labels.color = textColor;
-
-                            config.options.scales = config.options.scales || {};
-                            ['x', 'y'].forEach(axis => {
-                                if (config.options.scales[axis]) {
-                                    config.options.scales[axis].ticks = config.options.scales[axis].ticks || {};
-                                    config.options.scales[axis].ticks.color = textColor;
-                                    config.options.scales[axis].grid = config.options.scales[axis].grid || {};
-                                    config.options.scales[axis].grid.color = gridColor;
-                                }
-                            });
-
-                            const renderer = await getChartRenderer();
-                            if (renderer) {
-                                const buffer = await renderer.renderToBuffer(config);
-                                const base64Data = `data:image/png;base64,${buffer.toString('base64')}`;
-                                const result = await uploadImage(base64Data, { public_id: cloudinaryPublicId, overwrite: false });
-                                if (result.success && result.url) {
-                                    cloudinaryCache.set(cloudinaryPublicId, result.url);
-                                    renderedUrl = result.url;
-                                }
-                            }
-                        } catch (e) {
-                            console.warn('Server-side chart rendering failed, falling back to client-side:', e);
-                        }
-
-                        if (renderedUrl) {
-                            replacement = `<img src="${renderedUrl}" alt="Chart Visualization" class="w-full h-auto" loading="lazy" />`;
-                        } else {
-                            // Client-side fallback
-                            const encodedConfig = encodeURIComponent(JSON.stringify(config));
-                            replacement = `<canvas class="chart-js w-full h-auto" data-config="${encodedConfig}"></canvas>`;
-                        }
+                        // Client-side fallback
+                        const encodedConfig = encodeURIComponent(JSON.stringify(config));
+                        replacement = `<canvas class="chart-js w-full h-auto max-w-[600px] mx-auto" data-config="${encodedConfig}"></canvas>`;
                     }
                 }
                 else if (type === 'flow') {
                     // Check in-memory cache first
                     if (cloudinaryCache.has(cloudinaryPublicId)) {
                         const cachedUrl = cloudinaryCache.get(cloudinaryPublicId)!;
-                        replacement = `<img src="${cachedUrl}" alt="Flow Diagram" class="w-full h-auto" loading="lazy" />`;
+                        replacement = `<img src="${cachedUrl}" alt="Flow Diagram" class="w-full h-auto max-w-[600px] mx-auto" loading="lazy" />`;
                     } else {
                         const svg = renderFlowSVG(config);
                         const svgBuffer = Buffer.from(svg);
@@ -171,7 +116,7 @@ export async function processVisualizations(content: string) {
                             const result = await uploadImage(base64Svg, { public_id: cloudinaryPublicId, overwrite: false });
                             if (result.success && result.url) {
                                 cloudinaryCache.set(cloudinaryPublicId, result.url);
-                                replacement = `<img src="${result.url}" alt="Flow Diagram" class="w-full h-auto" loading="lazy" />`;
+                                replacement = `<img src="${result.url}" alt="Flow Diagram" class="w-full h-auto max-w-[600px] mx-auto" loading="lazy" />`;
                             } else {
                                 throw new Error(result.error || 'Upload failed');
                             }

@@ -5,9 +5,10 @@ import type { APIRoute } from 'astro';
 export const prerender = false;
 
 export const GET: APIRoute = async () => {
+    const token = import.meta.env.GITHUB_TOKEN || process.env.GITHUB_TOKEN;
+    const username = import.meta.env.PUBLIC_GITHUB || process.env.PUBLIC_GITHUB || 'swadhinbiswas';
+
     try {
-        const token = import.meta.env.GITHUB_TOKEN || process.env.GITHUB_TOKEN;
-        const username = import.meta.env.PUBLIC_GITHUB || process.env.PUBLIC_GITHUB || 'swadhinbiswas';
 
         if (!token) {
             return new Response(JSON.stringify({ error: 'Missing GitHub Token' }), {
@@ -24,7 +25,8 @@ export const GET: APIRoute = async () => {
                 status: 200,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Cache-Control': 'public, max-age=43200' // 12 hours
+                    'Cache-Control': 'public, max-age=43200', // 12 hours
+                    'X-Cache': 'HIT'
                 }
             });
         }
@@ -43,7 +45,11 @@ export const GET: APIRoute = async () => {
 
         const yearsResponse = await fetch('https://api.github.com/graphql', {
             method: 'POST',
-            headers: { 'Authorization': `bearer ${token}`, 'Content-Type': 'application/json' },
+            headers: {
+                'Authorization': `bearer ${token}`,
+                'Content-Type': 'application/json',
+                'User-Agent': 'cloudflare-worker'
+            },
             body: JSON.stringify({ query: yearsQuery, variables: { username } })
         });
 
@@ -162,18 +168,49 @@ export const GET: APIRoute = async () => {
             status: 200,
             headers: {
                 'Content-Type': 'application/json',
-                'Cache-Control': 'public, max-age=3600'
+                'Cache-Control': 'public, max-age=3600',
+                'X-Cache': 'MISS'
             }
         });
 
     } catch (error: any) {
         console.error('GitHub API error:', error);
-        return new Response(JSON.stringify({
-            error: 'Failed to fetch GitHub contributions',
-            details: error.message
-        }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' }
+
+        // Fallback: Try to serve stale cache to avoid empty UI
+        const cacheKey = `github_stats_${username || 'swadhinbiswas'}`;
+        const cached = await getCachedData(cacheKey);
+        if (cached) {
+            return new Response(JSON.stringify(cached), {
+                status: 200,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'public, max-age=60',
+                    'X-Cache': 'STALE'
+                }
+            });
+        }
+
+        // Return fallback data instead of crashing
+        const fallbackData = {
+            totalContributions: 0,
+            lifetimeContributions: 0,
+            weeks: [],
+            last7Days: [],
+            breakdown: {
+                commits: 0,
+                issues: 0,
+                prs: 0,
+                reviews: 0
+            },
+            error: error.message // Include error for debugging if needed
+        };
+
+        return new Response(JSON.stringify(fallbackData), {
+            status: 200, // Return 200 to prevent UI crash
+            headers: {
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-store'
+            }
         });
     }
 };

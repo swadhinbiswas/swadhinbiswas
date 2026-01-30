@@ -126,7 +126,7 @@ export default function FloatingPet() {
 
     const fetchWeather = useCallback(async () => {
         try {
-            const ipRes = await fetch('http://ip-api.com/json/?fields=lat,lon,city');
+            const ipRes = await fetch('/api/location');
             const ipData = await ipRes.json();
             const { lat, lon, city } = ipData;
             if (!lat || !lon) throw new Error('No location');
@@ -309,8 +309,8 @@ export default function FloatingPet() {
             timeRef.current = t / 1000;
 
             const idleTime = Date.now() - lastInteract.current;
-            // Sleep if idle for long (but teleport might interrupt, which is fine)
-            if (actionRef.current === 'idle' && idleTime > 20000) {
+            // Sleep if idle for long (60s)
+            if (actionRef.current === 'idle' && idleTime > 60000) {
                 setAction('sleeping');
                 setEmotion('sleepy');
                 showQuote('sleeping');
@@ -343,10 +343,21 @@ export default function FloatingPet() {
         return () => cancelAnimationFrame(frameRef.current);
     }, [isDragging]);
 
-    // Mouse Tracking
+    // Mouse & Scroll Tracking
     useEffect(() => {
+        const handleInteract = () => {
+            lastInteract.current = Date.now();
+            if (actionRef.current === 'sleeping') {
+                setAction('idle');
+                setEmotion('curious');
+                showQuote('curious', "Oh, we're moving!");
+            }
+        };
+
         const handleMove = (e: MouseEvent) => {
             if (!petRef.current) return;
+            handleInteract(); // Treat move as interaction
+
             const rect = petRef.current.getBoundingClientRect();
             const cx = rect.left + rect.width / 2;
             const cy = rect.top + rect.height / 2;
@@ -359,9 +370,14 @@ export default function FloatingPet() {
                 setPos({ x: e.clientX, y: e.clientY });
             }
         };
+
         window.addEventListener('mousemove', handleMove);
-        return () => window.removeEventListener('mousemove', handleMove);
-    }, [isDragging]);
+        window.addEventListener('scroll', handleInteract);
+        return () => {
+            window.removeEventListener('mousemove', handleMove);
+            window.removeEventListener('scroll', handleInteract);
+        };
+    }, [isDragging, showQuote]);
 
     // Hover/Drag Handlers
     const handleMouseDown = () => {

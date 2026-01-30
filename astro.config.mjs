@@ -6,14 +6,14 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
-import cloudflare from '@astrojs/cloudflare';
+import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://swadhin.cv/',
   output: 'server', // Enable SSR for admin routes and API endpoints
-  adapter: cloudflare({
-    imageService: 'cloudflare',
+  adapter: vercel({
+    imageService: true,
   }),
   integrations: [
     mdx({
@@ -28,12 +28,12 @@ export default defineConfig({
     define: {
       __dirname: '""',
     },
-    ssr: {
-      external: ['chartjs-node-canvas', 'canvas', 'node:fs', 'node:path', 'node:crypto', 'crypto', 'fs', 'path'],
+    css: {
+      devSourcemap: false,
     },
-    optimizeDeps: {
-      exclude: ['chartjs-node-canvas', 'canvas']
-    }
+    build: {
+      sourcemap: false,
+    },
   },
   markdown: {
     shikiConfig: {

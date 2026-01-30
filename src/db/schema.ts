@@ -86,6 +86,8 @@ export const achievements = sqliteTable('achievements', {
   name: text('name').notNull(),
   icon: text('icon').notNull(),
   description: text('description').notNull(),
+  url: text('url'), // Optional link to certificate/proof
+  image: text('image'), // Optional preview image
   order: integer('order').default(0),
   createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
   updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),

@@ -12,6 +12,7 @@ import {
   skills,
   bioContent,
   siteSettings,
+  achievements,
 } from "../db";
 
 // Fetch data
@@ -21,8 +22,10 @@ const [
   publicationsList,
   interestsList,
   skillsList,
+
   bioData,
   settingsData,
+  achievementsList,
 ] = await Promise.all([
   db.select().from(experiences).orderBy(experiences.order),
   db.select().from(education).orderBy(education.order),
@@ -31,6 +34,7 @@ const [
   db.select().from(skills).orderBy(skills.order),
   db.select().from(bioContent),
   db.select().from(siteSettings),
+  db.select().from(achievements).orderBy(achievements.order),
 ]);
 
 // Helper maps
@@ -322,7 +326,7 @@ function formatDate(dateString: string): string {
 
         <!-- Achievements Section -->
         {
-          siteConfig.achievements && siteConfig.achievements.length > 0 && (
+          achievementsList.length > 0 && (
             <section>
               <h2 class="text-xl font-semibold text-text mb-6 flex items-center gap-2">
                 <svg
@@ -341,23 +345,53 @@ function formatDate(dateString: string): string {
                 Achievements
               </h2>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {siteConfig.achievements.map((item) => (
-                  <div class="bg-mantle border border-surface0/50 rounded-2xl p-4 hover:border-yellow/30 transition-colors flex flex-col gap-3">
+                {achievementsList.map((item) => (
+                  <div class="group relative bg-mantle border border-surface0/50 rounded-2xl p-4 hover:border-yellow/30 transition-all duration-300 hover:-translate-y-1 flex flex-col gap-3">
+                    {item.url && (
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="absolute inset-0 z-10"
+                        aria-label={`View ${item.name}`}
+                      />
+                    )}
+
                     <div class="flex items-start gap-4">
                       <div class="text-2xl flex-shrink-0">{item.icon}</div>
                       <div>
-                        <h3 class="font-bold text-text text-sm">{item.name}</h3>
+                        <div class="flex items-center gap-2">
+                          <h3 class="font-bold text-text text-sm group-hover:text-yellow transition-colors">
+                            {item.name}
+                          </h3>
+                          {item.url && (
+                            <svg
+                              class="w-3 h-3 text-subtext0 group-hover:text-yellow transition-colors"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                              />
+                            </svg>
+                          )}
+                        </div>
                         <p class="text-xs text-subtext0 mt-1">
                           {item.description}
                         </p>
                       </div>
                     </div>
+
                     {item.image && (
-                      <div class="rounded-lg overflow-hidden mt-1 border border-surface0/50">
+                      <div class="rounded-lg overflow-hidden mt-1 border border-surface0/50 relative aspect-video">
                         <img
                           src={item.image}
                           alt={item.name}
-                          class="w-full h-32 object-cover hover:scale-105 transition-transform duration-500"
+                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       </div>
                     )}

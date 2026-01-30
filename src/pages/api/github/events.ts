@@ -47,7 +47,8 @@ export const GET: APIRoute = async () => {
                 status: 200,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Cache-Control': 'public, max-age=600' // 10 minutes
+                    'Cache-Control': 'public, max-age=600',
+                    'X-Cache': 'HIT'
                 }
             });
         }
@@ -57,7 +58,8 @@ export const GET: APIRoute = async () => {
         const response = await fetch(`https://api.github.com/users/${username}/events?per_page=6`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
-                'Accept': 'application/vnd.github.v3+json'
+                'Accept': 'application/vnd.github.v3+json',
+                'User-Agent': 'cloudflare-worker'
             }
         });
 
@@ -140,15 +142,43 @@ export const GET: APIRoute = async () => {
             status: 200,
             headers: {
                 'Content-Type': 'application/json',
-                'Cache-Control': 'public, max-age=600'
+                'Cache-Control': 'public, max-age=600',
+                'X-Cache': 'MISS'
             }
         });
 
     } catch (error: any) {
         console.error('Events API error:', error);
-        return new Response(JSON.stringify({ error: 'Failed to fetch events', details: error.message }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' }
+
+        // Fallback: Try to serve stale cache to avoid empty UI
+        const cacheKey = `github_events_${import.meta.env.PUBLIC_GITHUB || 'swadhinbiswas'}`;
+        const cached = await getCachedData(cacheKey);
+        if (cached) {
+            return new Response(JSON.stringify(cached), {
+                status: 200,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'public, max-age=60',
+                    'X-Cache': 'STALE'
+                }
+            });
+        }
+
+        return new Response(JSON.stringify({
+            commits: [{
+                message: 'Unable to load recent activity',
+                repo: 'system',
+                time: 'now',
+                url: '#',
+                hash: 'error',
+                verified: false
+            }]
+        }), {
+            status: 200, // Return 200 so frontend doesn't crash
+            headers: {
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-store'
+            }
         });
     }
 };
