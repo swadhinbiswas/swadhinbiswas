@@ -1,0 +1,329 @@
+---
+export const prerender = false;
+
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, siteSettings } from "../../db";
+
+// Fetch current settings
+let settings: Record<string, string> = {};
+try {
+  const data = await db.select().from(siteSettings);
+  data.forEach((s) => {
+    settings[s.key] = s.value;
+  });
+} catch (error) {
+  console.error("Fetch settings error:", error);
+}
+---
+
+<AdminLayout title="Site Settings">
+  <div class="space-y-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-white">Site Settings</h1>
+        <p class="text-gray-400 mt-2">
+          Configure your portfolio's basic information
+        </p>
+      </div>
+    </div>
+
+    <form id="settingsForm" class="space-y-8">
+      <!-- Basic Info -->
+      <div class="glass-panel rounded-xl p-6 border border-white/10 space-y-6">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <span>📋</span> Basic Information
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Site Name</label>
+            <input
+              type="text"
+              name="site_name"
+              value={settings.site_name || ""}
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+              placeholder="Your Name"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Site URL</label>
+            <input
+              type="url"
+              name="site_url"
+              value={settings.site_url || ""}
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+              placeholder="https://yoursite.com"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2"
+            >Site Description</label
+          >
+          <textarea
+            name="site_description"
+            rows="3"
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors resize-none"
+            placeholder="A brief description of your portfolio"
+            >{settings.site_description || ""}</textarea
+          >
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Author Name</label>
+            <input
+              type="text"
+              name="author"
+              value={settings.author || ""}
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+              placeholder="Your Full Name"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={settings.email || ""}
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+              placeholder="you@example.com"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Location</label>
+            <input
+              type="text"
+              name="location"
+              value={settings.location || ""}
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+              placeholder="City, Country"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Timezone</label>
+            <input
+              type="text"
+              name="timezone"
+              value={settings.timezone || ""}
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+              placeholder="Asia/Dhaka"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- SEO Settings -->
+      <div class="glass-panel rounded-xl p-6 border border-white/10 space-y-6">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <span>🔍</span> SEO Settings
+        </h2>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">SEO Title</label>
+          <input
+            type="text"
+            name="seo_title"
+            value={settings.seo_title || ""}
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="Backend Engineer & AI Systems Architect"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2"
+            >SEO Keywords (comma-separated)</label
+          >
+          <textarea
+            name="seo_keywords"
+            rows="2"
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors resize-none"
+            placeholder="developer, engineer, python, ai, web development"
+            >{settings.seo_keywords || ""}</textarea
+          >
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2"
+              >Works For (Company)</label
+            >
+            <input
+              type="text"
+              name="works_for_name"
+              value={settings.works_for_name || ""}
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+              placeholder="Company Name"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-400 mb-2"
+              >Works For (URL)</label
+            >
+            <input
+              type="url"
+              name="works_for_url"
+              value={settings.works_for_url || ""}
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+              placeholder="https://company.com"
+            />
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <!-- Support & Donation Settings -->
+    <div class="glass-panel rounded-xl p-6 border border-white/10 space-y-6">
+      <h2 class="text-xl font-bold text-white flex items-center gap-2">
+        <span>☕</span> Support & Donation
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm text-gray-400 mb-2"
+            >Buy Me A Coffee Link</label
+          >
+          <input
+            type="url"
+            name="support_bmc"
+            value={settings.support_bmc || ""}
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="https://buymeacoffee.com/username"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2"
+            >Support Kori Link</label
+          >
+          <input
+            type="url"
+            name="support_kori"
+            value={settings.support_kori || ""}
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="https://www.supportkori.com/"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Ko-fi Link</label>
+          <input
+            type="url"
+            name="support_kori"
+            value={settings.support_kofi || ""}
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="https://ko-fi.com/username"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2"
+            >Binance Wallet (BNB/BEP20)</label
+          >
+          <input
+            type="text"
+            name="wallet_bnb"
+            value={settings.wallet_bnb || ""}
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="0x..."
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2"
+            >Uniswap Wallet (ETH/ERC20)</label
+          >
+          <input
+            type="text"
+            name="wallet_eth"
+            value={settings.wallet_eth || ""}
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="0x..."
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics -->
+    <div class="glass-panel rounded-xl p-6 border border-white/10 space-y-6">
+      <h2 class="text-xl font-bold text-white flex items-center gap-2">
+        <span>📊</span> Analytics
+      </h2>
+
+      <div>
+        <label class="block text-sm text-gray-400 mb-2"
+          >Google Analytics ID</label
+        >
+        <input
+          type="text"
+          name="ga_id"
+          value={settings.ga_id || ""}
+          class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+          placeholder="G-XXXXXXXXXX"
+        />
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="flex items-center justify-between">
+      <div id="statusMessage" class="text-sm"></div>
+      <button
+        type="submit"
+        class="px-6 py-3 bg-neon-cyan text-black font-bold rounded-lg hover:bg-neon-cyan/90 transition-colors"
+      >
+        Save Settings
+      </button>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  const form = document.getElementById("settingsForm") as HTMLFormElement;
+  const statusMessage = document.getElementById(
+    "statusMessage",
+  ) as HTMLDivElement;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const settings: Record<string, string> = {};
+
+    formData.forEach((value, key) => {
+      settings[key] = value.toString();
+    });
+
+    try {
+      const response = await fetch("/api/admin/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ settings }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        statusMessage.textContent = "✅ Settings saved successfully!";
+        statusMessage.className = "text-sm text-green-400";
+      } else {
+        statusMessage.textContent = "❌ " + (result.error || "Failed to save");
+        statusMessage.className = "text-sm text-red-400";
+      }
+    } catch (error) {
+      statusMessage.textContent = "❌ Network error";
+      statusMessage.className = "text-sm text-red-400";
+    }
+
+    setTimeout(() => {
+      statusMessage.textContent = "";
+    }, 3000);
+  });
+</script>

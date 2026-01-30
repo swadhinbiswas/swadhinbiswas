@@ -1,0 +1,264 @@
+@import "tailwindcss";
+
+@theme {
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Default theme (Catppuccin Mocha) */
+  --color-rosewater: #f5e0dc;
+  --color-flamingo: #f2cdcd;
+  --color-pink: #f5c2e7;
+  --color-mauve: #cba6f7;
+  --color-red: #f38ba8;
+  --color-maroon: #eba0ac;
+  --color-peach: #fab387;
+  --color-yellow: #f9e2af;
+  --color-green: #a6e3a1;
+  --color-teal: #94e2d5;
+  --color-sky: #89dceb;
+  --color-sapphire: #74c7ec;
+  --color-blue: #89b4fa;
+  --color-lavender: #b4befe;
+  --color-text: #cdd6f4;
+  --color-subtext1: #bac2de;
+  --color-subtext0: #a6adc8;
+  --color-overlay2: #9399b2;
+  --color-overlay1: #7f849c;
+  --color-overlay0: #6c7086;
+  --color-surface2: #585b70;
+  --color-surface1: #45475a;
+  --color-surface0: #313244;
+  --color-base: #1e1e2e;
+  --color-mantle: #181825;
+  --color-crust: #11111b;
+
+  /* Semantic Mappings - Watercolor / Soft */
+  --color-void-black: var(--color-crust);
+  --color-neon-cyan: #b4befe;
+  /* Using Lavender instead of Cyan */
+  --color-electric-purple: #cba6f7;
+  /* Using Soft Mauve */
+  --color-glass-border: rgba(255, 255, 255, 0.05);
+  --color-glass-surface: rgba(30, 30, 46, 0.4);
+  /* Very translucent */
+}
+
+/* Theme Definitions */
+@layer base {
+
+  /* Rose Pine Theme (Soft) */
+  [data-theme="rose-pine"] {
+    --color-rosewater: #ebbcba;
+    --color-flamingo: #eb6f92;
+    --color-pink: #c4a7e7;
+    --color-mauve: #c4a7e7;
+    --color-red: #eb6f92;
+    --color-maroon: #eb6f92;
+    --color-peach: #f6c177;
+    --color-yellow: #f6c177;
+    --color-green: #31748f;
+    --color-teal: #9ccfd8;
+    --color-sky: #9ccfd8;
+    --color-sapphire: #31748f;
+    --color-blue: #31748f;
+    --color-lavender: #c4a7e7;
+    --color-text: #e0def4;
+    --color-subtext1: #908caa;
+    --color-subtext0: #6e6a86;
+    --color-overlay2: #26233a;
+    --color-overlay1: #1f1d2e;
+    --color-overlay0: #191724;
+    --color-surface2: #26233a;
+    --color-surface1: #1f1d2e;
+    --color-surface0: #191724;
+    --color-base: #191724;
+    --color-mantle: #1f1d2e;
+    --color-crust: #191724;
+
+    /* Semantic Redefinitions - Soft */
+    --color-void-black: #191724;
+    --color-neon-cyan: #c4a7e7;
+    /* Iris (Lavender) */
+    --color-electric-purple: #ebbcba;
+    /* Rose */
+    --color-glass-border: rgba(255, 255, 255, 0.05);
+    --color-glass-surface: rgba(25, 23, 36, 0.4);
+  }
+}
+
+@layer base {
+  @font-face {
+    font-family: 'JetBrains Mono';
+    src: url('https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.0.0/files/jetbrains-mono-latin-400-normal.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'JetBrains Mono';
+    src: url('https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.0.0/files/jetbrains-mono-latin-700-normal.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  html {
+    font-family: var(--font-mono);
+    background-color: var(--color-crust);
+    color: var(--color-text);
+    scroll-behavior: smooth;
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
+
+  body {
+    @apply antialiased min-h-screen relative overflow-x-hidden;
+    /* Default Background (Catppuccin) - Soft/Muted */
+    background-image:
+      radial-gradient(circle at 50% 0%, rgba(203, 166, 247, 0.05), transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(180, 190, 254, 0.05), transparent 30%);
+    transition: background-image 0.5s ease;
+  }
+
+  /* Rose Pine Background Override - Soft/Muted */
+  [data-theme="rose-pine"] body {
+    background-image:
+      radial-gradient(circle at 50% 0%, rgba(196, 167, 231, 0.05), transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(235, 188, 186, 0.05), transparent 30%);
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-void-black;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-surface1 rounded-full border-2 border-void-black;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-surface2;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply backdrop-blur-md border border-glass-border bg-glass-surface shadow-lg;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+
+  /* Soft Glow - No Neon */
+  .text-glow {
+    text-shadow: 0 0 10px rgba(180, 190, 254, 0.3);
+    /* Lavender glow */
+  }
+
+  .text-glow-purple {
+    text-shadow: 0 0 10px rgba(203, 166, 247, 0.3);
+    /* Mauve glow */
+  }
+}
+
+/* Prose Styles for Code and Tables */
+@layer base {
+  .prose pre {
+    background-color: var(--color-surface0);
+    border: 1px solid var(--color-surface1);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+
+  .prose pre code {
+    background-color: transparent;
+    padding: 0;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: var(--color-text);
+  }
+
+  .prose code {
+    background-color: var(--color-surface0);
+    color: var(--color-pink);
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+    font-weight: 400;
+  }
+
+  .prose code::before,
+  .prose code::after {
+    content: "";
+  }
+
+  .prose table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+  }
+
+  .prose thead {
+    border-bottom: 2px solid var(--color-surface1);
+  }
+
+  .prose th {
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .prose tbody tr {
+    border-bottom: 1px solid var(--color-surface0);
+  }
+
+  .prose td {
+    padding: 0.75rem;
+    color: var(--color-subtext0);
+  }
+
+  .prose blockquote {
+    border-left: 4px solid var(--color-mauve);
+    padding-left: 1rem;
+    color: var(--color-subtext1);
+    font-style: italic;
+    margin: 1.5rem 0;
+  }
+
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4 {
+    color: var(--color-text);
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .prose p {
+    margin: 1rem 0;
+    line-height: 1.8;
+  }
+
+  .prose a {
+    color: var(--color-sky);
+  }
+
+  .prose a:hover {
+    color: var(--color-sapphire);
+  }
+
+  .prose ul,
+  .prose ol {
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .prose li {
+    margin: 0.5rem 0;
+  }
+}

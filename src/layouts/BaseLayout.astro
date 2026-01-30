@@ -1,0 +1,114 @@
+---
+import "../styles/global.css";
+import "katex/dist/katex.min.css";
+import { siteConfig } from "../config/site";
+import Header from "../components/layout/Header.astro";
+import Footer from "../components/layout/Footer.astro";
+import FloatingPet from "../components/fun/FloatingPet";
+import GoogleAnalytics from "../components/GoogleAnalytics.astro";
+import KonamiCode from "../components/fun/KonamiCode.astro";
+import ScrollProgress from "../components/ui/ScrollProgress.astro";
+import SupportModal from "../components/ui/SupportModal.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+// Fetch settings for global components (like SupportModal)
+import { db, siteSettings, supportOptions } from "../db";
+import { asc } from "drizzle-orm";
+
+let settings: Record<string, string> = {};
+let options: any[] = [];
+
+try {
+  const data = await db.select().from(siteSettings);
+  settings = data.reduce(
+    (acc, curr) => {
+      acc[curr.key] = curr.value;
+      return acc;
+    },
+    {} as Record<string, string>,
+  );
+
+  // Fetch dynamic support options
+  options = await db
+    .select()
+    .from(supportOptions)
+    .orderBy(asc(supportOptions.order));
+} catch (e) {
+  // console.error("Failed to fetch settings in BaseLayout", e);
+}
+
+const { title, description, image } = Astro.props;
+const pageTitle = title ? `${title} | ${siteConfig.name}` : siteConfig.name;
+const pageDescription = description || siteConfig.description;
+const ogImage = image || `${siteConfig.url}/og-image.png`;
+const canonicalURL = new URL(Astro.url.pathname, siteConfig.url);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={pageDescription} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- SEO Meta Tags -->
+    <meta name="author" content={siteConfig.author} />
+    <meta name="keywords" content={siteConfig.seo.keywords.join(", ")} />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content={siteConfig.name} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:creator" content="@swadh1n" />
+
+    <title>{pageTitle}</title>
+    <GoogleAnalytics />
+    <slot name="head" />
+  </head>
+  <body
+    class="min-h-screen flex flex-col font-mono text-white overflow-x-hidden selection:bg-neon-cyan selection:text-void-black"
+  >
+    <div
+      id="app-content"
+      class="transition-transform duration-[2000ms] ease-in-out"
+    >
+      <div
+        class="fixed inset-0 z-[-1] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-[#050510] to-[#050510]"
+      >
+      </div>
+      <Header />
+      <main
+        class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-8 relative z-10"
+      >
+        <slot />
+      </main>
+      <FloatingPet client:idle />
+      <Footer />
+    </div>
+    <KonamiCode />
+    <ScrollProgress />
+
+    <script>
+      // Essential scripts can go here if needed in the future
+    </script>
+    <SupportModal settings={settings} />
+  </body>
+</html>

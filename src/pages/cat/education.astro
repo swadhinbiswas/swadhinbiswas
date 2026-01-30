@@ -1,0 +1,336 @@
+---
+export const prerender = false;
+
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, education } from "../../db";
+
+let educationList: (typeof education.$inferSelect)[] = [];
+try {
+    educationList = await db.select().from(education).orderBy(education.order);
+} catch (error) {
+    console.error("Fetch education error:", error);
+}
+
+function formatDate(dateString: string | null): string {
+    if (!dateString) return "Present";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+        month: "short",
+        year: "numeric",
+    });
+}
+---
+
+<AdminLayout title="Education">
+    <div class="space-y-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-white">Education</h1>
+                <p class="text-gray-400 mt-2">
+                    Manage your educational background
+                </p>
+            </div>
+            <button
+                id="addBtn"
+                class="px-4 py-2 bg-neon-cyan text-black font-bold rounded-lg hover:bg-neon-cyan/90 transition-colors"
+            >
+                + Add Education
+            </button>
+        </div>
+
+        <!-- Education List -->
+        <div id="educationList" class="space-y-4">
+            {
+                educationList.map((edu) => (
+                    <div
+                        class="education-item glass-panel rounded-xl p-4 border border-white/10"
+                        data-id={edu.id}
+                    >
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start gap-4">
+                                <div class="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center overflow-hidden">
+                                    <span class="text-2xl font-bold text-neon-cyan">
+                                        🎓
+                                    </span>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-white text-lg">
+                                        {edu.institution}
+                                    </div>
+                                    <div class="text-gray-400">
+                                        {edu.degree}
+                                    </div>
+                                    <div class="text-sm text-electric-purple mt-1">
+                                        {formatDate(edu.startDate)} -{" "}
+                                        {edu.endDate
+                                            ? formatDate(edu.endDate)
+                                            : "Present"}
+                                    </div>
+                                    {edu.details && (
+                                        <p class="text-sm text-gray-500 mt-2 max-w-lg">
+                                            {edu.details}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button
+                                    class="edit-btn px-3 py-1 text-sm bg-white/5 hover:bg-white/10 border border-white/10 rounded transition-colors"
+                                    data-education={JSON.stringify(edu)}
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    class="delete-btn px-3 py-1 text-sm bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded transition-colors"
+                                    data-id={edu.id}
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ))
+            }
+
+            {
+                educationList.length === 0 && (
+                    <div class="text-center text-gray-500 py-12">
+                        No education entries yet. Click "Add Education" to
+                        create one.
+                    </div>
+                )
+            }
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div
+        id="modal"
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 overflow-y-auto"
+    >
+        <div
+            class="glass-panel rounded-2xl p-6 w-full max-w-lg border border-white/10 m-4 my-8"
+        >
+            <h2 id="modalTitle" class="text-xl font-bold text-white mb-6">
+                Add Education
+            </h2>
+
+            <form id="educationForm" class="space-y-4">
+                <input type="hidden" name="id" />
+
+                <div class="grid grid-cols-1 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2"
+                            >Institution</label
+                        >
+                        <input
+                            type="text"
+                            name="institution"
+                            required
+                            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+                            placeholder="University Name"
+                        />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2"
+                            >Degree</label
+                        >
+                        <input
+                            type="text"
+                            name="degree"
+                            required
+                            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+                            placeholder="e.g. B.Sc. in Computer Science"
+                        />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2"
+                            >Start Date</label
+                        >
+                        <input
+                            type="date"
+                            name="startDate"
+                            required
+                            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-cyan/50 transition-colors"
+                        />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2"
+                            >End Date (leave empty if current)</label
+                        >
+                        <input
+                            type="date"
+                            name="endDate"
+                            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-cyan/50 transition-colors"
+                        />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2"
+                        >Details / Coursework</label
+                    >
+                    <textarea
+                        name="details"
+                        rows="3"
+                        class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors resize-none"
+                        placeholder="Relevant coursework, honors, etc."
+                    ></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2">Order</label
+                    >
+                    <input
+                        type="number"
+                        name="order"
+                        value="0"
+                        class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+                    />
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-4">
+                    <button
+                        type="button"
+                        id="cancelBtn"
+                        class="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        class="px-6 py-2 bg-neon-cyan text-black font-bold rounded-lg hover:bg-neon-cyan/90 transition-colors"
+                    >
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</AdminLayout>
+
+<script>
+    const modal = document.getElementById("modal") as HTMLDivElement;
+    const modalTitle = document.getElementById(
+        "modalTitle",
+    ) as HTMLHeadingElement;
+    const form = document.getElementById("educationForm") as HTMLFormElement;
+    const addBtn = document.getElementById("addBtn") as HTMLButtonElement;
+    const cancelBtn = document.getElementById("cancelBtn") as HTMLButtonElement;
+
+    let isEditing = false;
+
+    function openModal(editing = false, data: any = null) {
+        isEditing = editing;
+        modalTitle.textContent = editing ? "Edit Education" : "Add Education";
+
+        if (data) {
+            (form.elements.namedItem("id") as HTMLInputElement).value = data.id;
+            (form.elements.namedItem("institution") as HTMLInputElement).value =
+                data.institution;
+            (form.elements.namedItem("degree") as HTMLInputElement).value =
+                data.degree;
+            (form.elements.namedItem("startDate") as HTMLInputElement).value =
+                data.startDate?.split("T")[0] || "";
+            (form.elements.namedItem("endDate") as HTMLInputElement).value =
+                data.endDate?.split("T")[0] || "";
+            (form.elements.namedItem("details") as HTMLTextAreaElement).value =
+                data.details || "";
+            (form.elements.namedItem("order") as HTMLInputElement).value =
+                data.order || "0";
+        } else {
+            form.reset();
+        }
+
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+    }
+
+    function closeModal() {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+        form.reset();
+    }
+
+    addBtn.addEventListener("click", () => openModal(false));
+    cancelBtn.addEventListener("click", closeModal);
+
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeModal();
+    });
+
+    // Edit buttons
+    document.querySelectorAll(".edit-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const data = JSON.parse(
+                (btn as HTMLButtonElement).dataset.education || "{}",
+            );
+            openModal(true, data);
+        });
+    });
+
+    // Delete buttons
+    document.querySelectorAll(".delete-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+            if (
+                !confirm(
+                    "Are you sure you want to delete this education entry?",
+                )
+            )
+                return;
+
+            const id = parseInt((btn as HTMLButtonElement).dataset.id || "0");
+
+            try {
+                const response = await fetch("/api/admin/education", {
+                    method: "DELETE",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id }),
+                });
+
+                if (response.ok) {
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.error("Delete error:", error);
+            }
+        });
+    });
+
+    // Form submit
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        const data = {
+            id: formData.get("id")
+                ? parseInt(formData.get("id") as string)
+                : undefined,
+            institution: formData.get("institution"),
+            degree: formData.get("degree"),
+            startDate: formData.get("startDate"),
+            endDate: formData.get("endDate") || null,
+            details: formData.get("details") || null,
+            order: parseInt(formData.get("order") as string) || 0,
+        };
+
+        try {
+            const response = await fetch("/api/admin/education", {
+                method: isEditing ? "PUT" : "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error("Save error:", error);
+        }
+    });
+</script>

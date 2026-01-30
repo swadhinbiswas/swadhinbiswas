@@ -1,0 +1,89 @@
+---
+import { siteConfig } from '../../config/site';
+
+// Get experience data
+const experiences = siteConfig.experience;
+
+// Format date
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+}
+---
+
+<section class="space-y-6">
+  <h2 class="text-3xl font-bold font-mono text-white flex items-center gap-3">
+    <span class="text-neon-cyan">></span>
+    <span>Experience_Log</span>
+    <span class="animate-pulse text-electric-purple">_</span>
+  </h2>
+  
+  <!-- Experience Row - Horizontal on desktop, vertical on mobile -->
+  <div class="experience-row flex flex-col md:flex-row gap-4">
+    {experiences.map((exp, i) => (
+      <a
+        href={exp.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group flex-1 flex items-center gap-4 p-4 glass-panel rounded-xl hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] transition-all duration-300"
+      >
+        <!-- Company Logo -->
+        <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-white/5 overflow-hidden flex items-center justify-center border border-glass-border">
+          {exp.logoUrl ? (
+            <img 
+              src={exp.logoUrl} 
+              alt={exp.company}
+              class="w-full h-full object-cover"
+              loading="lazy"
+            />
+          ) : (
+            <span class="text-2xl font-bold text-neon-cyan font-mono">
+              {exp.company.charAt(0)}
+            </span>
+          )}
+        </div>
+        
+        <!-- Details -->
+        <div class="flex-1 min-w-0">
+          <h3 class="text-sm font-semibold text-white group-hover:text-neon-cyan transition-colors truncate font-mono">
+            {exp.role}
+          </h3>
+          <p class="text-xs text-gray-400 truncate font-mono">
+            @{exp.company}
+          </p>
+          <p class="text-[10px] text-electric-purple mt-1 font-mono">
+            {formatDate(exp.startDate)} - {exp.endDate ? formatDate(exp.endDate) : 'Present'}
+          </p>
+        </div>
+        
+        <!-- Arrow -->
+        <svg class="w-4 h-4 text-gray-500 group-hover:text-neon-cyan transition-colors flex-shrink-0 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style>
+  .experience-row {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .experience-row > a {
+    scroll-snap-align: start;
+  }
+  
+  @media (max-width: 768px) {
+    .experience-row {
+      overflow-x: auto;
+      flex-direction: row;
+      padding-bottom: 0.5rem;
+    }
+    
+    .experience-row > a {
+      min-width: 280px;
+    }
+  }
+</style>

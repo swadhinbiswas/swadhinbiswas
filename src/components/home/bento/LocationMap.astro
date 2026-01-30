@@ -1,0 +1,174 @@
+---
+import { siteConfig } from "../../../config/site";
+---
+
+<div class="h-full flex flex-col relative group">
+  <!-- Header -->
+  <div
+    class="absolute top-0 left-0 right-0 z-[400] p-4 pointer-events-none bg-gradient-to-b from-base/80 to-transparent"
+  >
+    <h3 class="text-xs font-mono text-gray-300 flex items-center gap-2">
+      <span class="relative flex h-2 w-2">
+        <span
+          class="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-cyan opacity-75"
+        ></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-neon-cyan"
+        ></span>
+      </span>
+      {siteConfig.location}
+    </h3>
+  </div>
+
+  <!-- Map Container -->
+  <div id="leaflet-map" class="flex-1 w-full h-full bg-[#1a1a1a] relative z-0">
+  </div>
+
+  <!-- Footer Time -->
+  <div
+    class="absolute bottom-0 left-0 right-0 z-[400] p-3 px-4 flex items-center justify-between text-[10px] bg-gradient-to-t from-base/90 to-transparent"
+  >
+    <span class="text-gray-400 font-mono">Local Time</span>
+    <span class="text-electric-purple font-mono" id="dhaka-time">--:--:--</span>
+  </div>
+
+  <!-- Leaflet CSS & JS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <script
+    is:inline
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+</div>
+
+<style>
+  /* Custom Marker Styles */
+  :global(.custom-pin) {
+    background: transparent;
+    border: none;
+  }
+  :global(.pin-inner) {
+    width: 12px;
+    height: 12px;
+    background-color: var(--color-neon-cyan);
+    border: 2px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--color-neon-cyan);
+    position: relative;
+  }
+  :global(.pin-pulse) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    background-color: var(--color-neon-cyan);
+    border-radius: 50%;
+    opacity: 0;
+    animation: map-pulse 2s infinite;
+    pointer-events: none;
+  }
+  @keyframes map-pulse {
+    0% {
+      transform: translate(-50%, -50%) scale(0.1);
+      opacity: 0.5;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0;
+    }
+  }
+  /* Dark Map Overrides */
+  :global(.leaflet-control-attribution) {
+    background: rgba(0, 0, 0, 0.5) !important;
+    color: #666 !important;
+    font-family: monospace !important;
+    font-size: 8px !important;
+  }
+  :global(.leaflet-control-attribution a) {
+    color: #888 !important;
+  }
+</style>
+
+<script>
+  function initMap() {
+    const mapContainer = document.getElementById("leaflet-map");
+    // @ts-ignore
+    if (!mapContainer || typeof L === "undefined") {
+      setTimeout(initMap, 100);
+      return;
+    }
+
+    // Coordinates for Dhaka
+    const lat = 23.8041;
+    const lng = 90.4152;
+
+    // @ts-ignore
+    const map = L.map("leaflet-map", {
+      center: [lat, lng],
+      zoom: 12,
+      zoomControl: false, // minimalist
+      attributionControl: true,
+      scrollWheelZoom: "center", // prevent interfering with page scroll
+    });
+
+    // Dark Matter Tiles
+    // @ts-ignore
+    L.tileLayer(
+      "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+      {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: "abcd",
+        maxZoom: 20,
+      },
+    ).addTo(map);
+
+    // Custom Icon
+    // @ts-ignore
+    const icon = L.divIcon({
+      className: "custom-pin",
+      html: `<div class="pin-pulse"></div><div class="pin-inner"></div>`,
+      iconSize: [40, 40],
+      iconAnchor: [20, 20],
+    });
+
+    // @ts-ignore
+    L.marker([lat, lng], { icon: icon }).addTo(map);
+
+    // Disable dragging on mobile to prevent scroll trap, maybe allow on Click?
+    // For bento grid, standard behavior is usually ok if scrollWheelZoom is handled.
+  }
+
+  // Time
+  function updateTime() {
+    const now = new Date();
+    const dhakaTime = now.toLocaleTimeString("en-US", {
+      timeZone: "Asia/Dhaka",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+    const timeEl = document.getElementById("dhaka-time");
+    if (timeEl) timeEl.textContent = dhakaTime;
+  }
+
+  // Run
+  updateTime();
+  setInterval(updateTime, 1000);
+
+  // Init Map when ready of DOM content loaded
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initMap);
+  } else {
+    initMap();
+  }
+  // Astro view transitions support
+  document.addEventListener("astro:page-load", initMap);
+</script>

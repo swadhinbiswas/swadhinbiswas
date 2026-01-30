@@ -1,0 +1,494 @@
+---
+
+---
+
+<dialog
+    id="project-modal"
+    class="bg-transparent p-0 w-full h-full max-w-3xl max-h-[90vh] backdrop:bg-[#000]/80 backdrop:backdrop-blur-sm open:animate-fade-in outline-none m-auto"
+>
+    <div
+        class="bg-[var(--color-base)] border border-[var(--color-surface0)] rounded-xl w-full h-full flex flex-col shadow-2xl relative overflow-hidden"
+    >
+        {/* Top Bar / Breadcrumb */}
+        <div
+            class="px-8 py-6 flex items-center justify-between shrink-0 bg-[var(--color-mantle)] border-b border-[var(--color-surface0)]"
+        >
+            <div
+                class="font-mono text-sm md:text-base text-[var(--color-subtext0)]"
+            >
+                <span class="text-[var(--color-blue)]">~/projects/</span><span
+                    id="breadcrumb-name"
+                    class="text-[var(--color-text)]">project</span
+                ><span class="animate-pulse text-[var(--color-overlay0)]"
+                    >_</span
+                >
+            </div>
+
+            <button
+                id="close-modal"
+                class="p-2 rounded-lg hover:bg-[var(--color-surface0)] text-[var(--color-overlay0)] hover:text-[var(--color-text)] transition-colors"
+            >
+                <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    ><path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"></path></svg
+                >
+            </button>
+        </div>
+
+        {/* Modal Content - Scrollable Area */}
+        <div
+            class="flex-1 overflow-y-auto custom-scrollbar px-4 sm:px-8 md:px-12 pb-12 bg-[var(--color-base)]"
+        >
+            <div class="max-w-3xl mx-auto w-full pt-6 sm:pt-10">
+                {/* Header Section */}
+                <div class="space-y-6 mb-12">
+                    {/* Title */}
+                    <h1
+                        id="modal-title"
+                        class="text-4xl md:text-5xl font-bold text-[var(--color-blue)] font-mono tracking-tight leading-tight"
+                    >
+                        Project Name
+                    </h1>
+
+                    {/* Metadata Row */}
+                    <div
+                        class="flex flex-wrap items-center gap-6 text-sm text-[var(--color-subtext0)] font-mono"
+                    >
+                        <div class="flex items-center gap-2">
+                            <svg
+                                class="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                ><path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                ></path></svg
+                            >
+                            <span id="modal-date">Oct 01, 2023</span>
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <a
+                                id="modal-link-github"
+                                href="#"
+                                target="_blank"
+                                class="hover:text-[var(--color-blue)] transition-colors hidden"
+                            >
+                                <svg
+                                    class="w-5 h-5"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                    ><path
+                                        fill-rule="evenodd"
+                                        d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                                        clip-rule="evenodd"></path></svg
+                                >
+                            </a>
+                            <a
+                                id="modal-link-live"
+                                href="#"
+                                target="_blank"
+                                class="hover:text-[var(--color-green)] transition-colors hidden"
+                            >
+                                <svg
+                                    class="w-5 h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    ><path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                    ></path></svg
+                                >
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* Tags */}
+                    <div id="modal-tags" class="flex flex-wrap gap-2"></div>
+                </div>
+
+                {/* Divider */}
+                <div class="h-px w-full bg-[var(--color-surface0)] mb-12"></div>
+
+                {/* Banner Image (Optional) */}
+                <div
+                    id="modal-image-container"
+                    class="w-full rounded-xl overflow-hidden border border-[var(--color-surface0)] bg-[var(--color-mantle)] mb-10 hidden shadow-xl"
+                >
+                    <img
+                        id="modal-image"
+                        src=""
+                        alt="Project Preview"
+                        class="w-full h-auto object-cover opacity-90"
+                    />
+                </div>
+
+                {/* Markdown Body */}
+                <div
+                    id="modal-body"
+                    class="prose prose-invert prose-base max-w-none
+                text-[var(--color-text)]
+                [&_*]:text-[var(--color-text)]
+                prose-headings:text-[var(--color-blue)] prose-headings:font-bold prose-headings:font-mono
+                prose-a:text-[var(--color-blue)] prose-a:underline hover:prose-a:text-[var(--color-sapphire)]
+                prose-strong:text-[var(--color-text)]
+                prose-code:text-[var(--color-mauve)] prose-code:bg-[var(--color-surface0)] prose-code:rounded prose-code:px-1.5 prose-code:py-0.5 prose-code:font-mono prose-code:text-sm
+                prose-pre:bg-[var(--color-mantle)] prose-pre:border prose-pre:border-[var(--color-surface0)] prose-pre:rounded-xl
+                prose-ul:list-disc prose-ul:pl-6"
+                >
+                    {/* Rendered Markdown */}
+                </div>
+            </div>
+        </div>
+    </div>
+</dialog>
+
+<!-- Load marked for markdown parsing -->
+<script is:inline src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"
+></script>
+
+<script>
+    // @ts-nocheck
+    function initProjectModal() {
+        const cards = document.querySelectorAll(".project-card");
+        const modal = document.getElementById("project-modal");
+        const closeBtn = document.getElementById("close-modal");
+
+        if (!modal) return;
+
+        // Content Elements
+        const breadcrumbName = document.getElementById("breadcrumb-name");
+        const titleEl = document.getElementById("modal-title");
+        const dateEl = document.getElementById("modal-date");
+        const linkGithub = document.getElementById("modal-link-github");
+        const linkLive = document.getElementById("modal-link-live");
+        const bodyEl = document.getElementById("modal-body");
+        const tagsEl = document.getElementById("modal-tags");
+        const imgContainer = document.getElementById("modal-image-container");
+        const imgEl = document.getElementById("modal-image");
+
+        // Attach click handlers
+        cards.forEach((card) => {
+            card.addEventListener("click", (e) => {
+                // Allow opening in new tab
+                if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                e.preventDefault();
+
+                const data = JSON.parse(card.dataset.project);
+
+                // Populate Content
+                breadcrumbName.innerText = data.name
+                    .toLowerCase()
+                    .replace(/\s+/g, "-");
+                titleEl.innerText = data.name;
+
+                // Date
+                let dateStr;
+                if (data.projectDate) {
+                    const d = new Date(data.projectDate);
+                    // Check if it's a valid date object and not "Invalid Date"
+                    if (!isNaN(d.getTime())) {
+                        dateStr = d.toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                        });
+                    } else {
+                        // If it's just text like "Summer 2024"
+                        dateStr = data.projectDate;
+                    }
+                } else if (data.createdAt) {
+                    dateStr = new Date(data.createdAt).toLocaleDateString(
+                        "en-US",
+                        {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                        },
+                    );
+                } else {
+                    dateStr = "Oct 01, 2023";
+                }
+                dateEl.innerText = dateStr;
+
+                // Links
+                if (data.github) {
+                    linkGithub.href = data.github;
+                    linkGithub.classList.remove("hidden");
+                } else {
+                    linkGithub.classList.add("hidden");
+                }
+
+                if (data.url) {
+                    linkLive.href = data.url;
+                    linkLive.classList.remove("hidden");
+                } else {
+                    linkLive.classList.add("hidden");
+                }
+
+                // Render Md
+                if (typeof marked !== "undefined") {
+                    bodyEl.innerHTML = marked.parse(data.content || "");
+
+                    // Post-process for Visualizations
+
+                    // 1. Mermaid
+                    const mermaidBlocks = bodyEl.querySelectorAll(
+                        "pre > code.language-mermaid",
+                    );
+                    mermaidBlocks.forEach((block) => {
+                        const pre = block.parentElement;
+                        const code = block.innerText;
+                        const div = document.createElement("div");
+                        div.className = "mermaid";
+                        div.textContent = code;
+                        pre.replaceWith(div);
+                    });
+
+                    // 2. Plotly
+                    const plotlyBlocks = bodyEl.querySelectorAll(
+                        "pre > code.language-plotly",
+                    );
+                    plotlyBlocks.forEach((block) => {
+                        const pre = block.parentElement;
+                        try {
+                            const config = JSON.parse(block.innerText);
+                            const div = document.createElement("div");
+                            div.className = "plotly-container w-full h-[400px]";
+                            div.setAttribute(
+                                "data-config",
+                                encodeURIComponent(JSON.stringify(config)),
+                            );
+                            pre.replaceWith(div);
+                        } catch (e) {
+                            console.error("Invalid Plotly JSON", e);
+                        }
+                    });
+
+                    // 3. Flow
+                    function renderFlowSVG(config) {
+                        const nodes = config.nodes || [];
+                        const edges = config.edges || [];
+                        if (nodes.length === 0) return "";
+
+                        let minX = Infinity,
+                            minY = Infinity,
+                            maxX = -Infinity,
+                            maxY = -Infinity;
+                        nodes.forEach((n) => {
+                            minX = Math.min(minX, n.position.x);
+                            minY = Math.min(minY, n.position.y);
+                            maxX = Math.max(maxX, n.position.x);
+                            maxY = Math.max(maxY, n.position.y);
+                        });
+
+                        const padding = 80;
+                        const nodeWidth = 140;
+                        const nodeHeight = 40;
+                        const width = Math.max(
+                            300,
+                            maxX - minX + nodeWidth + padding * 2,
+                        );
+                        const height = maxY - minY + nodeHeight + padding * 2;
+                        const offsetX = -minX + padding;
+                        const offsetY = -minY + padding;
+
+                        let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
+                        svg += `<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#89b4fa"/></marker></defs>`;
+
+                        // Edges
+                        edges.forEach((edge) => {
+                            const source = nodes.find(
+                                (n) => n.id === edge.source,
+                            );
+                            const target = nodes.find(
+                                (n) => n.id === edge.target,
+                            );
+                            if (source && target) {
+                                const x1 =
+                                    source.position.x + offsetX + nodeWidth / 2;
+                                const y1 =
+                                    source.position.y + offsetY + nodeHeight;
+                                const x2 =
+                                    target.position.x + offsetX + nodeWidth / 2;
+                                const y2 = target.position.y + offsetY;
+                                const dashArray = edge.animated
+                                    ? 'stroke-dasharray="5,5"'
+                                    : "";
+                                svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#89b4fa" stroke-width="2" ${dashArray} marker-end="url(#arrow)"/>`;
+                            }
+                        });
+
+                        // Nodes
+                        nodes.forEach((node) => {
+                            const x = node.position.x + offsetX;
+                            const y = node.position.y + offsetY;
+                            const label = node.data?.label || node.id;
+                            svg += `<rect x="${x}" y="${y}" width="${nodeWidth}" height="${nodeHeight}" rx="8" fill="#313244" stroke="#585b70" stroke-width="1"/>`;
+                            svg += `<text x="${x + nodeWidth / 2}" y="${y + nodeHeight / 2 + 5}" text-anchor="middle" fill="#cdd6f4" font-size="14" font-family="monospace">${label}</text>`;
+                        });
+
+                        svg += `</svg>`;
+                        return svg;
+                    }
+
+                    const flowBlocks = bodyEl.querySelectorAll(
+                        "pre > code.language-flow",
+                    );
+                    flowBlocks.forEach((block) => {
+                        const pre = block.parentElement;
+                        try {
+                            const config = JSON.parse(block.innerText);
+                            const svg = renderFlowSVG(config);
+                            const div = document.createElement("div");
+                            div.className =
+                                "flex justify-center my-4 overflow-x-auto";
+                            div.innerHTML = svg;
+                            pre.replaceWith(div);
+                        } catch (e) {
+                            console.error("Flow error", e);
+                        }
+                    });
+
+                    // 4. Chart.js
+                    const chartBlocks = bodyEl.querySelectorAll(
+                        "pre > code.language-chart",
+                    );
+                    chartBlocks.forEach((block) => {
+                        const pre = block.parentElement;
+                        try {
+                            const config = JSON.parse(block.innerText);
+                            const canvas = document.createElement("canvas");
+                            canvas.className =
+                                "chart-js w-full h-auto max-h-[400px]";
+                            canvas.setAttribute(
+                                "data-config",
+                                encodeURIComponent(JSON.stringify(config)),
+                            );
+                            const div = document.createElement("div");
+                            div.className = "w-full max-w-2xl mx-auto my-8";
+                            div.appendChild(canvas);
+                            pre.replaceWith(div);
+                        } catch (e) {
+                            console.error("Chart error", e);
+                        }
+                    });
+
+                    // Trigger Renders
+                    if (window.runMermaid) window.runMermaid();
+                    if (window.hydratePlotly) window.hydratePlotly();
+                    if (window.hydrateCharts) window.hydrateCharts();
+                } else {
+                    bodyEl.innerText = data.content || "";
+                }
+
+                // Tags - Match reference style (gray/colored text tags)
+                tagsEl.innerHTML = (data.tags || [])
+                    .map((tag) => {
+                        let colorClass =
+                            "bg-[var(--color-surface0)] text-[var(--color-subtext0)]"; // Default
+                        const t = tag.toLowerCase();
+                        // Specific colors similar to reference (Abacus has red/purple/blue/green tags)
+                        if (t.includes("react") || t.includes("go"))
+                            colorClass =
+                                "bg-[var(--color-surface0)] text-[var(--color-red)]";
+                        if (
+                            t.includes("vue") ||
+                            t.includes("node") ||
+                            t.includes("gin")
+                        )
+                            colorClass =
+                                "bg-[var(--color-surface0)] text-[var(--color-blue)]";
+                        if (
+                            t.includes("js") ||
+                            t.includes("ts") ||
+                            t.includes("docker")
+                        )
+                            colorClass =
+                                "bg-[var(--color-surface0)] text-[var(--color-yellow)]";
+                        if (t.includes("rust") || t.includes("redis"))
+                            colorClass =
+                                "bg-[var(--color-surface0)] text-[var(--color-mauve)]";
+                        if (t.includes("analytics"))
+                            colorClass =
+                                "bg-[var(--color-surface0)] text-[var(--color-green)]";
+
+                        const tagHtml = `<span class="text-xs px-2 py-1 rounded-md font-mono ${colorClass}">${tag}</span>`;
+                        return tagHtml;
+                    })
+                    .join("");
+
+                // Image
+                if (data.image) {
+                    imgEl.src = data.image;
+                    imgContainer.classList.remove("hidden");
+                } else {
+                    imgContainer.classList.add("hidden");
+                }
+
+                modal.showModal();
+                document.body.style.overflow = "hidden"; // Lock scroll
+            });
+        });
+
+        // Close Logic
+        const closeModal = () => {
+            modal.close();
+            document.body.style.overflow = "";
+        };
+
+        if (closeBtn) closeBtn.onclick = closeModal;
+        modal.onclick = (e) => {
+            if (e.target === modal) closeModal();
+        };
+    }
+
+    // Run on load and swap
+    document.addEventListener("astro:page-load", initProjectModal);
+    document.addEventListener("DOMContentLoaded", initProjectModal);
+</script>
+
+<style>
+    /* Modal Animation */
+    dialog[open] {
+        animation: fade-in 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+            transform: scale(0.98) translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    /* Custom Scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: var(--color-surface1);
+        border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: var(--color-surface2);
+    }
+</style>

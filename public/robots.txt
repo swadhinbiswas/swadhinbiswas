@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /cat/
+Disallow: /api/cat/
+Allow: /
+
+Sitemap: https://swadhin.cv/sitemap-index.xml
+Sitemap: https://swadhin.cv/google-news.xml

@@ -1,0 +1,1 @@
+import { db, posts } from './src/db'; import { eq } from 'drizzle-orm'; const p = await db.query.posts.findFirst({ where: eq(posts.slug, 'advanced-viz-demo') }); console.log(JSON.stringify(p?.content));

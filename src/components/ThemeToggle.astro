@@ -1,0 +1,49 @@
+---
+
+---
+
+<button
+    id="theme-toggle"
+    class="relative p-1.5 rounded-md hover:bg-white/10 transition-colors group text-gray-400 hover:text-neon-cyan"
+    aria-label="Toggle Theme"
+>
+    <div
+        class="relative w-5 h-5 flex items-center justify-center overflow-hidden"
+    >
+        <!-- Icon logic will be handled by script if we want SVG switching, or just a generic 'Theme' icon -->
+        <svg
+            class="w-5 h-5 text-gray-400 group-hover:text-neon-cyan transition-colors"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+        >
+            <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
+            ></path>
+        </svg>
+    </div>
+</button>
+
+<script>
+    const toggle = document.getElementById("theme-toggle");
+    const html = document.documentElement;
+
+    // Check local storage or system preference
+    const savedTheme = localStorage.getItem("theme") || "catppuccin";
+    html.setAttribute("data-theme", savedTheme);
+
+    toggle?.addEventListener("click", () => {
+        const currentTheme = html.getAttribute("data-theme");
+        const newTheme =
+            currentTheme === "catppuccin" ? "rose-pine" : "catppuccin";
+
+        html.setAttribute("data-theme", newTheme);
+        localStorage.setItem("theme", newTheme);
+
+        // Dispatch event for charts
+        window.dispatchEvent(new Event("theme-changed"));
+    });
+</script>

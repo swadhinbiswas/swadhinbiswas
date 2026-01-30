@@ -1,0 +1,230 @@
+---
+export const prerender = true;
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { db, projects } from "../../db";
+import { unified } from "unified";
+import remarkParse from "remark-parse";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import remarkRehype from "remark-rehype";
+import rehypeKatex from "rehype-katex";
+import rehypeHighlight from "rehype-highlight";
+import rehypeStringify from "rehype-stringify";
+import "katex/dist/katex.min.css";
+import "highlight.js/styles/github-dark.css";
+import { processVisualizations } from "../../utils/viz";
+import VizScripts from "../../components/VizScripts.astro";
+
+export async function getStaticPaths() {
+    const allProjects = await db.select().from(projects);
+
+    return allProjects.map((project) => {
+        // Basic slugify: lowercase, replace spaces/special chars with hyphens
+        const slug = project.name
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, "")
+            .replace(/[\s_-]+/g, "-")
+            .replace(/^-+|-+$/g, "");
+
+        return {
+            params: { slug },
+            props: { project },
+        };
+    });
+}
+
+const { project } = Astro.props;
+
+if (!project) return Astro.redirect("/404");
+
+const processor = unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkMath)
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeKatex)
+    .use(rehypeHighlight)
+    .use(rehypeStringify, { allowDangerousHtml: true });
+
+// Fallback to description if content is missing
+const rawContent = project.content || project.description || "";
+const processedVizContent = await processVisualizations(rawContent);
+const processedContent = await processor.process(processedVizContent);
+const contentHtml = processedContent.toString();
+
+const tags = JSON.parse(project.tags || "[]");
+const projectDate =
+    project.projectDate || project.createdAt || new Date().toISOString();
+
+const schema = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: project.name,
+    image: [
+        project.image ||
+            `${import.meta.env.SITE || "https://swadhin.cv"}/og/${project.name.toLowerCase()}.png`,
+        // Note: Assuming logic for OG or fallback
+    ],
+    datePublished: new Date(projectDate).toISOString(),
+    dateModified: new Date(projectDate).toISOString(),
+    author: [
+        {
+            "@type": "Person",
+            name: "Swadhin",
+            url: import.meta.env.SITE || "https://swadhin.cv",
+        },
+    ],
+};
+---
+
+<BaseLayout title={project.name} description={project.description}>
+    <script
+        type="application/ld+json"
+        slot="head"
+        set:html={JSON.stringify(schema)}
+    />
+    <div class="animate-fade-in max-w-4xl mx-auto">
+        {/* Header */}
+        <div class="mb-12 pt-8">
+            <div
+                class="flex items-center gap-2 mb-4 text-sm font-mono text-subtext0"
+            >
+                <a
+                    href="/projects"
+                    class="hover:text-neon-cyan transition-colors">~/projects</a
+                >
+                <span class="text-overlay0">/</span>
+                <span class="text-text"
+                    >{project.name.toLowerCase().replace(/\s+/g, "-")}</span
+                >
+            </div>
+
+            <h1 class="text-4xl md:text-5xl font-bold text-text mb-6 font-mono">
+                {project.name}
+            </h1>
+
+            <p class="text-xl text-subtext0 mb-8 leading-relaxed max-w-3xl">
+                {project.description}
+            </p>
+
+            {/* Meta Bar */}
+            <div
+                class="flex flex-wrap items-center gap-6 p-4 rounded-xl bg-surface0/30 border border-surface0/50 backdrop-blur-sm"
+            >
+                {/* Date */}
+                <div class="flex items-center gap-2 text-subtext1">
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        ></path>
+                    </svg>
+                    <span class="text-sm">
+                        {
+                            new Date(projectDate).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "long",
+                            })
+                        }
+                    </span>
+                </div>
+
+                {/* Links */}
+                {
+                    project.github && (
+                        <a
+                            href={project.github}
+                            target="_blank"
+                            class="flex items-center gap-2 text-text hover:text-neon-cyan transition-colors text-sm font-bold"
+                        >
+                            <svg
+                                class="w-5 h-5"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    fill-rule="evenodd"
+                                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                                    clip-rule="evenodd"
+                                />
+                            </svg>
+                            GitHub
+                        </a>
+                    )
+                }
+                {
+                    project.url && (
+                        <a
+                            href={project.url}
+                            target="_blank"
+                            class="flex items-center gap-2 text-text hover:text-green-400 transition-colors text-sm font-bold"
+                        >
+                            <svg
+                                class="w-5 h-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                />
+                            </svg>
+                            Live Demo
+                        </a>
+                    )
+                }
+            </div>
+
+            {/* Tags */}
+            {
+                tags.length > 0 && (
+                    <div class="flex flex-wrap gap-2 mt-6">
+                        {tags.map((tag: string) => (
+                            <span class="px-3 py-1 bg-surface0 text-subtext1 text-sm rounded-full font-mono border border-surface1">
+                                {tag}
+                            </span>
+                        ))}
+                    </div>
+                )
+            }
+        </div>
+
+        {/* Featured Image */}
+        {
+            project.image && (
+                <div class="rounded-2xl overflow-hidden border border-surface0/50 shadow-2xl mb-12">
+                    <img
+                        src={project.image}
+                        alt={project.name}
+                        class="w-full h-auto object-cover"
+                    />
+                </div>
+            )
+        }
+
+        {/* Content */}
+        <article
+            class="prose prose-invert max-w-none
+        prose-headings:font-bold prose-headings:font-mono prose-headings:text-text
+        prose-p:text-subtext0 prose-p:leading-relaxed
+        prose-a:text-neon-cyan prose-a:no-underline hover:prose-a:underline
+        prose-pre:bg-mantle prose-pre:border prose-pre:border-surface0
+        prose-code:text-mauve prose-code:bg-surface0 prose-code:px-1 prose-code:py-0.5 prose-code:rounded
+        prose-li:text-subtext0"
+        >
+            <div set:html={contentHtml} />
+        </article>
+    </div>
+    <VizScripts />
+</BaseLayout>

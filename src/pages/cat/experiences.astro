@@ -1,0 +1,363 @@
+---
+export const prerender = false;
+
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, experiences } from "../../db";
+
+let experiencesList: (typeof experiences.$inferSelect)[] = [];
+try {
+  experiencesList = await db
+    .select()
+    .from(experiences)
+    .orderBy(experiences.order);
+} catch (error) {
+  console.error("Fetch experiences error:", error);
+}
+
+function formatDate(dateString: string | null): string {
+  if (!dateString) return "Present";
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+}
+---
+
+<AdminLayout title="Experience">
+  <div class="space-y-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-white">Experience</h1>
+        <p class="text-gray-400 mt-2">Manage your work experience</p>
+      </div>
+      <button
+        id="addBtn"
+        class="px-4 py-2 bg-neon-cyan text-black font-bold rounded-lg hover:bg-neon-cyan/90 transition-colors"
+      >
+        + Add Experience
+      </button>
+    </div>
+
+    <!-- Experience List -->
+    <div id="experiencesList" class="space-y-4">
+      {
+        experiencesList.map((exp) => (
+          <div
+            class="experience-item glass-panel rounded-xl p-4 border border-white/10"
+            data-id={exp.id}
+          >
+            <div class="flex items-start justify-between">
+              <div class="flex items-start gap-4">
+                <div class="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center overflow-hidden">
+                  {exp.logoUrl ? (
+                    <img
+                      src={exp.logoUrl}
+                      alt={exp.company}
+                      class="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span class="text-2xl font-bold text-neon-cyan">
+                      {exp.company.charAt(0)}
+                    </span>
+                  )}
+                </div>
+                <div>
+                  <div class="font-bold text-white text-lg">{exp.role}</div>
+                  <div class="text-gray-400">@{exp.company}</div>
+                  <div class="text-sm text-electric-purple mt-1">
+                    {formatDate(exp.startDate)} -{" "}
+                    {exp.endDate ? formatDate(exp.endDate) : "Present"}
+                  </div>
+                  {exp.details && (
+                    <p class="text-sm text-gray-500 mt-2 max-w-lg">
+                      {exp.details}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button
+                  class="edit-btn px-3 py-1 text-sm bg-white/5 hover:bg-white/10 border border-white/10 rounded transition-colors"
+                  data-experience={JSON.stringify(exp)}
+                >
+                  Edit
+                </button>
+                <button
+                  class="delete-btn px-3 py-1 text-sm bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded transition-colors"
+                  data-id={exp.id}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+
+      {
+        experiencesList.length === 0 && (
+          <div class="text-center text-gray-500 py-12">
+            No experience entries yet. Click "Add Experience" to create one.
+          </div>
+        )
+      }
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div
+    id="modal"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 overflow-y-auto"
+  >
+    <div
+      class="glass-panel rounded-2xl p-6 w-full max-w-lg border border-white/10 m-4 my-8"
+    >
+      <h2 id="modalTitle" class="text-xl font-bold text-white mb-6">
+        Add Experience
+      </h2>
+
+      <form id="experienceForm" class="space-y-4">
+        <input type="hidden" name="id" />
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Company</label>
+            <input
+              type="text"
+              name="company"
+              required
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+              placeholder="Company Name"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Role</label>
+            <input
+              type="text"
+              name="role"
+              required
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+              placeholder="Job Title"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Company URL</label>
+            <input
+              type="url"
+              name="url"
+              required
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+              placeholder="https://company.com"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-400 mb-2"
+              >Company Description</label
+            >
+            <input
+              type="text"
+              name="companyDescription"
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+              placeholder="What does the company do?"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Logo URL</label>
+          <input
+            type="url"
+            name="logoUrl"
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="https://example.com/logo.png"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Start Date</label>
+            <input
+              type="date"
+              name="startDate"
+              required
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-400 mb-2"
+              >End Date (leave empty if current)</label
+            >
+            <input
+              type="date"
+              name="endDate"
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Details</label>
+          <textarea
+            name="details"
+            rows="3"
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors resize-none"
+            placeholder="Brief description of your role..."></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Order</label>
+          <input
+            type="number"
+            name="order"
+            value="0"
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+          />
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-4">
+          <button
+            type="button"
+            id="cancelBtn"
+            class="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-6 py-2 bg-neon-cyan text-black font-bold rounded-lg hover:bg-neon-cyan/90 transition-colors"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  const modal = document.getElementById("modal") as HTMLDivElement;
+  const modalTitle = document.getElementById(
+    "modalTitle",
+  ) as HTMLHeadingElement;
+  const form = document.getElementById("experienceForm") as HTMLFormElement;
+  const addBtn = document.getElementById("addBtn") as HTMLButtonElement;
+  const cancelBtn = document.getElementById("cancelBtn") as HTMLButtonElement;
+
+  let isEditing = false;
+
+  function openModal(editing = false, data: any = null) {
+    isEditing = editing;
+    modalTitle.textContent = editing ? "Edit Experience" : "Add Experience";
+
+    if (data) {
+      (form.elements.namedItem("id") as HTMLInputElement).value = data.id;
+      (form.elements.namedItem("company") as HTMLInputElement).value =
+        data.company;
+      (form.elements.namedItem("role") as HTMLInputElement).value = data.role;
+      (form.elements.namedItem("url") as HTMLInputElement).value = data.url;
+      (
+        form.elements.namedItem("companyDescription") as HTMLInputElement
+      ).value = data.companyDescription || "";
+      (form.elements.namedItem("logoUrl") as HTMLInputElement).value =
+        data.logoUrl || "";
+      (form.elements.namedItem("startDate") as HTMLInputElement).value =
+        data.startDate?.split("T")[0] || "";
+      (form.elements.namedItem("endDate") as HTMLInputElement).value =
+        data.endDate?.split("T")[0] || "";
+      (form.elements.namedItem("details") as HTMLTextAreaElement).value =
+        data.details || "";
+      (form.elements.namedItem("order") as HTMLInputElement).value =
+        data.order || "0";
+    } else {
+      form.reset();
+    }
+
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  }
+
+  function closeModal() {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    form.reset();
+  }
+
+  addBtn.addEventListener("click", () => openModal(false));
+  cancelBtn.addEventListener("click", closeModal);
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  // Edit buttons
+  document.querySelectorAll(".edit-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const data = JSON.parse(
+        (btn as HTMLButtonElement).dataset.experience || "{}",
+      );
+      openModal(true, data);
+    });
+  });
+
+  // Delete buttons
+  document.querySelectorAll(".delete-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      if (!confirm("Are you sure you want to delete this experience?")) return;
+
+      const id = parseInt((btn as HTMLButtonElement).dataset.id || "0");
+
+      try {
+        const response = await fetch("/api/admin/experiences", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id }),
+        });
+
+        if (response.ok) {
+          window.location.reload();
+        }
+      } catch (error) {
+        console.error("Delete error:", error);
+      }
+    });
+  });
+
+  // Form submit
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const data = {
+      id: formData.get("id")
+        ? parseInt(formData.get("id") as string)
+        : undefined,
+      company: formData.get("company"),
+      role: formData.get("role"),
+      url: formData.get("url"),
+      companyDescription: formData.get("companyDescription") || null,
+      logoUrl: formData.get("logoUrl") || null,
+      startDate: formData.get("startDate"),
+      endDate: formData.get("endDate") || null,
+      details: formData.get("details") || null,
+      order: parseInt(formData.get("order") as string) || 0,
+    };
+
+    try {
+      const response = await fetch("/api/admin/experiences", {
+        method: isEditing ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Save error:", error);
+    }
+  });
+</script>

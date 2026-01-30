@@ -1,0 +1,129 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+}
+
+const { title = "Admin Panel" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title} | Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="min-h-screen bg-[#050510] text-white font-mono">
+    <!-- Background -->
+    <div
+      class="fixed inset-0 z-[-1] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-[#050510] to-[#050510]"
+    >
+    </div>
+
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <aside
+        class="w-64 glass-panel border-r border-white/10 p-4 flex flex-col"
+      >
+        <div class="mb-8">
+          <a href="/cat" class="text-xl font-bold text-neon-cyan">Admin Panel</a
+          >
+          <p class="text-xs text-gray-500 mt-1">Portfolio CMS</p>
+        </div>
+
+        <nav class="space-y-1 flex-1">
+          <a
+            href="/cat"
+            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
+          >
+            <span class="mr-2">📊</span> Dashboard
+          </a>
+          <a
+            href="/cat/settings"
+            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
+          >
+            <span class="mr-2">⚙️</span> Site Settings
+          </a>
+          <a
+            href="/cat/socials"
+            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
+          >
+            <span class="mr-2">🔗</span> Social Links
+          </a>
+          <a
+            href="/cat/navigation"
+            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
+          >
+            <span class="mr-2">🧭</span> Navigation
+          </a>
+          <a
+            href="/cat/blog"
+            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
+          >
+            <span class="mr-2">✍️</span> Blog
+          </a>
+          <a
+            href="/cat/experiences"
+            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
+          >
+            <span class="mr-2">💼</span> Experience
+          </a>
+          <a
+            href="/cat/projects"
+            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
+          >
+            <span class="mr-2">📁</span> Projects
+          </a>
+          <a
+            href="/cat/skills"
+            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
+          >
+            <span class="mr-2">🛠️</span> Skills
+          </a>
+          <a
+            href="/cat/achievements"
+            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
+          >
+            <span class="mr-2">🏆</span> Achievements
+          </a>
+          <a
+            href="/cat/bio"
+            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
+          >
+            <span class="mr-2">📝</span> Bio
+          </a>
+          <a
+            href="/cat/support"
+            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
+          >
+            <span class="mr-2">☕</span> Support
+          </a>
+        </nav>
+
+        <div class="border-t border-white/10 pt-4 mt-4">
+          <a
+            href="/"
+            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-400 hover:text-white transition-colors text-sm"
+          >
+            <span class="mr-2">🌐</span> View Site
+          </a>
+          <a
+            href="/api/cat/logout"
+            class="block px-3 py-2 rounded-lg hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-colors text-sm"
+          >
+            <span class="mr-2">🚪</span> Logout
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 p-8 overflow-y-auto">
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>

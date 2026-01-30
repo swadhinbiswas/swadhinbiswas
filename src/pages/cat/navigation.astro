@@ -1,0 +1,266 @@
+---
+export const prerender = false;
+
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, navigationItems } from "../../db";
+
+let navList: typeof navigationItems.$inferSelect[] = [];
+try {
+  navList = await db.select().from(navigationItems).orderBy(navigationItems.order);
+} catch (error) {
+  console.error('Fetch navigation error:', error);
+}
+
+// Group by location
+const navByLocation = navList.reduce((acc, nav) => {
+  const loc = nav.location || 'header';
+  if (!acc[loc]) acc[loc] = [];
+  acc[loc].push(nav);
+  return acc;
+}, {} as Record<string, typeof navList>);
+---
+
+<AdminLayout title="Navigation">
+  <div class="space-y-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-white">Navigation</h1>
+        <p class="text-gray-400 mt-2">Manage navigation menu items</p>
+      </div>
+      <button 
+        id="addBtn"
+        class="px-4 py-2 bg-neon-cyan text-black font-bold rounded-lg hover:bg-neon-cyan/90 transition-colors"
+      >
+        + Add Nav Item
+      </button>
+    </div>
+    
+    <!-- Navigation by Location -->
+    <div class="space-y-6">
+      {['header', 'menu', 'both'].map((location) => (
+        <div class="glass-panel rounded-xl p-6 border border-white/10">
+          <h3 class="text-lg font-bold text-white capitalize mb-4 flex items-center gap-2">
+            {location === 'header' && '🔝 Header Navigation'}
+            {location === 'menu' && '📱 Menu Navigation'}
+            {location === 'both' && '📌 Both Locations'}
+          </h3>
+          
+          {navByLocation[location] && navByLocation[location].length > 0 ? (
+            <div class="space-y-2">
+              {navByLocation[location].map((nav) => (
+                <div class="nav-item flex items-center justify-between p-3 bg-white/5 border border-white/10 rounded-lg">
+                  <div class="flex items-center gap-3">
+                    <span class="text-white font-medium">{nav.label}</span>
+                    <span class="text-gray-500 text-sm">{nav.href}</span>
+                    {nav.external && (
+                      <span class="text-xs px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded">External</span>
+                    )}
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button 
+                      class="edit-btn px-2 py-1 text-sm bg-white/5 hover:bg-white/10 border border-white/10 rounded transition-colors"
+                      data-nav={JSON.stringify(nav)}
+                    >
+                      Edit
+                    </button>
+                    <button 
+                      class="delete-btn px-2 py-1 text-sm bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded transition-colors"
+                      data-id={nav.id}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p class="text-gray-500 text-sm">No items in this location</p>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+  
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80">
+    <div class="glass-panel rounded-2xl p-6 w-full max-w-md border border-white/10 m-4">
+      <h2 id="modalTitle" class="text-xl font-bold text-white mb-6">Add Navigation Item</h2>
+      
+      <form id="navForm" class="space-y-4">
+        <input type="hidden" name="id" />
+        
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Label</label>
+          <input 
+            type="text" 
+            name="label" 
+            required
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="About"
+          />
+        </div>
+        
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">URL/Path</label>
+          <input 
+            type="text" 
+            name="href" 
+            required
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="/about or https://..."
+          />
+        </div>
+        
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Location</label>
+          <select 
+            name="location" 
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-cyan/50 transition-colors"
+          >
+            <option value="header">Header Only</option>
+            <option value="menu">Menu Only</option>
+            <option value="both">Both</option>
+          </select>
+        </div>
+        
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Order</label>
+          <input 
+            type="number" 
+            name="order" 
+            value="0"
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+          />
+        </div>
+        
+        <div class="flex items-center gap-2">
+          <input 
+            type="checkbox" 
+            name="external" 
+            id="external"
+            class="w-4 h-4 rounded border-white/20 bg-white/5"
+          />
+          <label for="external" class="text-sm text-gray-400">External link (opens in new tab)</label>
+        </div>
+        
+        <div class="flex items-center justify-end gap-3 pt-4">
+          <button 
+            type="button"
+            id="cancelBtn"
+            class="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit"
+            class="px-6 py-2 bg-neon-cyan text-black font-bold rounded-lg hover:bg-neon-cyan/90 transition-colors"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  const modal = document.getElementById('modal') as HTMLDivElement;
+  const modalTitle = document.getElementById('modalTitle') as HTMLHeadingElement;
+  const form = document.getElementById('navForm') as HTMLFormElement;
+  const addBtn = document.getElementById('addBtn') as HTMLButtonElement;
+  const cancelBtn = document.getElementById('cancelBtn') as HTMLButtonElement;
+  
+  let isEditing = false;
+  
+  function openModal(editing = false, data: any = null) {
+    isEditing = editing;
+    modalTitle.textContent = editing ? 'Edit Navigation Item' : 'Add Navigation Item';
+    
+    if (data) {
+      (form.elements.namedItem('id') as HTMLInputElement).value = data.id;
+      (form.elements.namedItem('label') as HTMLInputElement).value = data.label;
+      (form.elements.namedItem('href') as HTMLInputElement).value = data.href;
+      (form.elements.namedItem('location') as HTMLSelectElement).value = data.location || 'header';
+      (form.elements.namedItem('order') as HTMLInputElement).value = data.order || '0';
+      (form.elements.namedItem('external') as HTMLInputElement).checked = data.external;
+    } else {
+      form.reset();
+    }
+    
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+  
+  function closeModal() {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    form.reset();
+  }
+  
+  addBtn.addEventListener('click', () => openModal(false));
+  cancelBtn.addEventListener('click', closeModal);
+  
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+  
+  // Edit buttons
+  document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const data = JSON.parse((btn as HTMLButtonElement).dataset.nav || '{}');
+      openModal(true, data);
+    });
+  });
+  
+  // Delete buttons
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if (!confirm('Are you sure you want to delete this navigation item?')) return;
+      
+      const id = parseInt((btn as HTMLButtonElement).dataset.id || '0');
+      
+      try {
+        const response = await fetch('/api/admin/navigation', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id }),
+        });
+        
+        if (response.ok) {
+          window.location.reload();
+        }
+      } catch (error) {
+        console.error('Delete error:', error);
+      }
+    });
+  });
+  
+  // Form submit
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(form);
+    const data = {
+      id: formData.get('id') ? parseInt(formData.get('id') as string) : undefined,
+      label: formData.get('label'),
+      href: formData.get('href'),
+      location: formData.get('location'),
+      order: parseInt(formData.get('order') as string) || 0,
+      external: formData.get('external') === 'on',
+    };
+    
+    try {
+      const response = await fetch('/api/admin/navigation', {
+        method: isEditing ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      
+      if (response.ok) {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Save error:', error);
+    }
+  });
+</script>

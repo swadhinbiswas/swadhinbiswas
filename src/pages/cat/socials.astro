@@ -1,0 +1,270 @@
+---
+export const prerender = false;
+
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, socialLinks } from "../../db";
+
+let socials: typeof socialLinks.$inferSelect[] = [];
+try {
+  socials = await db.select().from(socialLinks).orderBy(socialLinks.order);
+} catch (error) {
+  console.error('Fetch socials error:', error);
+}
+---
+
+<AdminLayout title="Social Links">
+  <div class="space-y-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-white">Social Links</h1>
+        <p class="text-gray-400 mt-2">Manage your social media links</p>
+      </div>
+      <button 
+        id="addBtn"
+        class="px-4 py-2 bg-neon-cyan text-black font-bold rounded-lg hover:bg-neon-cyan/90 transition-colors"
+      >
+        + Add Social
+      </button>
+    </div>
+    
+    <!-- Social Links List -->
+    <div id="socialsList" class="space-y-4">
+      {socials.map((social) => (
+        <div class="social-item glass-panel rounded-xl p-4 border border-white/10" data-id={social.id}>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center text-xl">
+                {social.icon === 'github' && '🐙'}
+                {social.icon === 'linkedin' && '💼'}
+                {social.icon === 'twitter' && '🐦'}
+                {social.icon === 'youtube' && '📺'}
+                {social.icon === 'kaggle' && '📊'}
+                {social.icon === 'bluesky' && '🦋'}
+                {!['github', 'linkedin', 'twitter', 'youtube', 'kaggle', 'bluesky'].includes(social.icon) && '🔗'}
+              </div>
+              <div>
+                <div class="font-bold text-white">{social.name}</div>
+                <div class="text-sm text-gray-400 truncate max-w-md">{social.url}</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              {social.footer && (
+                <span class="text-xs px-2 py-1 bg-green-500/20 text-green-400 rounded">Footer</span>
+              )}
+              <button 
+                class="edit-btn px-3 py-1 text-sm bg-white/5 hover:bg-white/10 border border-white/10 rounded transition-colors"
+                data-social={JSON.stringify(social)}
+              >
+                Edit
+              </button>
+              <button 
+                class="delete-btn px-3 py-1 text-sm bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded transition-colors"
+                data-id={social.id}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
+      
+      {socials.length === 0 && (
+        <div class="text-center text-gray-500 py-12">
+          No social links yet. Click "Add Social" to create one.
+        </div>
+      )}
+    </div>
+  </div>
+  
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80">
+    <div class="glass-panel rounded-2xl p-6 w-full max-w-lg border border-white/10 m-4">
+      <h2 id="modalTitle" class="text-xl font-bold text-white mb-6">Add Social Link</h2>
+      
+      <form id="socialForm" class="space-y-4">
+        <input type="hidden" name="id" />
+        
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Name</label>
+          <input 
+            type="text" 
+            name="name" 
+            required
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="GitHub"
+          />
+        </div>
+        
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">URL</label>
+          <input 
+            type="url" 
+            name="url" 
+            required
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="https://github.com/username"
+          />
+        </div>
+        
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Icon</label>
+          <select 
+            name="icon" 
+            required
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-cyan/50 transition-colors"
+          >
+            <option value="github">GitHub</option>
+            <option value="linkedin">LinkedIn</option>
+            <option value="twitter">Twitter/X</option>
+            <option value="youtube">YouTube</option>
+            <option value="kaggle">Kaggle</option>
+            <option value="bluesky">Bluesky</option>
+            <option value="instagram">Instagram</option>
+            <option value="facebook">Facebook</option>
+            <option value="discord">Discord</option>
+            <option value="email">Email</option>
+            <option value="website">Website</option>
+          </select>
+        </div>
+        
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Order</label>
+          <input 
+            type="number" 
+            name="order" 
+            value="0"
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+          />
+        </div>
+        
+        <div class="flex items-center gap-2">
+          <input 
+            type="checkbox" 
+            name="footer" 
+            id="footer"
+            class="w-4 h-4 rounded border-white/20 bg-white/5"
+          />
+          <label for="footer" class="text-sm text-gray-400">Show in footer</label>
+        </div>
+        
+        <div class="flex items-center justify-end gap-3 pt-4">
+          <button 
+            type="button"
+            id="cancelBtn"
+            class="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit"
+            class="px-6 py-2 bg-neon-cyan text-black font-bold rounded-lg hover:bg-neon-cyan/90 transition-colors"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  const modal = document.getElementById('modal') as HTMLDivElement;
+  const modalTitle = document.getElementById('modalTitle') as HTMLHeadingElement;
+  const form = document.getElementById('socialForm') as HTMLFormElement;
+  const addBtn = document.getElementById('addBtn') as HTMLButtonElement;
+  const cancelBtn = document.getElementById('cancelBtn') as HTMLButtonElement;
+  
+  let isEditing = false;
+  
+  function openModal(editing = false, data: any = null) {
+    isEditing = editing;
+    modalTitle.textContent = editing ? 'Edit Social Link' : 'Add Social Link';
+    
+    if (data) {
+      (form.elements.namedItem('id') as HTMLInputElement).value = data.id;
+      (form.elements.namedItem('name') as HTMLInputElement).value = data.name;
+      (form.elements.namedItem('url') as HTMLInputElement).value = data.url;
+      (form.elements.namedItem('icon') as HTMLSelectElement).value = data.icon;
+      (form.elements.namedItem('order') as HTMLInputElement).value = data.order;
+      (form.elements.namedItem('footer') as HTMLInputElement).checked = data.footer;
+    } else {
+      form.reset();
+    }
+    
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+  
+  function closeModal() {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    form.reset();
+  }
+  
+  addBtn.addEventListener('click', () => openModal(false));
+  cancelBtn.addEventListener('click', closeModal);
+  
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+  
+  // Edit buttons
+  document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const data = JSON.parse((btn as HTMLButtonElement).dataset.social || '{}');
+      openModal(true, data);
+    });
+  });
+  
+  // Delete buttons
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if (!confirm('Are you sure you want to delete this social link?')) return;
+      
+      const id = parseInt((btn as HTMLButtonElement).dataset.id || '0');
+      
+      try {
+        const response = await fetch('/api/admin/socials', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id }),
+        });
+        
+        if (response.ok) {
+          window.location.reload();
+        }
+      } catch (error) {
+        console.error('Delete error:', error);
+      }
+    });
+  });
+  
+  // Form submit
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(form);
+    const data = {
+      id: formData.get('id') ? parseInt(formData.get('id') as string) : undefined,
+      name: formData.get('name'),
+      url: formData.get('url'),
+      icon: formData.get('icon'),
+      order: parseInt(formData.get('order') as string) || 0,
+      footer: formData.get('footer') === 'on',
+    };
+    
+    try {
+      const response = await fetch('/api/admin/socials', {
+        method: isEditing ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      
+      if (response.ok) {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Save error:', error);
+    }
+  });
+</script>

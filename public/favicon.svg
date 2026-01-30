@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+    <!-- Background: Dark rounded square -->
+    <rect x="5" y="5" width="90" height="90" rx="24" fill="#11111b" stroke="#313244" stroke-width="2"/>
+    
+    <!-- Stylized 'S' Monogram -->
+    <!-- Using a gradient or solid accent color -->
+    <path 
+        d="M65 35 C 65 25, 35 25, 35 35 
+           C 35 55, 65 45, 65 65 
+           C 65 75, 35 75, 35 65" 
+        stroke="#06b6d4" 
+        stroke-width="12" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"
+        fill="none"
+    />
+    
+    <!-- Visual accent dots -->
+    <circle cx="72" cy="28" r="4" fill="#06b6d4" />
+    <circle cx="28" cy="72" r="4" fill="#06b6d4" />
+</svg>

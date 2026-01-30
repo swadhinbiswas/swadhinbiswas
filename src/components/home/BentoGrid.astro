@@ -1,0 +1,660 @@
+---
+import LocationMap from "./bento/LocationMap.astro";
+import Clicker from "./bento/Clicker.astro";
+import { siteConfig } from "../../config/site";
+---
+
+<section id="projects" class="space-y-8 py-20 relative">
+  <h2 class="text-3xl font-bold font-mono text-white flex items-center gap-3">
+    <span class="text-neon-cyan">></span>
+    <span>System_Modules</span>
+    <span class="animate-pulse text-electric-purple">_</span>
+  </h2>
+
+  <div class="bento-grid gap-6 auto-rows-[minmax(180px,auto)]">
+    <!-- Row 1: Profile/Connect + Location -->
+
+    <!-- Location Map - Small -->
+    <div
+      class="bento-item bento-location glass-panel rounded-xl overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,243,255,0.2)]"
+    >
+      <LocationMap />
+    </div>
+
+    <div
+      class="bento-item bento-clicker glass-panel rounded-xl p-5 transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,243,255,0.2)]"
+    >
+      <Clicker />
+    </div>
+
+    <!-- Productivity Pattern - Small (Below Clicker) -->
+    <div
+      class="bento-item bento-productivity glass-panel rounded-xl p-5 transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] flex flex-col items-center justify-center"
+    >
+      <h3 class="text-xs font-mono text-neon-cyan mb-2 w-full text-left">
+        Productivity Pattern
+      </h3>
+      <div class="w-full h-[200px] relative">
+        <canvas id="productivityChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Row 2: Recent Commits + Latest Posts -->
+
+    <!-- Recent Commits - Medium -->
+    <div
+      class="bento-item bento-commits glass-panel rounded-xl p-5 transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] flex flex-col"
+    >
+      <h3
+        class="text-sm font-mono text-electric-purple mb-4 flex items-center gap-2"
+      >
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+          ></path>
+        </svg>
+        git_activity
+      </h3>
+      <div
+        id="recent-commits"
+        class="space-y-2 text-xs font-mono max-h-[160px] overflow-y-auto custom-scrollbar pr-2"
+      >
+        <div class="animate-pulse space-y-2">
+          <div class="h-3 bg-white/10 rounded w-3/4"></div>
+          <div class="h-3 bg-white/10 rounded w-1/2"></div>
+        </div>
+      </div>
+      <a
+        href={siteConfig.links.github}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-4 inline-flex items-center gap-1 text-xs text-gray-400 hover:text-neon-cyan transition-colors font-mono"
+      >
+        view_all.sh
+      </a>
+    </div>
+
+    <!-- Contribution Graph - Wide (Row 2, spanning 2 cols) -->
+    <div
+      class="bento-item bento-posts glass-panel rounded-xl p-5 transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] flex flex-col"
+    >
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="text-sm font-mono text-neon-cyan flex items-center gap-2">
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+            ></path></svg
+          >
+          Coding Activity on Projects
+        </h3>
+        <div class="text-right">
+          <!-- LOC Stats -->
+          <div
+            id="loc-stats"
+            class="text-[10px] text-gray-500 font-mono opacity-0 transition-opacity duration-500 text-right inline-block mr-4"
+          >
+            <div class="flex items-center justify-end gap-2">
+              <span class="text-neon-cyan" id="loc-total">...</span> LOC
+              <span class="text-green-400 text-[9px]"
+                >(+<span id="loc-added">...</span>)</span
+              >
+              <span class="text-red-400 text-[9px]"
+                >(-<span id="loc-deleted">...</span>)</span
+              >
+            </div>
+          </div>
+
+          <span class="text-[10px] text-gray-500 font-mono">All Time: </span>
+          <span
+            id="total-contributions"
+            class="text-xs text-electric-purple font-mono animate-pulse"
+            >loading...</span
+          >
+        </div>
+      </div>
+
+      <div class="w-full h-full min-h-[300px] relative">
+        <canvas id="activityChart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bento-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    grid-template-areas:
+      "location"
+      "clicker"
+      "productivity"
+      "commits"
+      "overview";
+  }
+
+  @media (min-width: 768px) {
+    .bento-grid {
+      grid-template-columns: 300px 1fr; /* Fixed width for left col, flex for right */
+      grid-template-areas:
+        "location commits"
+        "clicker overview"
+        "productivity overview";
+      grid-gap: 1.5rem;
+      /* grid-template-rows: 1fr 1fr; - Removed to allow natural sizing or auto */
+      grid-auto-rows: minmax(180px, auto);
+    }
+  }
+
+  /* Assign Grid Areas */
+  .bento-location {
+    grid-area: location;
+  }
+  .bento-clicker {
+    grid-area: clicker;
+  }
+  .bento-productivity {
+    grid-area: productivity;
+  }
+  .bento-commits {
+    grid-area: commits;
+  }
+  .bento-posts {
+    grid-area: overview;
+  }
+
+  /* Timeline styling */
+  .timeline-item {
+    position: relative;
+    padding-left: 24px;
+  }
+  .timeline-item::before {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: 24px;
+    bottom: -16px;
+    width: 2px;
+    background: #333;
+  }
+  .timeline-item:last-child::before {
+    display: none;
+  }
+
+  /* Custom Scrollbar for Recent Commits */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 243, 255, 0.3);
+    border-radius: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 243, 255, 0.5);
+  }
+</style>
+
+<script>
+  import Chart from "chart.js/auto";
+
+  function initGitHubActivity() {
+    const commitsContainer = document.getElementById("recent-commits");
+    const weeklyGraphContainer = document.getElementById("weekly-graph");
+    const totalContributionsEl = document.getElementById("total-contributions");
+    const radarPolygon = document.getElementById("radar-polygon");
+
+    if (!commitsContainer) {
+      setTimeout(initGitHubActivity, 500);
+      return;
+    }
+
+    async function fetchGitHubData() {
+      try {
+        fetchCommits();
+        fetchContributions();
+      } catch (err) {
+        console.error("Master fetch error", err);
+      }
+    }
+
+    const simpleIcons = {
+      star: `<svg viewBox="0 0 16 16" width="14" height="14" class="text-yellow-300"><path fill="currentColor" d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.719-4.192-3.046-2.97a.75.75 0 0 1 .416-1.28l4.21-.612L7.327.668A.75.75 0 0 1 8 .25Z"></path></svg>`,
+    };
+
+    async function fetchCommits() {
+      if (!commitsContainer) return;
+      try {
+        const response = await fetch(`/api/github/events?t=${Date.now()}`);
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
+
+        const data = await response.json();
+        if (data.commits && data.commits.length > 0) {
+          commitsContainer.innerHTML = data.commits
+            .map((commit: any) => {
+              const hash = commit.hash;
+              const isVerified = commit.verified
+                ? `<span class="px-1.5 py-0.5 rounded-full border border-green-500/30 text-green-400 bg-green-500/10 flex items-center gap-1">Verified</span>`
+                : "";
+
+              return `
+            <div class="timeline-item flex flex-col gap-1 mb-4 group">
+              <!-- Icon absolute positioned -->
+              <div class="absolute left-0 top-1 w-4 h-4 flex items-center justify-center bg-[#0d1117] rounded-full ring-2 ring-[#333] z-10">
+                  ${simpleIcons.star} 
+              </div>
+              
+              <div class="flex items-center gap-2">
+                 <a href="${commit.url}" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-200 font-bold hover:text-neon-cyan transition-colors truncate block max-w-[200px]">
+                    ${commit.message}
+                 </a>
+              </div>
+              
+              <div class="flex flex-wrap items-center gap-2 text-[10px] text-gray-500 font-mono">
+                  <span class="text-gray-400">${commit.repo}</span>
+                  <span>•</span>
+                  <a href="${commit.url}" target="_blank" class="hover:text-neon-cyan hover:underline">${hash}</a>
+                  ${isVerified}
+                  <span class="ml-auto text-xs opacity-70">${commit.time}</span>
+              </div>
+            </div>
+          `;
+            })
+            .join("");
+
+          // Re-enable scroll classes
+          commitsContainer.classList.add("overflow-y-auto", "custom-scrollbar");
+          commitsContainer.classList.remove("overflow-hidden");
+        } else {
+          commitsContainer.innerHTML = `<div class="text-gray-500 text-xs">No recent commits found.</div>`;
+        }
+      } catch (error) {
+        commitsContainer.innerHTML = `<div class="text-red-400 text-xs">Failed to load commits.</div>`;
+      }
+    }
+
+    async function fetchContributions() {
+      try {
+        const response = await fetch(
+          `/api/github/contributions?t=${Date.now()}`,
+        );
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
+
+        const data = await response.json();
+
+        // Update total with LIFETIME data
+        if (totalContributionsEl) {
+          const total = data.lifetimeContributions || data.totalContributions;
+          totalContributionsEl.textContent = `${total.toLocaleString()}`;
+          totalContributionsEl.classList.remove("animate-pulse");
+        }
+
+        // Update Radar Chart
+        if (data.breakdown && radarPolygon) {
+          updateRadarChart(data.breakdown);
+        }
+
+        // Graph is now handled by WakaTime
+        /* 
+        if (
+          weeklyGraphContainer &&
+          data.last7Days &&
+          data.last7Days.length > 0
+        ) {
+          renderWeeklyGraph(data.last7Days[0]);
+        } 
+        */
+      } catch (error) {
+        console.error(error);
+        if (weeklyGraphContainer)
+          weeklyGraphContainer.innerHTML = `<div class="text-red-400 text-xs">Failed load.</div>`;
+      }
+    }
+
+    async function fetchLOC() {
+      const locContainer = document.getElementById("loc-stats");
+      const locTotal = document.getElementById("loc-total");
+      const locAdded = document.getElementById("loc-added");
+      const locDeleted = document.getElementById("loc-deleted");
+
+      if (!locContainer || !locTotal || !locAdded || !locDeleted) return;
+
+      try {
+        const response = await fetch(`/api/github/loc?t=${Date.now()}`);
+        if (!response.ok) throw new Error("Failed to fetch LOC");
+
+        const data = await response.json();
+
+        locTotal.textContent = data.loc;
+        locAdded.textContent = data.added;
+        locDeleted.textContent = data.deleted;
+
+        locContainer.classList.remove("opacity-0");
+      } catch (err) {
+        console.error("LOC fetch error", err);
+      }
+    }
+
+    // Call fetchLOC inside the main flow
+    fetchLOC();
+
+    function updateRadarChart(breakdown: any) {
+      if (!radarPolygon) return;
+
+      const center = 100;
+      const maxRadius = 80;
+
+      // Calculate total for percentage
+      const total =
+        breakdown.commits +
+          breakdown.issues +
+          breakdown.prs +
+          breakdown.reviews || 1;
+
+      // Calculate Percentages (0-1)
+      // If data is missing (0), use the user's requested specific distribution as a fallback/default view
+      // to ensure the "Spider Graph" looks correct even with low/no data initially.
+      const useDefault = total === 1; // Basic check if total is 0 (or 1 from fallback)
+
+      const commitRatio = useDefault ? 0.85 : breakdown.commits / total;
+      const reviewRatio = useDefault ? 0.55 : breakdown.reviews / total;
+      const issueRatio = useDefault ? 0.45 : breakdown.issues / total;
+      const prRatio = useDefault ? 0.35 : breakdown.prs / total;
+
+      // Normalize roughly to maxRadius (map 100% to maxRadius, or scale slightly so small values are visible)
+      // User wants "72% commit" to look like the main spike.
+      // We map the ratio (0-1) directly to radius factor.
+      // e.g. 72% -> 0.72 * 80 radius = 57.6
+
+      // We scale it up a bit so 72% fills almost the whole graph if it's the dominant one.
+      // Let's map the largest ratio to 100% radius (80px) so it touches the edge?
+      // No, user specifically said "72% commit", implying absolute connection.
+      // Let's stick to direct percentage mapping: 100% = maxRadius.
+      // Visual tweak: ensure min value is visible (e.g. 10%)
+
+      const getRadius = (ratio: number) =>
+        Math.max(ratio * maxRadius * 1.2, 10); // 1.2 scale factor to fill more space
+
+      const reviewR = getRadius(reviewRatio);
+      const issueR = getRadius(issueRatio);
+      const prR = getRadius(prRatio);
+      const commitR = getRadius(commitRatio);
+
+      // Coordinates
+      // Top (Review): x=100, y=100-val
+      const reviewY = center - reviewR;
+      // Right (Issues): x=100+val, y=100
+      const issueX = center + issueR;
+      // Bottom (PRs): x=100, y=100+val
+      const prY = center + prR;
+      // Left (Commits): x=100-val, y=100
+      const commitX = center - commitR;
+
+      const targetPoints = `100,${reviewY} ${issueX},100 100,${prY} ${commitX},100`;
+
+      // Animation
+      radarPolygon.style.transition =
+        "all 1s cubic-bezier(0.34, 1.56, 0.64, 1)";
+      // Start from center
+      radarPolygon.setAttribute("points", "100,100 100,100 100,100 100,100");
+
+      // Trigger animation
+      requestAnimationFrame(() => {
+        radarPolygon.setAttribute("points", targetPoints);
+      });
+    }
+
+    function renderStackGraph(days: any[]) {
+      if (!weeklyGraphContainer) return;
+
+      const projectColors: Record<string, string> = {
+        OpenCodeHub: "#00f3ff", // Neon Cyan
+        see: "#bc13fe", // Electric Purple
+        FLUXPLAY: "#39d353", // Green
+        swadhin: "#ff0080", // Pink/Red
+        Other: "#333333",
+      };
+
+      const fallbackColors = ["#facc15", "#f472b6", "#60a5fa", "#a3e635"]; // Yellow, Pink, Blue, Lime
+
+      let html = "";
+
+      // Calculate global max for scaling height relative to the max day
+      const maxSeconds = Math.max(...days.map((d) => d.total_seconds), 1);
+
+      days.forEach((day: any) => {
+        const totalHeightPercent = Math.max(
+          (day.total_seconds / maxSeconds) * 100,
+          10,
+        );
+        const dateObj = new Date(day.date);
+        const dayName = dateObj.toLocaleDateString("en-US", {
+          weekday: "narrow",
+        });
+
+        // Generate stack segments
+        let stackHtml = "";
+        let currentStackHeight = 0;
+
+        day.projects.forEach((proj: any, index: number) => {
+          // Calculate segment height proportional to the *day's total active time* (or totalHeightPercent for global scale?
+          // Ideally we want the bar to represent total time, and segments to split that bar.
+
+          // Segment height as % of the bar:
+          const segmentPercent = (proj.seconds / day.total_seconds) * 100;
+          const color =
+            projectColors[proj.name] ||
+            fallbackColors[index % fallbackColors.length];
+
+          stackHtml += `<div style="height: ${segmentPercent}%; background-color: ${color};" class="w-full transition-all hover:opacity-80" title="${proj.name}: ${proj.text}"></div>`;
+        });
+
+        html += `
+            <div class="flex flex-col items-center gap-1 flex-1 h-full justify-end group/day relative">
+                 <!-- Tooltip for Day Total -->
+                 <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 bg-gray-900 border border-white/10 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover/day:opacity-100 transition-opacity whitespace-nowrap z-20 pointer-events-none shadow-xl">
+                    <span class="font-bold text-neon-cyan">${dayName}</span>: ${day.text}
+                 </div>
+                 
+                <div class="w-full bg-[#161b22]/30 rounded-sm relative overflow-hidden flex flex-col justify-end" style="height: ${totalHeightPercent}%;">
+                    ${stackHtml}
+                </div>
+                 <span class="text-[9px] text-gray-500 font-mono">${dayName}</span>
+            </div>
+         `;
+      });
+
+      weeklyGraphContainer.innerHTML = html;
+    }
+
+    async function fetchWakaTimeData() {
+      const activityCanvas = document.getElementById("activityChart");
+      const productivityCanvas = document.getElementById("productivityChart");
+
+      if (!activityCanvas || !productivityCanvas) return;
+
+      let activityChart: Chart | null = null;
+      let productivityChart: Chart | null = null;
+
+      // Function to get current theme colors - ensures we use the soft CSS variables
+      const getThemeColor = (varName: string) =>
+        getComputedStyle(document.documentElement)
+          .getPropertyValue(varName)
+          .trim();
+
+      const updateCharts = async (data?: any) => {
+        let chartData = data;
+        if (!chartData) {
+          try {
+            const response = await fetch(
+              `/api/wakatime/timeline?t=${Date.now()}`,
+            );
+            if (!response.ok) throw new Error("Failed");
+            chartData = await response.json();
+          } catch (e) {
+            console.error(e);
+            return;
+          }
+        }
+
+        if (!chartData || !chartData.days) return;
+
+        const labels = chartData.days.map((d: any) =>
+          new Date(d.date).toLocaleDateString("en-US", { weekday: "short" }),
+        );
+
+        // Dynamic Soft Colors - Fallback to soft hex if variable fails
+        const colors: Record<string, string> = {
+          OpenCodeHub: getThemeColor("--color-neon-cyan") || "#b4befe", // Lavender
+          FLUXPLAY: getThemeColor("--color-electric-purple") || "#cba6f7", // Mauve
+          see: getThemeColor("--color-green") || "#a6e3a1", // Green
+          swadhin: getThemeColor("--color-red") || "#f38ba8", // Red
+          "docs-site": getThemeColor("--color-yellow") || "#f9e2af", // Yellow
+          owngit: getThemeColor("--color-peach") || "#fab387", // Peach
+        };
+        const fallbackColors = [
+          "#fab387", // Peach
+          "#89b4fa", // Blue
+          "#f2cdcd", // Flamingo
+        ];
+
+        const allProjects = [
+          ...new Set(
+            chartData.days.flatMap((day: any) =>
+              day.projects.map((p: any) => p.name),
+            ),
+          ),
+        ] as string[];
+
+        const datasets = allProjects.map((project, idx) => ({
+          label: project,
+          data: chartData.days.map((day: any) => {
+            const proj = day.projects.find((p: any) => p.name === project);
+            return proj ? proj.seconds / 3600 : 0;
+          }),
+          backgroundColor:
+            colors[project] || fallbackColors[idx % fallbackColors.length],
+          borderRadius: 4,
+        }));
+
+        // Destroy existing charts
+        if (activityChart) activityChart.destroy();
+
+        activityChart = new Chart(activityCanvas as HTMLCanvasElement, {
+          type: "bar",
+          data: { labels, datasets },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                stacked: true,
+                grid: { color: getThemeColor("--color-glass-border") },
+                ticks: {
+                  color: getThemeColor("--color-subtext1"),
+                  font: { family: "monospace" },
+                },
+              },
+              y: {
+                stacked: true,
+                grid: { color: getThemeColor("--color-glass-border") },
+                ticks: {
+                  color: getThemeColor("--color-subtext1"),
+                  font: { family: "monospace" },
+                },
+              },
+            },
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: {
+                  color: getThemeColor("--color-text"),
+                  font: { family: "monospace", size: 10 },
+                  boxWidth: 10,
+                },
+              },
+              tooltip: {
+                backgroundColor: getThemeColor("--color-mantle"),
+                titleColor: getThemeColor("--color-neon-cyan"),
+                bodyColor: getThemeColor("--color-text"),
+                borderColor: getThemeColor("--color-glass-border"),
+                borderWidth: 1,
+              },
+            },
+          },
+        });
+
+        // Radar Chart
+        const dailyTotals = chartData.days.map(
+          (d: any) => d.total_seconds / 3600,
+        );
+
+        if (productivityChart) productivityChart.destroy();
+
+        productivityChart = new Chart(productivityCanvas as HTMLCanvasElement, {
+          type: "radar",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: "Daily Hours",
+                data: dailyTotals,
+                borderColor: getThemeColor("--color-electric-purple"),
+                backgroundColor:
+                  getThemeColor("--color-electric-purple") + "33", // 20% opacity approx
+                pointBackgroundColor: getThemeColor("--color-neon-cyan"),
+                pointBorderColor: "#fff",
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              r: {
+                angleLines: { color: getThemeColor("--color-glass-border") },
+                grid: { color: getThemeColor("--color-glass-border") },
+                pointLabels: {
+                  color: getThemeColor("--color-subtext1"),
+                  font: { family: "monospace", size: 10 },
+                },
+                ticks: { display: false, backdropColor: "transparent" },
+              },
+            },
+            plugins: { legend: { display: false } },
+          },
+        });
+      };
+
+      // Initial Load
+      updateCharts();
+
+      // Listen for theme changes
+      window.addEventListener("theme-changed", () => updateCharts());
+    }
+
+    // Replace original GitHub Fetch calls for graph
+    // We still fetch GitHub for stats/radar, but Graph is now WakaTime.
+    fetchWakaTimeData();
+
+    fetchGitHubData();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initGitHubActivity);
+  } else {
+    initGitHubActivity();
+  }
+  document.addEventListener("astro:page-load", initGitHubActivity);
+</script>

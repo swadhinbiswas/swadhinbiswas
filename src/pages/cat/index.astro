@@ -1,0 +1,325 @@
+---
+export const prerender = false;
+
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import {
+  db,
+  siteSettings,
+  socialLinks,
+  experiences,
+  projects,
+  skills,
+  achievements,
+  education,
+  publications,
+  interests,
+  posts,
+} from "../../db";
+
+// Fetch counts for dashboard
+let settingsCount = 0;
+let socialsCount = 0;
+let blogCount = 0;
+let experiencesCount = 0;
+let projectsCount = 0;
+let skillsCount = 0;
+let achievementsCount = 0;
+let educationCount = 0;
+let publicationsCount = 0;
+let interestsCount = 0;
+let dbConnected = false;
+
+try {
+  const [
+    settings,
+    socials,
+    rawPosts,
+    exps,
+    projs,
+    sklls,
+    achvs,
+    educs,
+    pubs,
+    ints,
+  ] = await Promise.all([
+    db.select().from(siteSettings),
+    db.select().from(socialLinks),
+    db.select().from(posts),
+    db.select().from(experiences),
+    db.select().from(projects),
+    db.select().from(skills),
+    db.select().from(achievements),
+    db.select().from(education),
+    db.select().from(publications),
+    db.select().from(interests),
+  ]);
+
+  settingsCount = settings.length;
+  socialsCount = socials.length;
+  blogCount = rawPosts.length;
+  experiencesCount = exps.length;
+  projectsCount = projs.length;
+  skillsCount = sklls.length;
+  achievementsCount = achvs.length;
+  educationCount = educs.length;
+  publicationsCount = pubs.length;
+  interestsCount = ints.length;
+  dbConnected = true;
+} catch (error) {
+  console.error("Dashboard data fetch error:", error);
+}
+---
+
+<AdminLayout title="Dashboard">
+  <div class="space-y-8">
+    <div>
+      <h1 class="text-3xl font-bold text-white">Dashboard</h1>
+      <p class="text-gray-400 mt-2">Manage your portfolio content</p>
+    </div>
+
+    <!-- Database Status -->
+    <div
+      class={`glass-panel rounded-xl p-4 border ${dbConnected ? "border-green-500/30 bg-green-500/5" : "border-red-500/30 bg-red-500/5"}`}
+    >
+      <div class="flex items-center gap-3">
+        <div
+          class={`w-3 h-3 rounded-full ${dbConnected ? "bg-green-500 animate-pulse" : "bg-red-500"}`}
+        >
+        </div>
+        <span class={dbConnected ? "text-green-400" : "text-red-400"}>
+          {
+            dbConnected
+              ? "Database Connected"
+              : "Database Not Connected - Please configure Turso credentials in .env"
+          }
+        </span>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <a
+        href="/cat/settings"
+        class="glass-panel rounded-xl p-6 border border-white/10 hover:border-neon-cyan/50 transition-colors group"
+      >
+        <div class="text-3xl mb-2">⚙️</div>
+        <div
+          class="text-2xl font-bold text-white group-hover:text-neon-cyan transition-colors"
+        >
+          {settingsCount}
+        </div>
+        <div class="text-sm text-gray-400">Settings</div>
+      </a>
+
+      <a
+        href="/cat/socials"
+        class="glass-panel rounded-xl p-6 border border-white/10 hover:border-neon-cyan/50 transition-colors group"
+      >
+        <div class="text-3xl mb-2">🔗</div>
+        <div
+          class="text-2xl font-bold text-white group-hover:text-neon-cyan transition-colors"
+        >
+          {socialsCount}
+        </div>
+        <div class="text-sm text-gray-400">Socials</div>
+      </a>
+
+      <a
+        href="/cat/blog"
+        class="glass-panel rounded-xl p-6 border border-white/10 hover:border-neon-cyan/50 transition-colors group"
+      >
+        <div class="text-3xl mb-2">✍️</div>
+        <div
+          class="text-2xl font-bold text-white group-hover:text-neon-cyan transition-colors"
+        >
+          {blogCount}
+        </div>
+        <div class="text-sm text-gray-400">Blog Posts</div>
+      </a>
+
+      <a
+        href="/cat/experiences"
+        class="glass-panel rounded-xl p-6 border border-white/10 hover:border-neon-cyan/50 transition-colors group"
+      >
+        <div class="text-3xl mb-2">💼</div>
+        <div
+          class="text-2xl font-bold text-white group-hover:text-neon-cyan transition-colors"
+        >
+          {experiencesCount}
+        </div>
+        <div class="text-sm text-gray-400">Experiences</div>
+      </a>
+
+      <a
+        href="/cat/projects"
+        class="glass-panel rounded-xl p-6 border border-white/10 hover:border-neon-cyan/50 transition-colors group"
+      >
+        <div class="text-3xl mb-2">📁</div>
+        <div
+          class="text-2xl font-bold text-white group-hover:text-neon-cyan transition-colors"
+        >
+          {projectsCount}
+        </div>
+        <div class="text-sm text-gray-400">Projects</div>
+      </a>
+
+      <a
+        href="/cat/skills"
+        class="glass-panel rounded-xl p-6 border border-white/10 hover:border-neon-cyan/50 transition-colors group"
+      >
+        <div class="text-3xl mb-2">🛠️</div>
+        <div
+          class="text-2xl font-bold text-white group-hover:text-neon-cyan transition-colors"
+        >
+          {skillsCount}
+        </div>
+        <div class="text-sm text-gray-400">Skills</div>
+      </a>
+
+      <a
+        href="/cat/achievements"
+        class="glass-panel rounded-xl p-6 border border-white/10 hover:border-neon-cyan/50 transition-colors group"
+      >
+        <div class="text-3xl mb-2">🏆</div>
+        <div
+          class="text-2xl font-bold text-white group-hover:text-neon-cyan transition-colors"
+        >
+          {achievementsCount}
+        </div>
+        <div class="text-sm text-gray-400">Achievements</div>
+      </a>
+
+      <a
+        href="/cat/education"
+        class="glass-panel rounded-xl p-6 border border-white/10 hover:border-neon-cyan/50 transition-colors group"
+      >
+        <div class="text-3xl mb-2">🎓</div>
+        <div
+          class="text-2xl font-bold text-white group-hover:text-neon-cyan transition-colors"
+        >
+          {educationCount}
+        </div>
+        <div class="text-sm text-gray-400">Education</div>
+      </a>
+
+      <a
+        href="/cat/publications"
+        class="glass-panel rounded-xl p-6 border border-white/10 hover:border-neon-cyan/50 transition-colors group"
+      >
+        <div class="text-3xl mb-2">📚</div>
+        <div
+          class="text-2xl font-bold text-white group-hover:text-neon-cyan transition-colors"
+        >
+          {publicationsCount}
+        </div>
+        <div class="text-sm text-gray-400">Publications</div>
+      </a>
+
+      <a
+        href="/cat/interests"
+        class="glass-panel rounded-xl p-6 border border-white/10 hover:border-neon-cyan/50 transition-colors group"
+      >
+        <div class="text-3xl mb-2">🎭</div>
+        <div
+          class="text-2xl font-bold text-white group-hover:text-neon-cyan transition-colors"
+        >
+          {interestsCount}
+        </div>
+        <div class="text-sm text-gray-400">Interests</div>
+      </a>
+
+      <a
+        href="/cat/bio"
+        class="glass-panel rounded-xl p-6 border border-white/10 hover:border-neon-cyan/50 transition-colors group"
+      >
+        <div class="text-3xl mb-2">📝</div>
+        <div
+          class="text-2xl font-bold text-white group-hover:text-neon-cyan transition-colors"
+        >
+          Bio
+        </div>
+        <div class="text-sm text-gray-400">Personal Info</div>
+      </a>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="glass-panel rounded-xl p-6 border border-white/10">
+      <h2 class="text-xl font-bold text-white mb-4">Quick Actions</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <a
+          href="/cat/settings"
+          class="px-4 py-3 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors text-center"
+        >
+          Edit Site Settings
+        </a>
+        <a
+          href="/cat/blog"
+          class="px-4 py-3 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors text-center"
+        >
+          Add New Post
+        </a>
+        <a
+          href="/cat/projects"
+          class="px-4 py-3 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors text-center"
+        >
+          Add New Project
+        </a>
+        <a
+          href="/cat/experiences"
+          class="px-4 py-3 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors text-center"
+        >
+          Add Experience
+        </a>
+      </div>
+    </div>
+
+    <!-- Setup Instructions -->
+    {
+      !dbConnected && (
+        <div class="glass-panel rounded-xl p-6 border border-yellow-500/30 bg-yellow-500/5">
+          <h2 class="text-xl font-bold text-yellow-400 mb-4">
+            ⚠️ Setup Required
+          </h2>
+          <div class="space-y-4 text-sm text-gray-300">
+            <p>To complete the admin panel setup:</p>
+            <ol class="list-decimal list-inside space-y-2 ml-4">
+              <li>
+                Create a Turso database at{" "}
+                <a
+                  href="https://turso.tech"
+                  target="_blank"
+                  class="text-neon-cyan hover:underline"
+                >
+                  turso.tech
+                </a>
+              </li>
+              <li>
+                Update your{" "}
+                <code class="bg-white/10 px-2 py-1 rounded">.env</code> file
+                with:
+                <pre class="bg-white/5 p-4 rounded-lg mt-2 overflow-x-auto">
+                  TURSO_DATABASE_URL="libsql://your-database.turso.io"
+                  TURSO_AUTH_TOKEN="your-auth-token"
+                </pre>
+              </li>
+              <li>
+                Run{" "}
+                <code class="bg-white/10 px-2 py-1 rounded">
+                  bun run db:push
+                </code>{" "}
+                to create the database tables
+              </li>
+              <li>
+                Run{" "}
+                <code class="bg-white/10 px-2 py-1 rounded">
+                  bun run db:seed
+                </code>{" "}
+                to populate initial data
+              </li>
+            </ol>
+          </div>
+        </div>
+      )
+    }
+  </div>
+</AdminLayout>

@@ -1,0 +1,75 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { db, posts as postsTable } from "../../db";
+import { desc, eq } from "drizzle-orm";
+import BlogCard from "../../components/blog/BlogCard.astro";
+
+// Fetch posts
+const dbPosts = await db
+    .select()
+    .from(postsTable)
+    .where(eq(postsTable.draft, false))
+    .orderBy(desc(postsTable.publishedAt));
+
+const posts = dbPosts.map((p) => ({
+    slug: p.slug,
+    data: {
+        title: p.title,
+        description: p.description || "",
+        publishedAt: p.publishedAt,
+        tags: JSON.parse(p.tags || "[]"),
+        draft: p.draft,
+    },
+}));
+---
+
+<BaseLayout title="Blog">
+    <div class="animate-fade-in max-w-5xl mx-auto">
+        <!-- Header -->
+        <div class="mb-16 text-center">
+            <h1 class="text-4xl sm:text-5xl font-bold text-text mb-6">
+                Thinking <span class="text-accent">Aloud</span>
+            </h1>
+            <p class="text-lg text-subtext0 max-w-2xl mx-auto leading-relaxed">
+                Thoughts on software engineering, system design, and the
+                occasional philosophical ramble. Usually about making things
+                scalable, maintainable, or just plain cool.
+            </p>
+        </div>
+
+        {
+            posts.length > 0 ? (
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {posts.map((post) => (
+                        <BlogCard post={post} />
+                    ))}
+                </div>
+            ) : (
+                <div class="text-center py-20 bg-mantle/50 rounded-3xl border border-surface0 border-dashed">
+                    <p class="text-xl text-subtext0">
+                        No posts yet. Check back soon!
+                    </p>
+                </div>
+            )
+        }
+    </div>
+</BaseLayout>
+
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-out;
+    }
+</style>

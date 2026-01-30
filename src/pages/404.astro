@@ -1,0 +1,48 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Terminal404 from "../components/fun/Terminal404";
+---
+
+<BaseLayout
+    title="404 - Not Found"
+    description="System Error: Location inaccessible."
+>
+    <div
+        class="min-h-[70vh] flex flex-col items-center justify-center relative"
+    >
+        <!-- Glitchy 404 Text -->
+        <h1
+            class="text-6xl md:text-9xl font-bold font-mono tracking-tighter mb-8 relative group select-none"
+        >
+            <span
+                class="absolute inset-0 text-red-500 translate-x-[2px] opacity-0 group-hover:opacity-70 transition-opacity"
+                >404</span
+            >
+            <span
+                class="absolute inset-0 text-blue-500 -translate-x-[2px] opacity-0 group-hover:opacity-70 transition-opacity"
+                >404</span
+            >
+            <span
+                class="relative z-10 bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-500"
+                >404</span
+            >
+        </h1>
+
+        <div class="w-full max-w-2xl h-[500px] relative z-20">
+            <Terminal404 client:load />
+        </div>
+
+        <p class="mt-8 text-gray-500 text-sm font-mono text-center">
+            LOST_IN_CYBERSPACE // <a
+                href="/"
+                class="text-neon-cyan hover:underline">RETURN_TO_BASE</a
+            >
+        </p>
+
+        <!-- Background Decoration -->
+        <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-neon-cyan/5 blur-[100px] rounded-full pointer-events-none z-0"
+        >
+        </div>
+    </div>
+</BaseLayout>

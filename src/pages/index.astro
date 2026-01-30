@@ -1,0 +1,123 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/home/Hero.tsx";
+import FeaturedProjects from "../components/home/FeaturedProjects.astro";
+import BentoGrid from "../components/home/BentoGrid.astro";
+import { db, experiences } from "../db";
+import { siteConfig } from "../config/site";
+import JsonLd from "../components/seo/JsonLd.astro";
+
+const experiencesList = await db
+  .select()
+  .from(experiences)
+  .orderBy(experiences.order);
+
+const homeSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${siteConfig.url}/#website`,
+      url: siteConfig.url,
+      name: siteConfig.name,
+      alternateName: ["Swadhin Biswas", "Backend Engineer"],
+      description: siteConfig.description,
+      inLanguage: "en-US",
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${siteConfig.url}/?q={search_term_string}`,
+        },
+        "query-input": "required name=search_term_string",
+      },
+    },
+    {
+      "@type": "Person",
+      "@id": `${siteConfig.url}/#person`,
+      name: "Swadhin Biswas",
+      alternateName: ["swadh1n", "Swadhin"],
+      url: siteConfig.url,
+      image: {
+        "@type": "ImageObject",
+        url: "https://avatars.githubusercontent.com/u/13241788?v=4",
+        caption: "Swadhin Biswas",
+      },
+      sameAs: [
+        ...siteConfig.socials.map((s) => s.url),
+        "https://scholar.google.com/citations?hl=en&user=xHqlwTAAAAAJ",
+        "https://thephonex.notion.site/Notes-2ad8fd44dc51802fbd38cd337776960d",
+      ],
+      jobTitle: "Backend Engineer",
+      worksFor: {
+        "@type": "Organization",
+        name: "TheBoringRats",
+        url: "https://boringrats.dev/",
+        logo: "https://raw.githubusercontent.com/BoringRats/.github/refs/heads/main/profile/boringrats.png",
+      },
+      knowsAbout: siteConfig.skills,
+      alumniOf: {
+        "@type": "CollegeOrUniversity",
+        name: "Computer Science & Engineering",
+      },
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Dhaka",
+        addressCountry: "Bangladesh",
+      },
+      email: siteConfig.email,
+    },
+  ],
+};
+---
+
+<BaseLayout>
+  <JsonLd slot="head" schema={homeSchema} />
+  <div class="space-y-16 animate-fade-in">
+    <!-- Hero Section -->
+    <Hero client:load experiences={experiencesList} />
+
+    <!-- Featured Projects -->
+    <FeaturedProjects />
+
+    <!-- Bento Dashboard Grid -->
+    <BentoGrid />
+  </div>
+</BaseLayout>
+
+<style>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .animate-fade-in > * {
+    animation: fadeIn 0.5s ease-out;
+    animation-fill-mode: both;
+  }
+
+  .animate-fade-in > *:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+  .animate-fade-in > *:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .animate-fade-in > *:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+  .animate-fade-in > *:nth-child(4) {
+    animation-delay: 0.4s;
+  }
+</style>

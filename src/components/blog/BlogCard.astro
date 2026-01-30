@@ -1,0 +1,87 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+    post: {
+        slug: string;
+        data: {
+            title: string;
+            description: string;
+            publishedAt: Date;
+            tags?: string[];
+        };
+    };
+}
+
+const { post } = Astro.props;
+
+// Format date
+const formattedDate = post.data.publishedAt.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+});
+---
+
+<a
+    href={`/blog/${post.slug}`}
+    class="group relative block p-6 bg-mantle border border-surface0/50 rounded-2xl hover:border-accent/40 transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+>
+    <!-- Hover Glow (Subtle) -->
+    <div
+        class="absolute inset-0 bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+    >
+    </div>
+
+    <div class="relative z-10 flex flex-col h-full">
+        <!-- Meta -->
+        <div
+            class="flex items-center gap-3 text-xs text-subtext0 mb-4 font-mono"
+        >
+            <time datetime={post.data.publishedAt.toISOString()}
+                >{formattedDate}</time
+            >
+            {
+                post.data.tags && (
+                    <>
+                        <span>•</span>
+                        <div class="flex gap-2">
+                            {post.data.tags.slice(0, 3).map((tag) => (
+                                <span class="text-accent/80">#{tag}</span>
+                            ))}
+                        </div>
+                    </>
+                )
+            }
+        </div>
+
+        <!-- Title -->
+        <h3
+            class="text-xl font-bold text-text mb-2 group-hover:text-accent transition-colors line-clamp-2"
+        >
+            {post.data.title}
+        </h3>
+
+        <!-- Description -->
+        <p class="text-subtext0 text-sm line-clamp-3 mb-4 leading-relaxed">
+            {post.data.description}
+        </p>
+
+        <!-- Read More arrow -->
+        <div class="mt-auto flex items-center text-accent text-sm font-medium">
+            Read Article
+            <svg
+                class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+            </svg>
+        </div>
+    </div>
+</a>

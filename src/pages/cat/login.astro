@@ -1,0 +1,132 @@
+---
+export const prerender = false;
+
+import "../../styles/global.css";
+
+// Check if already logged in
+const sessionToken = Astro.cookies.get("admin_session")?.value;
+if (sessionToken) {
+  return Astro.redirect("/cat");
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Login | Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body
+    class="min-h-screen bg-[#050510] text-white font-mono flex items-center justify-center"
+  >
+    <!-- Background -->
+    <div
+      class="fixed inset-0 z-[-1] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-[#050510] to-[#050510]"
+    >
+    </div>
+
+    <div class="w-full max-w-md p-8">
+      <div class="glass-panel rounded-2xl p-8 border border-white/10">
+        <div class="text-center mb-8">
+          <h1 class="text-2xl font-bold text-neon-cyan">Admin Login</h1>
+          <p class="text-gray-500 text-sm mt-2">Portfolio CMS</p>
+        </div>
+
+        <form id="loginForm" class="space-y-6">
+          <div>
+            <label for="username" class="block text-sm text-gray-400 mb-2"
+              >Username</label
+            >
+            <input
+              type="text"
+              id="username"
+              name="username"
+              required
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+              placeholder="Enter username"
+            />
+          </div>
+
+          <div>
+            <label for="password" class="block text-sm text-gray-400 mb-2"
+              >Password</label
+            >
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+              placeholder="Enter password"
+            />
+          </div>
+
+          <div
+            id="errorMessage"
+            class="hidden text-red-400 text-sm text-center"
+          >
+          </div>
+
+          <button
+            type="submit"
+            class="w-full py-3 bg-neon-cyan text-black font-bold rounded-lg hover:bg-neon-cyan/90 transition-colors"
+          >
+            Login
+          </button>
+        </form>
+
+        <div class="mt-6 text-center">
+          <a
+            href="/"
+            class="text-sm text-gray-500 hover:text-neon-cyan transition-colors"
+          >
+            ← Back to site
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById("loginForm") as HTMLFormElement;
+      const errorMessage = document.getElementById(
+        "errorMessage",
+      ) as HTMLDivElement;
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+
+        try {
+          const response = await fetch("/api/cat/login", {
+            method: "POST",
+            body: formData,
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            window.location.href = result.redirect || "/cat";
+          } else {
+            errorMessage.textContent = result.error || "Login failed";
+            errorMessage.classList.remove("hidden");
+          }
+        } catch (error) {
+          errorMessage.textContent = "Network error. Please try again.";
+          errorMessage.classList.remove("hidden");
+        }
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  .glass-panel {
+    background: rgba(17, 17, 27, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+</style>

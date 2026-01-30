@@ -1,0 +1,206 @@
+---
+const { project } = Astro.props;
+
+// Function to determine badge color based on tag
+const getTagStyle = (tag: string) => {
+    const t = tag.toLowerCase();
+    if (t.includes("react") || t.includes("next"))
+        return "text-blue-400 bg-blue-400/10 border-blue-400/20";
+    if (t.includes("vue") || t.includes("nuxt"))
+        return "text-green-400 bg-green-400/10 border-green-400/20";
+    if (t.includes("ts") || t.includes("type"))
+        return "text-blue-300 bg-blue-300/10 border-blue-300/20";
+    if (t.includes("go"))
+        return "text-cyan-400 bg-cyan-400/10 border-cyan-400/20";
+    if (t.includes("python"))
+        return "text-yellow-400 bg-yellow-400/10 border-yellow-400/20";
+    return "text-gray-400 bg-white/5 border-white/10";
+};
+
+// Generate fallback content if needed
+const projectData = {
+    ...project,
+    content:
+        project.content ||
+        `### ${project.name}\n\n${project.description}\n\n*(No detailed content added yet)*`,
+};
+const slug = project.name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+---
+
+<a
+    href={`/projects/${slug}`}
+    class="project-card group cursor-pointer relative h-full block"
+    data-project={JSON.stringify(projectData)}
+>
+    {/* Main Card Container */}
+    <div
+        class="h-full bg-[#1e1e2e] rounded-xl overflow-hidden border border-white/10 transition-all duration-300 hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,243,255,0.15)] flex flex-col"
+    >
+        {/* Header: Mac-style dots + Stars */}
+        <div
+            class="bg-[#181825] px-4 py-3 border-b border-white/5 flex items-center justify-between"
+        >
+            <div class="flex gap-2">
+                <div class="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
+                <div class="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
+                <div class="w-3 h-3 rounded-full bg-[#27c93f]"></div>
+            </div>
+
+            <button
+                class="star-btn flex items-center gap-1.5 text-xs font-mono text-gray-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-2 py-1 rounded-full z-10"
+                data-id={project.id}
+            >
+                <span class="star-count">{project.stars || 0}</span>
+                <svg
+                    class={`w-3 h-3 transition-colors ${project.stars > 0 ? "text-yellow-400 fill-current" : "text-gray-500 hover:text-yellow-400"}`}
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                >
+                    <path
+                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                    ></path>
+                </svg>
+            </button>
+        </div>
+
+        <script>
+            declare global {
+                interface Window {
+                    openSupportModal: () => void;
+                }
+            }
+            function initStars() {
+                document.querySelectorAll(".star-btn").forEach((btn) => {
+                    // Avoid double binding
+                    if (btn.hasAttribute("data-initialized")) return;
+                    btn.setAttribute("data-initialized", "true");
+
+                    btn.addEventListener("click", async (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        const button = e.currentTarget as HTMLButtonElement;
+                        const id = button.dataset.id;
+                        const countSpan = button.querySelector(".star-count");
+                        const svg = button.querySelector("svg");
+
+                        // Optimistic visual feedback
+                        button.classList.add("scale-110");
+                        setTimeout(
+                            () => button.classList.remove("scale-110"),
+                            200,
+                        );
+
+                        try {
+                            const res = await fetch("/api/projects/star", {
+                                method: "POST",
+                                body: JSON.stringify({
+                                    id: parseInt(id || "0"),
+                                }),
+                                headers: { "Content-Type": "application/json" },
+                            });
+
+                            if (res.ok) {
+                                const data = await res.json();
+                                if (data.success && countSpan) {
+                                    countSpan.textContent = data.stars;
+                                    if (svg) {
+                                        svg.classList.remove("text-gray-500");
+                                        svg.classList.add(
+                                            "text-yellow-400",
+                                            "fill-current",
+                                        );
+                                    }
+
+                                    // Trigger Support Modal if available
+                                    // @ts-ignore
+                                    if (window.openSupportModal) {
+                                        setTimeout(
+                                            () => window.openSupportModal(),
+                                            800,
+                                        );
+                                    }
+                                }
+                            }
+                        } catch (err) {
+                            console.error("Star failed", err);
+                        }
+                    });
+                });
+            }
+
+            // Run on load and View Transitions
+            document.addEventListener("DOMContentLoaded", initStars);
+            document.addEventListener("astro:page-load", initStars);
+        </script>
+
+        {/* Content Body */}
+        <div class="p-6 flex-1 flex flex-col gap-4">
+            {/* Title Section */}
+            <div>
+                <h3
+                    class="font-mono text-lg font-bold text-neon-cyan/90 group-hover:text-neon-cyan transition-colors"
+                >
+                    <span class="text-electric-purple">swadhin</span>
+                    <span class="text-gray-500 mx-2">/</span>
+                    {project.name.toLowerCase()}
+                </h3>
+            </div>
+
+            {/* Description */}
+            <p class="text-sm text-gray-400 leading-relaxed line-clamp-2">
+                {project.description}
+            </p>
+
+            <div class="flex-1"></div>
+
+            {/* Tags */}
+            <div class="flex flex-wrap gap-2 mt-2">
+                {
+                    project.tags
+                        .slice(0, 4)
+                        .map((tag: string) => (
+                            <span
+                                class={`text-[10px] px-2 py-0.5 rounded border font-mono ${getTagStyle(tag)}`}
+                            >
+                                {tag}
+                            </span>
+                        ))
+                }
+                {
+                    project.tags.length > 4 && (
+                        <span class="text-[10px] px-2 py-0.5 rounded border border-white/10 text-gray-500 font-mono">
+                            +{project.tags.length - 4}
+                        </span>
+                    )
+                }
+            </div>
+        </div>
+
+        {/* Footer Status Bar */}
+        <div
+            class="px-6 py-4 bg-[#181825]/50 border-t border-white/5 flex items-center justify-between"
+        >
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse">
+                </div>
+                <span class="text-xs text-gray-400 font-mono"
+                    >{project.status || "Active"}</span
+                >
+            </div>
+
+            {
+                project.featured && (
+                    <span class="text-[10px] font-bold tracking-widest text-electric-purple/80 uppercase px-2 py-1 rounded bg-electric-purple/5 border border-electric-purple/20">
+                        Featured
+                    </span>
+                )
+            }
+        </div>
+    </div>
+</a>

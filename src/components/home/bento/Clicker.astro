@@ -1,0 +1,447 @@
+<div
+  class="h-full flex flex-col relative overflow-hidden group/game select-none"
+  id="game-container"
+>
+  <!-- Header: Global Stats -->
+  <div class="flex items-center justify-between mb-2 z-10">
+    <h3 class="text-sm font-mono text-white flex items-center gap-2">
+      <span class="text-mauve text-lg">✦</span>
+      <span class="text-xs">Battle_v2</span>
+    </h3>
+    <div class="flex gap-2">
+      <div
+        class="text-[10px] text-gray-300 font-mono bg-white/10 px-2 py-0.5 rounded-full flex gap-1 items-center"
+      >
+        <span class="opacity-70">Global:</span>
+        <span id="global-display" class="text-neon-cyan font-bold">...</span>
+      </div>
+      <div
+        class="text-[10px] text-gray-300 font-mono bg-white/10 px-2 py-0.5 rounded-full"
+      >
+        <span class="opacity-70">Best:</span>
+        <span id="high-score" class="font-bold">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game UI Layer -->
+  <div class="flex-1 flex flex-col items-center justify-between py-2 z-10">
+    <!-- Timer & Mode -->
+    <div class="flex flex-col items-center gap-1">
+      <div class="flex gap-1 mb-1">
+        <button
+          class="mode-btn px-2 py-0.5 text-[10px] font-mono rounded border transition-all bg-mauve text-base border-mauve/50 font-bold"
+          data-mode="10">10s</button
+        >
+        <button
+          class="mode-btn px-2 py-0.5 text-[10px] font-mono rounded border transition-all bg-surface0 text-gray-400 border-transparent hover:bg-surface1 hover:text-white"
+          data-mode="30">30s</button
+        >
+        <button
+          class="mode-btn px-2 py-0.5 text-[10px] font-mono rounded border transition-all bg-surface0 text-gray-400 border-transparent hover:bg-surface1 hover:text-white"
+          data-mode="60">60s</button
+        >
+      </div>
+      <div class="text-2xl font-mono text-mauve font-bold" id="timer">
+        10.00s
+      </div>
+    </div>
+
+    <!-- Main Score & CPS -->
+    <div class="text-center relative">
+      <div
+        id="cps-display"
+        class="text-[10px] text-subtext1 font-mono mb-1 transition-opacity opacity-0"
+      >
+        CPS: <span id="cps" class="text-neon-cyan font-bold">0.0</span>
+      </div>
+      <p
+        class="text-5xl font-black text-text font-mono tracking-tighter"
+        id="score"
+      >
+        0
+      </p>
+      <p class="text-[10px] text-subtext1 uppercase tracking-widest font-mono">
+        Clicks
+      </p>
+    </div>
+
+    <!-- The Game Button -->
+    <button
+      id="click-btn"
+      class="relative w-24 h-24 rounded-full transition-all duration-75 active:scale-90 hover:scale-105 group focus:outline-none touch-manipulation disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+      aria-label="Click me"
+    >
+      <div
+        class="absolute inset-0 rounded-full bg-gradient-to-b from-mauve to-electric-purple opacity-20 group-hover:opacity-30 transition-opacity blur-md"
+      >
+      </div>
+      <div
+        class="absolute inset-0 rounded-full bg-gradient-to-b from-surface0 to-base border border-white/10 shadow-xl flex items-center justify-center overflow-hidden"
+      >
+        <div id="ripple-container" class="absolute inset-0 pointer-events-none">
+        </div>
+        <svg
+          class="w-8 h-8 text-mauve group-hover:text-neon-cyan transition-colors duration-300"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+        </svg>
+      </div>
+    </button>
+  </div>
+
+  <!-- Particle Container -->
+  <div
+    id="particles-container"
+    class="absolute inset-0 pointer-events-none overflow-hidden z-20"
+  >
+  </div>
+
+  <!-- Overlays -->
+
+  <!-- Start Screen -->
+  <div
+    id="start-screen"
+    class="absolute inset-0 bg-base/90 backdrop-blur-sm z-30 flex flex-col items-center justify-center gap-4 text-center p-4"
+  >
+    <div>
+      <h2 class="text-2xl font-bold text-white mb-1">Click Battle!</h2>
+      <p class="text-xs text-subtext0">Beat the developer's score!</p>
+    </div>
+    <div
+      class="bg-surface0/50 p-3 rounded-lg border border-white/5 w-full max-w-[200px]"
+    >
+      <div class="text-[10px] text-subtext1 uppercase">Target</div>
+      <div class="text-2xl font-bold text-mauve" id="target-score">100</div>
+    </div>
+    <button
+      id="start-btn"
+      class="px-6 py-2 bg-mauve text-base font-bold rounded-lg hover:bg-mauve/90 transition-transform active:scale-95 shadow-lg shadow-mauve/20"
+    >
+      Start Challenge
+    </button>
+  </div>
+
+  <!-- Game Over Screen -->
+  <div
+    id="game-over"
+    class="absolute inset-0 bg-base/95 backdrop-blur-md z-40 flex flex-col items-center justify-center gap-4 text-center p-4 hidden opacity-0 transition-opacity duration-300"
+  >
+    <div>
+      <h2 class="text-3xl font-bold text-white mb-1" id="final-title">
+        Time's Up!
+      </h2>
+      <div class="text-sm font-mono text-neon-cyan">
+        <span id="final-score">0</span> Clicks
+      </div>
+    </div>
+
+    <div
+      id="result-badge"
+      class="px-3 py-1 rounded-full text-xs font-bold bg-green-500/20 text-green-400"
+    >
+      New Record!
+    </div>
+
+    <div class="grid grid-cols-2 gap-2 w-full max-w-[200px] text-xs">
+      <div class="bg-surface0 p-2 rounded border border-white/5">
+        <div class="text-subtext1">Peak CPS</div>
+        <div class="font-bold text-white" id="final-cps">0.0</div>
+      </div>
+      <div class="bg-surface0 p-2 rounded border border-white/5">
+        <div class="text-subtext1">Avg CPS</div>
+        <div class="font-bold text-white" id="final-avg">0.0</div>
+      </div>
+    </div>
+
+    <button
+      id="replay-btn"
+      class="px-6 py-2 bg-mauve text-base font-bold rounded-lg hover:bg-mauve/90 transition-transform active:scale-95 shadow-lg shadow-mauve/20 w-full max-w-[200px]"
+    >
+      Play Again
+    </button>
+  </div>
+
+  <div
+    class="absolute inset-0 bg-gradient-to-t from-mauve/5 to-transparent pointer-events-none z-0"
+  >
+  </div>
+</div>
+
+<script>
+  // Elements
+  const container = document.getElementById("game-container");
+  const items = {
+    score: document.getElementById("score"),
+    timer: document.getElementById("timer"),
+    cps: document.getElementById("cps"),
+    cpsContainer: document.getElementById("cps-display"),
+    btn: document.getElementById("click-btn") as HTMLButtonElement,
+    highScore: document.getElementById("high-score"),
+    global: document.getElementById("global-display"),
+    startScreen: document.getElementById("start-screen"),
+    gameOver: document.getElementById("game-over"),
+    target: document.getElementById("target-score"),
+    startBtn: document.getElementById("start-btn"),
+    replayBtn: document.getElementById("replay-btn"),
+    finalScore: document.getElementById("final-score"),
+    finalCps: document.getElementById("final-cps"),
+    finalAvg: document.getElementById("final-avg"),
+    resultBadge: document.getElementById("result-badge"),
+    particles: document.getElementById("particles-container"),
+    ripple: document.getElementById("ripple-container"),
+  };
+
+  // State
+  let state = {
+    active: false,
+    score: 0,
+    mode: 10,
+    startTime: 0,
+    clickTimes: [] as number[],
+    bestScore: parseInt(
+      localStorage.getItem("swadhin-clicker-highscore") || "0",
+    ),
+    globalCount: 128516, // fallback
+    timers: { game: 0, cps: 0 },
+  };
+
+  // Init
+  items.highScore!.innerText = state.bestScore.toLocaleString();
+  fetchGlobalStats();
+  updateTarget();
+
+  // Mode Selection
+  const activeClasses = "bg-mauve text-base border-mauve/50 font-bold".split(
+    " ",
+  );
+  const inactiveClasses =
+    "bg-surface0 text-gray-400 border-transparent hover:bg-surface1 hover:text-white".split(
+      " ",
+    );
+
+  document.querySelectorAll(".mode-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      if (state.active) return;
+
+      // Reset all
+      document.querySelectorAll(".mode-btn").forEach((b) => {
+        b.classList.remove(...activeClasses);
+        b.classList.add(...inactiveClasses);
+      });
+
+      // Set active
+      const target = e.target as HTMLElement;
+      target.classList.remove(...inactiveClasses);
+      target.classList.add(...activeClasses);
+
+      state.mode = parseInt(target.dataset.mode || "10");
+      items.timer!.innerText = state.mode.toFixed(2) + "s";
+      updateTarget();
+    });
+  });
+
+  // Game Logic
+  async function fetchGlobalStats() {
+    try {
+      const res = await fetch("/api/clicks");
+      const data = await res.json();
+      if (data.count) {
+        state.globalCount = data.count;
+        items.global!.innerText = state.globalCount.toLocaleString();
+      }
+    } catch (e) {
+      console.error("Failed to fetch global", e);
+    }
+  }
+
+  async function pushScore(amount: number) {
+    // Optimistic update
+    state.globalCount += amount;
+    items.global!.innerText = state.globalCount.toLocaleString();
+
+    try {
+      await fetch("/api/clicks", {
+        method: "POST",
+        body: JSON.stringify({ amount }),
+        headers: { "Content-Type": "application/json" },
+      });
+      // Re-sync to be sure
+      // fetchGlobalStats();
+    } catch (e) {
+      console.error("Sync failed", e);
+    }
+  }
+
+  function updateTarget() {
+    // Simple scaling target
+    let target = Math.round(
+      (state.bestScore > 0 ? state.bestScore : 50) * (state.mode / 10),
+    );
+    // Clamp for fun
+    if (state.bestScore === 0) target = state.mode * 6; // ~6 CPS target for beginner
+    items.target!.innerText = target.toLocaleString();
+  }
+
+  function startGame() {
+    state.active = true;
+    state.score = 0;
+    state.clickTimes = [];
+    state.startTime = Date.now();
+
+    items.score!.innerText = "0";
+    items.startScreen!.style.display = "none";
+    items.gameOver!.style.display = "none";
+    items.gameOver!.classList.remove("opacity-100");
+    items.btn!.disabled = false;
+    items.cpsContainer!.style.opacity = "1";
+
+    state.timers.game = setInterval(gameLoop, 10) as any;
+    state.timers.cps = setInterval(updateCPS, 100) as any;
+  }
+
+  function gameLoop() {
+    const elapsed = (Date.now() - state.startTime) / 1000;
+    const remaining = Math.max(0, state.mode - elapsed);
+    items.timer!.innerText = remaining.toFixed(2) + "s";
+
+    if (remaining <= 0) endGame();
+  }
+
+  function updateCPS() {
+    const now = Date.now();
+    // Filter clicks in last 1s
+    state.clickTimes = state.clickTimes.filter((t) => now - t < 1000);
+    items.cps!.innerText = state.clickTimes.length.toFixed(1);
+  }
+
+  function endGame() {
+    state.active = false;
+    items.btn!.disabled = true;
+    clearInterval(state.timers.game);
+    clearInterval(state.timers.cps);
+
+    // Stats
+    const avg = (state.score / state.mode).toFixed(1);
+    const peak = items.cps!.innerText; // approx
+
+    items.finalScore!.innerText = state.score.toString();
+    items.finalCps!.innerText = peak;
+    items.finalAvg!.innerText = avg;
+
+    // Result Badge
+    if (state.score > state.bestScore) {
+      state.bestScore = state.score;
+      localStorage.setItem(
+        "swadhin-clicker-highscore",
+        state.bestScore.toString(),
+      );
+      items.highScore!.innerText = state.bestScore.toLocaleString();
+      items.resultBadge!.innerText = "🏆 NEW RECORD!";
+      items.resultBadge!.className =
+        "px-3 py-1 rounded-full text-xs font-bold bg-green-500/20 text-green-400";
+    } else {
+      items.resultBadge!.innerText = `Best: ${state.bestScore}`;
+      items.resultBadge!.className =
+        "px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-subtext0";
+    }
+
+    // Sync
+    pushScore(state.score);
+
+    // Show Screen
+    items.gameOver!.style.display = "flex";
+    // simple fade in
+    requestAnimationFrame(() => items.gameOver!.classList.add("opacity-100"));
+  }
+
+  function spawnEffect(e: MouseEvent) {
+    const rect = items.btn!.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // Ripple
+    const r = document.createElement("div");
+    r.className =
+      "absolute rounded-full border border-white/30 bg-white/10 opacity-100";
+    r.style.width = r.style.height = "20px";
+    r.style.left = x + "px";
+    r.style.top = y + "px";
+    r.style.transform = "translate(-50%, -50%)";
+    items.ripple!.appendChild(r);
+
+    r.animate(
+      [
+        { transform: "translate(-50%, -50%) scale(0)", opacity: 1 },
+        { transform: "translate(-50%, -50%) scale(4)", opacity: 0 },
+      ],
+      { duration: 400, easing: "ease-out" },
+    ).onfinish = () => r.remove();
+
+    // Particle
+    // Coordinates relative to particle container
+    const pContainer = items.particles!.getBoundingClientRect();
+    const px = e.clientX - pContainer.left;
+    const py = e.clientY - pContainer.top;
+
+    const p = document.createElement("div");
+    p.className =
+      "absolute font-bold text-sm text-neon-cyan pointer-events-none";
+    p.innerText = "+1";
+    p.style.left = px + "px";
+    p.style.top = py + "px";
+    items.particles!.appendChild(p);
+
+    const angle = (Math.random() - 0.5) * 60; // +/- 30deg spread
+    p.animate(
+      [
+        { transform: "translate(-50%, -50%) scale(0.5)", opacity: 0 },
+        {
+          transform: `translate(-50%, -150%) rotate(${angle}deg) scale(1.2)`,
+          opacity: 1,
+          offset: 0.2,
+        },
+        {
+          transform: `translate(-50%, -300%) rotate(${angle * 2}deg) scale(0.8)`,
+          opacity: 0,
+        },
+      ],
+      { duration: 800, easing: "ease-out" },
+    ).onfinish = () => p.remove();
+  }
+
+  // Event Listeners
+  items.startBtn!.addEventListener("click", startGame);
+  items.replayBtn!.addEventListener("click", () => {
+    items.gameOver!.classList.remove("opacity-100");
+    setTimeout(() => {
+      items.gameOver!.style.display = "none";
+      items.startScreen!.style.display = "flex";
+    }, 300);
+  });
+
+  items.btn!.addEventListener("click", (e) => {
+    if (!state.active) return;
+    state.score++;
+    items.score!.innerText = state.score.toString();
+    state.clickTimes.push(Date.now());
+    spawnEffect(e);
+
+    // Juice
+    items.score!.animate(
+      [
+        { transform: "scale(1)" },
+        { transform: "scale(1.1)" },
+        { transform: "scale(1)" },
+      ],
+      { duration: 50 },
+    );
+  });
+</script>

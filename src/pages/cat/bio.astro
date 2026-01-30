@@ -1,0 +1,226 @@
+---
+export const prerender = false;
+
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, bioContent, siteSettings } from "../../db";
+import { eq } from "drizzle-orm";
+
+let bio: Record<string, string> = {};
+let settings: Record<string, string> = {};
+
+try {
+  const [bioData, settingsData] = await Promise.all([
+    db.select().from(bioContent),
+    db
+      .select()
+      .from(siteSettings)
+      .where(eq(siteSettings.key, "author"))
+      .limit(1)
+      .then((r) => r),
+    // We want all settings or at least author and location. Let's just fetch all or filter.
+    // Actually easier to fetch all siteSettings and filter in JS
+  ]);
+
+  const allSettings = await db.select().from(siteSettings);
+  allSettings.forEach((s) => {
+    settings[s.key] = s.value;
+  });
+
+  bioData.forEach((b) => {
+    bio[b.key] = b.value;
+  });
+} catch (error) {
+  console.error("Fetch bio/settings error:", error);
+}
+---
+
+<AdminLayout title="Bio">
+  <div class="space-y-8">
+    <div>
+      <h1 class="text-3xl font-bold text-white">Bio & Personal Info</h1>
+      <p class="text-gray-400 mt-2">
+        Edit your personal bio, details, and quotes
+      </p>
+    </div>
+
+    <form id="bioForm" class="space-y-6">
+      <div class="glass-panel rounded-xl p-6 border border-white/10 space-y-6">
+        <h2 class="text-xl font-semibold text-white mb-4">Personal Details</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Author Name</label>
+            <input
+              type="text"
+              name="author"
+              value={settings.author || ""}
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Location</label>
+            <input
+              type="text"
+              name="location"
+              value={settings.location || ""}
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            />
+          </div>
+        </div>
+
+        <h2 class="text-xl font-semibold text-white mb-4 mt-8">Bio Content</h2>
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Short Bio</label>
+          <p class="text-xs text-gray-500 mb-2">
+            A brief one-liner about yourself
+          </p>
+          <input
+            type="text"
+            name="short"
+            value={bio.short || ""}
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="Backend Engineer & AI Systems Architect based in Dhaka, Bangladesh."
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Long Bio</label>
+          <p class="text-xs text-gray-500 mb-2">
+            A longer description for your About page
+          </p>
+          <textarea
+            name="long"
+            rows="4"
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors resize-none"
+            placeholder="I'm currently working as a Backend Engineer..."
+            >{bio.long || ""}</textarea
+          >
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2"
+            >Intro Paragraph (Who I Am)</label
+          >
+          <p class="text-xs text-gray-500 mb-2">
+            The first paragraph introducing yourself (replaces "I'm Swadhin...")
+          </p>
+          <textarea
+            name="intro"
+            rows="3"
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors resize-none"
+            placeholder="I'm a passionate software engineer with a knack for building scalable and robust systems."
+            >{bio.intro || ""}</textarea
+          >
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Main Story</label>
+          <p class="text-xs text-gray-500 mb-2">
+            The main body text describing your passion and work.
+          </p>
+          <textarea
+            name="story"
+            rows="5"
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors resize-none"
+            placeholder="My journey in tech began with a fascination for how things work under the hood..."
+            >{bio.story || ""}</textarea
+          >
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Quote</label>
+          <p class="text-xs text-gray-500 mb-2">Your favorite quote or motto</p>
+          <input
+            type="text"
+            name="quote"
+            value={bio.quote || ""}
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="Move fast, break things, and optimize later."
+          />
+        </div>
+
+        <!-- Fun Fact removed or kept? User didn't mention it but seed has it. I'll keep it. -->
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Fun Fact</label>
+          <p class="text-xs text-gray-500 mb-2">
+            Something interesting about you
+          </p>
+          <input
+            type="text"
+            name="funFact"
+            value={bio.funFact || ""}
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="I believe every problem has a solution; you need to find the right algorithm!"
+          />
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <div id="statusMessage" class="text-sm"></div>
+        <button
+          type="submit"
+          class="px-6 py-3 bg-neon-cyan text-black font-bold rounded-lg hover:bg-neon-cyan/90 transition-colors"
+        >
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+</AdminLayout>
+
+<script>
+  const form = document.getElementById("bioForm") as HTMLFormElement;
+  const statusMessage = document.getElementById(
+    "statusMessage",
+  ) as HTMLDivElement;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const bio: Record<string, string> = {};
+    const settings: Record<string, string> = {};
+
+    // Separate bio and settings
+    formData.forEach((value, key) => {
+      if (key === "author" || key === "location") {
+        settings[key] = value.toString();
+      } else {
+        bio[key] = value.toString();
+      }
+    });
+
+    try {
+      // Update Bio
+      const bioResponse = await fetch("/api/admin/bio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bio }),
+      });
+
+      // Update Settings
+      const settingsResponse = await fetch("/api/admin/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ settings }),
+      });
+
+      const bioResult = await bioResponse.json();
+      const settingsResult = await settingsResponse.json();
+
+      if (bioResult.success && settingsResult.success) {
+        statusMessage.textContent = "✅ Updated successfully!";
+        statusMessage.className = "text-sm text-green-400";
+      } else {
+        statusMessage.textContent = "❌ Failed to save changes";
+        statusMessage.className = "text-sm text-red-400";
+      }
+    } catch (error) {
+      statusMessage.textContent = "❌ Network error";
+      statusMessage.className = "text-sm text-red-400";
+    }
+
+    setTimeout(() => {
+      statusMessage.textContent = "";
+    }, 3000);
+  });
+</script>

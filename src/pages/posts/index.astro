@@ -1,0 +1,249 @@
+---
+export const prerender = true;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { db, posts as postsTable } from '../../db';
+import { desc, eq } from 'drizzle-orm';
+
+// Fetch posts from DB
+const dbPosts = await db
+    .select()
+    .from(postsTable)
+    .where(eq(postsTable.draft, false))
+    .orderBy(desc(postsTable.publishedAt));
+
+const posts = dbPosts.map((p) => ({
+    slug: p.slug,
+    data: {
+        title: p.title,
+        description: p.description || "",
+        publishedAt: p.publishedAt,
+        tags: JSON.parse(p.tags || "[]"),
+        draft: p.draft,
+    },
+}));
+
+const displayPosts = posts;
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+---
+
+<BaseLayout title="Blog">
+  <div class="animate-fade-in">
+    <!-- Header -->
+    <div class="mb-12">
+      <h1 class="text-4xl sm:text-5xl font-bold text-text mb-4">
+        Blog <span class="text-accent">Posts</span>
+      </h1>
+      <p class="text-lg text-subtext0 max-w-2xl">
+        Thoughts, tutorials, and insights on backend development, AI systems, 
+        and the technologies I work with daily.
+      </p>
+    </div>
+    
+    <!-- Categories/Tags Filter (future enhancement) -->
+    <div class="flex flex-wrap gap-2 mb-8">
+      <button class="text-xs px-3 py-1.5 bg-accent text-base rounded-full font-medium">
+        All Posts
+      </button>
+      <button class="text-xs px-3 py-1.5 bg-surface0/50 text-subtext0 hover:text-accent rounded-full transition-colors">
+        AI & ML
+      </button>
+      <button class="text-xs px-3 py-1.5 bg-surface0/50 text-subtext0 hover:text-accent rounded-full transition-colors">
+        Backend
+      </button>
+      <button class="text-xs px-3 py-1.5 bg-surface0/50 text-subtext0 hover:text-accent rounded-full transition-colors">
+        DevOps
+      </button>
+      <button class="text-xs px-3 py-1.5 bg-surface0/50 text-subtext0 hover:text-accent rounded-full transition-colors">
+        Tutorials
+      </button>
+    </div>
+    
+    <!-- Posts List -->
+    <div class="space-y-4">
+      {displayPosts.map((post, i) => (
+        <a
+          href={`/posts/${post.slug}`}
+          class="group block bg-mantle border border-surface0/50 hover:border-accent/50 rounded-2xl p-6 transition-all duration-300 hover:shadow-lg hover:shadow-accent/5"
+        >
+          <div class="flex flex-col md:flex-row md:items-start gap-4">
+            <!-- Date Badge -->
+            <div class="flex-shrink-0 md:w-20 md:text-center">
+              <time 
+                datetime={post.data.publishedAt.toISOString()}
+                class="text-sm text-subtext0"
+              >
+                <span class="block text-2xl font-bold text-accent">
+                  {post.data.publishedAt.getDate()}
+                </span>
+                <span class="text-xs uppercase tracking-wider">
+                  {post.data.publishedAt.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                </span>
+              </time>
+            </div>
+            
+            <!-- Content -->
+            <div class="flex-1 min-w-0">
+              <h2 class="text-xl font-semibold text-text group-hover:text-accent transition-colors mb-2">
+                {post.data.title}
+              </h2>
+              <p class="text-sm text-subtext0 line-clamp-2 mb-3">
+                {post.data.description}
+              </p>
+              
+              {post.data.tags && (
+                <div class="flex flex-wrap gap-2">
+                  {post.data.tags.map((tag: string) => (
+                    <span class="text-xs px-2 py-0.5 bg-surface0/50 text-overlay0 rounded-md border border-surface0">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            <!-- Arrow -->
+            <svg class="hidden md:block w-5 h-5 text-subtext0 group-hover:text-accent transition-all transform group-hover:translate-x-1 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </a>
+      ))}
+    </div>
+    
+    <!-- Empty State (shown when no posts) -->
+    {displayPosts.length === 0 && (
+      <div class="mt-8 p-6 bg-surface0/30 border border-surface0/50 rounded-xl text-center">
+        <svg class="w-12 h-12 mx-auto text-overlay0 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+        <p class="text-subtext0 text-sm">
+          These are placeholder posts. Real content coming soon!
+        </p>
+      </div>
+    )}
+    
+    <!-- Newsletter CTA -->
+    <div class="mt-20 relative overflow-hidden rounded-2xl border border-neon-cyan/20 bg-[#0a0a0a] p-8 md:p-12 text-center group">
+      <!-- Glow effects -->
+      <div class="absolute -top-24 -left-24 w-48 h-48 bg-neon-cyan/10 rounded-full blur-[80px] group-hover:bg-neon-cyan/20 transition-all duration-700"></div>
+      <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-electric-purple/10 rounded-full blur-[80px] group-hover:bg-electric-purple/20 transition-all duration-700"></div>
+      
+      <div class="relative z-10">
+        <h3 class="text-2xl md:text-3xl font-bold text-white mb-4">
+          Stay <span class="text-neon-cyan">Updated</span>
+        </h3>
+        <p class="text-gray-400 mb-8 max-w-lg mx-auto leading-relaxed">
+          Get notified when I publish new posts. No spam, just quality content about backend development, AI, and system architecture.
+        </p>
+        
+        <form id="newsletter-form" class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto relative">
+          <input
+            type="email"
+            name="email"
+            required
+            placeholder="your@email.com"
+            class="flex-1 px-5 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 focus:bg-white/10 transition-all"
+          />
+          <button 
+            type="submit"
+            class="px-8 py-3 bg-neon-cyan text-black font-bold rounded-xl hover:bg-neon-cyan/90 hover:shadow-[0_0_20px_rgba(4,217,255,0.4)] transition-all transform hover:-translate-y-0.5"
+          >
+            Subscribe
+          </button>
+          
+          <!-- Success/Error Message -->
+          <div id="newsletter-message" class="absolute -bottom-12 left-0 right-0 text-sm font-medium hidden opacity-0 transition-opacity"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('newsletter-form') as HTMLFormElement;
+  const message = document.getElementById('newsletter-message');
+  
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const emailInput = form.querySelector('input[type="email"]') as HTMLInputElement;
+      const email = emailInput.value;
+      const btn = form.querySelector('button');
+      const originalText = btn?.innerText || 'Subscribe';
+      
+      if (btn) {
+        btn.disabled = true;
+        btn.innerText = 'Sending...';
+      }
+      
+      try {
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          // Reusing the contact form endpoint structure
+          body: JSON.stringify({
+            name: "Newsletter Subscriber",
+            email: email,
+            subject: "Newsletter Subscription",
+            message: "User requested to subscribe to the newsletter.",
+          }),
+        });
+        
+        if (response.ok) {
+          if (message) {
+            message.textContent = "Thanks for subscribing! 🚀";
+            message.classList.remove('hidden', 'text-red-400');
+            message.classList.add('text-neon-cyan');
+            
+            // Fade in
+            requestAnimationFrame(() => {
+              message.classList.remove('opacity-0');
+            });
+          }
+          form.reset();
+        } else {
+          throw new Error('Failed to subscribe');
+        }
+      } catch (error) {
+        if (message) {
+          message.textContent = "Something went wrong. Please try again.";
+          message.classList.remove('hidden', 'text-neon-cyan');
+          message.classList.add('text-red-400');
+          message.classList.remove('opacity-0');
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerText = originalText;
+        }
+        
+        // Hide message after 5 seconds
+        setTimeout(() => {
+            message?.classList.add('opacity-0');
+            setTimeout(() => message?.classList.add('hidden'), 300);
+        }, 5000);
+      }
+    });
+  }
+</script>
+
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+</style>

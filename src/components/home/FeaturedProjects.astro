@@ -1,0 +1,57 @@
+---
+import { db } from "../../db";
+import { projects } from "../../db/schema";
+import { eq, asc } from "drizzle-orm";
+import ProjectCard from "../projects/ProjectCard.astro";
+import ProjectDetailsModal from "../projects/ProjectDetailsModal.astro";
+
+// Fetch projects
+const dbProjects = await db
+  .select()
+  .from(projects)
+  .where(eq(projects.featured, true))
+  .orderBy(asc(projects.order));
+
+const featuredProjects = dbProjects.map((p) => ({
+  ...p,
+  tags: JSON.parse(p.tags) as string[],
+}));
+---
+
+<section class="space-y-8">
+  <div
+    class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+  >
+    <h2
+      class="text-2xl sm:text-3xl font-bold font-mono text-white flex flex-wrap items-center gap-2 sm:gap-3"
+    >
+      <span class="text-neon-cyan">></span>
+      <span>Featured_Deployments</span>
+      <span class="animate-pulse text-electric-purple">_</span>
+    </h2>
+    <a
+      href="/projects"
+      class="group flex items-center gap-1 text-sm text-gray-400 hover:text-neon-cyan transition-colors font-mono self-end sm:self-auto"
+    >
+      view_all.sh
+      <svg
+        class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9 5l7 7-7 7"></path>
+      </svg>
+    </a>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {featuredProjects.map((project, i) => <ProjectCard project={project} />)}
+  </div>
+
+  <ProjectDetailsModal />
+</section>

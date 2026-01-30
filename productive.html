@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Tracking Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .chart-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        canvas {
+            max-height: 400px;
+        }
+
+        @media (max-width: 768px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Weekly Time Tracking Dashboard</h1>
+        
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <div class="chart-grid">
+            <div class="chart-container">
+                <div class="chart-title">Daily Total Hours</div>
+                <canvas id="dailyTotalChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Project Distribution (Total)</div>
+                <canvas id="projectPieChart"></canvas>
+            </div>
+
+            <div class="chart-container full-width">
+                <div class="chart-title">Daily Hours by Project (Stacked)</div>
+                <canvas id="stackedBarChart"></canvas>
+            </div>
+
+            <div class="chart-container full-width">
+                <div class="chart-title">Project Time Trend</div>
+                <canvas id="lineChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Average Daily Time by Project</div>
+                <canvas id="avgProjectChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Project Activity Heatmap</div>
+                <canvas id="heatmapChart"></canvas>
+            </div>
+
+            <div class="chart-container full-width">
+                <div class="chart-title">Productivity Pattern (Radar)</div>
+                <canvas id="radarChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const data = {
+            "days": [
+                {"date": "2026-01-21", "total_seconds": 35882.207, "text": "9 hrs 58 mins", "projects": [{"name": "OpenCodeHub", "percent": 91.33, "seconds": 32770.163, "text": "9 hrs 6 mins"}, {"name": "FLUXPLAY", "percent": 8.67, "seconds": 3112.044, "text": "51 mins"}]},
+                {"date": "2026-01-22", "total_seconds": 22816.718, "text": "6 hrs 20 mins", "projects": [{"name": "OpenCodeHub", "percent": 84.14, "seconds": 19197.901, "text": "5 hrs 19 mins"}, {"name": "FLUXPLAY", "percent": 10.77, "seconds": 2457.841, "text": "40 mins"}, {"name": "docs-site", "percent": 4.25, "seconds": 969.753, "text": "16 mins"}, {"name": "owngit", "percent": 0.84, "seconds": 191.223, "text": "3 mins"}]},
+                {"date": "2026-01-23", "total_seconds": 17229.909, "text": "4 hrs 47 mins", "projects": [{"name": "FLUXPLAY", "percent": 60.65, "seconds": 10450.713, "text": "2 hrs 54 mins"}, {"name": "OpenCodeHub", "percent": 22.76, "seconds": 3921.18, "text": "1 hr 5 mins"}, {"name": "see", "percent": 16.17, "seconds": 2786.247, "text": "46 mins"}, {"name": "docs-site", "percent": 0.42, "seconds": 71.769, "text": "1 min"}]},
+                {"date": "2026-01-24", "total_seconds": 12245.902, "text": "3 hrs 24 mins", "projects": [{"name": "see", "percent": 86.24, "seconds": 10561.419, "text": "2 hrs 56 mins"}, {"name": "OpenCodeHub", "percent": 13.76, "seconds": 1684.483, "text": "28 mins"}]},
+                {"date": "2026-01-25", "total_seconds": 20910.424, "text": "5 hrs 48 mins", "projects": [{"name": "see", "percent": 89.73, "seconds": 18763.331, "text": "5 hrs 12 mins"}, {"name": "OpenCodeHub", "percent": 10.27, "seconds": 2147.093, "text": "35 mins"}]},
+                {"date": "2026-01-26", "total_seconds": 6295.068, "text": "1 hr 44 mins", "projects": [{"name": "see", "percent": 100, "seconds": 6295.068, "text": "1 hr 44 mins"}, {"name": "mentalhealth", "percent": 0, "seconds": 0, "text": "0 secs"}]},
+                {"date": "2026-01-27", "total_seconds": 10999.35, "text": "3 hrs 3 mins", "projects": [{"name": "swadhin", "percent": 99.37, "seconds": 10930.504, "text": "3 hrs 2 mins"}, {"name": "see", "percent": 0.63, "seconds": 68.846, "text": "1 min"}]}
+            ]
+        };
+
+        // Helper function to convert seconds to hours
+        const secondsToHours = (seconds) => (seconds / 3600).toFixed(2);
+
+        // Color palette
+        const colors = {
+            'OpenCodeHub': '#667eea',
+            'FLUXPLAY': '#f093fb',
+            'see': '#4facfe',
+            'docs-site': '#43e97b',
+            'owngit': '#fa709a',
+            'mentalhealth': '#feca57',
+            'swadhin': '#ff6b6b'
+        };
+
+        // Get all unique projects
+        const allProjects = [...new Set(data.days.flatMap(day => day.projects.map(p => p.name)))];
+
+        // Calculate statistics
+        const totalHours = data.days.reduce((sum, day) => sum + day.total_seconds, 0) / 3600;
+        const avgDailyHours = totalHours / data.days.length;
+        const maxDay = data.days.reduce((max, day) => day.total_seconds > max.total_seconds ? day : max);
+        const minDay = data.days.reduce((min, day) => day.total_seconds < min.total_seconds ? day : min);
+
+        // Project totals
+        const projectTotals = {};
+        data.days.forEach(day => {
+            day.projects.forEach(project => {
+                if (!projectTotals[project.name]) projectTotals[project.name] = 0;
+                projectTotals[project.name] += project.seconds;
+            });
+        });
+
+        // Display stats
+        const statsGrid = document.getElementById('statsGrid');
+        statsGrid.innerHTML = `
+            <div class="stat-card">
+                <div class="stat-label">Total Hours</div>
+                <div class="stat-value">${totalHours.toFixed(1)}h</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Daily Average</div>
+                <div class="stat-value">${avgDailyHours.toFixed(1)}h</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Most Productive</div>
+                <div class="stat-value">${maxDay.text}</div>
+                <div class="stat-label">${new Date(maxDay.date).toLocaleDateString()}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Active Projects</div>
+                <div class="stat-value">${allProjects.length}</div>
+            </div>
+        `;
+
+        // 1. Daily Total Hours (Line Chart with Area)
+        new Chart(document.getElementById('dailyTotalChart'), {
+            type: 'line',
+            data: {
+                labels: data.days.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+                datasets: [{
+                    label: 'Hours Worked',
+                    data: data.days.map(d => secondsToHours(d.total_seconds)),
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Hours' }
+                    }
+                }
+            }
+        });
+
+        // 2. Project Distribution Pie Chart
+        new Chart(document.getElementById('projectPieChart'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(projectTotals),
+                datasets: [{
+                    data: Object.values(projectTotals).map(s => secondsToHours(s)),
+                    backgroundColor: Object.keys(projectTotals).map(p => colors[p] || '#999')
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        // 3. Stacked Bar Chart (Daily breakdown by project)
+        const stackedData = {};
+        allProjects.forEach(project => {
+            stackedData[project] = data.days.map(day => {
+                const proj = day.projects.find(p => p.name === project);
+                return proj ? secondsToHours(proj.seconds) : 0;
+            });
+        });
+
+        new Chart(document.getElementById('stackedBarChart'), {
+            type: 'bar',
+            data: {
+                labels: data.days.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+                datasets: allProjects.map(project => ({
+                    label: project,
+                    data: stackedData[project],
+                    backgroundColor: colors[project] || '#999'
+                }))
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: { stacked: true },
+                    y: { stacked: true, title: { display: true, text: 'Hours' } }
+                },
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        // 4. Line Chart - Project Trends
+        new Chart(document.getElementById('lineChart'), {
+            type: 'line',
+            data: {
+                labels: data.days.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+                datasets: allProjects.map(project => ({
+                    label: project,
+                    data: stackedData[project],
+                    borderColor: colors[project] || '#999',
+                    backgroundColor: 'transparent',
+                    tension: 0.3,
+                    pointRadius: 3
+                }))
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: { beginAtZero: true, title: { display: true, text: 'Hours' } }
+                },
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        // 5. Average Daily Time by Project
+        const avgByProject = {};
+        Object.keys(projectTotals).forEach(project => {
+            const daysWorked = data.days.filter(day => day.projects.some(p => p.name === project)).length;
+            avgByProject[project] = projectTotals[project] / daysWorked / 3600;
+        });
+
+        new Chart(document.getElementById('avgProjectChart'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(avgByProject),
+                datasets: [{
+                    label: 'Avg Hours/Day',
+                    data: Object.values(avgByProject),
+                    backgroundColor: Object.keys(avgByProject).map(p => colors[p] || '#999')
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Hours' } }
+                }
+            }
+        });
+
+        // 6. Heatmap-style Chart (using bar chart)
+        const heatmapData = allProjects.map(project => {
+            return data.days.map(day => {
+                const proj = day.projects.find(p => p.name === project);
+                return proj ? secondsToHours(proj.seconds) : 0;
+            });
+        });
+
+        new Chart(document.getElementById('heatmapChart'), {
+            type: 'bar',
+            data: {
+                labels: allProjects,
+                datasets: data.days.map((day, idx) => ({
+                    label: new Date(day.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                    data: heatmapData.map(row => row[idx]),
+                    backgroundColor: `rgba(102, 126, 234, ${0.3 + idx * 0.1})`
+                }))
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { stacked: true, title: { display: true, text: 'Hours' } },
+                    y: { stacked: true }
+                }
+            }
+        });
+
+        // 7. Radar Chart - Productivity Pattern
+        new Chart(document.getElementById('radarChart'), {
+            type: 'radar',
+            data: {
+                labels: data.days.map(d => new Date(d.date).toLocaleDateString('en-US', { weekday: 'short' })),
+                datasets: [{
+                    label: 'Daily Hours',
+                    data: data.days.map(d => secondsToHours(d.total_seconds)),
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                    pointBackgroundColor: '#667eea',
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 12
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

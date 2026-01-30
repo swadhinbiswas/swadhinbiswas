@@ -1,0 +1,36 @@
+<div
+    id="scroll-progress-container"
+    class="fixed top-0 left-0 w-full z-50 pointer-events-none"
+>
+    <div
+        id="scroll-progress-bar"
+        class="h-1 bg-gradient-to-r from-mauve via-neon-cyan to-electric-purple w-0 transition-all duration-100 ease-out shadow-[0_0_10px_rgba(137,180,250,0.5)]"
+    >
+    </div>
+</div>
+
+<script>
+    const progressBar = document.getElementById("scroll-progress-bar");
+
+    function updateProgress() {
+        const scrollTop = window.scrollY;
+        const docHeight =
+            document.documentElement.scrollHeight -
+            document.documentElement.clientHeight;
+
+        // Avoid division by zero
+        if (docHeight <= 0) {
+            if (progressBar) progressBar.style.width = "0%";
+            return;
+        }
+
+        const scrollPercent = (scrollTop / docHeight) * 100;
+
+        if (progressBar) {
+            progressBar.style.width = `${scrollPercent}%`;
+        }
+    }
+
+    window.addEventListener("scroll", updateProgress);
+    updateProgress(); // Init
+</script>

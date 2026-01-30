@@ -1,0 +1,140 @@
+---
+
+---
+
+<!-- Mermaid Script -->
+<script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({
+        startOnLoad: true, // Auto-run on load
+        theme: "dark",
+        securityLevel: "loose",
+        fontFamily: "monospace",
+        maxTextSize: 900000,
+    });
+    window.mermaid = mermaid; // Expose for manual running
+</script>
+
+<!-- Chart.js Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js" is:inline></script>
+<!-- Plotly Script -->
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js" is:inline></script>
+<script is:inline>
+    // Expose for manual triggering (e.g., in modals)
+    window.hydratePlotly = hydratePlotly;
+    window.runMermaid = runMermaid;
+
+    document.addEventListener("astro:page-load", () => {
+        hydratePlotly();
+        runMermaid();
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        hydratePlotly();
+        runMermaid();
+    });
+
+    async function runMermaid() {
+        if (typeof mermaid === "undefined") return;
+        try {
+            await mermaid.run({
+                querySelector: ".mermaid",
+            });
+        } catch (e) {
+            console.error("Mermaid error", e);
+        }
+    }
+
+    function hydratePlotly() {
+        if (typeof Plotly === "undefined") return;
+
+        const plotlyContainers = document.querySelectorAll(".plotly-container");
+        plotlyContainers.forEach((container) => {
+            if (
+                container.hasAttribute("data-hydrated") &&
+                container.innerHTML !== ""
+            )
+                return;
+
+            const configStr = decodeURIComponent(
+                container.getAttribute("data-config") || "{}",
+            );
+            try {
+                const config = JSON.parse(configStr);
+                const data = config.data || [];
+                const layout = config.layout || {};
+                const options = config.config || { responsive: true };
+
+                if (!layout.paper_bgcolor)
+                    layout.paper_bgcolor = "rgba(0,0,0,0)";
+                if (!layout.plot_bgcolor) layout.plot_bgcolor = "rgba(0,0,0,0)";
+                if (!layout.font) layout.font = { color: "#cdd6f4" };
+
+                Plotly.newPlot(container, data, layout, options);
+                container.setAttribute("data-hydrated", "true");
+            } catch (e) {
+                console.error("Failed to hydrate plotly", e);
+                container.innerHTML = `<div class="text-red-400 p-4 border border-red-400 rounded">Error loading chart</div>`;
+            }
+        });
+    }
+
+    async function hydrateCharts() {
+        if (typeof Chart === "undefined") return;
+
+        const chartCanvases = document.querySelectorAll("canvas.chart-js");
+        chartCanvases.forEach((canvas) => {
+            if (canvas.hasAttribute("data-hydrated")) return;
+
+            const configStr = decodeURIComponent(
+                canvas.getAttribute("data-config") || "{}",
+            );
+            try {
+                const config = JSON.parse(configStr);
+
+                // Theme overrides
+                const textColor = "#cdd6f4";
+                const gridColor = "rgba(255,255,255,0.1)";
+
+                if (!config.options) config.options = {};
+                config.options.plugins = config.options.plugins || {};
+                config.options.plugins.legend =
+                    config.options.plugins.legend || {};
+                config.options.plugins.legend.labels =
+                    config.options.plugins.legend.labels || {};
+                config.options.plugins.legend.labels.color = textColor;
+
+                if (config.options.scales) {
+                    Object.keys(config.options.scales).forEach((key) => {
+                        const scale = config.options.scales[key];
+                        if (scale) {
+                            scale.ticks = scale.ticks || {};
+                            scale.ticks.color = textColor;
+                            scale.grid = scale.grid || {};
+                            scale.grid.color = gridColor;
+                        }
+                    });
+                }
+
+                new Chart(canvas, config);
+                canvas.setAttribute("data-hydrated", "true");
+            } catch (e) {
+                console.error("Failed to hydrate chart.js", e);
+            }
+        });
+    }
+
+    window.hydrateCharts = hydrateCharts;
+
+    document.addEventListener("astro:page-load", () => {
+        hydratePlotly();
+        runMermaid();
+        hydrateCharts();
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        hydratePlotly();
+        runMermaid();
+        hydrateCharts();
+    });
+</script>

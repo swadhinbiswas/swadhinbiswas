@@ -1,0 +1,348 @@
+---
+export const prerender = true;
+import { db, posts } from "../../db";
+import { eq } from "drizzle-orm";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { unified } from "unified";
+import remarkParse from "remark-parse";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import remarkRehype from "remark-rehype";
+import rehypeKatex from "rehype-katex";
+import rehypeStringify from "rehype-stringify";
+import rehypePrettyCode from "rehype-pretty-code";
+import { remarkAlert } from "remark-github-blockquote-alert";
+import rehypeSlug from "rehype-slug";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
+
+import { processVisualizations } from "../../utils/viz";
+import VizScripts from "../../components/VizScripts.astro";
+
+// ... imports
+
+export async function getStaticPaths() {
+    const allPosts = await db.query.posts.findMany();
+    return allPosts.map((post) => ({
+        params: { slug: post.slug },
+        props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+
+if (!post) return Astro.redirect("/404");
+
+// Process visualizations (SSR + Caching)
+const processedContent = await processVisualizations(post.content);
+
+// Step 2: Process markdown with unified
+
+// Step 2: Process markdown with unified
+const processor = unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkMath)
+    .use(remarkAlert)
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeSlug)
+    .use(rehypeAutolinkHeadings)
+    .use(rehypeKatex)
+    .use(rehypePrettyCode, {
+        theme: "catppuccin-mocha",
+        keepBackground: true,
+        onVisitLine(node: any) {
+            if (node.children.length === 0) {
+                node.children = [{ type: "text", value: " " }];
+            }
+        },
+    } as any)
+    .use(rehypeStringify, { allowDangerousHtml: true });
+
+const result = await processor.process(processedContent);
+const contentHtml = result.toString();
+
+const tags = JSON.parse(post.tags || "[]");
+
+const formattedDate = post.publishedAt.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+});
+
+const schema = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: post.title,
+    image: [
+        // Use OG image or fallback
+        `${import.meta.env.SITE || "https://swadhin.cv"}/og/${post.slug}.png`,
+    ],
+    datePublished: post.publishedAt.toISOString(),
+    dateModified: post.publishedAt.toISOString(),
+    author: [
+        {
+            "@type": "Person",
+            name: "Swadhin",
+            url: import.meta.env.SITE || "https://swadhin.cv",
+        },
+    ],
+};
+
+const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+        {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: import.meta.env.SITE || "https://swadhin.cv",
+        },
+        {
+            "@type": "ListItem",
+            position: 2,
+            name: "Blog",
+            item: `${import.meta.env.SITE || "https://swadhin.cv"}/blog`,
+        },
+        {
+            "@type": "ListItem",
+            position: 3,
+            name: post.title,
+            item: `${import.meta.env.SITE || "https://swadhin.cv"}/blog/${post.slug}`,
+        },
+    ],
+};
+---
+
+<BaseLayout title={post.title} description={post.description}>
+    <script
+        type="application/ld+json"
+        slot="head"
+        set:html={JSON.stringify(schema)}
+    />
+    <script
+        type="application/ld+json"
+        slot="head"
+        set:html={JSON.stringify(breadcrumbSchema)}
+    />
+    <article
+        class="max-w-4xl mx-auto animate-fade-in relative z-10 px-4 sm:px-6"
+    >
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <div
+                class="flex items-center justify-center gap-3 text-sm text-subtext0 mb-6 font-mono"
+            >
+                <time datetime={post.publishedAt.toISOString()}
+                    >{formattedDate}</time
+                >
+                {
+                    tags && tags.length > 0 && (
+                        <>
+                            <span class="text-surface2">•</span>
+                            <div class="flex gap-2">
+                                {tags.map((tag: string) => (
+                                    <span class="text-accent bg-accent/10 px-2 py-0.5 rounded-full text-xs font-medium">
+                                        #{tag}
+                                    </span>
+                                ))}
+                            </div>
+                        </>
+                    )
+                }
+            </div>
+            <h1
+                class="text-4xl sm:text-5xl md:text-6xl font-bold text-text mb-6 leading-tight"
+            >
+                {post.title}
+            </h1>
+            <p class="text-xl text-subtext0 leading-relaxed max-w-3xl mx-auto">
+                {post.description}
+            </p>
+        </header>
+
+        <hr class="border-surface0 mb-12" />
+
+        <!-- Content with visualizations -->
+        <div
+            class="markdown-content prose prose-invert prose-lg max-w-none
+            prose-headings:text-text prose-headings:font-bold prose-headings:scroll-mt-20
+            prose-p:text-subtext0 prose-p:leading-7
+            prose-a:text-accent prose-a:no-underline hover:prose-a:underline
+            prose-strong:text-text prose-strong:font-bold
+            prose-code:text-rose-400 prose-code:bg-surface0/30 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none
+            prose-pre:bg-[#1e1e2e] prose-pre:border prose-pre:border-surface0/50 prose-pre:rounded-xl prose-pre:shadow-xl
+            prose-li:text-subtext0
+            prose-blockquote:border-l-4 prose-blockquote:border-accent prose-blockquote:bg-surface0/10 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:rounded-r-lg prose-blockquote:not-italic
+            prose-img:rounded-xl prose-img:shadow-lg prose-img:mx-auto
+            prose-hr:border-surface0"
+            set:html={contentHtml}
+        />
+
+        <hr class="border-surface0 mt-16 mb-8" />
+        <div class="flex justify-between items-center">
+            <a
+                href="/blog"
+                class="inline-flex items-center gap-2 text-subtext0 hover:text-accent transition-colors group"
+            >
+                <svg
+                    class="w-4 h-4 group-hover:-translate-x-1 transition-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Back to Blog
+            </a>
+            <a
+                href="#"
+                class="inline-flex items-center gap-2 text-subtext0 hover:text-accent transition-colors group"
+                onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;"
+            >
+                Top
+                <svg
+                    class="w-4 h-4 group-hover:-translate-y-1 transition-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                </svg>
+            </a>
+        </div>
+    </article>
+
+    <style is:global>
+        .viz-container {
+            margin: 1.5rem 0;
+        }
+
+        .markdown-content table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 2rem 0;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(30, 30, 46, 0.5);
+        }
+
+        .markdown-content th {
+            background: rgba(255, 255, 255, 0.05);
+            color: #cdd6f4;
+            font-weight: 700;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .markdown-content td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #a6adc8;
+        }
+
+        .markdown-content tr:last-child td {
+            border-bottom: none;
+        }
+        .markdown-content tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .markdown-content .markdown-alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 0.25rem solid;
+            border-radius: 0.5rem;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .markdown-content .markdown-alert-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .markdown-content .markdown-alert-note {
+            border-color: #89b4fa;
+        }
+        .markdown-content .markdown-alert-note .markdown-alert-title {
+            color: #89b4fa;
+        }
+        .markdown-content .markdown-alert-tip {
+            border-color: #a6e3a1;
+        }
+        .markdown-content .markdown-alert-tip .markdown-alert-title {
+            color: #a6e3a1;
+        }
+        .markdown-content .markdown-alert-important {
+            border-color: #cba6f7;
+        }
+        .markdown-content .markdown-alert-important .markdown-alert-title {
+            color: #cba6f7;
+        }
+        .markdown-content .markdown-alert-warning {
+            border-color: #fab387;
+        }
+        .markdown-content .markdown-alert-warning .markdown-alert-title {
+            color: #fab387;
+        }
+        .markdown-content .markdown-alert-caution {
+            border-color: #f38ba8;
+        }
+        .markdown-content .markdown-alert-caution .markdown-alert-title {
+            color: #f38ba8;
+        }
+
+        .markdown-content pre {
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .markdown-content pre code {
+            background: transparent !important;
+            padding: 0;
+            border-radius: 0;
+            font-size: 0.9em;
+            font-family: "JetBrains Mono", monospace;
+            line-height: 1.7;
+        }
+
+        .katex-display {
+            overflow-x: auto;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+    </style>
+    <VizScripts />
+</BaseLayout>

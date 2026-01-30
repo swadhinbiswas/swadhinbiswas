@@ -1,0 +1,77 @@
+---
+export const prerender = true;
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { db, posts } from "../../db";
+import { eq } from "drizzle-orm";
+import { unified } from "unified";
+import remarkParse from "remark-parse";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import remarkRehype from "remark-rehype";
+import rehypeKatex from "rehype-katex";
+import rehypeHighlight from "rehype-highlight";
+import rehypeStringify from "rehype-stringify";
+import "katex/dist/katex.min.css";
+import "highlight.js/styles/github-dark.css";
+import { processVisualizations } from "../../utils/viz";
+import VizScripts from "../../components/VizScripts.astro";
+
+export async function getStaticPaths() {
+  const allPosts = await db.query.posts.findMany();
+  return allPosts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+
+if (!post) return Astro.redirect("/404");
+
+const processor = unified()
+  .use(remarkParse)
+  .use(remarkGfm)
+  .use(remarkMath)
+  .use(remarkRehype, { allowDangerousHtml: true })
+  .use(rehypeKatex)
+  .use(rehypeHighlight)
+  .use(rehypeStringify, { allowDangerousHtml: true });
+
+const processedVizContent = await processVisualizations(post.content);
+const processedContent = await processor.process(processedVizContent);
+const contentHtml = processedContent.toString();
+
+const tags = JSON.parse(post.tags || "[]");
+---
+
+<BaseLayout title={post.title} description={post.description}>
+  <article class="prose prose-invert max-w-none">
+    <h1 class="text-4xl font-bold text-text mb-4">{post.title}</h1>
+
+    <div class="flex items-center gap-4 text-sm text-subtext1 mb-8">
+      <time datetime={post.publishedAt.toISOString()}>
+        {
+          post.publishedAt.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })
+        }
+      </time>
+      {
+        tags && tags.length > 0 && (
+          <div class="flex gap-2">
+            {tags.map((tag: string) => (
+              <span class="text-xs px-2 py-1 bg-surface0 text-subtext1 rounded-md">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )
+      }
+    </div>
+
+    <div class="text-subtext0" set:html={contentHtml} />
+  </article>
+  <VizScripts />
+</BaseLayout>

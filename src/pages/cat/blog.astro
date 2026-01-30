@@ -1,0 +1,393 @@
+---
+export const prerender = false;
+
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, posts as postsTable } from "../../db";
+import { desc } from "drizzle-orm";
+
+// Fetch posts directly from DB
+const dbPosts = await db
+    .select()
+    .from(postsTable)
+    .orderBy(desc(postsTable.publishedAt));
+
+const posts = dbPosts.map((post) => ({
+    slug: post.slug,
+    title: post.title,
+    description: post.description,
+    date: post.publishedAt.toISOString().split("T")[0],
+    tags: JSON.parse(post.tags || "[]"),
+    draft: post.draft,
+    body: post.content, // Map content to body for compatibility with existing UI
+}));
+---
+
+<AdminLayout title="Blog Posts">
+    <div class="space-y-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-white">Blog Posts</h1>
+                <p class="text-gray-400 mt-2">Manage your blog content</p>
+            </div>
+            <button
+                id="addBtn"
+                class="px-4 py-2 bg-neon-cyan text-black font-bold rounded-lg hover:bg-neon-cyan/90 transition-colors"
+            >
+                + Add Post
+            </button>
+        </div>
+
+        <!-- Posts List -->
+        <div id="postsList" class="grid grid-cols-1 gap-4">
+            {
+                posts.map((post) => (
+                    <div class="glass-panel rounded-xl p-4 border border-white/10 hover:border-neon-cyan/30 transition-colors">
+                        <div class="flex items-center justify-between">
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-3">
+                                    <h3 class="font-bold text-white text-lg">
+                                        {post.title}
+                                    </h3>
+                                    {post.draft && (
+                                        <span class="text-xs px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">
+                                            Draft
+                                        </span>
+                                    )}
+                                </div>
+                                <p class="text-sm text-gray-400 line-clamp-1">
+                                    {post.description}
+                                </p>
+                                <div class="flex items-center gap-2 text-xs text-gray-500">
+                                    <span>{post.date}</span>
+                                    <span>•</span>
+                                    <div class="flex gap-1">
+                                        {post.tags.map((tag) => (
+                                            <span class="px-1.5 py-0.5 bg-white/5 rounded">
+                                                {tag}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <a
+                                    href={`/blog/${post.slug}`}
+                                    target="_blank"
+                                    class="px-3 py-1 text-sm bg-white/5 hover:bg-white/10 rounded transition-colors text-gray-400 hover:text-white"
+                                >
+                                    View
+                                </a>
+                                <button
+                                    class="edit-btn px-3 py-1 text-sm bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 rounded transition-colors"
+                                    data-post={JSON.stringify(post)}
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    class="delete-btn px-3 py-1 text-sm bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded transition-colors"
+                                    data-slug={post.slug}
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ))
+            }
+
+            {
+                posts.length === 0 && (
+                    <div class="text-center text-gray-500 py-12">
+                        No posts yet. Click "Add Post" to get started.
+                    </div>
+                )
+            }
+        </div>
+    </div>
+
+    <!-- Editor Modal -->
+    <div
+        id="modal"
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 overflow-y-auto backdrop-blur-sm"
+    >
+        <div
+            class="glass-panel rounded-2xl p-6 w-full max-w-4xl border border-white/10 m-4 my-8 h-[90vh] flex flex-col"
+        >
+            <div class="flex items-center justify-between mb-6">
+                <h2 id="modalTitle" class="text-xl font-bold text-white">
+                    Add Post
+                </h2>
+                <button id="closeBtn" class="text-gray-400 hover:text-white">
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        ><path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12"></path></svg
+                    >
+                </button>
+            </div>
+
+            <form
+                id="postForm"
+                class="flex-1 flex flex-col space-y-4 overflow-hidden"
+            >
+                <input type="hidden" name="originalSlug" />
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2"
+                            >Title</label
+                        >
+                        <input
+                            type="text"
+                            name="title"
+                            required
+                            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+                            placeholder="Post Title"
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2"
+                            >Slug (URL)</label
+                        >
+                        <input
+                            type="text"
+                            name="slug"
+                            required
+                            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors font-mono text-sm"
+                            placeholder="post-title-url"
+                        />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2"
+                            >Published Date</label
+                        >
+                        <input
+                            type="date"
+                            name="publishedAt"
+                            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2"
+                            >Tags (comma separated)</label
+                        >
+                        <input
+                            type="text"
+                            name="tags"
+                            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+                            placeholder="tech, guide, tutorial"
+                        />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2"
+                        >Description</label
+                    >
+                    <input
+                        type="text"
+                        name="description"
+                        class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+                        placeholder="Brief summary for SEO..."
+                    />
+                </div>
+
+                <div class="flex-1 flex flex-col min-h-[300px]">
+                    <label class="block text-sm text-gray-400 mb-2"
+                        >Content (Markdown)</label
+                    >
+                    <textarea
+                        name="content"
+                        required
+                        class="flex-1 w-full px-4 py-4 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors font-mono text-sm resize-none"
+                        placeholder="# Hello World..."></textarea>
+                </div>
+
+                <div
+                    class="flex items-center justify-between pt-4 border-t border-white/10"
+                >
+                    <div class="flex items-center gap-2">
+                        <input
+                            type="checkbox"
+                            name="draft"
+                            id="draft"
+                            class="w-4 h-4 rounded border-white/20 bg-white/5"
+                        />
+                        <label for="draft" class="text-sm text-gray-400"
+                            >Save as Draft</label
+                        >
+                    </div>
+
+                    <div class="flex gap-3">
+                        <button
+                            type="button"
+                            id="cancelBtn"
+                            class="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            class="px-6 py-2 bg-neon-cyan text-black font-bold rounded-lg hover:bg-neon-cyan/90 transition-colors"
+                        >
+                            Save Post
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</AdminLayout>
+
+<script>
+    const modal = document.getElementById("modal") as HTMLDivElement;
+    const modalTitle = document.getElementById(
+        "modalTitle",
+    ) as HTMLHeadingElement;
+    const form = document.getElementById("postForm") as HTMLFormElement;
+    const addBtn = document.getElementById("addBtn") as HTMLButtonElement;
+    const closeBtn = document.getElementById("closeBtn") as HTMLButtonElement;
+    const cancelBtn = document.getElementById("cancelBtn") as HTMLButtonElement;
+
+    function openModal(editing = false, data: any = null) {
+        modalTitle.textContent = editing ? "Edit Post" : "Add Post";
+
+        if (data) {
+            (
+                form.elements.namedItem("originalSlug") as HTMLInputElement
+            ).value = data.slug;
+            (form.elements.namedItem("slug") as HTMLInputElement).value =
+                data.slug;
+            (form.elements.namedItem("title") as HTMLInputElement).value =
+                data.title;
+            (form.elements.namedItem("description") as HTMLInputElement).value =
+                data.description || "";
+            (form.elements.namedItem("publishedAt") as HTMLInputElement).value =
+                data.date;
+            (form.elements.namedItem("tags") as HTMLInputElement).value =
+                Array.isArray(data.tags) ? data.tags.join(", ") : "";
+            (form.elements.namedItem("content") as HTMLTextAreaElement).value =
+                data.body || "";
+            (form.elements.namedItem("draft") as HTMLInputElement).checked =
+                !!data.draft;
+        } else {
+            form.reset();
+            // User requested no auto-date
+        }
+
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+    }
+
+    function closeModal() {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+    }
+
+    addBtn.addEventListener("click", () => openModal(false));
+    closeBtn.addEventListener("click", closeModal);
+    cancelBtn.addEventListener("click", closeModal);
+
+    // Auto-slug generation from title
+    const titleInput = form.elements.namedItem("title") as HTMLInputElement;
+    const slugInput = form.elements.namedItem("slug") as HTMLInputElement;
+
+    titleInput.addEventListener("input", () => {
+        // Only update contents if creating new post (no original slug)
+        if (
+            !(form.elements.namedItem("originalSlug") as HTMLInputElement).value
+        ) {
+            slugInput.value = titleInput.value
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/(^-|-$)/g, "");
+        }
+    });
+
+    // Edit buttons
+    document.querySelectorAll(".edit-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const data = JSON.parse(
+                (btn as HTMLButtonElement).dataset.post || "{}",
+            );
+            openModal(true, data);
+        });
+    });
+
+    // Delete buttons
+    document.querySelectorAll(".delete-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+            if (
+                !confirm(
+                    "Are you sure you want to delete this post? This cannot be undone.",
+                )
+            )
+                return;
+
+            const slug = (btn as HTMLButtonElement).dataset.slug;
+
+            try {
+                const response = await fetch("/api/admin/blog", {
+                    method: "DELETE",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ slug }),
+                });
+
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert("Failed to delete post");
+                }
+            } catch (error) {
+                console.error("Delete error:", error);
+                alert("Error deleting post");
+            }
+        });
+    });
+
+    // Form submit
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+
+        const data = {
+            originalSlug: formData.get("originalSlug"),
+            slug: formData.get("slug"),
+            title: formData.get("title"),
+            description: formData.get("description"),
+            publishedAt: formData.get("publishedAt"),
+            tags: formData.get("tags"),
+            content: formData.get("content"),
+            draft: formData.get("draft") === "on",
+        };
+
+        try {
+            const response = await fetch("/api/admin/blog", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                const result = await response.json();
+                alert(result.error || "Failed to save post");
+            }
+        } catch (error) {
+            console.error("Save error:", error);
+            alert("Error saving post");
+        }
+    });
+</script>

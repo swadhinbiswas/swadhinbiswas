@@ -1,0 +1,263 @@
+---
+import { siteConfig } from "../../config/site";
+import { db, navigationItems } from "../../db";
+import { eq, or, asc } from "drizzle-orm";
+
+const pathname = Astro.url.pathname;
+
+let navItems: { label: string; href: string; external?: boolean | null }[] = [];
+
+try {
+  const dbItems = await db
+    .select()
+    .from(navigationItems)
+    .where(
+      or(
+        eq(navigationItems.location, "header"),
+        eq(navigationItems.location, "both"),
+      ),
+    )
+    .orderBy(asc(navigationItems.order));
+
+  if (dbItems.length > 0) {
+    navItems = dbItems.map((item) => ({
+      label: item.label,
+      href: item.href,
+      external: item.external,
+    }));
+  }
+} catch (error) {
+  console.error("Failed to fetch nav items:", error);
+}
+
+// Fallback if DB is empty or failed
+if (navItems.length === 0) {
+  navItems = [
+    { label: "~/home", href: "/" },
+    { label: "~/projects", href: "/projects" },
+    { label: "~/about", href: "/about" },
+    { label: "~/contact", href: "/contact" },
+  ];
+}
+
+// Find the active nav item based on the current pathname
+const activeNav = navItems.find((item) =>
+  item.href === "/" ? pathname === "/" : pathname.startsWith(item.href),
+);
+---
+
+<header class="fixed top-0 w-full z-50 px-3 sm:px-6 py-3 sm:py-4">
+  <div
+    class="glass-panel max-w-7xl mx-auto rounded-xl flex items-center justify-between px-3 sm:px-6 py-2 sm:py-3"
+  >
+    <!-- Terminal Breadcrumb / Logo -->
+    <a
+      href="/"
+      class="group flex items-center gap-1 sm:gap-2 font-mono text-xs sm:text-sm md:text-base overflow-hidden"
+    >
+      <span
+        class="text-neon-cyan opacity-70 group-hover:opacity-100 transition-opacity hidden sm:inline"
+        >root@swadhin:</span
+      >
+      <!-- On mobile, just show '~/portfolio' directly without extra prefix, or maybe truncate 'portfolio' if needed -->
+      <span class="text-electric-purple truncate">~/portfolio</span>
+      {
+        activeNav && activeNav.href !== "/" && (
+          <>
+            <span class="text-gray-400">/</span>
+            <span class="text-mauve truncate">
+              {activeNav.label.replace("~/", "")}
+            </span>
+          </>
+        )
+      }
+      <span class="animate-pulse text-neon-cyan">_</span>
+    </a>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center gap-4 lg:gap-8">
+      {
+        navItems.map((item) => (
+          <a
+            href={item.href}
+            class={`text-sm text-gray-400 hover:text-neon-cyan hover:text-glow transition-all ${
+              activeNav?.href === item.href ? "text-neon-cyan" : ""
+            }`}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a
+        href={siteConfig.links.github}
+        target="_blank"
+        class="text-sm px-3 lg:px-4 py-1 border border-glass-border rounded-full hover:bg-white/5 transition-colors text-white"
+      >
+        git_repo*
+      </a>
+    </nav>
+
+    <!-- Mobile Menu Button -->
+    <button
+      id="mobile-menu-btn"
+      class="md:hidden text-neon-cyan p-2 -mr-2 hover:bg-white/10 rounded-lg transition-colors"
+      aria-label="Toggle menu"
+    >
+      <svg
+        id="menu-icon"
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+      <svg
+        id="close-icon"
+        class="w-6 h-6 hidden"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mobile Menu Overlay -->
+  <div
+    id="mobile-menu-overlay"
+    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300"
+  >
+  </div>
+
+  <!-- Mobile Menu Panel -->
+  <div
+    id="mobile-menu-panel"
+    class="fixed top-0 right-0 h-full w-72 sm:w-80 bg-mantle/95 backdrop-blur-xl border-l border-white/10 z-50 transform translate-x-full transition-transform duration-300 ease-out"
+  >
+    <div class="flex flex-col h-full">
+      <!-- Menu Header -->
+      <div
+        class="flex items-center justify-between px-4 py-4 border-b border-white/10"
+      >
+        <span class="font-mono text-sm text-neon-cyan">navigation_</span>
+        <button
+          id="mobile-menu-close"
+          class="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+          aria-label="Close menu"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Menu Items -->
+      <nav class="flex-1 px-4 py-6 overflow-y-auto">
+        <div class="space-y-2">
+          {
+            navItems.map((item) => (
+              <a
+                href={item.href}
+                class={`block px-4 py-3 rounded-lg font-mono text-base transition-all ${
+                  activeNav?.href === item.href
+                    ? "bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/30"
+                    : "text-gray-300 hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                {item.label}
+              </a>
+            ))
+          }
+        </div>
+
+        <!-- GitHub Link -->
+        <div class="mt-6 pt-6 border-t border-white/10">
+          <a
+            href={siteConfig.links.github}
+            target="_blank"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+              ></path>
+            </svg>
+            <span class="font-mono">git_repo*</span>
+          </a>
+        </div>
+      </nav>
+
+      <!-- Menu Footer -->
+      <div class="px-4 py-4 border-t border-white/10">
+        <p class="text-xs text-gray-500 font-mono text-center">
+          © {new Date().getFullYear()}
+          {siteConfig.author}
+        </p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  const menuBtn = document.getElementById("mobile-menu-btn");
+  const menuClose = document.getElementById("mobile-menu-close");
+  const menuOverlay = document.getElementById("mobile-menu-overlay");
+  const menuPanel = document.getElementById("mobile-menu-panel");
+  const menuIcon = document.getElementById("menu-icon");
+  const closeIcon = document.getElementById("close-icon");
+
+  function openMenu() {
+    menuOverlay?.classList.remove("hidden");
+    setTimeout(() => {
+      menuOverlay?.classList.remove("opacity-0");
+      menuPanel?.classList.remove("translate-x-full");
+    }, 10);
+    menuIcon?.classList.add("hidden");
+    closeIcon?.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeMenu() {
+    menuOverlay?.classList.add("opacity-0");
+    menuPanel?.classList.add("translate-x-full");
+    menuIcon?.classList.remove("hidden");
+    closeIcon?.classList.add("hidden");
+    document.body.style.overflow = "";
+    setTimeout(() => {
+      menuOverlay?.classList.add("hidden");
+    }, 300);
+  }
+
+  menuBtn?.addEventListener("click", openMenu);
+  menuClose?.addEventListener("click", closeMenu);
+  menuOverlay?.addEventListener("click", closeMenu);
+
+  // Close menu on escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeMenu();
+  });
+
+  // Close menu when clicking nav links
+  menuPanel?.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", closeMenu);
+  });
+</script>

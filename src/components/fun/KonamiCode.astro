@@ -1,0 +1,160 @@
+<div
+    id="void-portal"
+    class="fixed inset-0 z-[100] pointer-events-none hidden flex items-center justify-center overflow-hidden bg-transparent transition-colors duration-[3000ms]"
+>
+    <!-- Black Hole Video - Starts small and grows -->
+    <video
+        id="blackhole-video"
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-0 h-0 object-cover opacity-0"
+        autoplay
+        loop
+        muted
+        playsinline
+    >
+        <source
+            src="https://pub-6573ed5d95204ace89c16d7c6e541087.r2.dev/blackhole.mkv"
+            type="video/mp4"
+        />
+    </video>
+
+    <!-- Warning Message -->
+    <div
+        id="void-message"
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-center opacity-0 z-[101] pointer-events-none"
+    >
+        <div
+            class="text-2xl md:text-4xl font-bold text-red-500 mb-4 tracking-[0.3em] drop-shadow-[0_0_30px_rgba(255,0,0,0.8)]"
+        >
+            GRAVITATIONAL COLLAPSE
+        </div>
+        <div
+            class="text-lg md:text-2xl text-white font-bold tracking-[0.2em] mb-8 drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]"
+        >
+            THE VOID CONSUMES ALL
+        </div>
+        <div
+            class="text-sm md:text-base text-white/90 animate-pulse font-mono tracking-widest drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+        >
+            Press F5 or Refresh to escape the singularity
+        </div>
+    </div>
+</div>
+
+<script>
+    import confetti from "canvas-confetti";
+
+    const portal = document.getElementById("void-portal");
+    const video = document.getElementById(
+        "blackhole-video",
+    ) as HTMLVideoElement;
+    const appContent = document.getElementById("app-content");
+    const message = document.getElementById("void-message");
+    let isConsumed = false;
+
+    document.addEventListener("copy", () => {
+        if (isConsumed) return;
+        isConsumed = true;
+
+        // Brief confetti warning
+        fireConfetti();
+
+        // Show portal
+        portal?.classList.remove("hidden");
+
+        // Start black hole formation after brief delay
+        setTimeout(() => {
+            if (video) {
+                // Black hole forms - starts tiny and grows to consume everything
+                video.style.transition =
+                    "all 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+                video.style.width = "200vw";
+                video.style.height = "200vh";
+                video.style.opacity = "1";
+
+                // Start playing
+                video.play().catch((e) => console.log("Video autoplay:", e));
+            }
+
+            // Warp and distort the page content
+            if (appContent) {
+                // Phase 1: Distortion (0-1.5s)
+                appContent.style.transition = "all 1.5s ease-out";
+                appContent.style.transform =
+                    "perspective(1000px) rotateX(5deg) scale(0.95)";
+                appContent.style.filter = "blur(3px) brightness(0.7)";
+
+                // Phase 2: Rapid consumption (1.5s-3s)
+                setTimeout(() => {
+                    appContent.style.transition =
+                        "all 1.5s cubic-bezier(0.6, 0.04, 0.98, 0.335)";
+                    appContent.style.transformOrigin = "center center";
+                    appContent.style.transform = "scale(0) rotate(1080deg)";
+                    appContent.style.filter =
+                        "blur(30px) brightness(0) hue-rotate(180deg)";
+                    appContent.style.opacity = "0";
+                }, 1500);
+            }
+
+            // Fade to complete darkness
+            if (portal) {
+                setTimeout(() => {
+                    portal.style.backgroundColor = "black";
+                }, 2000);
+            }
+        }, 300);
+
+        // Show message after consumption
+        setTimeout(() => {
+            if (message) {
+                message.style.transition = "opacity 2s ease-in";
+                message.style.opacity = "1";
+            }
+            if (portal) portal.style.pointerEvents = "all";
+        }, 4000);
+    });
+
+    function fireConfetti() {
+        const duration = 400;
+        const end = Date.now() + duration;
+        // Red warning burst
+        (function frame() {
+            confetti({
+                particleCount: 10,
+                angle: 60,
+                spread: 70,
+                origin: { x: 0, y: 0.6 },
+                colors: ["#ff0000", "#ff4444", "#ff6b6b"],
+                startVelocity: 45,
+            });
+            confetti({
+                particleCount: 10,
+                angle: 120,
+                spread: 70,
+                origin: { x: 1, y: 0.6 },
+                colors: ["#ff0000", "#ff4444", "#ff6b6b"],
+                startVelocity: 45,
+            });
+            if (Date.now() < end) requestAnimationFrame(frame);
+        })();
+    }
+</script>
+
+<style>
+    #void-portal {
+        will-change: background-color;
+    }
+
+    #blackhole-video {
+        will-change: transform, opacity, width, height;
+        min-width: 0;
+        min-height: 0;
+    }
+
+    #void-message {
+        will-change: opacity;
+        text-shadow:
+            0 0 10px rgba(255, 255, 255, 0.5),
+            0 0 20px rgba(255, 0, 0, 0.3),
+            0 0 30px rgba(255, 0, 0, 0.2);
+    }
+</style>

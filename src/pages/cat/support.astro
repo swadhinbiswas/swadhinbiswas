@@ -1,0 +1,301 @@
+---
+export const prerender = false;
+
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, supportOptions } from "../../db";
+import { asc } from "drizzle-orm";
+
+const options = await db
+    .select()
+    .from(supportOptions)
+    .orderBy(asc(supportOptions.order));
+---
+
+<AdminLayout title="Manage Support Options">
+    <div class="space-y-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-white">Support Options</h1>
+                <p class="text-gray-400 mt-2">
+                    Manage donation links and crypto wallets
+                </p>
+            </div>
+            <button
+                onclick="openModal()"
+                class="px-4 py-2 bg-neon-cyan text-black font-bold rounded-lg hover:bg-neon-cyan/90 transition-colors"
+            >
+                + Add Option
+            </button>
+        </div>
+
+        <div class="grid gap-4">
+            {
+                options.map((opt) => (
+                    <div class="glass-panel p-4 rounded-xl border border-white/10 flex items-center justify-between group">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-2xl overflow-hidden"
+                                set:html={opt.icon}
+                            />
+                            <div>
+                                <h3 class="font-bold text-white">{opt.name}</h3>
+                                <div class="flex items-center gap-2 text-xs text-gray-500">
+                                    <span class="px-1.5 py-0.5 rounded bg-white/5 border border-white/5 uppercase">
+                                        {opt.type}
+                                    </span>
+                                    <span class="truncate max-w-[200px]">
+                                        {opt.value}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button
+                                onclick={`editOption(${JSON.stringify(opt)})`}
+                                class="p-2 hover:bg-white/10 rounded-lg text-blue-400"
+                            >
+                                Edit
+                            </button>
+                            <button
+                                onclick={`deleteOption(${opt.id})`}
+                                class="p-2 hover:bg-white/10 rounded-lg text-red-400"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+
+    <!-- Edit/Add Modal -->
+    <dialog
+        id="editModal"
+        class="bg-transparent p-0 w-full max-w-lg backdrop:bg-black/80 backdrop:backdrop-blur-sm m-auto rounded-xl shadow-2xl"
+    >
+        <div class="bg-[#1e1e2e] border border-white/10 rounded-xl p-6">
+            <h2 id="modalTitle" class="text-xl font-bold text-white mb-6">
+                Add Option
+            </h2>
+            <form id="editForm" class="space-y-4">
+                <input type="hidden" name="id" />
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">Name</label>
+                    <input
+                        name="name"
+                        required
+                        class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:border-neon-cyan/50 outline-none"
+                        placeholder="e.g. Buy Me Coffee"
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1"
+                        >Icon (Emoji or SVG Code)</label
+                    >
+                    <textarea
+                        name="icon"
+                        rows="3"
+                        required
+                        class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:border-neon-cyan/50 outline-none font-mono text-xs"
+                        placeholder="☕ or <svg..."></textarea>
+                    <p class="text-[10px] text-gray-500 mt-1">
+                        Paste SVG code for custom icons
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1"
+                            >Type</label
+                        >
+                        <select
+                            name="type"
+                            class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:border-neon-cyan/50 outline-none"
+                        >
+                            <option value="link">Link (New Tab)</option>
+                            <option value="copy">Copy to Clipboard</option>
+                            <option value="qr">QR Code (Legacy)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1"
+                            >Order</label
+                        >
+                        <input
+                            type="number"
+                            name="order"
+                            value="0"
+                            class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:border-neon-cyan/50 outline-none"
+                        />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1"
+                        >Value (URL or Wallet Address)</label
+                    >
+                    <input
+                        name="value"
+                        required
+                        class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:border-neon-cyan/50 outline-none"
+                        placeholder="https://... or 0x..."
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1"
+                        >QR Code Image (Optional)</label
+                    >
+                    <div class="flex items-center gap-4">
+                        <div
+                            id="qrPreview"
+                            class="w-16 h-16 bg-white/5 rounded-lg flex items-center justify-center overflow-hidden border border-white/10"
+                        >
+                            <span class="text-xs text-gray-500">None</span>
+                        </div>
+                        <div class="flex-1">
+                            <input
+                                type="file"
+                                id="qrInput"
+                                accept="image/*"
+                                class="text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-neon-cyan file:text-black hover:file:bg-neon-cyan/90"
+                            />
+                            <p class="text-[10px] text-gray-500 mt-1">
+                                Uploads to Cloudinary automatically
+                            </p>
+                        </div>
+                    </div>
+                    <input type="hidden" name="qrCode" id="qrCodeUrl" />
+                </div>
+
+                <div class="flex justify-end gap-3 mt-6">
+                    <button
+                        type="button"
+                        onclick="closeModal()"
+                        class="px-4 py-2 text-gray-400 hover:text-white"
+                        >Cancel</button
+                    >
+                    <button
+                        type="submit"
+                        class="px-4 py-2 bg-neon-cyan text-black font-bold rounded-lg hover:bg-neon-cyan/90"
+                        >Save</button
+                    >
+                </div>
+            </form>
+        </div>
+    </dialog>
+</AdminLayout>
+
+<script>
+    declare global {
+        interface Window {
+            openModal: () => void;
+            closeModal: () => void;
+            editOption: (opt: any) => void;
+            deleteOption: (id: number) => Promise<void>;
+        }
+    }
+
+    const modal = document.getElementById("editModal") as HTMLDialogElement;
+    const form = document.getElementById("editForm") as HTMLFormElement;
+    const qrInput = document.getElementById("qrInput") as HTMLInputElement;
+    const qrPreview = document.getElementById("qrPreview") as HTMLDivElement;
+    const qrCodeUrl = document.getElementById("qrCodeUrl") as HTMLInputElement;
+
+    window.openModal = () => {
+        form.reset();
+        form.id.value = "";
+        qrCodeUrl.value = "";
+        qrPreview.innerHTML = '<span class="text-xs text-gray-500">None</span>';
+        document.getElementById("modalTitle")!.textContent = "Add Option";
+        modal.showModal();
+    };
+
+    window.closeModal = () => modal.close();
+
+    window.editOption = (opt: any) => {
+        form.id.value = opt.id;
+        form.name.value = opt.name;
+        form.icon.value = opt.icon;
+        form.type.value = opt.type;
+        form.value.value = opt.value;
+        form.order.value = opt.order;
+
+        // QR Code
+        qrCodeUrl.value = opt.qrCode || "";
+        if (opt.qrCode) {
+            qrPreview.innerHTML = `<img src="${opt.qrCode}" class="w-full h-full object-cover" />`;
+        } else {
+            qrPreview.innerHTML =
+                '<span class="text-xs text-gray-500">None</span>';
+        }
+
+        document.getElementById("modalTitle")!.textContent = "Edit Option";
+        modal.showModal();
+    };
+
+    // Handle File Upload
+    qrInput.addEventListener("change", async (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (!file) return;
+
+        // Show loading
+        qrPreview.innerHTML = '<span class="animate-spin">⏳</span>';
+
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+            const base64 = reader.result as string;
+            try {
+                const res = await fetch("/api/admin/upload", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ file: base64 }),
+                });
+                const data = await res.json();
+                if (data.success) {
+                    qrCodeUrl.value = data.url;
+                    qrPreview.innerHTML = `<img src="${data.url}" class="w-full h-full object-cover" />`;
+                } else {
+                    alert("Upload failed: " + data.error);
+                    qrPreview.innerHTML =
+                        '<span class="text-red-500">Error</span>';
+                }
+            } catch (err) {
+                alert("Upload error");
+                qrPreview.innerHTML = '<span class="text-red-500">Error</span>';
+            }
+        };
+        reader.readAsDataURL(file);
+    });
+
+    window.deleteOption = async (id: number) => {
+        if (!confirm("Delete this option?")) return;
+        try {
+            await fetch(`/api/admin/support?id=${id}`, { method: "DELETE" });
+            window.location.reload();
+        } catch (e) {
+            alert("Failed to delete");
+        }
+    };
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(form));
+        const method = data.id ? "PUT" : "POST";
+
+        try {
+            const res = await fetch("/api/admin/support", {
+                method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
+            if (res.ok) window.location.reload();
+            else alert("Failed to save");
+        } catch (e) {
+            alert("Error saving");
+        }
+    });
+</script>

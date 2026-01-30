@@ -1,0 +1,396 @@
+---
+export const prerender = false;
+
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, projects } from "../../db";
+
+let projectsList: (typeof projects.$inferSelect & { parsedTags?: string[] })[] =
+  [];
+try {
+  const data = await db.select().from(projects).orderBy(projects.order);
+  projectsList = data.map((p) => ({
+    ...p,
+    parsedTags: JSON.parse(p.tags || "[]"),
+  }));
+} catch (error) {
+  console.error("Fetch projects error:", error);
+}
+---
+
+<AdminLayout title="Projects">
+  <div class="space-y-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-white">Projects</h1>
+        <p class="text-gray-400 mt-2">Manage your portfolio projects</p>
+      </div>
+      <button
+        id="addBtn"
+        class="px-4 py-2 bg-neon-cyan text-black font-bold rounded-lg hover:bg-neon-cyan/90 transition-colors"
+      >
+        + Add Project
+      </button>
+    </div>
+
+    <!-- Projects List -->
+    <div id="projectsList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {
+        projectsList.map((project) => (
+          <div
+            class="project-item glass-panel rounded-xl p-4 border border-white/10"
+            data-id={project.id}
+          >
+            <div class="space-y-4">
+              <div class="flex items-start justify-between">
+                <div>
+                  <div class="font-bold text-white text-lg flex items-center gap-2">
+                    {project.name}
+                    {project.featured && (
+                      <span class="text-xs px-2 py-0.5 bg-electric-purple/20 text-electric-purple rounded">
+                        Featured
+                      </span>
+                    )}
+                  </div>
+                  <p class="text-sm text-gray-400 mt-1 line-clamp-2">
+                    {project.description}
+                  </p>
+                </div>
+                {project.stars && project.stars > 0 && (
+                  <span class="flex items-center gap-1 text-neon-cyan text-sm">
+                    ⭐ {project.stars}
+                  </span>
+                )}
+              </div>
+
+              {project.parsedTags && project.parsedTags.length > 0 && (
+                <div class="flex flex-wrap gap-1">
+                  {project.parsedTags.slice(0, 4).map((tag: string) => (
+                    <span class="text-xs px-2 py-0.5 bg-white/5 text-gray-400 rounded">
+                      {tag}
+                    </span>
+                  ))}
+                  {project.parsedTags.length > 4 && (
+                    <span class="text-xs text-gray-500">
+                      +{project.parsedTags.length - 4}
+                    </span>
+                  )}
+                </div>
+              )}
+
+              <div class="flex items-center justify-between pt-2 border-t border-white/5">
+                <a
+                  href={project.url}
+                  target="_blank"
+                  class="text-xs text-gray-500 hover:text-neon-cyan transition-colors truncate max-w-[200px]"
+                >
+                  {project.url}
+                </a>
+                <div class="flex items-center gap-2">
+                  <button
+                    class="edit-btn px-3 py-1 text-sm bg-white/5 hover:bg-white/10 border border-white/10 rounded transition-colors"
+                    data-project={JSON.stringify({
+                      ...project,
+                      tags: project.parsedTags,
+                    })}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    class="delete-btn px-3 py-1 text-sm bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded transition-colors"
+                    data-id={project.id}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+
+      {
+        projectsList.length === 0 && (
+          <div class="col-span-2 text-center text-gray-500 py-12">
+            No projects yet. Click "Add Project" to create one.
+          </div>
+        )
+      }
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div
+    id="modal"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 overflow-y-auto"
+  >
+    <div
+      class="glass-panel rounded-2xl p-6 w-full max-w-lg border border-white/10 m-4 my-8"
+    >
+      <h2 id="modalTitle" class="text-xl font-bold text-white mb-6">
+        Add Project
+      </h2>
+
+      <form id="projectForm" class="space-y-4">
+        <input type="hidden" name="id" />
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Project Name</label>
+          <input
+            type="text"
+            name="name"
+            required
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="My Awesome Project"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Description</label>
+          <textarea
+            name="description"
+            required
+            rows="3"
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors resize-none"
+            placeholder="Brief description of the project..."></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2"
+            >Detailed Content (Markdown)</label
+          >
+          <textarea
+            name="content"
+            rows="6"
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="Full project details, markdown supported..."
+          ></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Project URL</label>
+          <input
+            type="url"
+            name="url"
+            required
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="https://project.com"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">GitHub URL</label>
+          <input
+            type="url"
+            name="github"
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="https://github.com/user/repo"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Image URL</label>
+          <input
+            type="url"
+            name="image"
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="https://example.com/image.png"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2"
+            >Tags (comma-separated)</label
+          >
+          <input
+            type="text"
+            name="tags"
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="python, ai, web"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Stars</label>
+            <input
+              type="number"
+              name="stars"
+              value="0"
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Order</label>
+            <input
+              type="number"
+              name="order"
+              value="0"
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            />
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input
+            type="checkbox"
+            name="featured"
+            id="featured"
+            class="w-4 h-4 rounded border-white/20 bg-white/5"
+          />
+          <label for="featured" class="text-sm text-gray-400"
+            >Featured project</label
+          >
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-4">
+          <button
+            type="button"
+            id="cancelBtn"
+            class="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-6 py-2 bg-neon-cyan text-black font-bold rounded-lg hover:bg-neon-cyan/90 transition-colors"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  const modal = document.getElementById("modal") as HTMLDivElement;
+  const modalTitle = document.getElementById(
+    "modalTitle",
+  ) as HTMLHeadingElement;
+  const form = document.getElementById("projectForm") as HTMLFormElement;
+  const addBtn = document.getElementById("addBtn") as HTMLButtonElement;
+  const cancelBtn = document.getElementById("cancelBtn") as HTMLButtonElement;
+
+  let isEditing = false;
+
+  function openModal(editing = false, data: any = null) {
+    isEditing = editing;
+    modalTitle.textContent = editing ? "Edit Project" : "Add Project";
+
+    if (data) {
+      (form.elements.namedItem("id") as HTMLInputElement).value = data.id;
+      (form.elements.namedItem("name") as HTMLInputElement).value = data.name;
+      (form.elements.namedItem("description") as HTMLTextAreaElement).value =
+        data.description;
+      (form.elements.namedItem("content") as HTMLTextAreaElement).value =
+        data.content || "";
+      (form.elements.namedItem("url") as HTMLInputElement).value = data.url;
+      (form.elements.namedItem("github") as HTMLInputElement).value =
+        data.github || "";
+      (form.elements.namedItem("image") as HTMLInputElement).value =
+        data.image || "";
+      (form.elements.namedItem("tags") as HTMLInputElement).value =
+        Array.isArray(data.tags) ? data.tags.join(", ") : "";
+      (form.elements.namedItem("stars") as HTMLInputElement).value =
+        data.stars || "0";
+      (form.elements.namedItem("order") as HTMLInputElement).value =
+        data.order || "0";
+      (form.elements.namedItem("featured") as HTMLInputElement).checked =
+        data.featured;
+    } else {
+      form.reset();
+    }
+
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  }
+
+  function closeModal() {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    form.reset();
+  }
+
+  addBtn.addEventListener("click", () => openModal(false));
+  cancelBtn.addEventListener("click", closeModal);
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  // Edit buttons
+  document.querySelectorAll(".edit-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const data = JSON.parse(
+        (btn as HTMLButtonElement).dataset.project || "{}",
+      );
+      openModal(true, data);
+    });
+  });
+
+  // Delete buttons
+  document.querySelectorAll(".delete-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      if (!confirm("Are you sure you want to delete this project?")) return;
+
+      const id = parseInt((btn as HTMLButtonElement).dataset.id || "0");
+
+      try {
+        const response = await fetch("/api/admin/projects", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id }),
+        });
+
+        if (response.ok) {
+          window.location.reload();
+        }
+      } catch (error) {
+        console.error("Delete error:", error);
+      }
+    });
+  });
+
+  // Form submit
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const tagsString = (formData.get("tags") as string) || "";
+    const tags = tagsString
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+
+    const data = {
+      id: formData.get("id")
+        ? parseInt(formData.get("id") as string)
+        : undefined,
+      name: formData.get("name"),
+      description: formData.get("description"),
+      content: formData.get("content"),
+      url: formData.get("url"),
+      github: formData.get("github") || null,
+      image: formData.get("image") || null,
+      tags,
+      stars: parseInt(formData.get("stars") as string) || 0,
+      order: parseInt(formData.get("order") as string) || 0,
+      featured: formData.get("featured") === "on",
+    };
+
+    try {
+      const response = await fetch("/api/admin/projects", {
+        method: isEditing ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Save error:", error);
+    }
+  });
+</script>
