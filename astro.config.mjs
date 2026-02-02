@@ -21,7 +21,12 @@ export default defineConfig({
       rehypePlugins: [rehypeKatex],
     }),
     react(),
-    sitemap(),
+    sitemap({
+      filter: (page) => {
+        const url = new URL(page);
+        return !url.pathname.startsWith('/cat') && !url.pathname.startsWith('/api');
+      },
+    }),
   ],
   vite: {
     plugins: [tailwindcss()],
