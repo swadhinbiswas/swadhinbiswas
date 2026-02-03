@@ -66,7 +66,7 @@ export const siteConfig = {
       "Swadhin Biswas",
     ],
     worksFor: {
-      name: "TheBoringRats",
+      name: "BoringRats",
       url: "https://boringrats.dev/"
     },
     location: {
@@ -115,7 +115,7 @@ export const siteConfig = {
 
   experience: [
     {
-      company: "TheBoringRats",
+      company: "BoringRats",
       role: "Backend Engineer",
       url: "https://boringrats.dev/",
       logoUrl: "https://raw.githubusercontent.com/BoringRats/.github/refs/heads/main/profile/boringrats.png",
@@ -171,7 +171,7 @@ export const siteConfig = {
 
   bio: {
     short: "Backend Engineer & AI Systems Architect based in Dhaka, Bangladesh.",
-    long: "I'm currently working as a Backend Engineer @ TheBoringRats. I've built scalable backend systems and AI solutions. Currently building AI that helps people articulate their ideas and share them at scale.",
+    long: "I'm currently working as a Backend Engineer @ BoringRats. I've built scalable backend systems and AI solutions. Currently building AI that helps people articulate their ideas and share them at scale.",
     quote: "Move fast, break things, and optimize later.",
     funFact: "I believe every problem has a solution; you need to find the right algorithm!"
   }
