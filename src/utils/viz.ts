@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import { uploadImage, getOptimizedUrl } from '../lib/cloudinary';
+import { uploadImage } from '../lib/storage';
 
 // Chart.js SSR Renderer
 // Chart.js SSR Renderer removed due to Cloudflare incompatibility

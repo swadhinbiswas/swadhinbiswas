@@ -223,8 +223,7 @@ export const supportOptions = sqliteTable('support_options', {
   icon: text('icon').notNull(), // Emoji or ID or raw SVG
   type: text('type').notNull().default('link'), // 'link' | 'copy' | 'qr'
   value: text('value').notNull(), // URL or Wallet Address
-  qrCode: text('qr_code'), // Cloudinary URL
-  order: integer('order').default(0),
+      qrCode: text('qr_code'), // Storage URL  order: integer('order').default(0),
   createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
 });
 export type SupportOption = typeof supportOptions.$inferSelect;

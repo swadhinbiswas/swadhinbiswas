@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { uploadImage } from '../../../lib/cloudinary';
+import { uploadImage } from '../../../lib/storage';
 
 export const POST: APIRoute = async ({ request }) => {
     try {
