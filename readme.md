@@ -17,49 +17,6 @@
 
 ---
 
-<table align="center">
-<tr>
-<td width="50%" valign="top">
-
-<h3 align="center">
-  <img src="https://img.shields.io/badge/-What_I_Actually_Know-1a1b27?style=flat-square" alt="Skills"/>
-</h3>
-
-**Core Skills:**
-- Scaleable System
-- Networking 
-- Machine Learning & Deep Learning
-- AI Agents & MCP (Model Context Protocol)
-- DevOps
-- IoT
-
-
-
-</td>
-<td width="50%" valign="top">
-
-<h3 align="center">
-  <img src="https://img.shields.io/badge/-Current_Work_&_Focus-1a1b27?style=flat-square" alt="Focus"/>
-</h3>
-
-- Advanced data science with real-world applications
-- Deep learning architectures that aren't just ResNet
-- Building AI agents that actually complete tasks
-- Contributing to open source (when not drowning)
-
-<h3 align="center">
-  <img src="https://img.shields.io/badge/-What_I'm_Looking_For-1a1b27?style=flat-square" alt="Looking For"/>
-</h3>
-
-- Projects that actually matter
-- Teams that ship code, not just have meetings
-- Problems that require thinking, not just googling
-- Opportunities to work with data and AI at scale
-
-</td>
-</tr>
-</table>
-
 ---
 
 <h3 align="center">
