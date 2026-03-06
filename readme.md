@@ -44,7 +44,7 @@
 </td>
 <td align="center" width="100">
 <a href="https://linkedin.com/in/swadh1n">
-<img src="https://cdn.simpleicons.org/linkedin/0A66C2" width="36" height="36" alt="LinkedIn"/><br/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" width="36" height="36" alt="LinkedIn"/><br/>
 <sub><b>LinkedIn</b></sub>
 </a>
 </td>
