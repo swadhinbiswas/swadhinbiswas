@@ -19,6 +19,8 @@ QUERY_COUNT = {
     "recursive_loc": 0,
     "graph_commits": 0,
     "loc_query": 0,
+    "streak_getter": 0,
+    "language_getter": 0,
 }
 MAX_RETRIES = 10
 
@@ -491,6 +493,10 @@ def svg_overwrite(
     contrib_data,
     follower_data,
     loc_data,
+    streak_data=None,
+    lang_data=None,
+    yearly_data=None,
+    score_data=None,
 ):
     """
     Parse SVG files and update elements with my age, commits, stars, repositories, and lines written
@@ -572,6 +578,45 @@ def svg_overwrite(
     else:
         loc_abbrev = str(loc_data)
     find_and_replace(root, "loc_planet", loc_abbrev)
+
+    # ── Streak ──
+    if streak_data is not None:
+        find_and_replace(root, "streak_data", str(streak_data))
+
+    # ── Language percentages ──
+    if lang_data is not None:
+        for i, (lang_name, pct) in enumerate(lang_data):
+            find_and_replace(root, "lang_pct_{}".format(i), "{}%".format(pct))
+
+    # ── Yearly contribution breakdown ──
+    if yearly_data is not None:
+        max_count = max(yearly_data.values()) if yearly_data else 1
+        for year, count in yearly_data.items():
+            find_and_replace(root, "year_{}".format(year), "{:,}".format(count))
+        # Update total contributions text in right panel
+        total_contribs = sum(yearly_data.values())
+        find_and_replace(root, "total_contrib", "{:,}".format(total_contribs))
+        # Update contribution ring commits label (abbreviated)
+        if total_contribs >= 1_000:
+            ring_label = "{:.1f}K".format(total_contribs / 1_000)
+        else:
+            ring_label = "{:,}".format(total_contribs)
+        find_and_replace(root, "ring_commits", ring_label)
+        # Update star ring label
+        find_and_replace(
+            root,
+            "ring_stars",
+            "{:,}".format(star_data) if isinstance(star_data, int) else str(star_data),
+        )
+
+    # ── Developer Score & Rank ──
+    if score_data is not None:
+        score_val, rank_val = score_data
+        find_and_replace(root, "score_left", str(score_val))
+        find_and_replace(root, "rank_left", rank_val)
+        find_and_replace(root, "score_right", str(score_val))
+        find_and_replace(root, "rank_right", rank_val)
+
     tree.write(filename, encoding="utf-8", xml_declaration=True)
 
 
@@ -616,6 +661,197 @@ def commit_counter(comment_size):
     for line in data:
         total_commits += int(line.split()[2])
     return total_commits
+
+
+def contribution_getter(acc_date_str):
+    """
+    Returns total GitHub contributions and per-year breakdown across all years
+    by summing graph_commits() for each year since account creation.
+    acc_date_str: ISO format date string like '2022-06-14T...'
+    Returns: (total, {year: count, ...})
+    """
+    acc_date = datetime.datetime.strptime(acc_date_str[:10], "%Y-%m-%d")
+    today = datetime.datetime.today()
+    total = 0
+    yearly = {}
+    year = acc_date.year
+    while year <= today.year:
+        start = max(acc_date, datetime.datetime(year, 1, 1))
+        end = min(today, datetime.datetime(year, 12, 31, 23, 59, 59))
+        if start <= end:
+            count = graph_commits(
+                start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                end.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            )
+            yearly[year] = count
+            total += count
+        year += 1
+    return total, yearly
+
+
+def account_age(acc_date_str):
+    """
+    Returns the age of the GitHub account as a formatted string.
+    e.g. '3 years, 8 months, 27 days'
+    """
+    acc_date = datetime.datetime.strptime(acc_date_str[:10], "%Y-%m-%d")
+    diff = relativedelta.relativedelta(datetime.datetime.today(), acc_date)
+    return "{} {}, {} {}, {} {}".format(
+        diff.years,
+        "year" + format_plural(diff.years),
+        diff.months,
+        "month" + format_plural(diff.months),
+        diff.days,
+        "day" + format_plural(diff.days),
+    )
+
+
+def streak_getter():
+    """
+    Returns the current contribution streak (number of consecutive days
+    with at least 1 contribution, ending today or yesterday).
+    Uses the contribution calendar weeks data from GitHub GraphQL API.
+    """
+    query_count("streak_getter")
+    today = datetime.datetime.today()
+    # Fetch last ~90 days of contribution data
+    start = (today - datetime.timedelta(days=90)).strftime("%Y-%m-%dT00:00:00Z")
+    end = today.strftime("%Y-%m-%dT23:59:59Z")
+    query = """
+    query($start_date: DateTime!, $end_date: DateTime!, $login: String!) {
+        user(login: $login) {
+            contributionsCollection(from: $start_date, to: $end_date) {
+                contributionCalendar {
+                    weeks {
+                        contributionDays {
+                            contributionCount
+                            date
+                        }
+                    }
+                }
+            }
+        }
+    }"""
+    variables = {"start_date": start, "end_date": end, "login": USER_NAME}
+    request = simple_request(streak_getter.__name__, query, variables)
+    weeks = request.json()["data"]["user"]["contributionsCollection"][
+        "contributionCalendar"
+    ]["weeks"]
+    # Flatten all days into a sorted list (oldest first)
+    days = []
+    for week in weeks:
+        for day in week["contributionDays"]:
+            days.append(day)
+    # Walk backwards from today to count consecutive days with contributions > 0
+    streak = 0
+    today_str = today.strftime("%Y-%m-%d")
+    yesterday_str = (today - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+    # Build a date->count map
+    day_map = {d["date"]: d["contributionCount"] for d in days}
+    # Start from today, allow today to have 0 if yesterday had contributions
+    current = today
+    # If today has 0 contributions, check if yesterday had some (streak is still alive)
+    if day_map.get(today_str, 0) == 0:
+        current = today - datetime.timedelta(days=1)
+    while True:
+        date_str = current.strftime("%Y-%m-%d")
+        if day_map.get(date_str, 0) > 0:
+            streak += 1
+            current -= datetime.timedelta(days=1)
+        else:
+            break
+    return streak
+
+
+def language_getter():
+    """
+    Returns the top 5 languages by bytes across all owned repositories.
+    Returns a list of (language_name, percentage) tuples sorted by percentage descending.
+    """
+    all_languages = {}
+    cursor = None
+    while True:
+        query_count("language_getter")
+        query = """
+        query($login: String!, $cursor: String) {
+            user(login: $login) {
+                repositories(first: 100, after: $cursor, ownerAffiliations: OWNER, isFork: false) {
+                    edges {
+                        node {
+                            languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {
+                                edges {
+                                    size
+                                    node {
+                                        name
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    pageInfo {
+                        endCursor
+                        hasNextPage
+                    }
+                }
+            }
+        }"""
+        variables = {"login": USER_NAME, "cursor": cursor}
+        request = simple_request(language_getter.__name__, query, variables)
+        data = request.json()["data"]["user"]["repositories"]
+        for edge in data["edges"]:
+            for lang_edge in edge["node"]["languages"]["edges"]:
+                name = lang_edge["node"]["name"]
+                size = lang_edge["size"]
+                all_languages[name] = all_languages.get(name, 0) + size
+        if data["pageInfo"]["hasNextPage"]:
+            cursor = data["pageInfo"]["endCursor"]
+        else:
+            break
+    # Sort by size descending and compute percentages
+    total_size = sum(all_languages.values())
+    if total_size == 0:
+        return []
+    sorted_langs = sorted(all_languages.items(), key=lambda x: x[1], reverse=True)
+    # Return top 5 with percentages
+    result = []
+    for name, size in sorted_langs[:5]:
+        pct = round(size / total_size * 100)
+        result.append((name, pct))
+    # Ensure percentages sum makes sense - adjust last one if needed
+    return result
+
+
+def compute_score(commits, stars, repos, followers, loc_net):
+    """
+    Computes a developer score (0-100) and rank based on GitHub stats.
+    Returns (score, rank_letter).
+    """
+    import math
+
+    # Weighted scoring with diminishing returns (log scale)
+    commit_score = min(30, 30 * math.log10(max(commits, 1)) / math.log10(10000))
+    star_score = min(25, 25 * math.log10(max(stars, 1)) / math.log10(5000))
+    repo_score = min(10, 10 * math.log10(max(repos, 1)) / math.log10(200))
+    follower_score = min(15, 15 * math.log10(max(followers, 1)) / math.log10(1000))
+    loc_score = min(20, 20 * math.log10(max(loc_net, 1)) / math.log10(10_000_000))
+    score = int(commit_score + star_score + repo_score + follower_score + loc_score)
+    score = min(100, max(0, score))
+    # Rank thresholds
+    if score >= 90:
+        rank = "S+"
+    elif score >= 80:
+        rank = "A+"
+    elif score >= 70:
+        rank = "A"
+    elif score >= 60:
+        rank = "B+"
+    elif score >= 50:
+        rank = "B"
+    elif score >= 40:
+        rank = "C"
+    else:
+        rank = "D"
+    return score, rank
 
 
 def user_getter(username):
@@ -697,8 +933,8 @@ if __name__ == "__main__":
     OWNER_ID, acc_date = user_data
     formatter("account data", user_time)
 
-    # TODO: Update birthday if known
-    age_data, age_time = perf_counter(daily_readme, datetime.datetime(2002, 7, 5))
+    # Account age from creation date (not personal birthday)
+    age_data, age_time = perf_counter(account_age, acc_date)
     formatter("age calculation", age_time)
 
     total_loc, loc_time = perf_counter(
@@ -707,18 +943,45 @@ if __name__ == "__main__":
     formatter("LOC (cached)", loc_time) if total_loc[-1] else formatter(
         "LOC (no cache)", loc_time
     )
-    commit_data, commit_time = perf_counter(commit_counter, 7)
+
+    # Total contributions (commits + PRs + issues + reviews) across all years
+    contrib_result, contrib_time = perf_counter(contribution_getter, acc_date)
+    contrib_data, yearly_data = contrib_result
+    formatter("contributions", contrib_time)
+
+    # Use contributions as commit_data since it represents all GitHub activity
+    commit_data = contrib_data
+    commit_time = 0
+
     star_data, star_time = perf_counter(graph_repos_stars, "stars", ["OWNER"])
     repo_data, repo_time = perf_counter(graph_repos_stars, "repos", ["OWNER"])
-    contrib_data, contrib_time = perf_counter(
-        graph_repos_stars, "repos", ["OWNER", "COLLABORATOR", "ORGANIZATION_MEMBER"]
-    )
     follower_data, follower_time = perf_counter(follower_getter, USER_NAME)
+
+    # Streak
+    streak_data, streak_time = perf_counter(streak_getter)
+    formatter("streak", streak_time)
+
+    # Language stats
+    lang_data, lang_time = perf_counter(language_getter)
+    formatter("languages", lang_time)
 
     for index in range(len(total_loc) - 1):
         total_loc[index] = "{:,}".format(
             total_loc[index]
         )  # format added, deleted, and total LOC
+
+    # Compute developer score
+    try:
+        net_loc_val = (
+            int(total_loc[2].replace(",", ""))
+            if isinstance(total_loc[2], str)
+            else total_loc[2]
+        )
+    except (ValueError, IndexError):
+        net_loc_val = 0
+    score_data = compute_score(
+        commit_data, star_data, repo_data, follower_data, net_loc_val
+    )
 
     svg_overwrite(
         "dark_mode.svg",
@@ -749,25 +1012,27 @@ if __name__ == "__main__":
         contrib_data,
         follower_data,
         total_loc[:-1],
+        streak_data=streak_data,
+        lang_data=lang_data,
+        yearly_data=yearly_data,
+        score_data=score_data,
     )
 
-    # move cursor to override 'Calculation times:' with 'Total function time:' and the total function time, then move cursor back
+    # Print total function time
+    total_time = (
+        user_time
+        + age_time
+        + loc_time
+        + contrib_time
+        + star_time
+        + repo_time
+        + streak_time
+        + lang_time
+    )
     print(
-        "\033[F\033[F\033[F\033[F\033[F\033[F\033[F\033[F",
-        "{:<21}".format("Total function time:"),
-        "{:>11}".format(
-            "%.4f"
-            % (
-                user_time
-                + age_time
-                + loc_time
-                + commit_time
-                + star_time
-                + repo_time
-                + contrib_time
-            )
-        ),
-        " s \033[E\033[E\033[E\033[E\033[E\033[E\033[E\033[E",
+        "\n{:<21}".format("Total function time:"),
+        "{:>11}".format("%.4f" % total_time),
+        " s",
         sep="",
     )
 
