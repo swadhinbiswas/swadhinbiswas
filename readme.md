@@ -17,67 +17,62 @@
 
 ---
 
----
+### You may be interested in
 
-<h3 align="center">
-  <img src="https://img.shields.io/badge/-Open_Source_Work-1a1b27?style=flat-square" alt="Projects"/>
-</h3>
-
-<p align="center">
-  <a href="https://github.com/swadhinbiswas/OpencodeHub">
-    <img src="https://github-readme-stats.vercel.app/api/pin/?username=swadhinbiswas&repo=OpencodeHub&theme=catppuccin_mocha&hide_border=true&bg_color=1e1e2e" alt="OpencodeHub"/>
-  </a>
-  <a href="https://github.com/swadhinbiswas/fetchx">
-    <img src="https://github-readme-stats.vercel.app/api/pin/?username=swadhinbiswas&repo=fetchx&theme=catppuccin_mocha&hide_border=true&bg_color=1e1e2e" alt="fetchx"/>
-  </a>
-</p>
-<p align="center">
-  <a href="https://github.com/swadhinbiswas/ls-f">
-    <img src="https://github-readme-stats.vercel.app/api/pin/?username=swadhinbiswas&repo=ls-f&theme=catppuccin_mocha&hide_border=true&bg_color=1e1e2e" alt="ls-f"/>
-  </a>
-  <a href="https://github.com/swadhinbiswas/FAANG-Playbook">
-    <img src="https://github-readme-stats.vercel.app/api/pin/?username=swadhinbiswas&repo=FAANG-Playbook&theme=catppuccin_mocha&hide_border=true&bg_color=1e1e2e" alt="FAANG-Playbook"/>
-  </a>
-</p>
+| | Project | What it does |
+|---|---|---|
+| <img src="https://img.shields.io/badge/-TS-3178C6?style=flat-square&logo=typescript&logoColor=fff" /> | [**OpencodeHub**](https://github.com/swadhinbiswas/OpencodeHub) | Self-hosted Git platform with SSH, CI pipelines, and AI code reviews |
+| <img src="https://img.shields.io/badge/-Rust-DEA584?style=flat-square&logo=rust&logoColor=000" /> | [**fetchx**](https://github.com/swadhinbiswas/fetchx) | Modern neofetch replacement, blazing fast, written in Rust |
+| <img src="https://img.shields.io/badge/-Rust-DEA584?style=flat-square&logo=rust&logoColor=000" /> | [**ls-f**](https://github.com/swadhinbiswas/ls-f) | `ls` with Nerd Font icons for every file type |
+| <img src="https://img.shields.io/badge/-Astro-BC52EE?style=flat-square&logo=astro&logoColor=fff" /> | [**FAANG-Playbook**](https://github.com/swadhinbiswas/FAANG-Playbook) | 1,400+ LeetCode problems, interview strategies, and study plans |
 
 ---
 
-<h3 align="center">
-  <img src="https://img.shields.io/badge/-Reach_Out-1a1b27?style=flat-square" alt="Contact"/>
-</h3>
+<table align="center">
+<tr>
+<td align="center" width="100">
+<a href="mailto:swadhinbiswas.cse@gmail.com">
+<img src="https://cdn.simpleicons.org/gmail/EA4335" width="36" height="36" alt="Email"/><br/>
+<sub><b>Email</b></sub>
+</a>
+</td>
+<td align="center" width="100">
+<a href="https://swadhin.my.id">
+<img src="https://cdn.simpleicons.org/googlechrome/4285F4" width="36" height="36" alt="Website"/><br/>
+<sub><b>Website</b></sub>
+</a>
+</td>
+<td align="center" width="100">
+<a href="https://linkedin.com/in/swadh1n">
+<img src="https://cdn.simpleicons.org/linkedin/0A66C2" width="36" height="36" alt="LinkedIn"/><br/>
+<sub><b>LinkedIn</b></sub>
+</a>
+</td>
+<td align="center" width="100">
+<a href="https://x.com/swadh1n">
+<img src="https://cdn.simpleicons.org/x/fff" width="36" height="36" alt="X"/><br/>
+<sub><b>Twitter</b></sub>
+</a>
+</td>
+<td align="center" width="100">
+<a href="https://discord.com/users/swadhinbiswas">
+<img src="https://cdn.simpleicons.org/discord/5865F2" width="36" height="36" alt="Discord"/><br/>
+<sub><b>Discord</b></sub>
+</a>
+</td>
+</tr>
+</table>
 
 <p align="center">
-  <a href="mailto:swadhinbiswas.cse@gmail.com">
-    <img src="https://img.shields.io/badge/Email-swadhinbiswas.cse@gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/>
-  </a>
-  <a href="https://swadhin.my.id">
-    <img src="https://img.shields.io/badge/Website-swadhin.my.id-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Website"/>
-  </a>
-</p>
-
-<p align="center">
-  <a href="https://linkedin.com/in/swadh1n">
-    <img src="https://img.shields.io/badge/LinkedIn-swadh1n-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
-  </a>
-  <a href="https://x.com/swadh1n">
-    <img src="https://img.shields.io/badge/Twitter-@swadh1n-1DA1F2?style=for-the-badge&logo=x&logoColor=white" alt="Twitter"/>
-  </a>
-  <a href="https://discord.com/users/swadhinbiswas">
-    <img src="https://img.shields.io/badge/Discord-swadhinbiswas-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord"/>
-  </a>
-</p>
-
-<p align="center">
-  <em>I actually respond to messages. Revolutionary, I know.</em>
+  <sub>I actually respond to messages. Revolutionary, I know.</sub>
 </p>
 
 ---
 
 <p align="center">
-  <em>Built with Python, powered by curiosity, maintained by coffee.</em>
-  <img src="https://img.shields.io/badge/-☕-000000?style=flat-square" alt="Coffee"/>
+  <sub>Built with Python, powered by curiosity, maintained by coffee.</sub>
 </p>
 
 <p align="center">
-  <img src="https://komarev.com/ghpvc/?username=swadhinbiswas&label=Profile%20Views&color=0e75b6&style=for-the-badge" alt="Profile Views"/>
+  <img src="https://komarev.com/ghpvc/?username=swadhinbiswas&label=Profile%20Views&color=0e75b6&style=flat-square" alt="Profile Views"/>
 </p>
