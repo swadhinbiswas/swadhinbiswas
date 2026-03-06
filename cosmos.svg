@@ -1,169 +1,215 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1050" height="540" viewBox="0 0 1050 540">
+<svg width="1050" height="540" viewBox="0 0 1050 540"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
 <defs>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@500;700;800;900&amp;family=JetBrains+Mono:wght@500;700;800&amp;display=swap');
 
-/* ── KEYFRAMES ─────────────────────────────────────────────── */
+/* ── GLITCH KEYFRAMES ──────────────────────────────────── */
+@keyframes glitchShift {
+  0%,92%,100%{transform:translate(0,0);filter:none}
+  93%{transform:translate(-3px,1px);filter:url(#glitchR)}
+  94%{transform:translate(2px,-1px);filter:url(#glitchB)}
+  95%{transform:translate(-1px,2px);filter:none}
+  96%{transform:translate(4px,0);filter:url(#glitchR)}
+  97%{transform:translate(0,-2px);filter:url(#glitchB)}
+  98%{transform:translate(-2px,1px);filter:none}
+}
+@keyframes glitchFlicker {
+  0%,89%,100%{opacity:1}
+  90%{opacity:.85}
+  91%{opacity:.95}
+  92%{opacity:.7}
+  93%{opacity:1}
+  94%{opacity:.88}
+}
+@keyframes glitchSlice {
+  0%,88%,100%{clip-path:inset(0 0 0 0);transform:translateX(0)}
+  89%{clip-path:inset(15% 0 80% 0);transform:translateX(6px)}
+  90%{clip-path:inset(40% 0 50% 0);transform:translateX(-4px)}
+  91%{clip-path:inset(70% 0 20% 0);transform:translateX(3px)}
+  92%{clip-path:inset(0 0 0 0);transform:translateX(0)}
+}
+@keyframes glitchBar {
+  0%,86%,92%,100%{opacity:0}
+  87%{opacity:.6;transform:translateY(120px)}
+  88%{opacity:.4;transform:translateY(280px)}
+  89%{opacity:.7;transform:translateY(60px)}
+  90%{opacity:0;transform:translateY(400px)}
+  91%{opacity:.5;transform:translateY(200px)}
+}
+@keyframes glitchText {
+  0%,90%,100%{letter-spacing:inherit;opacity:1}
+  91%{letter-spacing:4px;opacity:.7}
+  93%{letter-spacing:-1px;opacity:.9}
+  95%{letter-spacing:inherit;opacity:1}
+}
+@keyframes scanLine {
+  0%{transform:translateY(-2px);opacity:0}
+  4%{opacity:.06} 96%{opacity:.06}
+  100%{transform:translateY(540px);opacity:0}
+}
+@keyframes rgbSplit {
+  0%,85%,100%{text-shadow:none}
+  86%{text-shadow:-2px 0 #f38ba8,2px 0 #89dceb}
+  88%{text-shadow:2px 0 #f38ba8,-2px 0 #89dceb}
+  90%{text-shadow:none}
+}
+
+/* ── COMMON ANIMATIONS ─────────────────────────────────── */
+@keyframes twinkle {
+  0%,100%{opacity:1} 50%{opacity:.05}
+}
 @keyframes blobDrift {
   0%,100%{transform:translate(0,0) scale(1)}
   38%{transform:translate(20px,-16px) scale(1.06)}
   72%{transform:translate(-14px,12px) scale(.95)}
 }
-@keyframes twinkle {
-  0%,100%{opacity:1} 50%{opacity:.05}
-}
-@keyframes scanMove {
-  0%{transform:translateY(0);opacity:0}
-  4%{opacity:.08} 96%{opacity:.08}
-  100%{transform:translateY(540px);opacity:0}
-}
-@keyframes coronaCW   { to{transform:rotate(360deg)}  }
-@keyframes coronaCCW  { to{transform:rotate(-360deg)} }
 @keyframes auroraWave {
-  0%,100%{transform:scaleX(1)   translateX(0)}
-  50%    {transform:scaleX(1.06) translateX(18px)}
-}
-@keyframes orbitGlow {
-  0%,100%{opacity:.18} 50%{opacity:.38}
-}
-@keyframes planetHalo {
-  0%,100%{r:var(--pr,26);opacity:.22}
-  50%    {r:calc(var(--pr,26)+10);opacity:.06}
-}
-@keyframes avBreath {
-  0%,100%{r:44} 50%{r:49}
-}
-@keyframes avRingGlow {
-  0%,100%{stroke-width:2;opacity:.75}
-  50%    {stroke-width:3.8;opacity:1}
-}
-@keyframes barGrow { from{width:0} }
-@keyframes arcPop  { from{stroke-dashoffset:var(--full,220)} }
-@keyframes borderDraw {
-  from{stroke-dashoffset:3200} to{stroke-dashoffset:0}
+  0%,100%{transform:scaleX(1) translateX(0)}
+  50%{transform:scaleX(1.06) translateX(18px)}
 }
 @keyframes hudIn {
   from{opacity:0;transform:translateX(var(--dx,-10px))}
-  to  {opacity:1;transform:translateX(0)}
-}
-@keyframes floatUp {
-  0%  {transform:translateY(0);opacity:0}
-  10% {opacity:.7}
-  90% {opacity:.3}
-  100%{transform:translateY(-50px);opacity:0}
-}
-@keyframes shootStar {
-  0%  {opacity:0} 5%{opacity:.9} 90%{opacity:.7} 100%{opacity:0}
+  to{opacity:1;transform:translateX(0)}
 }
 @keyframes labelPop {
   from{opacity:0;letter-spacing:5px}
-  to  {opacity:1;letter-spacing:var(--ls,2px)}
+  to{opacity:1;letter-spacing:var(--ls,2px)}
 }
+@keyframes barGrow { from{width:0} }
+@keyframes arcPop  { from{stroke-dashoffset:var(--full,220)} }
 @keyframes dotPulse {
   0%,100%{r:2.5;opacity:.9} 50%{r:4;opacity:.3}
 }
-@keyframes flareOut {
-  0%  {transform:scaleX(0);opacity:0}
-  20% {opacity:.8}
-  100%{transform:scaleX(1);opacity:0}
+@keyframes floatUp {
+  0%{transform:translateY(0);opacity:0}
+  10%{opacity:.7} 90%{opacity:.3}
+  100%{transform:translateY(-50px);opacity:0}
+}
+@keyframes avRingGlow {
+  0%,100%{stroke-width:2;opacity:.75}
+  50%{stroke-width:3.8;opacity:1}
+}
+@keyframes coronaCW  { to{transform:rotate(360deg)} }
+@keyframes coronaCCW { to{transform:rotate(-360deg)} }
+@keyframes dataPulse {
+  0%,100%{opacity:.3;stroke-dashoffset:0}
+  50%{opacity:.8;stroke-dashoffset:-20}
+}
+@keyframes holoPulse {
+  0%,100%{opacity:.12} 50%{opacity:.25}
+}
+@keyframes nodeGlow {
+  0%,100%{r:3;opacity:.8} 50%{r:5;opacity:.3}
+}
+@keyframes waveformMove {
+  0%{stroke-dashoffset:0}
+  100%{stroke-dashoffset:-60}
+}
+@keyframes panelFloat {
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-3px)}
+}
+@keyframes hexRotate {
+  0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)}
+}
+@keyframes dataStream {
+  0%{stroke-dashoffset:40} 100%{stroke-dashoffset:0}
+}
+@keyframes borderDraw {
+  from{stroke-dashoffset:3200} to{stroke-dashoffset:0}
 }
 
-/* ── UTILITY ──────────────────────────────────────────────── */
+/* ── UTILITY CLASSES ───────────────────────────────────── */
 .tw {animation:twinkle var(--td,3s) var(--dl,0s) ease-in-out infinite}
-.sc {animation:scanMove 10s .5s linear infinite}
-
+.sc {animation:scanLine 8s .5s linear infinite}
+.glitch-main {animation:glitchShift 12s ease-in-out infinite,glitchFlicker 12s ease-in-out infinite}
+.glitch-slice {animation:glitchSlice 15s ease-in-out infinite}
+.glitch-text {animation:glitchText 10s ease-in-out infinite,rgbSplit 10s ease-in-out infinite}
+.hl {animation:hudIn .8s var(--hd,.3s) both;--dx:-10px}
+.hr {animation:hudIn .8s var(--hd,.5s) both;--dx:10px}
 .b1{animation:barGrow 1.2s cubic-bezier(.16,1,.3,1) 1.7s both}
 .b2{animation:barGrow 1.2s cubic-bezier(.16,1,.3,1) 1.9s both}
 .b3{animation:barGrow 1.2s cubic-bezier(.16,1,.3,1) 2.1s both}
 .b4{animation:barGrow 1.2s cubic-bezier(.16,1,.3,1) 2.3s both}
 .b5{animation:barGrow 1.2s cubic-bezier(.16,1,.3,1) 2.5s both}
 .b6{animation:barGrow 1.2s cubic-bezier(.16,1,.3,1) 2.7s both}
-.a1{animation:arcPop  1.6s cubic-bezier(.16,1,.3,1) 1.8s both;--full:220}
-.a2{animation:arcPop  1.6s cubic-bezier(.16,1,.3,1) 2.1s both;--full:220}
-.a3{animation:arcPop  1.6s cubic-bezier(.16,1,.3,1) 2.4s both;--full:220}
-
-.hl{animation:hudIn .8s var(--hd,.3s) both;--dx:-10px}
-.hr{animation:hudIn .8s var(--hd,.3s) both;--dx:10px}
+.b7{animation:barGrow 1.2s cubic-bezier(.16,1,.3,1) 2.9s both}
+.a1{animation:arcPop 1.6s cubic-bezier(.16,1,.3,1) 1.8s both;--full:220}
+.a2{animation:arcPop 1.6s cubic-bezier(.16,1,.3,1) 2.1s both;--full:220}
+.a3{animation:arcPop 1.6s cubic-bezier(.16,1,.3,1) 2.4s both;--full:220}
 </style>
 
-<!-- ══ CATPPUCCIN MOCHA BACKGROUND ═══════════════════════════ -->
+<!-- ══ CATPPUCCIN MOCHA BACKGROUND ═══════════════════════ -->
 <radialGradient id="bg" cx="45%" cy="42%" r="76%">
   <stop offset="0%" stop-color="#1e1e2e"/>
   <stop offset="50%" stop-color="#181825"/>
   <stop offset="100%" stop-color="#11111b"/>
 </radialGradient>
 
-<!-- ══ NEBULA RADIAL GRADIENTS (Catppuccin pastels) ══════════ -->
-<radialGradient id="nI" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#cba6f7" stop-opacity=".20"/><stop offset="100%" stop-color="#cba6f7" stop-opacity="0"/></radialGradient>
-<radialGradient id="nL" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#f38ba8" stop-opacity=".15"/><stop offset="100%" stop-color="#f38ba8" stop-opacity="0"/></radialGradient>
-<radialGradient id="nF" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#89dceb" stop-opacity=".14"/><stop offset="100%" stop-color="#89dceb" stop-opacity="0"/></radialGradient>
-<radialGradient id="nG" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fab387" stop-opacity=".12"/><stop offset="100%" stop-color="#fab387" stop-opacity="0"/></radialGradient>
-<radialGradient id="nP" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#94e2d5" stop-opacity=".16"/><stop offset="100%" stop-color="#94e2d5" stop-opacity="0"/></radialGradient>
+<!-- ══ NEBULA GRADIENTS ═════════════════════════════════ -->
+<radialGradient id="nI" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#cba6f7" stop-opacity=".18"/><stop offset="100%" stop-color="#cba6f7" stop-opacity="0"/></radialGradient>
+<radialGradient id="nL" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#f38ba8" stop-opacity=".14"/><stop offset="100%" stop-color="#f38ba8" stop-opacity="0"/></radialGradient>
+<radialGradient id="nF" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#89dceb" stop-opacity=".12"/><stop offset="100%" stop-color="#89dceb" stop-opacity="0"/></radialGradient>
+<radialGradient id="nG" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fab387" stop-opacity=".10"/><stop offset="100%" stop-color="#fab387" stop-opacity="0"/></radialGradient>
 
-<!-- ══ PLANET GRADIENTS (Catppuccin Mocha) ═══════════════════ -->
-<radialGradient id="pTeal" cx="32%" cy="28%" r="68%"><stop offset="0%" stop-color="#94e2d5"/><stop offset="55%" stop-color="#2b7d71"/><stop offset="100%" stop-color="#0e3530"/></radialGradient>
-<radialGradient id="pPink" cx="32%" cy="28%" r="68%"><stop offset="0%" stop-color="#f5c2e7"/><stop offset="55%" stop-color="#c05a9e"/><stop offset="100%" stop-color="#5c1848"/></radialGradient>
-<radialGradient id="pPeach" cx="32%" cy="28%" r="68%"><stop offset="0%" stop-color="#fab387"/><stop offset="55%" stop-color="#c47020"/><stop offset="100%" stop-color="#6a3800"/></radialGradient>
-<radialGradient id="pSky" cx="32%" cy="28%" r="68%"><stop offset="0%" stop-color="#89dceb"/><stop offset="55%" stop-color="#3a98b0"/><stop offset="100%" stop-color="#0a3040"/></radialGradient>
-<radialGradient id="pMauve" cx="32%" cy="28%" r="68%"><stop offset="0%" stop-color="#cba6f7"/><stop offset="55%" stop-color="#7c50c0"/><stop offset="100%" stop-color="#2c1050"/></radialGradient>
-<radialGradient id="pRosewater" cx="32%" cy="28%" r="68%"><stop offset="0%" stop-color="#f5e0dc"/><stop offset="55%" stop-color="#b08880"/><stop offset="100%" stop-color="#4a2020"/></radialGradient>
+<!-- ══ SHIMMER GRADIENT ═════════════════════════════════ -->
+<linearGradient id="shim" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0%" stop-color="#cba6f7"><animate attributeName="stop-color" values="#cba6f7;#f38ba8;#89dceb;#fab387;#cba6f7" dur="5s" repeatCount="indefinite"/></stop>
+  <stop offset="100%" stop-color="#89dceb"><animate attributeName="stop-color" values="#89dceb;#cba6f7;#fab387;#f38ba8;#89dceb" dur="5s" repeatCount="indefinite"/></stop>
+</linearGradient>
 
-<!-- ══ AVATAR / CORONA GRADIENTS ═════════════════════════════ -->
-<radialGradient id="starCore" cx="50%" cy="50%" r="50%">
-  <stop offset="0%" stop-color="#f5e0dc"/>
-  <stop offset="30%" stop-color="#f9e2af"/>
-  <stop offset="65%" stop-color="#fab38780"/>
-  <stop offset="100%" stop-color="#f38ba800"/>
-</radialGradient>
+<!-- ══ AVATAR RING SHIMMER ══════════════════════════════ -->
+<linearGradient id="avRing" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0%" stop-color="#cba6f7"><animate attributeName="stop-color" values="#cba6f7;#f38ba8;#89dceb;#fab387;#f5c2e7;#cba6f7" dur="4s" repeatCount="indefinite"/></stop>
+  <stop offset="100%" stop-color="#f38ba8"><animate attributeName="stop-color" values="#f38ba8;#89dceb;#fab387;#cba6f7;#f38ba8" dur="4s" repeatCount="indefinite"/></stop>
+</linearGradient>
+
+<!-- ══ ARC GRADIENTS ════════════════════════════════════ -->
+<linearGradient id="arcL" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f38ba8"/><stop offset="100%" stop-color="#eba0ac"/></linearGradient>
+<linearGradient id="arcS" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fab387"/><stop offset="100%" stop-color="#89dceb"/></linearGradient>
+<linearGradient id="arcC" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#89dceb"/><stop offset="100%" stop-color="#cba6f7"/></linearGradient>
+
+<!-- ══ BAR FILL GRADIENTS ══════════════════════════════ -->
+<linearGradient id="bPy" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#3a98b0"/><stop offset="100%" stop-color="#89b4fa"/></linearGradient>
+<linearGradient id="bRs" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#a04020"/><stop offset="100%" stop-color="#fab387"/></linearGradient>
+<linearGradient id="bGo" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#1a7060"/><stop offset="100%" stop-color="#94e2d5"/></linearGradient>
+<linearGradient id="bJs" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#8a7020"/><stop offset="100%" stop-color="#f9e2af"/></linearGradient>
+<linearGradient id="bTs" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#5040a0"/><stop offset="100%" stop-color="#cba6f7"/></linearGradient>
+<linearGradient id="bP" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#1a6050"/><stop offset="100%" stop-color="#94e2d5"/></linearGradient>
+<linearGradient id="bL" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#a02850"/><stop offset="100%" stop-color="#f38ba8"/></linearGradient>
+
+<!-- ══ HUD BACKGROUNDS ═════════════════════════════════ -->
+<linearGradient id="hudBg" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#181825" stop-opacity=".97"/>
+  <stop offset="100%" stop-color="#11111b" stop-opacity=".99"/>
+</linearGradient>
+<linearGradient id="holoBg" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#181825" stop-opacity=".88"/>
+  <stop offset="100%" stop-color="#11111b" stop-opacity=".92"/>
+</linearGradient>
+
+<!-- ══ CORONA ═══════════════════════════════════════════ -->
 <radialGradient id="coronaGlow" cx="50%" cy="50%" r="50%">
   <stop offset="0%" stop-color="#f5e0dc" stop-opacity=".6"/>
   <stop offset="50%" stop-color="#fab387" stop-opacity=".22"/>
   <stop offset="100%" stop-color="#f38ba8" stop-opacity="0"/>
 </radialGradient>
 
-<!-- ══ SHIMMER (animated border - Catppuccin cycle) ══════════ -->
-<linearGradient id="shim" x1="0" y1="0" x2="1" y2="1">
-  <stop offset="0%" stop-color="#cba6f7"><animate attributeName="stop-color" values="#cba6f7;#f38ba8;#89dceb;#fab387;#cba6f7" dur="5s" repeatCount="indefinite"/></stop>
-  <stop offset="100%" stop-color="#89dceb"><animate attributeName="stop-color" values="#89dceb;#cba6f7;#fab387;#f38ba8;#89dceb" dur="5s" repeatCount="indefinite"/></stop>
+<!-- ══ DATA STREAM GRADIENT ════════════════════════════ -->
+<linearGradient id="streamG" x1="0" y1="0" x2="1" y2="0">
+  <stop offset="0%" stop-color="#cba6f7" stop-opacity="0"/>
+  <stop offset="50%" stop-color="#89dceb" stop-opacity=".6"/>
+  <stop offset="100%" stop-color="#cba6f7" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="streamV" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#f38ba8" stop-opacity="0"/>
+  <stop offset="50%" stop-color="#fab387" stop-opacity=".5"/>
+  <stop offset="100%" stop-color="#f38ba8" stop-opacity="0"/>
 </linearGradient>
 
-<!-- ══ AVATAR RING SHIMMER ═══════════════════════════════════ -->
-<linearGradient id="avRing" x1="0" y1="0" x2="1" y2="1">
-  <stop offset="0%" stop-color="#cba6f7"><animate attributeName="stop-color" values="#cba6f7;#f38ba8;#89dceb;#fab387;#f5c2e7;#cba6f7" dur="4s" repeatCount="indefinite"/></stop>
-  <stop offset="100%" stop-color="#f38ba8"><animate attributeName="stop-color" values="#f38ba8;#89dceb;#fab387;#cba6f7;#f38ba8" dur="4s" repeatCount="indefinite"/></stop>
-</linearGradient>
-
-<!-- ══ OUTPUT ARC GRADIENTS ══════════════════════════════════ -->
-<linearGradient id="arcL" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f38ba8"/><stop offset="100%" stop-color="#eba0ac"/></linearGradient>
-<linearGradient id="arcS" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fab387"/><stop offset="100%" stop-color="#89dceb"/></linearGradient>
-<linearGradient id="arcC" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#89dceb"/><stop offset="100%" stop-color="#cba6f7"/></linearGradient>
-
-<!-- ══ BAR FILL GRADIENTS (Catppuccin) ═══════════════════════ -->
-<linearGradient id="bF" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#3a98b0"/><stop offset="100%" stop-color="#89b4fa"/></linearGradient>
-<linearGradient id="bL" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#a02850"/><stop offset="100%" stop-color="#f38ba8"/></linearGradient>
-<linearGradient id="bI" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#5040a0"/><stop offset="100%" stop-color="#cba6f7"/></linearGradient>
-<linearGradient id="bG" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#a06020"/><stop offset="100%" stop-color="#fab387"/></linearGradient>
-<linearGradient id="bR" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#806060"/><stop offset="100%" stop-color="#f5e0dc"/></linearGradient>
-<linearGradient id="bP" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#1a6050"/><stop offset="100%" stop-color="#94e2d5"/></linearGradient>
-<linearGradient id="bY" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#8a7020"/><stop offset="100%" stop-color="#f9e2af"/></linearGradient>
-<linearGradient id="bSky" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#2a6878"/><stop offset="100%" stop-color="#89dceb"/></linearGradient>
-
-<!-- ══ HUD BACKGROUND ═══════════════════════════════════════ -->
-<linearGradient id="hudBg" x1="0" y1="0" x2="0" y2="1">
-  <stop offset="0%" stop-color="#181825" stop-opacity=".97"/>
-  <stop offset="100%" stop-color="#11111b" stop-opacity=".99"/>
-</linearGradient>
-
-<!-- ══ DIVIDER ═══════════════════════════════════════════════ -->
-<linearGradient id="divV" x1="0" y1="0" x2="0" y2="1">
-  <stop offset="0%" stop-color="#45475a" stop-opacity="0"/>
-  <stop offset="28%" stop-color="#45475a" stop-opacity=".35"/>
-  <stop offset="72%" stop-color="#45475a" stop-opacity=".35"/>
-  <stop offset="100%" stop-color="#45475a" stop-opacity="0"/>
-</linearGradient>
-
-<!-- ══ FILTERS ═══════════════════════════════════════════════ -->
+<!-- ══ FILTERS ═════════════════════════════════════════ -->
 <filter id="bigBloom" x="-65%" y="-65%" width="230%" height="230%">
   <feGaussianBlur in="SourceGraphic" stdDeviation="16"/>
 </filter>
@@ -185,580 +231,610 @@
   <feComposite in="c" in2="b" operator="in" result="s"/>
   <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
 </filter>
+<!-- Glitch color channel filters -->
+<filter id="glitchR" x="-5%" y="-5%" width="110%" height="110%">
+  <feColorMatrix type="matrix" values="1 0 0 0 0.1  0 0.2 0 0 0  0 0 0.2 0 0  0 0 0 1 0"/>
+</filter>
+<filter id="glitchB" x="-5%" y="-5%" width="110%" height="110%">
+  <feColorMatrix type="matrix" values="0.2 0 0 0 0  0 0.2 0 0 0  0 0 1 0 0.1  0 0 0 1 0"/>
+</filter>
+<filter id="holoBlur" x="-10%" y="-10%" width="120%" height="120%">
+  <feGaussianBlur in="SourceGraphic" stdDeviation="1" result="b"/>
+  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+</filter>
 
-<!-- ══ CLIP PATHS ═══════════════════════════════════════════ -->
+<!-- ══ CLIP PATHS ══════════════════════════════════════ -->
 <clipPath id="card"><rect x="1" y="1" width="1048" height="538" rx="22"/></clipPath>
 <clipPath id="avClip"><circle cx="0" cy="0" r="44"/></clipPath>
+<clipPath id="miniAv"><circle cx="104" cy="112" r="24"/></clipPath>
 
 </defs>
 
-<!-- ════════════════════════════════════════════════════════ -->
-<!--  BACKGROUND                                               -->
-<!-- ════════════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  BACKGROUND + ATMOSPHERE                                -->
+<!-- ═══════════════════════════════════════════════════════ -->
 <rect x="1" y="1" width="1048" height="538" rx="22" fill="url(#bg)"/>
 
-<!-- ══ NEBULA CLOUDS ════════════════════════════════════════ -->
+<!-- Nebula clouds -->
 <g clip-path="url(#card)">
-  <ellipse cx="140" cy="130" rx="220" ry="180" fill="url(#nI)" style="animation:blobDrift 11s ease-in-out infinite"/>
-  <ellipse cx="490" cy="272" rx="280" ry="230" fill="url(#nF)" style="animation:blobDrift 14s 2s ease-in-out infinite"/>
-  <ellipse cx="870" cy="120" rx="200" ry="160" fill="url(#nL)" style="animation:blobDrift 10s 1s ease-in-out infinite"/>
-  <ellipse cx="720" cy="440" rx="230" ry="120" fill="url(#nG)" style="animation:blobDrift 12s 3s ease-in-out infinite"/>
-  <ellipse cx="280" cy="440" rx="190" ry="130" fill="url(#nP)" style="animation:blobDrift  9s 1.5s ease-in-out infinite"/>
+  <ellipse cx="180" cy="140" rx="220" ry="180" fill="url(#nI)" style="animation:blobDrift 11s ease-in-out infinite"/>
+  <ellipse cx="525" cy="270" rx="260" ry="200" fill="url(#nF)" style="animation:blobDrift 14s 2s ease-in-out infinite"/>
+  <ellipse cx="870" cy="130" rx="200" ry="160" fill="url(#nL)" style="animation:blobDrift 10s 1s ease-in-out infinite"/>
+  <ellipse cx="700" cy="430" rx="220" ry="120" fill="url(#nG)" style="animation:blobDrift 12s 3s ease-in-out infinite"/>
 </g>
 
-<!-- ══ AURORA STRIP (top edge) ══════════════════════════════ -->
-<g clip-path="url(#card)" opacity=".45" style="animation:auroraWave 8s ease-in-out infinite;transform-origin:525px 0">
+<!-- Aurora strip -->
+<g clip-path="url(#card)" opacity=".4" style="animation:auroraWave 8s ease-in-out infinite;transform-origin:525px 0">
   <ellipse cx="300" cy="6" rx="280" ry="12" fill="#cba6f7" filter="url(#bigBloom)" opacity=".15"/>
   <ellipse cx="650" cy="6" rx="320" ry="14" fill="#89dceb" filter="url(#bigBloom)" opacity=".12"/>
-  <ellipse cx="490" cy="4" rx="200" ry="10" fill="#f38ba8" filter="url(#bigBloom)" opacity=".10"/>
 </g>
 
-<!-- ══ SCAN LINE ════════════════════════════════════════════ -->
-<rect class="sc" x="1" y="0" width="1048" height="2" fill="url(#shim)" clip-path="url(#card)" opacity=".10"/>
-
-<!-- ══ STARFIELD ════════════════════════════════════════════ -->
+<!-- Starfield -->
 <g clip-path="url(#card)">
-  <circle class="tw" cx="44" cy="24" r="1.2" fill="#cba6f7" style="--td:2.3s;--dl:.1s"/>
-  <circle class="tw" cx="188" cy="16" r="0.9" fill="#f5e0dc" style="--td:3.2s;--dl:.7s"/>
-  <circle class="tw" cx="302" cy="32" r="1.3" fill="#89dceb" style="--td:1.9s;--dl:1.4s"/>
-  <circle class="tw" cx="415" cy="19" r="0.8" fill="#fab387" style="--td:2.8s;--dl:.4s"/>
-  <circle class="tw" cx="558" cy="27" r="1.1" fill="#cba6f7" style="--td:4.1s;--dl:2.1s"/>
-  <circle class="tw" cx="672" cy="13" r="0.7" fill="#f5c2e7" style="--td:2.0s;--dl:.9s"/>
-  <circle class="tw" cx="785" cy="36" r="1.3" fill="#89dceb" style="--td:3.5s;--dl:.2s"/>
-  <circle class="tw" cx="899" cy="21" r="0.9" fill="#f9e2af" style="--td:2.5s;--dl:1.6s"/>
-  <circle class="tw" cx="984" cy="45" r="1.1" fill="#b4befe" style="--td:4.4s;--dl:2.9s"/>
-  <circle class="tw" cx="28" cy="514" r="1.0" fill="#94e2d5" style="--td:2.7s;--dl:1.2s"/>
+  <circle class="tw" cx="44"  cy="24"  r="1.2" fill="#cba6f7" style="--td:2.3s;--dl:.1s"/>
+  <circle class="tw" cx="188" cy="16"  r="0.9" fill="#f5e0dc" style="--td:3.2s;--dl:.7s"/>
+  <circle class="tw" cx="302" cy="32"  r="1.3" fill="#89dceb" style="--td:1.9s;--dl:1.4s"/>
+  <circle class="tw" cx="415" cy="19"  r="0.8" fill="#fab387" style="--td:2.8s;--dl:.4s"/>
+  <circle class="tw" cx="558" cy="27"  r="1.1" fill="#cba6f7" style="--td:4.1s;--dl:2.1s"/>
+  <circle class="tw" cx="672" cy="13"  r="0.7" fill="#f5c2e7" style="--td:2.0s;--dl:.9s"/>
+  <circle class="tw" cx="785" cy="36"  r="1.3" fill="#89dceb" style="--td:3.5s;--dl:.2s"/>
+  <circle class="tw" cx="899" cy="21"  r="0.9" fill="#f9e2af" style="--td:2.5s;--dl:1.6s"/>
+  <circle class="tw" cx="984" cy="45"  r="1.1" fill="#b4befe" style="--td:4.4s;--dl:2.9s"/>
+  <circle class="tw" cx="28"  cy="514" r="1.0" fill="#94e2d5" style="--td:2.7s;--dl:1.2s"/>
   <circle class="tw" cx="450" cy="520" r="1.2" fill="#cba6f7" style="--td:3.8s;--dl:2.2s"/>
   <circle class="tw" cx="730" cy="516" r="0.9" fill="#f5e0dc" style="--td:2.1s;--dl:.6s"/>
   <circle class="tw" cx="960" cy="508" r="1.0" fill="#fab387" style="--td:4.0s;--dl:3.1s"/>
-  <circle class="tw" cx="8" cy="270" r="0.8" fill="#b4befe" style="--td:3.1s;--dl:.5s"/>
+  <circle class="tw" cx="8"   cy="270" r="0.8" fill="#b4befe" style="--td:3.1s;--dl:.5s"/>
   <circle class="tw" cx="1042" cy="200" r="0.9" fill="#f5c2e7" style="--td:2.4s;--dl:1.8s"/>
-  <circle class="tw" cx="1040" cy="400" r="0.8" fill="#89dceb" style="--td:3.6s;--dl:2.5s"/>
-  <circle class="tw" cx="230" cy="510" r="0.7" fill="#f9e2af" style="--td:2.9s;--dl:1.0s"/>
-  <circle class="tw" cx="820" cy="510" r="1.1" fill="#a6e3a1" style="--td:2.2s;--dl:1.7s"/>
-  <circle class="tw" cx="120" cy="508" r="0.8" fill="#f38ba8" style="--td:3.7s;--dl:0.8s"/>
-  <circle class="tw" cx="970" cy="14" r="0.7" fill="#74c7ec" style="--td:1.8s;--dl:2.3s"/>
 </g>
 
-<!-- ══ FLOATING PARTICLES ═══════════════════════════════════ -->
-<g clip-path="url(#card)" opacity=".55">
-  <circle cx="490" cy="380" r="2" fill="#cba6f7" style="animation:floatUp 7s 0.3s ease-in-out infinite"/>
-  <circle cx="508" cy="410" r="1.5" fill="#f38ba8" style="animation:floatUp 5.5s 1.7s ease-in-out infinite"/>
-  <circle cx="472" cy="400" r="1.8" fill="#89dceb" style="animation:floatUp 8s 3.1s ease-in-out infinite"/>
-  <circle cx="500" cy="395" r="1.2" fill="#fab387" style="animation:floatUp 6s 0.6s ease-in-out infinite"/>
-  <circle cx="479" cy="418" r="1.6" fill="#f5e0dc" style="animation:floatUp 9s 2.3s ease-in-out infinite"/>
-  <circle cx="220" cy="350" r="1.4" fill="#b4befe" style="animation:floatUp 8s 4.0s ease-in-out infinite"/>
-  <circle cx="790" cy="370" r="1.3" fill="#94e2d5" style="animation:floatUp 7s 2.8s ease-in-out infinite"/>
+<!-- Scan line -->
+<rect class="sc" x="1" y="0" width="1048" height="2" fill="url(#shim)" clip-path="url(#card)" opacity=".08"/>
+
+<!-- ═══ GLITCH BARS (horizontal tear lines) ═════════════ -->
+<g clip-path="url(#card)">
+  <rect x="0" y="0" width="1050" height="3" fill="#f38ba8" opacity="0" style="animation:glitchBar 12s 0s ease-in-out infinite"/>
+  <rect x="0" y="0" width="1050" height="2" fill="#89dceb" opacity="0" style="animation:glitchBar 15s 2s ease-in-out infinite"/>
+  <rect x="0" y="0" width="1050" height="4" fill="#cba6f7" opacity="0" style="animation:glitchBar 10s 4s ease-in-out infinite"/>
 </g>
 
-<!-- ════════════════════════════════════════════════════════ -->
-<!--  TITLE BANNER                                              -->
-<!-- ════════════════════════════════════════════════════════ -->
-<text x="525" y="32" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="13" font-weight="900" fill="#585b70" letter-spacing="6" style="animation:labelPop 1.2s .2s both;--ls:6px">
-  THE  DEVELOPER  COSMOS  ·  SWADHINBISWAS
+<!-- Floating particles -->
+<g clip-path="url(#card)" opacity=".5">
+  <circle cx="350" cy="380" r="1.8" fill="#cba6f7" style="animation:floatUp 7s 0.3s ease-in-out infinite"/>
+  <circle cx="550" cy="400" r="1.4" fill="#f38ba8" style="animation:floatUp 5.5s 1.7s ease-in-out infinite"/>
+  <circle cx="700" cy="390" r="1.6" fill="#89dceb" style="animation:floatUp 8s 3.1s ease-in-out infinite"/>
+  <circle cx="460" cy="410" r="1.2" fill="#fab387" style="animation:floatUp 6s 0.6s ease-in-out infinite"/>
+</g>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  GLITCH WRAPPER (wraps the whole content for glitch)    -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<g class="glitch-main" clip-path="url(#card)">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  TITLE BANNER                                            -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<text x="525" y="30" text-anchor="middle"
+  font-family="'Exo 2',sans-serif" font-size="13" font-weight="900"
+  fill="#585b70" letter-spacing="6" class="glitch-text"
+  style="animation:labelPop 1.2s .2s both,glitchText 10s ease-in-out infinite,rgbSplit 10s ease-in-out infinite;--ls:6px">
+  HOLOGRAPHIC  DASHBOARD  ·  SWADHINBISWAS
 </text>
-<line x1="210" y1="39" x2="840" y2="39" stroke="#45475a60" stroke-width=".7"/>
+<line x1="210" y1="37" x2="840" y2="37" stroke="#45475a60" stroke-width=".7"/>
 
-<!-- ════════════════════════════════════════════════════════ -->
-<!--  CENTER GROUP  translate(490, 272)                        -->
-<!-- ════════════════════════════════════════════════════════ -->
-<g transform="translate(490,272)">
-
-  <!-- ══ ORBIT RINGS ══════════════════════════════════════ -->
-  <circle cx="0" cy="0" r="72" fill="none" stroke="#94e2d538" stroke-width="1" stroke-dasharray="3 5">
-    <animate attributeName="opacity" values=".25;.48;.25" dur="4s" repeatCount="indefinite"/>
-  </circle>
-  <circle cx="0" cy="0" r="112" fill="none" stroke="#f38ba834" stroke-width="1" stroke-dasharray="4 5">
-    <animate attributeName="opacity" values=".22;.45;.22" dur="5s" repeatCount="indefinite"/>
-  </circle>
-  <circle cx="0" cy="0" r="152" fill="none" stroke="#fab38730" stroke-width="1" stroke-dasharray="4 6">
-    <animate attributeName="opacity" values=".20;.42;.20" dur="6s" repeatCount="indefinite"/>
-  </circle>
-  <circle cx="0" cy="0" r="190" fill="none" stroke="#89dceb28" stroke-width="1" stroke-dasharray="5 6">
-    <animate attributeName="opacity" values=".20;.40;.20" dur="7s" repeatCount="indefinite"/>
-  </circle>
-  <circle cx="0" cy="0" r="215" fill="none" stroke="#cba6f724" stroke-width="1" stroke-dasharray="5 7">
-    <animate attributeName="opacity" values=".18;.38;.18" dur="8s" repeatCount="indefinite"/>
-  </circle>
-  <circle cx="0" cy="0" r="232" fill="none" stroke="#f5e0dc22" stroke-width="1" stroke-dasharray="4 8">
-    <animate attributeName="opacity" values=".16;.34;.16" dur="9s" repeatCount="indefinite"/>
-  </circle>
-
-  <!-- ══ ASTEROID BELT (between r=132 and r=148) ══════════ -->
-  <g fill="#585b70" opacity=".50">
-    <g><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="13.0s" repeatCount="indefinite"/>
-      <circle cx="140" cy="0" r="2.2"/></g>
-    <g><animateTransform attributeName="transform" type="rotate" from="46" to="406" dur="13.8s" repeatCount="indefinite"/>
-      <circle cx="138" cy="0" r="1.6"/></g>
-    <g><animateTransform attributeName="transform" type="rotate" from="92" to="452" dur="14.2s" repeatCount="indefinite"/>
-      <circle cx="142" cy="0" r="2.0"/></g>
-    <g><animateTransform attributeName="transform" type="rotate" from="138" to="498" dur="13.5s" repeatCount="indefinite"/>
-      <circle cx="137" cy="0" r="1.4"/></g>
-    <g><animateTransform attributeName="transform" type="rotate" from="184" to="544" dur="14.6s" repeatCount="indefinite"/>
-      <circle cx="143" cy="0" r="2.4"/></g>
-    <g><animateTransform attributeName="transform" type="rotate" from="230" to="590" dur="13.2s" repeatCount="indefinite"/>
-      <circle cx="139" cy="0" r="1.8"/></g>
-    <g><animateTransform attributeName="transform" type="rotate" from="276" to="636" dur="14.9s" repeatCount="indefinite"/>
-      <circle cx="141" cy="0" r="1.5"/></g>
-    <g><animateTransform attributeName="transform" type="rotate" from="322" to="682" dur="13.7s" repeatCount="indefinite"/>
-      <circle cx="136" cy="0" r="2.1"/></g>
-  </g>
-
-  <!-- ══ CORONA / STAR GLOW (behind avatar) ═══════════════ -->
-  <circle cx="0" cy="0" r="80" fill="url(#coronaGlow)" filter="url(#bigBloom)" opacity=".45">
-    <animate attributeName="r" values="80;92;80" dur="4s" repeatCount="indefinite"/>
-    <animate attributeName="opacity" values=".45;.72;.45" dur="4s" repeatCount="indefinite"/>
-  </circle>
-  <!-- Rotating 8-ray star polygon (corona rays) -->
-  <g style="animation:coronaCW 25s linear infinite;transform-origin:0 0">
-    <polygon points="0,-62 5,-18 0,-8 -5,-18" fill="#fab38738" filter="url(#bloom)"/>
-    <polygon points="0,-62 5,-18 0,-8 -5,-18" fill="#fab38738" filter="url(#bloom)" transform="rotate(45)"/>
-    <polygon points="0,-62 5,-18 0,-8 -5,-18" fill="#fab38738" filter="url(#bloom)" transform="rotate(90)"/>
-    <polygon points="0,-62 5,-18 0,-8 -5,-18" fill="#fab38738" filter="url(#bloom)" transform="rotate(135)"/>
-    <polygon points="0,-62 5,-18 0,-8 -5,-18" fill="#fab38738" filter="url(#bloom)" transform="rotate(180)"/>
-    <polygon points="0,-62 5,-18 0,-8 -5,-18" fill="#fab38738" filter="url(#bloom)" transform="rotate(225)"/>
-    <polygon points="0,-62 5,-18 0,-8 -5,-18" fill="#fab38738" filter="url(#bloom)" transform="rotate(270)"/>
-    <polygon points="0,-62 5,-18 0,-8 -5,-18" fill="#fab38738" filter="url(#bloom)" transform="rotate(315)"/>
-  </g>
-  <!-- Counter-rotating finer rays -->
-  <g style="animation:coronaCCW 18s linear infinite;transform-origin:0 0" opacity=".45">
-    <polygon points="0,-50 3,-16 0,-7 -3,-16" fill="#f38ba848" filter="url(#bloom)" transform="rotate(22)"/>
-    <polygon points="0,-50 3,-16 0,-7 -3,-16" fill="#f38ba848" filter="url(#bloom)" transform="rotate(67)"/>
-    <polygon points="0,-50 3,-16 0,-7 -3,-16" fill="#f38ba848" filter="url(#bloom)" transform="rotate(112)"/>
-    <polygon points="0,-50 3,-16 0,-7 -3,-16" fill="#f38ba848" filter="url(#bloom)" transform="rotate(157)"/>
-    <polygon points="0,-50 3,-16 0,-7 -3,-16" fill="#f38ba848" filter="url(#bloom)" transform="rotate(202)"/>
-    <polygon points="0,-50 3,-16 0,-7 -3,-16" fill="#f38ba848" filter="url(#bloom)" transform="rotate(247)"/>
-    <polygon points="0,-50 3,-16 0,-7 -3,-16" fill="#f38ba848" filter="url(#bloom)" transform="rotate(292)"/>
-    <polygon points="0,-50 3,-16 0,-7 -3,-16" fill="#f38ba848" filter="url(#bloom)" transform="rotate(337)"/>
-  </g>
-
-  <!-- ══ AVATAR RINGS ════════════════════════════════════ -->
-  <circle cx="0" cy="0" r="56" fill="none" stroke="#cba6f730" stroke-width="1" stroke-dasharray="4 5">
-    <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="22s" repeatCount="indefinite"/>
-  </circle>
-  <circle cx="0" cy="0" r="52" fill="none" stroke="#f38ba825" stroke-width="1" stroke-dasharray="3 6">
-    <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="14s" repeatCount="indefinite"/>
-  </circle>
-  <!-- Shimmer ring -->
-  <circle cx="0" cy="0" r="47" fill="none" stroke="url(#avRing)" stroke-width="2.8" filter="url(#glow)" style="animation:avRingGlow 3s ease-in-out infinite"/>
-  <!-- Avatar background -->
-  <circle cx="0" cy="0" r="44" fill="#1e1e2e"/>
-  <!-- PROFILE PICTURE -->
-  <image href="https://github.com/swadhinbiswas.png" x="-44" y="-44" width="88" height="88" clip-path="url(#avClip)" preserveAspectRatio="xMidYMid slice" style="animation:coronaCW 0s 0s 1 both"/>
-  <!-- Avatar name below -->
-  <text x="0" y="64" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="14" font-weight="900" fill="#cdd6f4" filter="url(#textGlow)" style="animation:labelPop 1s .5s both;--ls:1px">
-    Swadhin Biswas
-  </text>
-  <text x="0" y="77" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#7f849c" letter-spacing="2" style="animation:labelPop 1s .7s both;--ls:2px">
-    BACKEND &amp; AI/ML ENGINEER
-  </text>
-
-  <!-- ════════════════════════════════════════════════════════ -->
-  <!--  PLANETS                                                  -->
-  <!-- ════════════════════════════════════════════════════════ -->
-
-  <!-- ══ PLANET 1: STREAK  (Teal, r=72, start=30deg, dur=6s) ═ -->
-  <g>
-    <animateTransform attributeName="transform" type="rotate" from="30" to="390" dur="6s" repeatCount="indefinite"/>
-    <g transform="translate(72,0)">
-      <circle cx="0" cy="0" r="24" fill="#94e2d5" filter="url(#bigBloom)" opacity=".35" style="animation:planetHalo 2.8s ease-in-out infinite;--pr:24"/>
-      <circle cx="0" cy="0" r="14" fill="url(#pTeal)" filter="url(#glow4)"/>
-      <circle cx="0" cy="0" r="14" fill="none" stroke="#94e2d570" stroke-width="1.5"/>
-      <circle cx="0" cy="0" r="18" fill="none" stroke="#94e2d555" stroke-width="1" stroke-dasharray="3 4">
-        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="4s" repeatCount="indefinite"/>
-      </circle>
-      <g>
-        <animateTransform attributeName="transform" type="rotate" from="-30" to="-390" dur="6s" repeatCount="indefinite"/>
-        <text x="0" y="-3.5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="900" fill="#94e2d5">STREAK</text>
-        <text x="0" y="6.5" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="12" font-weight="900" fill="#a6e3a1">24d</text>
-      </g>
-    </g>
-  </g>
-
-  <!-- ══ PLANET 2: CONTRIBUTIONS  (Pink, r=112, start=165deg, dur=10s) ═ -->
-  <g>
-    <animateTransform attributeName="transform" type="rotate" from="165" to="525" dur="10s" repeatCount="indefinite"/>
-    <g transform="translate(112,0)">
-      <circle cx="0" cy="0" r="34" fill="#f5c2e7" filter="url(#bigBloom)" opacity=".30" style="animation:planetHalo 3.2s .3s ease-in-out infinite;--pr:34"/>
-      <ellipse cx="0" cy="0" rx="30" ry="9" fill="none" stroke="#f5c2e760" stroke-width="2.5" transform="rotate(15)"/>
-      <ellipse cx="0" cy="0" rx="26" ry="8" fill="none" stroke="#f38ba845" stroke-width="1.8" transform="rotate(15)"/>
-      <circle cx="0" cy="0" r="22" fill="url(#pPink)" filter="url(#glow4)"/>
-      <circle cx="0" cy="0" r="22" fill="none" stroke="#f5c2e760" stroke-width="1.8"/>
-      <circle cx="0" cy="0" r="26" fill="none" stroke="#f5c2e740" stroke-width="1" stroke-dasharray="4 4">
-        <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="8s" repeatCount="indefinite"/>
-      </circle>
-      <g>
-        <animateTransform attributeName="transform" type="rotate" from="-165" to="-525" dur="10s" repeatCount="indefinite"/>
-        <text x="0" y="-5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="900" fill="#f5c2e7">CONTRIB</text>
-        <text id="contrib_data" x="0" y="7" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="13" font-weight="900" fill="#f2cdcd">91</text>
-      </g>
-    </g>
-  </g>
-
-  <!-- ══ PLANET 3: STARS  (Peach, r=152, start=288deg, dur=16s) ═ -->
-  <g>
-    <animateTransform attributeName="transform" type="rotate" from="288" to="648" dur="16s" repeatCount="indefinite"/>
-    <g transform="translate(152,0)">
-      <circle cx="0" cy="0" r="28" fill="#fab387" filter="url(#bigBloom)" opacity=".30" style="animation:planetHalo 3.8s .6s ease-in-out infinite;--pr:28"/>
-      <circle cx="0" cy="0" r="18" fill="url(#pPeach)" filter="url(#glow4)"/>
-      <circle cx="0" cy="0" r="18" fill="none" stroke="#fab38760" stroke-width="1.8"/>
-      <ellipse cx="0" cy="0" rx="24" ry="7" fill="none" stroke="#fab38750" stroke-width="2.2" transform="rotate(-10)"/>
-      <circle cx="0" cy="0" r="22" fill="none" stroke="#fab38738" stroke-width="1" stroke-dasharray="3 5">
-        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="12s" repeatCount="indefinite"/>
-      </circle>
-      <g>
-        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="3s" repeatCount="indefinite"/>
-        <circle cx="24" cy="0" r="3.5" fill="#fab38766" filter="url(#glow)"/>
-      </g>
-      <g>
-        <animateTransform attributeName="transform" type="rotate" from="-288" to="-648" dur="16s" repeatCount="indefinite"/>
-        <text x="0" y="-4" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="900" fill="#fab387">STARS</text>
-        <text id="star_planet" x="0" y="7" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="13" font-weight="900" fill="#f9e2af">228</text>
-      </g>
-    </g>
-  </g>
-
-  <!-- ══ PLANET 4: LOC  (Sky, r=190, start=52deg, dur=24s) ═══ -->
-  <g>
-    <animateTransform attributeName="transform" type="rotate" from="52" to="412" dur="24s" repeatCount="indefinite"/>
-    <g transform="translate(190,0)">
-      <circle cx="0" cy="0" r="40" fill="#89dceb" filter="url(#bigBloom)" opacity=".28" style="animation:planetHalo 4s .9s ease-in-out infinite;--pr:40"/>
-      <ellipse cx="0" cy="-5" rx="24" ry="5" fill="#74c7ec40"/>
-      <ellipse cx="0" cy="5" rx="22" ry="4" fill="#89dceb30"/>
-      <circle cx="0" cy="0" r="25" fill="url(#pSky)" filter="url(#glow4)"/>
-      <circle cx="0" cy="0" r="25" fill="none" stroke="#89dceb60" stroke-width="2"/>
-      <ellipse cx="0" cy="0" rx="35" ry="10" fill="none" stroke="#89dceb65" stroke-width="3" transform="rotate(8)"/>
-      <ellipse cx="0" cy="0" rx="42" ry="12" fill="none" stroke="#89dceb40" stroke-width="2" transform="rotate(8)"/>
-      <circle cx="0" cy="0" r="32" fill="none" stroke="#89dceb30" stroke-width="1" stroke-dasharray="5 5">
-        <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="16s" repeatCount="indefinite"/>
-      </circle>
-      <g>
-        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="5s" repeatCount="indefinite"/>
-        <circle cx="36" cy="0" r="4" fill="#89dceb77" filter="url(#glow)"/>
-      </g>
-      <g>
-        <animateTransform attributeName="transform" type="rotate" from="180" to="540" dur="8s" repeatCount="indefinite"/>
-        <circle cx="44" cy="0" r="3" fill="#74c7ec66" filter="url(#glow)"/>
-      </g>
-      <g>
-        <animateTransform attributeName="transform" type="rotate" from="-52" to="-412" dur="24s" repeatCount="indefinite"/>
-        <text x="0" y="-5.5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="900" fill="#89dceb">LOC NET</text>
-        <text id="loc_planet" x="0" y="7" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="12" font-weight="900" fill="#89b4fa">7.39M</text>
-      </g>
-    </g>
-  </g>
-
-  <!-- ══ PLANET 5: REPOS  (Mauve, r=215, start=198deg, dur=33s) ═ -->
-  <g>
-    <animateTransform attributeName="transform" type="rotate" from="198" to="558" dur="33s" repeatCount="indefinite"/>
-    <g transform="translate(215,0)">
-      <circle cx="0" cy="0" r="30" fill="#cba6f7" filter="url(#bigBloom)" opacity=".28" style="animation:planetHalo 4.5s 1.2s ease-in-out infinite;--pr:30"/>
-      <circle cx="0" cy="0" r="19" fill="url(#pMauve)" filter="url(#glow4)"/>
-      <circle cx="0" cy="0" r="19" fill="none" stroke="#cba6f760" stroke-width="1.8"/>
-      <ellipse cx="0" cy="0" rx="26" ry="8" fill="none" stroke="#cba6f760" stroke-width="2.2" transform="rotate(-12)"/>
-      <circle cx="0" cy="0" r="24" fill="none" stroke="#cba6f738" stroke-width="1" stroke-dasharray="4 5">
-        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="18s" repeatCount="indefinite"/>
-      </circle>
-      <g>
-        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="4s" repeatCount="indefinite"/>
-        <circle cx="28" cy="0" r="4" fill="#cba6f766" filter="url(#glow)"/>
-      </g>
-      <g>
-        <animateTransform attributeName="transform" type="rotate" from="-198" to="-558" dur="33s" repeatCount="indefinite"/>
-        <text x="0" y="-4.5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="900" fill="#cba6f7">REPOS</text>
-        <text id="repo_data" x="0" y="7" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="13" font-weight="900" fill="#b4befe">83</text>
-      </g>
-    </g>
-  </g>
-
-  <!-- ══ PLANET 6: FOLLOWERS  (Rosewater, r=232, start=320deg, dur=44s) ═ -->
-  <g>
-    <animateTransform attributeName="transform" type="rotate" from="320" to="680" dur="44s" repeatCount="indefinite"/>
-    <g transform="translate(232,0)">
-      <circle cx="0" cy="0" r="26" fill="#f5e0dc" filter="url(#bigBloom)" opacity=".26" style="animation:planetHalo 5s 1.5s ease-in-out infinite;--pr:26"/>
-      <circle cx="0" cy="0" r="16" fill="url(#pRosewater)" filter="url(#glow4)"/>
-      <circle cx="0" cy="0" r="16" fill="none" stroke="#f5e0dc60" stroke-width="1.8"/>
-      <circle cx="0" cy="0" r="20" fill="none" stroke="#f5e0dc38" stroke-width="1" stroke-dasharray="3 6">
-        <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="20s" repeatCount="indefinite"/>
-      </circle>
-      <g>
-        <animateTransform attributeName="transform" type="rotate" from="-320" to="-680" dur="44s" repeatCount="indefinite"/>
-        <text x="0" y="-4" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="900" fill="#f5e0dc">FOLLOWERS</text>
-        <text id="follower_data" x="0" y="7" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="13" font-weight="900" fill="#f2cdcd">66</text>
-      </g>
-    </g>
-  </g>
-
-</g><!-- end center group -->
-
-<!-- ════════════════════════════════════════════════════════ -->
-<!--  SHOOTING STARS                                           -->
-<!-- ════════════════════════════════════════════════════════ -->
-<g clip-path="url(#card)">
-  <line x1="0" y1="0" x2="55" y2="4" stroke="#cdd6f4" stroke-width="1.5" stroke-linecap="round" opacity=".75">
-    <animateMotion dur="4s" begin="2s" repeatCount="indefinite" path="M-60,80 L1150,520"/>
-  </line>
-</g>
-<g clip-path="url(#card)">
-  <line x1="0" y1="0" x2="40" y2="3" stroke="#cba6f7" stroke-width="1.2" stroke-linecap="round" opacity=".6">
-    <animateMotion dur="3s" begin="5.5s" repeatCount="indefinite" path="M-60,150 L1150,400"/>
-  </line>
-</g>
-<g clip-path="url(#card)">
-  <line x1="0" y1="0" x2="48" y2="3.5" stroke="#fab387" stroke-width="1.3" stroke-linecap="round" opacity=".65">
-    <animateMotion dur="3.5s" begin="9s" repeatCount="indefinite" path="M1150,60 L-60,460"/>
-  </line>
-</g>
-
-<!-- ════════════════════════════════════════════════════════ -->
-<!--  LEFT HUD PANEL                                           -->
-<!-- ════════════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  LEFT HUD PANEL                                          -->
+<!-- ═══════════════════════════════════════════════════════ -->
 <g class="hl" style="--hd:.3s">
-  <rect x="10" y="52" width="188" height="478" rx="12" fill="url(#hudBg)" stroke="#45475a" stroke-width=".8" opacity=".95"/>
-  <rect x="10" y="52" width="188" height="3" rx="1.5" fill="url(#shim)" opacity=".5"/>
+  <rect x="10" y="48" width="195" height="486" rx="12" fill="url(#hudBg)" stroke="#45475a" stroke-width=".8" opacity=".95"/>
+  <rect x="10" y="48" width="195" height="3" rx="1.5" fill="url(#shim)" opacity=".5"/>
 
-  <!-- ══ IDENTITY ═══════════════════════════════════════ -->
-  <text x="104" y="78" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="9.5" font-weight="900" fill="#585b70" letter-spacing="3" style="animation:labelPop .8s .4s both;--ls:3px">DEVELOPER  ID</text>
-  <line x1="22" y1="84" x2="186" y2="84" stroke="#313244" stroke-width=".7"/>
+  <!-- ── IDENTITY ──────────────────────────────────── -->
+  <text x="107" y="73"
+    text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="9.5" font-weight="900"
+    fill="#585b70" letter-spacing="3"
+    style="animation:labelPop .8s .4s both;--ls:3px">DEVELOPER  ID</text>
+  <line x1="22" y1="79" x2="193" y2="79" stroke="#313244" stroke-width=".7"/>
 
   <!-- Avatar mini -->
-  <clipPath id="miniAv"><circle cx="104" cy="112" r="24"/></clipPath>
-  <circle cx="104" cy="112" r="26" fill="#1e1e2e"/>
-  <circle cx="104" cy="112" r="26" fill="none" stroke="url(#avRing)" stroke-width="1.8" filter="url(#glow)"/>
-  <image href="https://github.com/swadhinbiswas.png" x="80" y="88" width="48" height="48" clip-path="url(#miniAv)" preserveAspectRatio="xMidYMid slice"/>
+  <circle cx="107" cy="108" r="26" fill="#1e1e2e"/>
+  <circle cx="107" cy="108" r="26" fill="none" stroke="url(#avRing)" stroke-width="1.8" filter="url(#glow)"/>
+  <image href="data:image/jpeg;base64,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"
+    x="83" y="84" width="48" height="48"
+    clip-path="url(#miniAv)" preserveAspectRatio="xMidYMid slice"/>
 
-  <text x="104" y="152" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="14" font-weight="900" fill="#cdd6f4" filter="url(#textGlow)">Swadhin Biswas</text>
-  <text x="104" y="165" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="700" fill="#7f849c" letter-spacing="1.5">github.com/swadhinbiswas</text>
+  <text x="107" y="148" text-anchor="middle"
+    font-family="'Exo 2',sans-serif" font-size="14" font-weight="900"
+    fill="#cdd6f4" filter="url(#textGlow)">Swadhin Biswas</text>
+  <text x="107" y="161" text-anchor="middle"
+    font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="700"
+    fill="#7f849c" letter-spacing="1.5">github.com/swadhinbiswas</text>
 
   <!-- badges -->
-  <rect x="26" y="172" width="80" height="18" rx="9" fill="#181825" stroke="#94e2d544" stroke-width=".8"/>
-  <text x="66" y="184.5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#94e2d5" letter-spacing="1">since 2022</text>
-  <rect x="112" y="172" width="74" height="18" rx="9" fill="#181825" stroke="#f38ba844" stroke-width=".8"/>
-  <text x="149" y="184.5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#f38ba8" letter-spacing="1">3 yrs old</text>
+  <rect x="22" y="169" width="82" height="18" rx="9" fill="#181825" stroke="#94e2d544" stroke-width=".8"/>
+  <text x="63" y="181.5" text-anchor="middle"
+    font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800"
+    fill="#94e2d5" letter-spacing="1">since 2022</text>
+  <rect x="110" y="169" width="82" height="18" rx="9" fill="#181825" stroke="#f38ba844" stroke-width=".8"/>
+  <text x="151" y="181.5" text-anchor="middle"
+    font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800"
+    fill="#f38ba8" letter-spacing="1">3 yrs old</text>
 
-  <line x1="22" y1="200" x2="186" y2="200" stroke="#313244" stroke-width=".7"/>
+  <line x1="22" y1="196" x2="193" y2="196" stroke="#313244" stroke-width=".7"/>
 
-  <!-- ══ STREAK COUNTER ══════════════════════════════════ -->
-  <text x="104" y="218" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#585b70" letter-spacing="3">STREAK</text>
-  <text x="104" y="248" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="38" font-weight="900" fill="#fab387" filter="url(#bloom)">24</text>
-  <text x="104" y="262" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#a6adc8" letter-spacing="2">DAYS  ACTIVE</text>
+  <!-- ── STREAK COUNTER ────────────────────────────── -->
+  <text x="107" y="214" text-anchor="middle"
+    font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900"
+    fill="#585b70" letter-spacing="3">STREAK</text>
+  <text x="107" y="244" text-anchor="middle"
+    font-family="'Exo 2',sans-serif" font-size="38" font-weight="900"
+    fill="#fab387" filter="url(#bloom)">24</text>
+  <text x="107" y="258" text-anchor="middle"
+    font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800"
+    fill="#a6adc8" letter-spacing="2">DAYS  ACTIVE</text>
 
-  <line x1="22" y1="276" x2="186" y2="276" stroke="#313244" stroke-width=".7"/>
+  <line x1="22" y1="270" x2="193" y2="270" stroke="#313244" stroke-width=".7"/>
 
-  <!-- ══ ACCOUNT AGE ══════════════════════════════════════ -->
-  <text x="104" y="294" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#585b70" letter-spacing="3">ACCOUNT AGE</text>
-  <text id="age_data" x="104" y="316" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="16" font-weight="900" fill="#cba6f7">23 yrs · 8 mo · 1 d</text>
-  <text x="104" y="330" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="700" fill="#7f849c">joined · June 14, 2022</text>
+  <!-- ── ACCOUNT AGE ───────────────────────────────── -->
+  <text x="107" y="288" text-anchor="middle"
+    font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900"
+    fill="#585b70" letter-spacing="3">ACCOUNT AGE</text>
+  <text id="age_data" x="107" y="310" text-anchor="middle"
+    font-family="'Exo 2',sans-serif" font-size="15" font-weight="900"
+    fill="#cba6f7">3 yrs · 8 mo · 27 d</text>
+  <text x="107" y="324" text-anchor="middle"
+    font-family="'JetBrains Mono',monospace" font-size="8" font-weight="700"
+    fill="#7f849c">joined · June 14, 2022</text>
 
-  <line x1="22" y1="342" x2="186" y2="342" stroke="#313244" stroke-width=".7"/>
+  <line x1="22" y1="338" x2="193" y2="338" stroke="#313244" stroke-width=".7"/>
 
-  <!-- ══ TOP LANGUAGES ══════════════════════════════════ -->
-  <text x="22" y="360" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#585b70" letter-spacing="3">TOP LANGUAGES</text>
+  <!-- ── TOP LANGUAGES ─────────────────────────────── -->
+  <text x="22" y="356" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#585b70" letter-spacing="3">TOP LANGUAGES</text>
 
-  <!-- Python (34% of repos) -->
-  <text x="22" y="380" font-family="'JetBrains Mono',monospace" font-size="9.5" font-weight="800" fill="#89b4fa">Python</text>
-  <text x="186" y="380" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#74c7ec">34%</text>
-  <rect x="22" y="383" width="164" height="7" rx="3.5" fill="#181825"/>
-  <rect class="b1" x="22" y="383" width="56" height="7" rx="3.5" fill="url(#bF)" filter="url(#glow)"/>
-  <circle cx="78" cy="386.5" r="3.5" fill="#89b4fa" filter="url(#glow)" style="animation:dotPulse 2s 3s ease-in-out infinite"/>
+  <!-- Python -->
+  <text x="22" y="376" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#89b4fa">Python</text>
+  <text x="193" y="376" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#74c7ec">32%</text>
+  <rect x="22" y="379" width="171" height="6" rx="3" fill="#181825"/>
+  <rect class="b1" x="22" y="379" width="55" height="6" rx="3" fill="url(#bPy)" filter="url(#glow)"/>
+  <circle cx="77" cy="382" r="3" fill="#89b4fa" filter="url(#glow)" style="animation:dotPulse 2s 3s ease-in-out infinite"/>
 
-  <!-- JavaScript (17%) -->
-  <text x="22" y="404" font-family="'JetBrains Mono',monospace" font-size="9.5" font-weight="800" fill="#f9e2af">JavaScript</text>
-  <text x="186" y="404" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#fab387">17%</text>
-  <rect x="22" y="407" width="164" height="7" rx="3.5" fill="#181825"/>
-  <rect class="b2" x="22" y="407" width="28" height="7" rx="3.5" fill="url(#bG)" filter="url(#glow)"/>
-  <circle cx="50" cy="410.5" r="3.5" fill="#f9e2af" filter="url(#glow)" style="animation:dotPulse 2.2s 3.3s ease-in-out infinite"/>
+  <!-- Rust -->
+  <text x="22" y="396" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#fab387">Rust</text>
+  <text x="193" y="396" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#fab387">22%</text>
+  <rect x="22" y="399" width="171" height="6" rx="3" fill="#181825"/>
+  <rect class="b2" x="22" y="399" width="38" height="6" rx="3" fill="url(#bRs)" filter="url(#glow)"/>
+  <circle cx="60" cy="402" r="3" fill="#fab387" filter="url(#glow)" style="animation:dotPulse 2.2s 3.3s ease-in-out infinite"/>
 
-  <!-- TypeScript (17%) -->
-  <text x="22" y="428" font-family="'JetBrains Mono',monospace" font-size="9.5" font-weight="800" fill="#cba6f7">TypeScript</text>
-  <text x="186" y="428" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#b4befe">17%</text>
-  <rect x="22" y="431" width="164" height="7" rx="3.5" fill="#181825"/>
-  <rect class="b3" x="22" y="431" width="28" height="7" rx="3.5" fill="url(#bI)" filter="url(#glow)"/>
-  <circle cx="50" cy="434.5" r="3.5" fill="#cba6f7" filter="url(#glow)" style="animation:dotPulse 1.8s 3.6s ease-in-out infinite"/>
+  <!-- Go -->
+  <text x="22" y="416" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#94e2d5">Go</text>
+  <text x="193" y="416" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#94e2d5">18%</text>
+  <rect x="22" y="419" width="171" height="6" rx="3" fill="#181825"/>
+  <rect class="b3" x="22" y="419" width="31" height="6" rx="3" fill="url(#bGo)" filter="url(#glow)"/>
+  <circle cx="53" cy="422" r="3" fill="#94e2d5" filter="url(#glow)" style="animation:dotPulse 1.8s 3.6s ease-in-out infinite"/>
 
-  <!-- HTML (15%) -->
-  <text x="22" y="452" font-family="'JetBrains Mono',monospace" font-size="9.5" font-weight="800" fill="#f38ba8">HTML</text>
-  <text x="186" y="452" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#eba0ac">15%</text>
-  <rect x="22" y="455" width="164" height="7" rx="3.5" fill="#181825"/>
-  <rect class="b4" x="22" y="455" width="25" height="7" rx="3.5" fill="url(#bL)" filter="url(#glow)"/>
-  <circle cx="47" cy="458.5" r="3.5" fill="#f38ba8" filter="url(#glow)" style="animation:dotPulse 2.4s 3.9s ease-in-out infinite"/>
+  <!-- JavaScript -->
+  <text x="22" y="436" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#f9e2af">JavaScript</text>
+  <text x="193" y="436" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#f9e2af">16%</text>
+  <rect x="22" y="439" width="171" height="6" rx="3" fill="#181825"/>
+  <rect class="b4" x="22" y="439" width="27" height="6" rx="3" fill="url(#bJs)" filter="url(#glow)"/>
+  <circle cx="49" cy="442" r="3" fill="#f9e2af" filter="url(#glow)" style="animation:dotPulse 2.4s 3.9s ease-in-out infinite"/>
 
-  <line x1="22" y1="472" x2="186" y2="472" stroke="#313244" stroke-width=".7"/>
-  <text x="104" y="490" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#585b70" letter-spacing="1">CATPPUCCIN MOCHA THEME</text>
-  <text x="104" y="504" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#585b70" letter-spacing="1">UPDATED: MARCH 2026</text>
+  <!-- TypeScript -->
+  <text x="22" y="456" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#cba6f7">TypeScript</text>
+  <text x="193" y="456" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#b4befe">12%</text>
+  <rect x="22" y="459" width="171" height="6" rx="3" fill="#181825"/>
+  <rect class="b5" x="22" y="459" width="21" height="6" rx="3" fill="url(#bTs)" filter="url(#glow)"/>
+  <circle cx="43" cy="462" r="3" fill="#cba6f7" filter="url(#glow)" style="animation:dotPulse 2.1s 4.2s ease-in-out infinite"/>
+
+  <line x1="22" y1="474" x2="193" y2="474" stroke="#313244" stroke-width=".7"/>
+  <text x="107" y="492" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="800" fill="#585b70" letter-spacing="1">CATPPUCCIN MOCHA</text>
+  <text x="107" y="506" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="800" fill="#585b70" letter-spacing="1">SCI-FI HOLOGRAPHIC</text>
+  <text x="107" y="520" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700" fill="#45475a" letter-spacing="1">UPDATED DAILY</text>
 </g>
 
-<!-- ════════════════════════════════════════════════════════ -->
-<!--  RIGHT HUD PANEL                                          -->
-<!-- ════════════════════════════════════════════════════════ -->
-<g class="hr" style="--hd:.5s">
-  <rect x="852" y="52" width="188" height="478" rx="12" fill="url(#hudBg)" stroke="#45475a" stroke-width=".8" opacity=".95"/>
-  <rect x="852" y="52" width="188" height="3" rx="1.5" fill="url(#shim)" opacity=".5"/>
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  CENTER: HOLOGRAPHIC DASHBOARD                          -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<g style="animation:panelFloat 6s ease-in-out infinite">
 
-  <!-- ══ CONTRIBUTION RINGS ═════════════════════════════ -->
-  <text x="946" y="78" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" font-weight="900" fill="#585b70" letter-spacing="3" style="animation:labelPop .8s .6s both;--ls:3px">CONTRIBUTION</text>
-  <line x1="864" y1="84" x2="1028" y2="84" stroke="#313244" stroke-width=".7"/>
-
-  <!-- Ring 1: Commits (pink) at (906, 140) -->
-  <g transform="translate(906,140)">
-    <circle cx="0" cy="0" r="38" fill="#181825" stroke="#313244" stroke-width="6"/>
-    <circle cx="0" cy="0" r="38" fill="none" stroke="url(#arcL)" stroke-width="6" stroke-linecap="round" stroke-dasharray="210 220" stroke-dashoffset="220" class="a1" style="transform:rotate(-90deg);transform-origin:0 0">
-      <animate attributeName="stroke-dashoffset" values="220;10;220" dur="8s" begin="3.4s" repeatCount="indefinite"/>
+  <!-- ── AVATAR HOLOGRAM (center top) ──────────────── -->
+  <g transform="translate(525,130)">
+    <!-- Holographic glow behind avatar -->
+    <circle cx="0" cy="0" r="70" fill="url(#coronaGlow)" filter="url(#bigBloom)" opacity=".35">
+      <animate attributeName="opacity" values=".35;.55;.35" dur="4s" repeatCount="indefinite"/>
     </circle>
-    <circle cx="0" cy="0" r="44" fill="none" stroke="#f38ba820" stroke-width=".8" stroke-dasharray="3 4">
+
+    <!-- Rotating hex frame -->
+    <g style="animation:hexRotate 30s linear infinite;transform-origin:0 0" opacity=".3">
+      <polygon points="0,-58 50,-29 50,29 0,58 -50,29 -50,-29" fill="none" stroke="#cba6f7" stroke-width="1" stroke-dasharray="8 4"/>
+    </g>
+    <g style="animation:coronaCCW 20s linear infinite;transform-origin:0 0" opacity=".2">
+      <polygon points="0,-52 45,-26 45,26 0,52 -45,26 -45,-26" fill="none" stroke="#89dceb" stroke-width=".8" stroke-dasharray="6 6"/>
+    </g>
+
+    <!-- Avatar rings -->
+    <circle cx="0" cy="0" r="47" fill="none" stroke="url(#avRing)" stroke-width="2.8" filter="url(#glow)"
+      style="animation:avRingGlow 3s ease-in-out infinite"/>
+    <circle cx="0" cy="0" r="44" fill="#1e1e2e"/>
+    <!-- PROFILE PICTURE -->
+    <image href="data:image/jpeg;base64,/9j/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBCQkJDAsMGA0NGDIhHCEyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMv/AABEIAMgAyAMBIgACEQEDEQH/xAGiAAABBQEBAQEBAQAAAAAAAAAAAQIDBAUGBwgJCgsQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+gEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoLEQACAQIEBAMEBwUEBAABAncAAQIDEQQFITEGEkFRB2FxEyIygQgUQpGhscEJIzNS8BVictEKFiQ04SXxFxgZGiYnKCkqNTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqCg4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2dri4+Tl5ufo6ery8/T19vf4+fr/2gAMAwEAAhEDEQA/APf6KKKACiiigAooqtf6jZaXZyXeoXcNrbRjLyzOEUfiaALNFcOfjD4BE/knxHDvzjIhlK/99bcfrXWabqun6xZpeabeQXds/SWFwy/TI70AXKQkKpZiABySe1Y/iXxVo/hPTGv9YvEgj5CL1eQ/3VXua8mlk8afGRzHbrJ4f8JMcl3/ANbcr/7N9OF9zigD2qzvrTUbZbmyuYbmBiQskLh1ODg8jjrVivDfAM8vw3+J974Eu7iSTTL/APfae8n94jI/EgFT7qK9yoAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAjuJ4rW2luJ3CRRIXd2PCqBkk/hXxp8QfHuoeONfluJpXTT42K2tsD8qL2JH949z/Svq7x5DNcfD/xDFbgmZ9PnChep+Q8CviGgArovCHjXWfBWqi90qfAYYlgkyY5R/tD+vWudooA+r/Cfw/tNe+yeL/FN8Nf1G6jWeAOMW8CkZCqnfGe/wCWea9PVVRQqgBQMAAdK4z4TWdzY/C7QYbvIlMBkAPUKzsy/wDjpFdpQB438fdImi0vSvFdhmO90u5UGVOqqxBU/g4H/fVeneGNch8R+GdO1eAjbdQK5A/hboy/gQR+FVvG+j/2/wCCdZ0xV3ST2riMf7YGV/8AHgK82/Z0177X4Z1DRJCfMsZ/Njz/AHJO34MpP/AqAPaKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAQgMpBGQeCDXy18Tfg9qug6pcalodnLeaRKxk2wqWe37lSo52+hHbr7/U1FAHwNb2dzd3K21tbyzTsdqxRoWYn0wOa9o+HvwIv7y5g1PxWgtbNW3Cx/wCWsvoGx90e3X6V9HiNFYsFUMepxya5fxp4+0TwPp/najMXuHH7m0i5kk/wHuaAOoREjjVEUKijAUDAArE1vxn4c8OErq+s2lrIBnymkzJj/cGW/SvmTxd8afFPiV5Yba5Ol2DH5YbViHI/2n6n8MD2rzp3aRy7sWZjksTkk0AfUeqftCeD7N2jtINQ1A/344giH/vsg/pXjnw/+JUHgPWdXvo9Je8S+wscfn+X5ahieTtOeorz2igD6Fi/aXty+JvC0qL6pfBj+qCum0b4/wDg7UnEd59s0xz/ABXEW5PzQk/mBXypRQB94aTrml67a/adKv7a8h6F4JA2D6HHQ+xq/XwZpuraho14t3pt5PaXCniSFyp/TqPavUbD9ojxba28UVzaaXdlOGlkidXf67WC5+goA+oqK8g8JfH/AETWrmOz1q1Okzvwsxk3wk+5wCv4jHvXrysrqGUggjII70ALRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABWX4h8RaZ4X0ebVNVuBDbRfizt2VR3J9K1K+U/jp4tl1zxtLpUUpNhpZ8pUHQy/xsfcH5fw96ALPin4/eJNUuJI9C2aVZ9FO1ZJmHqWOQPwHHrXmGp6vqOtXjXep3s93cN1kmcsfpzVKigAooooAKKKKACiiigAooooAK+jf2f/HM+oWs/hbUJmkltY/Ns3br5ecMmfYkEexPpXzlXovwNeRfizpQTO10nD/TymP8wKAPrqiiigAooooAKKKKACiiigAooooAKKKKACvhzxoksfjnX0mBEg1G4zn/AK6NX3HXzT8fPA1xYa6fFNnCWsbzatzsH+qlAxk+zDHPrn1FAHi1FFFABRRW14SfR4/FWnHX4vN0oyhbldzDCnjPy84BIP4UAYuKK9v+I3hKzRrq20S3tIop1iubVIAqq8e0Dg+5BOf8a871HTtJ0fwikF3A58Ry3BY4lysUOBjIHcnNYxrxk3Hrex1TwlSMVPo1e/T0OUooorY5Qq7Z6Vd3sZliiYQjcDKwOzcqliufXAPFUq2tI8R3Gm2ZsXUS2bTrOYz2YKUOPqrEH8PSlK9tCoJOSUtijc6ZcWun2d7IpEN2HMRwRna2D9efSvUv2d4LOTx5dSTMftMVkxgXscsoY/XB/U151r2sRajHZ2lnHJFYWSMsEcjZI3NuY/ia6L4N372HxU0UpkiZ3gYeoZCP54P4UottXY6kVGVk7n2JRRRVEBRRRQAUUUUAFFFFABRRRQAUUUUAFYPjTSX13wXrGmRrmW4tXWMer4yv6gVvUUAfALKVYqwIIOCDSV6P8ZfBUnhXxjNdQQsNN1FjPCw6K5OXT8Ccj2IrzigAooooA04vEOqxacNPF47WinKRSAOIz32bgdmf9nGazndnYsxJJ5JNNopWV7ju7WCiiimIKKKKACvQvgnp7X/xU0psZS2Ek7+wCED/AMeK157X0h+zz4RksdLvPEt3CUkvR5Nru6+UDlm+hYAf8BoA9vooooAKKKKACiiigAooooAKKKKACiiigAooooAxPFfhbTfGGgzaTqcZaJ+UkXG+Jx0ZT2P/AOqvkbxv8P8AWfA2omG/h32jk+RdxgmOQemezex/WvtSq1/p1nqtlLZ39tFc20ow8UqhlYfSgD4Jor6O8Wfs72N40l14avjZSHkWlxlovoG+8v47q8a8UfDvxP4QXzdW01ktidouYmDxk/UdPxxQBy1FFFABRRRQAUUV9AfB74aeD9c0iLXbm4bVblDtltJV2RwSejLn5vUEnB9KAOP+F3wlvfF91FqeqRPb6GjZLH5WuMdk46erflz0+qra2hs7aK2tokihiQJHGgwFUDAAFPjjSKNY41CoowqqMAD0FOoAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigCO4nitbaW4nkWOGJS7uxwFUDJJr46+JXj+78c+IZJQ7ppluxW0gzwF/vkf3j19ule8/HnxA+jfD57OFsTanKLfPon3n/QAf8Cr5QoAKKKKACiiigArvPhP41k8HeMYGllYabeEQXaZ4AJ+V/8AgJOfpmuDooA+/gQRkUtcN8I/Ef8Awknw706aSUyXVqPss5J53JjBP1UqfxruaACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA+df2lNQL6toWnA8RQSTkf7zAD/0A14VXr37RYb/AIWDZE/d/syPH/fySvIaACiiigAooooAKKKKAPf/ANmrUjnXtMY8furhB6feVv8A2WvoCvmz9m2CRvFOs3AB8pLIIx92cEf+gmvpOgAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAPn79pPSDu0PWUU4xJayH8mX/wBnrwGvuDxl4VtPGXhm60a7OwSjdFLjJikH3WH+ehNfKPi34YeJ/Blu93qdpGbESiJbqKZWVic44zuHTuKAONooooAKKKKACvYtC+BsvinwNo+tafqSWt5cozTQ3CkoRvYKwI5HygcYP1ryG3gkubmKCJS0krhEUdyTgV90+H9KTQ/D2naVGcraW0cOfUqoBP4nmgDn/hz8P7XwBoklrHObm7uHD3E+3aGIGAAOwGT+ZrsqKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK8c/aOmKeBtOhBwJNRUn3Ajf8AxFemazrS6coiiAa4YZAPRR6mvA/jfeT3Wj6cZ5WkY3JPJ6fKen50AeJ0UUDrQAUVs+KbSGy1+eO2VRbMqSQ7PulGQMCPzrGoA9E+Cnhz+3/iLZySx7rbTwbuTjjK/cH/AH0QfwNfXdfGvwy8YXXhPxPH5czJa3jLFMB9flb8CfyJr6y0bW11EeVKAlwBnA6MPUUAbFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAef6qzvqt0ZM7hIRz6Dp+mK84+LGlSah4TFzENzWcolYf7BBB/mD+FexeItIkkc3tuu44/eKOvHcVy0kaTRPFIgdHBVlYZBB6gigD5Oor0/xP8Jb2K6e40ErPbuS32d3CunsCeCP1+tYFh8MvE97crHJYi1jzhpZpFAH4Akn8BQBp2Hg+fxX4Atb6zAOo2jvCqscCWMHIGfUFjj8q4O7s7mxuGgu4JIJVOCkilSPzr6b0HRoNA0a2022JKQrgserMeSfxOatz2tvcqFuIIplHQSIGA/OgD5y8IeG77xBrdvHbxP5EcitNNj5UUHJ59fQV9N6e7x6hbNHnd5i4x9aqxxrGqxxRqqjhVQYA+gFdToOiSRyreXS7SP9Wh6/U0AdLRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABWZfaFZXpLlTFIeS8fGfqK06KAOSm8KXSt+5mjkX/ayp/rVf/hGtR/uR/wDfddrRQBxi+GNQbr5S/V/8BV2Dwn0NxdfUIv8AU101FAFGz0mzsSGhhG8fxtyavUUUAFFFFABRRRQAUUUUAFFFFABRRRQB/9k="
+      x="-44" y="-44" width="88" height="88"
+      clip-path="url(#avClip)"
+      preserveAspectRatio="xMidYMid slice"/>
+
+    <!-- Name + title -->
+    <text x="0" y="64" text-anchor="middle"
+      font-family="'Exo 2',sans-serif" font-size="15" font-weight="900"
+      fill="#cdd6f4" filter="url(#textGlow)"
+      style="animation:labelPop 1s .5s both;--ls:1px">
+      Swadhin Biswas
+    </text>
+    <text x="0" y="78" text-anchor="middle"
+      font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800"
+      fill="#7f849c" letter-spacing="2" class="glitch-text">
+      BACKEND &amp; AI/ML ENGINEER
+    </text>
+  </g>
+
+  <!-- ── DATA STREAMS (connecting panels) ──────────── -->
+  <!-- Left to center -->
+  <line x1="205" y1="270" x2="310" y2="250" stroke="url(#streamG)" stroke-width="1.5" stroke-dasharray="6 4"
+    style="animation:dataPulse 3s ease-in-out infinite"/>
+  <line x1="205" y1="350" x2="310" y2="340" stroke="url(#streamG)" stroke-width="1" stroke-dasharray="4 6"
+    style="animation:dataPulse 4s 1s ease-in-out infinite"/>
+  <!-- Center to right -->
+  <line x1="740" y1="250" x2="845" y2="270" stroke="url(#streamG)" stroke-width="1.5" stroke-dasharray="6 4"
+    style="animation:dataPulse 3.5s .5s ease-in-out infinite"/>
+  <line x1="740" y1="340" x2="845" y2="350" stroke="url(#streamG)" stroke-width="1" stroke-dasharray="4 6"
+    style="animation:dataPulse 4.5s 1.5s ease-in-out infinite"/>
+  <!-- Vertical streams from avatar -->
+  <line x1="525" y1="210" x2="525" y2="240" stroke="url(#streamV)" stroke-width="1.5" stroke-dasharray="4 3"
+    style="animation:dataPulse 2.5s ease-in-out infinite"/>
+  <line x1="490" y1="210" x2="370" y2="250" stroke="url(#streamG)" stroke-width="1" stroke-dasharray="3 5" opacity=".5"
+    style="animation:dataPulse 3s .8s ease-in-out infinite"/>
+  <line x1="560" y1="210" x2="680" y2="250" stroke="url(#streamG)" stroke-width="1" stroke-dasharray="3 5" opacity=".5"
+    style="animation:dataPulse 3s 1.2s ease-in-out infinite"/>
+
+  <!-- ── HOLOGRAPHIC STAT PANELS ───────────────────── -->
+
+  <!-- Panel: COMMITS (left-center) -->
+  <g style="animation:panelFloat 5s 0.5s ease-in-out infinite">
+    <rect x="310" y="230" width="150" height="80" rx="8" fill="url(#holoBg)" stroke="#f38ba844" stroke-width=".8"/>
+    <rect x="310" y="230" width="150" height="2.5" rx="1" fill="#f38ba8" opacity=".4"/>
+    <!-- Holo scan lines inside panel -->
+    <line x1="318" y1="248" x2="452" y2="248" stroke="#f38ba8" stroke-width=".3" opacity=".15"/>
+    <line x1="318" y1="258" x2="452" y2="258" stroke="#f38ba8" stroke-width=".3" opacity=".10"/>
+    <line x1="318" y1="268" x2="452" y2="268" stroke="#f38ba8" stroke-width=".3" opacity=".15"/>
+    <line x1="318" y1="278" x2="452" y2="278" stroke="#f38ba8" stroke-width=".3" opacity=".10"/>
+    <line x1="318" y1="288" x2="452" y2="288" stroke="#f38ba8" stroke-width=".3" opacity=".15"/>
+    <line x1="318" y1="298" x2="452" y2="298" stroke="#f38ba8" stroke-width=".3" opacity=".10"/>
+    <text x="385" y="249" text-anchor="middle"
+      font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900"
+      fill="#a6adc8" letter-spacing="3">COMMITS</text>
+    <text id="commit_data" x="385" y="280" text-anchor="middle"
+      font-family="'Exo 2',sans-serif" font-size="28" font-weight="900"
+      fill="#f38ba8" filter="url(#glow)" class="glitch-text">2,410</text>
+    <text x="385" y="300" text-anchor="middle"
+      font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700"
+      fill="#585b70" letter-spacing="2">ALL AFFILIATIONS</text>
+    <!-- Corner accents -->
+    <polyline points="310,240 310,230 320,230" fill="none" stroke="#f38ba8" stroke-width="1.5" opacity=".6"/>
+    <polyline points="450,230 460,230 460,240" fill="none" stroke="#f38ba8" stroke-width="1.5" opacity=".6"/>
+    <polyline points="310,300 310,310 320,310" fill="none" stroke="#f38ba8" stroke-width="1.5" opacity=".4"/>
+    <polyline points="450,310 460,310 460,300" fill="none" stroke="#f38ba8" stroke-width="1.5" opacity=".4"/>
+  </g>
+
+  <!-- Panel: STARS (right-center) -->
+  <g style="animation:panelFloat 5s 1s ease-in-out infinite">
+    <rect x="590" y="230" width="150" height="80" rx="8" fill="url(#holoBg)" stroke="#fab38744" stroke-width=".8"/>
+    <rect x="590" y="230" width="150" height="2.5" rx="1" fill="#fab387" opacity=".4"/>
+    <line x1="598" y1="248" x2="732" y2="248" stroke="#fab387" stroke-width=".3" opacity=".15"/>
+    <line x1="598" y1="258" x2="732" y2="258" stroke="#fab387" stroke-width=".3" opacity=".10"/>
+    <line x1="598" y1="268" x2="732" y2="268" stroke="#fab387" stroke-width=".3" opacity=".15"/>
+    <line x1="598" y1="278" x2="732" y2="278" stroke="#fab387" stroke-width=".3" opacity=".10"/>
+    <line x1="598" y1="288" x2="732" y2="288" stroke="#fab387" stroke-width=".3" opacity=".15"/>
+    <line x1="598" y1="298" x2="732" y2="298" stroke="#fab387" stroke-width=".3" opacity=".10"/>
+    <text x="665" y="249" text-anchor="middle"
+      font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900"
+      fill="#a6adc8" letter-spacing="3">STARS</text>
+    <text id="star_data" x="665" y="280" text-anchor="middle"
+      font-family="'Exo 2',sans-serif" font-size="28" font-weight="900"
+      fill="#fab387" filter="url(#glow)" class="glitch-text">228</text>
+    <text id="star_planet" x="665" y="300" text-anchor="middle"
+      font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700"
+      fill="#585b70" letter-spacing="2">EARNED</text>
+    <polyline points="590,240 590,230 600,230" fill="none" stroke="#fab387" stroke-width="1.5" opacity=".6"/>
+    <polyline points="730,230 740,230 740,240" fill="none" stroke="#fab387" stroke-width="1.5" opacity=".6"/>
+    <polyline points="590,300 590,310 600,310" fill="none" stroke="#fab387" stroke-width="1.5" opacity=".4"/>
+    <polyline points="730,310 740,310 740,300" fill="none" stroke="#fab387" stroke-width="1.5" opacity=".4"/>
+  </g>
+
+  <!-- Panel: REPOS (bottom-left-center) -->
+  <g style="animation:panelFloat 5.5s 1.5s ease-in-out infinite">
+    <rect x="310" y="328" width="150" height="70" rx="8" fill="url(#holoBg)" stroke="#cba6f744" stroke-width=".8"/>
+    <rect x="310" y="328" width="150" height="2.5" rx="1" fill="#cba6f7" opacity=".4"/>
+    <line x1="318" y1="346" x2="452" y2="346" stroke="#cba6f7" stroke-width=".3" opacity=".12"/>
+    <line x1="318" y1="356" x2="452" y2="356" stroke="#cba6f7" stroke-width=".3" opacity=".08"/>
+    <line x1="318" y1="366" x2="452" y2="366" stroke="#cba6f7" stroke-width=".3" opacity=".12"/>
+    <line x1="318" y1="376" x2="452" y2="376" stroke="#cba6f7" stroke-width=".3" opacity=".08"/>
+    <line x1="318" y1="386" x2="452" y2="386" stroke="#cba6f7" stroke-width=".3" opacity=".12"/>
+    <text x="385" y="347" text-anchor="middle"
+      font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900"
+      fill="#a6adc8" letter-spacing="3">REPOS</text>
+    <text id="repo_data" x="385" y="378" text-anchor="middle"
+      font-family="'Exo 2',sans-serif" font-size="26" font-weight="900"
+      fill="#cba6f7" filter="url(#glow)" class="glitch-text">83</text>
+    <polyline points="310,338 310,328 320,328" fill="none" stroke="#cba6f7" stroke-width="1.5" opacity=".6"/>
+    <polyline points="450,328 460,328 460,338" fill="none" stroke="#cba6f7" stroke-width="1.5" opacity=".6"/>
+    <polyline points="310,388 310,398 320,398" fill="none" stroke="#cba6f7" stroke-width="1.5" opacity=".4"/>
+    <polyline points="450,398 460,398 460,388" fill="none" stroke="#cba6f7" stroke-width="1.5" opacity=".4"/>
+  </g>
+
+  <!-- Panel: FOLLOWERS (bottom-right-center) -->
+  <g style="animation:panelFloat 5.5s 2s ease-in-out infinite">
+    <rect x="590" y="328" width="150" height="70" rx="8" fill="url(#holoBg)" stroke="#94e2d544" stroke-width=".8"/>
+    <rect x="590" y="328" width="150" height="2.5" rx="1" fill="#94e2d5" opacity=".4"/>
+    <line x1="598" y1="346" x2="732" y2="346" stroke="#94e2d5" stroke-width=".3" opacity=".12"/>
+    <line x1="598" y1="356" x2="732" y2="356" stroke="#94e2d5" stroke-width=".3" opacity=".08"/>
+    <line x1="598" y1="366" x2="732" y2="366" stroke="#94e2d5" stroke-width=".3" opacity=".12"/>
+    <line x1="598" y1="376" x2="732" y2="376" stroke="#94e2d5" stroke-width=".3" opacity=".08"/>
+    <line x1="598" y1="386" x2="732" y2="386" stroke="#94e2d5" stroke-width=".3" opacity=".12"/>
+    <text x="665" y="347" text-anchor="middle"
+      font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900"
+      fill="#a6adc8" letter-spacing="3">FOLLOWERS</text>
+    <text id="follower_data" x="665" y="378" text-anchor="middle"
+      font-family="'Exo 2',sans-serif" font-size="26" font-weight="900"
+      fill="#94e2d5" filter="url(#glow)" class="glitch-text">66</text>
+    <polyline points="590,338 590,328 600,328" fill="none" stroke="#94e2d5" stroke-width="1.5" opacity=".6"/>
+    <polyline points="730,328 740,328 740,338" fill="none" stroke="#94e2d5" stroke-width="1.5" opacity=".6"/>
+    <polyline points="590,388 590,398 600,398" fill="none" stroke="#94e2d5" stroke-width="1.5" opacity=".4"/>
+    <polyline points="730,398 740,398 740,388" fill="none" stroke="#94e2d5" stroke-width="1.5" opacity=".4"/>
+  </g>
+
+  <!-- Panel: CONTRIBUTIONS (bottom-center wide) -->
+  <g style="animation:panelFloat 6s 2.5s ease-in-out infinite">
+    <rect x="370" y="416" width="310" height="65" rx="8" fill="url(#holoBg)" stroke="#89dceb44" stroke-width=".8"/>
+    <rect x="370" y="416" width="310" height="2.5" rx="1" fill="#89dceb" opacity=".4"/>
+    <line x1="378" y1="434" x2="672" y2="434" stroke="#89dceb" stroke-width=".3" opacity=".12"/>
+    <line x1="378" y1="444" x2="672" y2="444" stroke="#89dceb" stroke-width=".3" opacity=".08"/>
+    <line x1="378" y1="454" x2="672" y2="454" stroke="#89dceb" stroke-width=".3" opacity=".12"/>
+    <line x1="378" y1="464" x2="672" y2="464" stroke="#89dceb" stroke-width=".3" opacity=".08"/>
+    <text x="525" y="435" text-anchor="middle"
+      font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900"
+      fill="#a6adc8" letter-spacing="3">CONTRIBUTIONS</text>
+    <text id="contrib_data" x="525" y="464" text-anchor="middle"
+      font-family="'Exo 2',sans-serif" font-size="24" font-weight="900"
+      fill="#89dceb" filter="url(#glow)" class="glitch-text">3,177</text>
+    <polyline points="370,426 370,416 380,416" fill="none" stroke="#89dceb" stroke-width="1.5" opacity=".6"/>
+    <polyline points="670,416 680,416 680,426" fill="none" stroke="#89dceb" stroke-width="1.5" opacity=".6"/>
+    <polyline points="370,471 370,481 380,481" fill="none" stroke="#89dceb" stroke-width="1.5" opacity=".4"/>
+    <polyline points="670,481 680,481 680,471" fill="none" stroke="#89dceb" stroke-width="1.5" opacity=".4"/>
+
+    <!-- Waveform inside contributions panel -->
+    <polyline points="390,455 400,450 410,458 420,448 430,456 440,446 450,454 460,444 470,455 480,442 490,453 500,445 510,456 520,440 530,454 540,448 550,456 560,442 570,452 580,448 590,455 600,444 610,453 620,449 630,456 640,445 650,452 660,450"
+      fill="none" stroke="#89dceb" stroke-width="1" opacity=".25" stroke-dasharray="3 2"
+      style="animation:waveformMove 4s linear infinite"/>
+  </g>
+
+  <!-- ── HOLOGRAPHIC GRID OVERLAY ──────────────────── -->
+  <g opacity=".04" clip-path="url(#card)" style="animation:holoPulse 6s ease-in-out infinite">
+    <line x1="310" y1="50" x2="310" y2="500" stroke="#89dceb" stroke-width=".5"/>
+    <line x1="460" y1="50" x2="460" y2="500" stroke="#89dceb" stroke-width=".5"/>
+    <line x1="590" y1="50" x2="590" y2="500" stroke="#89dceb" stroke-width=".5"/>
+    <line x1="740" y1="50" x2="740" y2="500" stroke="#89dceb" stroke-width=".5"/>
+    <line x1="210" y1="230" x2="840" y2="230" stroke="#89dceb" stroke-width=".5"/>
+    <line x1="210" y1="310" x2="840" y2="310" stroke="#89dceb" stroke-width=".5"/>
+    <line x1="210" y1="400" x2="840" y2="400" stroke="#89dceb" stroke-width=".5"/>
+  </g>
+
+  <!-- ── FLOATING NODE NETWORK ─────────────────────── -->
+  <g opacity=".35">
+    <!-- Nodes -->
+    <circle cx="280" cy="260" r="3" fill="#cba6f7" style="animation:nodeGlow 3s 0s ease-in-out infinite"/>
+    <circle cx="770" cy="260" r="3" fill="#f38ba8" style="animation:nodeGlow 3s 1s ease-in-out infinite"/>
+    <circle cx="280" cy="380" r="3" fill="#89dceb" style="animation:nodeGlow 3s 2s ease-in-out infinite"/>
+    <circle cx="770" cy="380" r="3" fill="#fab387" style="animation:nodeGlow 3s 0.5s ease-in-out infinite"/>
+    <circle cx="525" cy="500" r="3" fill="#94e2d5" style="animation:nodeGlow 3s 1.5s ease-in-out infinite"/>
+    <!-- Connecting lines -->
+    <line x1="280" y1="260" x2="310" y2="260" stroke="#cba6f7" stroke-width=".6" stroke-dasharray="3 3" style="animation:dataStream 2s linear infinite"/>
+    <line x1="770" y1="260" x2="740" y2="260" stroke="#f38ba8" stroke-width=".6" stroke-dasharray="3 3" style="animation:dataStream 2.5s linear infinite"/>
+    <line x1="280" y1="380" x2="310" y2="370" stroke="#89dceb" stroke-width=".6" stroke-dasharray="3 3" style="animation:dataStream 3s linear infinite"/>
+    <line x1="770" y1="380" x2="740" y2="370" stroke="#fab387" stroke-width=".6" stroke-dasharray="3 3" style="animation:dataStream 2.2s linear infinite"/>
+  </g>
+
+</g><!-- end center holographic dashboard -->
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  RIGHT HUD PANEL                                        -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<g class="hr" style="--hd:.5s">
+  <rect x="845" y="48" width="195" height="486" rx="12" fill="url(#hudBg)" stroke="#45475a" stroke-width=".8" opacity=".95"/>
+  <rect x="845" y="48" width="195" height="3" rx="1.5" fill="url(#shim)" opacity=".5"/>
+
+  <!-- ── CONTRIBUTION RINGS ────────────────────────── -->
+  <text x="942" y="73" text-anchor="middle"
+    font-family="'JetBrains Mono',monospace" font-size="9.5" font-weight="900"
+    fill="#585b70" letter-spacing="3"
+    style="animation:labelPop .8s .6s both;--ls:3px">CONTRIBUTION</text>
+  <line x1="857" y1="79" x2="1028" y2="79" stroke="#313244" stroke-width=".7"/>
+
+  <!-- Ring 1: Commits (pink) -->
+  <g transform="translate(902,132)">
+    <circle cx="0" cy="0" r="36" fill="#181825" stroke="#313244" stroke-width="5.5"/>
+    <circle cx="0" cy="0" r="36" fill="none" stroke="url(#arcL)" stroke-width="5.5"
+      stroke-linecap="round" stroke-dasharray="200 220" stroke-dashoffset="220"
+      class="a1" style="transform:rotate(-90deg);transform-origin:0 0">
+      <animate attributeName="stroke-dashoffset" values="220;20;220" dur="8s" begin="3.4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="0" cy="0" r="42" fill="none" stroke="#f38ba820" stroke-width=".8" stroke-dasharray="3 4">
       <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="14s" repeatCount="indefinite"/>
     </circle>
-    <text x="0" y="-5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#a6adc8">COMMITS</text>
-    <text id="commit_data" x="0" y="11" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="19" font-weight="900" fill="#f38ba8" filter="url(#glow)">1,418</text>
+    <text x="0" y="-4" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8">COMMITS</text>
+    <text x="0" y="12" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="17" font-weight="900" fill="#f38ba8" filter="url(#glow)">2.4K</text>
   </g>
 
-  <!-- Ring 2: Stars (peach) at (986, 140) -->
-  <g transform="translate(986,140)">
-    <circle cx="0" cy="0" r="38" fill="#181825" stroke="#313244" stroke-width="6"/>
-    <circle cx="0" cy="0" r="38" fill="none" stroke="url(#arcS)" stroke-width="6" stroke-linecap="round" stroke-dasharray="176 220" stroke-dashoffset="220" class="a2" style="transform:rotate(-90deg);transform-origin:0 0">
+  <!-- Ring 2: Stars (peach) -->
+  <g transform="translate(982,132)">
+    <circle cx="0" cy="0" r="36" fill="#181825" stroke="#313244" stroke-width="5.5"/>
+    <circle cx="0" cy="0" r="36" fill="none" stroke="url(#arcS)" stroke-width="5.5"
+      stroke-linecap="round" stroke-dasharray="176 220" stroke-dashoffset="220"
+      class="a2" style="transform:rotate(-90deg);transform-origin:0 0">
       <animate attributeName="stroke-dashoffset" values="220;44;220" dur="10s" begin="3.7s" repeatCount="indefinite"/>
     </circle>
-    <circle cx="0" cy="0" r="44" fill="none" stroke="#fab38720" stroke-width=".8" stroke-dasharray="4 4">
+    <circle cx="0" cy="0" r="42" fill="none" stroke="#fab38720" stroke-width=".8" stroke-dasharray="4 4">
       <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="18s" repeatCount="indefinite"/>
     </circle>
-    <text x="0" y="-5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#a6adc8">STARS</text>
-    <text id="star_data" x="0" y="11" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="19" font-weight="900" fill="#fab387" filter="url(#glow)">228</text>
+    <text x="0" y="-4" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8">STARS</text>
+    <text x="0" y="12" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="17" font-weight="900" fill="#fab387" filter="url(#glow)">228</text>
   </g>
 
-  <line x1="864" y1="198" x2="1028" y2="198" stroke="#313244" stroke-width=".7"/>
+  <line x1="857" y1="188" x2="1028" y2="188" stroke="#313244" stroke-width=".7"/>
 
-  <!-- Commit sparkline mini -->
-  <text x="864" y="216" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#585b70" letter-spacing="3">COMMIT HISTORY</text>
+  <!-- ── COMMIT SPARKLINE ──────────────────────────── -->
+  <text x="857" y="206" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#585b70" letter-spacing="3">COMMIT HISTORY</text>
   <g fill="#f38ba8" opacity=".6">
-    <rect x="868" y="240" width="3" height="8" rx="1.5"/>
-    <rect x="873" y="236" width="3" height="12" rx="1.5"/>
-    <rect x="878" y="232" width="3" height="16" rx="1.5"/>
-    <rect x="883" y="238" width="3" height="10" rx="1.5"/>
-    <rect x="888" y="229" width="3" height="19" rx="1.5" fill="#f5c2e7"/>
-    <rect x="893" y="234" width="3" height="14" rx="1.5"/>
-    <rect x="898" y="227" width="3" height="21" rx="1.5" fill="#f5c2e7"/>
-    <rect x="903" y="233" width="3" height="15" rx="1.5"/>
-    <rect x="908" y="225" width="3" height="23" rx="1.5" fill="#f5c2e7"/>
-    <rect x="913" y="231" width="3" height="17" rx="1.5"/>
-    <rect x="918" y="229" width="3" height="19" rx="1.5"/>
-    <rect x="923" y="235" width="3" height="13" rx="1.5"/>
-    <rect x="928" y="224" width="3" height="24" rx="1.5" fill="#f5c2e7"/>
-    <rect x="933" y="230" width="3" height="18" rx="1.5"/>
-    <rect x="938" y="233" width="3" height="15" rx="1.5"/>
-    <rect x="943" y="228" width="3" height="20" rx="1.5"/>
-    <rect x="948" y="226" width="3" height="22" rx="1.5" fill="#f5c2e7"/>
-    <rect x="953" y="232" width="3" height="16" rx="1.5"/>
-    <rect x="958" y="235" width="3" height="13" rx="1.5"/>
-    <rect x="963" y="228" width="3" height="20" rx="1.5"/>
-    <rect x="968" y="230" width="3" height="18" rx="1.5"/>
-    <rect x="973" y="226" width="3" height="22" rx="1.5" fill="#f5c2e7"/>
-    <rect x="978" y="233" width="3" height="15" rx="1.5"/>
-    <rect x="983" y="237" width="3" height="11" rx="1.5"/>
-    <rect x="988" y="229" width="3" height="19" rx="1.5"/>
-    <rect x="993" y="227" width="3" height="21" rx="1.5" fill="#f5c2e7"/>
-    <rect x="998" y="231" width="3" height="17" rx="1.5"/>
-    <rect x="1003" y="235" width="3" height="13" rx="1.5"/>
-    <rect x="1008" y="228" width="3" height="20" rx="1.5"/>
-    <rect x="1013" y="234" width="3" height="14" rx="1.5"/>
-    <rect x="1018" y="226" width="3" height="22" rx="1.5" fill="#f5c2e7"/>
+    <rect x="860" y="228" width="4" height="8"  rx="2"/>
+    <rect x="866" y="224" width="4" height="12" rx="2"/>
+    <rect x="872" y="220" width="4" height="16" rx="2"/>
+    <rect x="878" y="226" width="4" height="10" rx="2"/>
+    <rect x="884" y="217" width="4" height="19" rx="2" fill="#f5c2e7"/>
+    <rect x="890" y="222" width="4" height="14" rx="2"/>
+    <rect x="896" y="215" width="4" height="21" rx="2" fill="#f5c2e7"/>
+    <rect x="902" y="221" width="4" height="15" rx="2"/>
+    <rect x="908" y="213" width="4" height="23" rx="2" fill="#f5c2e7"/>
+    <rect x="914" y="219" width="4" height="17" rx="2"/>
+    <rect x="920" y="217" width="4" height="19" rx="2"/>
+    <rect x="926" y="223" width="4" height="13" rx="2"/>
+    <rect x="932" y="212" width="4" height="24" rx="2" fill="#f5c2e7"/>
+    <rect x="938" y="218" width="4" height="18" rx="2"/>
+    <rect x="944" y="221" width="4" height="15" rx="2"/>
+    <rect x="950" y="216" width="4" height="20" rx="2"/>
+    <rect x="956" y="214" width="4" height="22" rx="2" fill="#f5c2e7"/>
+    <rect x="962" y="220" width="4" height="16" rx="2"/>
+    <rect x="968" y="223" width="4" height="13" rx="2"/>
+    <rect x="974" y="216" width="4" height="20" rx="2"/>
+    <rect x="980" y="218" width="4" height="18" rx="2"/>
+    <rect x="986" y="214" width="4" height="22" rx="2" fill="#f5c2e7"/>
+    <rect x="992" y="221" width="4" height="15" rx="2"/>
+    <rect x="998" y="225" width="4" height="11" rx="2"/>
+    <rect x="1004" y="217" width="4" height="19" rx="2"/>
+    <rect x="1010" y="215" width="4" height="21" rx="2" fill="#f5c2e7"/>
+    <rect x="1016" y="219" width="4" height="17" rx="2"/>
+    <rect x="1022" y="213" width="4" height="23" rx="2" fill="#f5c2e7"/>
   </g>
 
-  <line x1="864" y1="258" x2="1028" y2="258" stroke="#313244" stroke-width=".7"/>
+  <line x1="857" y1="246" x2="1028" y2="246" stroke="#313244" stroke-width=".7"/>
 
-  <!-- ══ LOC BREAKDOWN ══════════════════════════════════ -->
-  <text x="864" y="276" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#585b70" letter-spacing="3">LINES OF CODE</text>
+  <!-- ── LOC BREAKDOWN ─────────────────────────────── -->
+  <text x="857" y="264" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#585b70" letter-spacing="3">LINES OF CODE</text>
 
-  <text id="loc_data" x="946" y="308" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="32" font-weight="900" fill="#cba6f7" filter="url(#bloom)" style="animation:labelPop 1s .8s both;--ls:0px">7,388,245</text>
-  <text x="946" y="320" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#585b70" letter-spacing="2">NET LINES WRITTEN</text>
+  <text id="loc_data" x="942" y="296" text-anchor="middle"
+    font-family="'Exo 2',sans-serif" font-size="30" font-weight="900"
+    fill="#cba6f7" filter="url(#bloom)" class="glitch-text"
+    style="animation:labelPop 1s .8s both,glitchText 10s ease-in-out infinite,rgbSplit 10s ease-in-out infinite;--ls:0px">7,338,460</text>
+  <text x="942" y="308" text-anchor="middle"
+    font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="800"
+    fill="#585b70" letter-spacing="2">NET LINES WRITTEN</text>
 
   <!-- Added -->
-  <text x="864" y="342" font-family="'JetBrains Mono',monospace" font-size="9.5" font-weight="900" fill="#a6e3a1">++ ADDED</text>
-  <text id="loc_add" x="1028" y="342" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#94e2d5">7,690,201</text>
-  <rect x="864" y="346" width="164" height="8" rx="4" fill="#181825"/>
-  <rect class="b5" x="864" y="346" width="150" height="8" rx="4" fill="url(#bP)" filter="url(#glow)"/>
-  <circle cx="1014" cy="350" r="4" fill="#a6e3a1" filter="url(#glow)" style="animation:dotPulse 2s 4s ease-in-out infinite"/>
+  <text x="857" y="328" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#a6e3a1">++ ADDED</text>
+  <text id="loc_add" x="1028" y="328" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#94e2d5">7,628,499</text>
+  <rect x="857" y="332" width="171" height="7" rx="3.5" fill="#181825"/>
+  <rect class="b6" x="857" y="332" width="155" height="7" rx="3.5" fill="url(#bP)" filter="url(#glow)"/>
+  <circle cx="1012" cy="335.5" r="3.5" fill="#a6e3a1" filter="url(#glow)" style="animation:dotPulse 2s 4s ease-in-out infinite"/>
 
   <!-- Deleted -->
-  <text x="864" y="370" font-family="'JetBrains Mono',monospace" font-size="9.5" font-weight="900" fill="#f38ba8">-- DELETED</text>
-  <text id="loc_del" x="1028" y="370" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#eba0ac">301,956</text>
-  <rect x="864" y="374" width="164" height="8" rx="4" fill="#181825"/>
-  <rect class="b6" x="864" y="374" width="10" height="8" rx="4" fill="url(#bL)" filter="url(#glow)"/>
-  <circle cx="874" cy="378" r="4" fill="#f38ba8" filter="url(#glow)" style="animation:dotPulse 2.2s 4.3s ease-in-out infinite"/>
+  <text x="857" y="356" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#f38ba8">-- DELETED</text>
+  <text id="loc_del" x="1028" y="356" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#eba0ac">290,039</text>
+  <rect x="857" y="360" width="171" height="7" rx="3.5" fill="#181825"/>
+  <rect class="b7" x="857" y="360" width="10" height="7" rx="3.5" fill="url(#bL)" filter="url(#glow)"/>
+  <circle cx="867" cy="363.5" r="3.5" fill="#f38ba8" filter="url(#glow)" style="animation:dotPulse 2.2s 4.3s ease-in-out infinite"/>
 
-  <line x1="864" y1="396" x2="1028" y2="396" stroke="#313244" stroke-width=".7"/>
+  <!-- LOC planet (hidden helper for today.py) -->
+  <text id="loc_planet" x="942" y="0" text-anchor="middle" font-size="1" fill="none" opacity="0">7.34M</text>
 
-  <!-- ══ DEV SCORE ══════════════════════════════════════ -->
-  <text x="946" y="414" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#585b70" letter-spacing="3">DEVELOPER  SCORE</text>
+  <line x1="857" y1="380" x2="1028" y2="380" stroke="#313244" stroke-width=".7"/>
 
-  <!-- Score arc ring -->
-  <g transform="translate(906,458)">
-    <circle cx="0" cy="0" r="34" fill="#181825" stroke="#313244" stroke-width="5"/>
-    <circle cx="0" cy="0" r="34" fill="none" stroke="url(#arcC)" stroke-width="5" stroke-linecap="round" stroke-dasharray="180 220" stroke-dashoffset="220" class="a3" style="transform:rotate(-90deg);transform-origin:0 0">
-      <animate attributeName="stroke-dashoffset" values="220;40;220" dur="9s" begin="4s" repeatCount="indefinite"/>
+  <!-- ── DEVELOPER SCORE ───────────────────────────── -->
+  <text x="942" y="398" text-anchor="middle"
+    font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900"
+    fill="#585b70" letter-spacing="3">DEVELOPER  SCORE</text>
+
+  <!-- Score arc -->
+  <g transform="translate(902,440)">
+    <circle cx="0" cy="0" r="32" fill="#181825" stroke="#313244" stroke-width="5"/>
+    <circle cx="0" cy="0" r="32" fill="none" stroke="url(#arcC)" stroke-width="5"
+      stroke-linecap="round" stroke-dasharray="170 220" stroke-dashoffset="220"
+      class="a3" style="transform:rotate(-90deg);transform-origin:0 0">
+      <animate attributeName="stroke-dashoffset" values="220;50;220" dur="9s" begin="4s" repeatCount="indefinite"/>
     </circle>
-    <circle cx="0" cy="0" r="40" fill="none" stroke="#89dceb20" stroke-width=".8" stroke-dasharray="4 4">
+    <circle cx="0" cy="0" r="38" fill="none" stroke="#89dceb20" stroke-width=".8" stroke-dasharray="4 4">
       <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="10s" repeatCount="indefinite"/>
     </circle>
-    <text x="0" y="-4" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#a6adc8">SCORE</text>
-    <text x="0" y="12" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="19" font-weight="900" fill="#cdd6f4" filter="url(#glow)">82</text>
+    <text x="0" y="-3" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8">SCORE</text>
+    <text x="0" y="13" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="17" font-weight="900" fill="#cdd6f4" filter="url(#glow)">82</text>
   </g>
 
-  <!-- Rank tier -->
-  <g transform="translate(986,458)">
-    <circle cx="0" cy="0" r="34" fill="#181825" stroke="#313244" stroke-width="5"/>
-    <circle cx="0" cy="0" r="34" fill="none" stroke="url(#arcS)" stroke-width="5" stroke-linecap="round" stroke-dasharray="190 220" stroke-dashoffset="220" style="transform:rotate(-90deg);transform-origin:0 0">
-      <animate attributeName="stroke-dashoffset" values="220;30;220" dur="11s" begin="4.3s" repeatCount="indefinite"/>
+  <!-- Rank arc -->
+  <g transform="translate(982,440)">
+    <circle cx="0" cy="0" r="32" fill="#181825" stroke="#313244" stroke-width="5"/>
+    <circle cx="0" cy="0" r="32" fill="none" stroke="url(#arcS)" stroke-width="5"
+      stroke-linecap="round" stroke-dasharray="185 220" stroke-dashoffset="220"
+      style="transform:rotate(-90deg);transform-origin:0 0">
+      <animate attributeName="stroke-dashoffset" values="220;35;220" dur="11s" begin="4.3s" repeatCount="indefinite"/>
     </circle>
-    <circle cx="0" cy="0" r="40" fill="none" stroke="#fab38720" stroke-width=".8" stroke-dasharray="3 5">
+    <circle cx="0" cy="0" r="38" fill="none" stroke="#fab38720" stroke-width=".8" stroke-dasharray="3 5">
       <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="12s" repeatCount="indefinite"/>
     </circle>
-    <text x="0" y="-4" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#a6adc8">RANK</text>
-    <text x="0" y="12" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="19" font-weight="900" fill="#fab387" filter="url(#glow)">A+</text>
+    <text x="0" y="-3" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8">RANK</text>
+    <text x="0" y="13" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="17" font-weight="900" fill="#fab387" filter="url(#glow)">A+</text>
   </g>
 
+  <line x1="857" y1="486" x2="1028" y2="486" stroke="#313244" stroke-width=".7"/>
+  <text x="942" y="504" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700" fill="#45475a" letter-spacing="1">HOLOGRAPHIC HUD v2.0</text>
+  <text x="942" y="518" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700" fill="#45475a" letter-spacing="1">SYSTEM ONLINE</text>
 </g>
 
-<!-- ════════════════════════════════════════════════════════ -->
-<!--  PLANET LABELS (fixed subtitles near top)                 -->
-<!-- ════════════════════════════════════════════════════════ -->
-<text x="560" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#94e2d566" letter-spacing="1" style="animation:labelPop 1s 1.0s both;--ls:1px">STREAK</text>
-<text x="580" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#585b7050">·</text>
-<text x="590" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#f5c2e766" letter-spacing="1" style="animation:labelPop 1s 1.1s both;--ls:1px">CONTRIB</text>
-<text x="648" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#585b7050">·</text>
-<text x="657" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#fab38766" letter-spacing="1" style="animation:labelPop 1s 1.2s both;--ls:1px">STARS</text>
-<text x="693" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#585b7050">·</text>
-<text x="702" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#89dceb66" letter-spacing="1" style="animation:labelPop 1s 1.3s both;--ls:1px">LOC</text>
-<text x="725" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#585b7050">·</text>
-<text x="734" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#cba6f766" letter-spacing="1" style="animation:labelPop 1s 1.4s both;--ls:1px">REPOS</text>
-<text x="773" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#585b7050">·</text>
-<text x="782" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#f5e0dc66" letter-spacing="1" style="animation:labelPop 1s 1.5s both;--ls:1px">FOLLOWERS</text>
+</g><!-- end glitch wrapper -->
 
-<!-- ════════════════════════════════════════════════════════ -->
-<!--  BOTTOM FOOTER                                            -->
-<!-- ════════════════════════════════════════════════════════ -->
-<text x="525" y="526" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#45475a" letter-spacing="1.5">
-  CATPPUCCIN MOCHA  ·  PLANET SIZE = STAT MAGNITUDE  ·  ORBITS SCALE WITH CONTRIBUTION  ·  SWADHINBISWAS 2026
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  GLITCH SLICE OVERLAY (duplicate slice for tear effect) -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<g class="glitch-slice" clip-path="url(#card)" opacity=".4">
+  <rect x="0" y="200" width="1050" height="3" fill="#f38ba8"/>
+  <rect x="0" y="350" width="1050" height="2" fill="#89dceb"/>
+</g>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  FOOTER                                                  -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<text x="525" y="528" text-anchor="middle"
+  font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="800"
+  fill="#45475a" letter-spacing="1.5">
+  CATPPUCCIN MOCHA  ·  SCI-FI HOLOGRAPHIC  ·  GLITCH PROTOCOL ACTIVE  ·  SWADHINBISWAS 2026
 </text>
 
-<!-- ════════════════════════════════════════════════════════ -->
-<!--  CARD BORDER DRAW                                         -->
-<!-- ════════════════════════════════════════════════════════ -->
-<rect x="1" y="1" width="1048" height="538" rx="22" fill="none" stroke="url(#shim)" stroke-width="1.5" opacity=".5" stroke-dasharray="3200" stroke-dashoffset="3200">
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  CARD BORDER                                             -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<rect x="1" y="1" width="1048" height="538" rx="22"
+  fill="none" stroke="url(#shim)" stroke-width="1.5" opacity=".5"
+  stroke-dasharray="3200" stroke-dashoffset="3200">
   <animate attributeName="stroke-dashoffset" from="3200" to="0" dur="2.8s" fill="freeze"/>
 </rect>
 
-<!-- Corner accents with glow -->
+<!-- Corner accents -->
 <g filter="url(#glow)" stroke-linecap="round">
-  <polyline points="1,44  1,1  44,1" fill="none" stroke="#cba6f7" stroke-width="3"/>
+  <polyline points="1,44  1,1  44,1"      fill="none" stroke="#cba6f7" stroke-width="3"/>
   <polyline points="1006,1 1049,1 1049,44" fill="none" stroke="#f38ba8" stroke-width="3"/>
-  <polyline points="1,494 1,539 44,539" fill="none" stroke="#89dceb" stroke-width="3"/>
+  <polyline points="1,494 1,539 44,539"    fill="none" stroke="#89dceb" stroke-width="3"/>
   <polyline points="1006,539 1049,539 1049,494" fill="none" stroke="#fab387" stroke-width="3"/>
 </g>
 
 <!-- Corner pulse dots -->
-<circle cx="1" cy="1" r="4.5" fill="#cba6f7" filter="url(#glow)" style="animation:planetHalo 2s 0.0s ease-in-out infinite;--pr:4.5"/>
-<circle cx="1049" cy="1" r="4.5" fill="#f38ba8" filter="url(#glow)" style="animation:planetHalo 2s 0.5s ease-in-out infinite;--pr:4.5"/>
-<circle cx="1" cy="539" r="4.5" fill="#89dceb" filter="url(#glow)" style="animation:planetHalo 2s 1.0s ease-in-out infinite;--pr:4.5"/>
+<circle cx="1"    cy="1"   r="4.5" fill="#cba6f7" filter="url(#glow)" style="animation:planetHalo 2s 0.0s ease-in-out infinite;--pr:4.5"/>
+<circle cx="1049" cy="1"   r="4.5" fill="#f38ba8" filter="url(#glow)" style="animation:planetHalo 2s 0.5s ease-in-out infinite;--pr:4.5"/>
+<circle cx="1"    cy="539" r="4.5" fill="#89dceb" filter="url(#glow)" style="animation:planetHalo 2s 1.0s ease-in-out infinite;--pr:4.5"/>
 <circle cx="1049" cy="539" r="4.5" fill="#fab387" filter="url(#glow)" style="animation:planetHalo 2s 1.5s ease-in-out infinite;--pr:4.5"/>
 
 </svg>
