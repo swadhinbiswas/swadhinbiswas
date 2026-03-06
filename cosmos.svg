@@ -1,6 +1,5 @@
-<svg width="1050" height="540" viewBox="0 0 1050 540"
-     xmlns="http://www.w3.org/2000/svg"
-     xmlns:xlink="http://www.w3.org/1999/xlink">
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1050" height="540" viewBox="0 0 1050 540">
 <defs>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@500;700;800;900&amp;family=JetBrains+Mono:wght@500;700;800&amp;display=swap');
@@ -271,20 +270,20 @@
 
 <!-- Starfield -->
 <g clip-path="url(#card)">
-  <circle class="tw" cx="44"  cy="24"  r="1.2" fill="#cba6f7" style="--td:2.3s;--dl:.1s"/>
-  <circle class="tw" cx="188" cy="16"  r="0.9" fill="#f5e0dc" style="--td:3.2s;--dl:.7s"/>
-  <circle class="tw" cx="302" cy="32"  r="1.3" fill="#89dceb" style="--td:1.9s;--dl:1.4s"/>
-  <circle class="tw" cx="415" cy="19"  r="0.8" fill="#fab387" style="--td:2.8s;--dl:.4s"/>
-  <circle class="tw" cx="558" cy="27"  r="1.1" fill="#cba6f7" style="--td:4.1s;--dl:2.1s"/>
-  <circle class="tw" cx="672" cy="13"  r="0.7" fill="#f5c2e7" style="--td:2.0s;--dl:.9s"/>
-  <circle class="tw" cx="785" cy="36"  r="1.3" fill="#89dceb" style="--td:3.5s;--dl:.2s"/>
-  <circle class="tw" cx="899" cy="21"  r="0.9" fill="#f9e2af" style="--td:2.5s;--dl:1.6s"/>
-  <circle class="tw" cx="984" cy="45"  r="1.1" fill="#b4befe" style="--td:4.4s;--dl:2.9s"/>
-  <circle class="tw" cx="28"  cy="514" r="1.0" fill="#94e2d5" style="--td:2.7s;--dl:1.2s"/>
+  <circle class="tw" cx="44" cy="24" r="1.2" fill="#cba6f7" style="--td:2.3s;--dl:.1s"/>
+  <circle class="tw" cx="188" cy="16" r="0.9" fill="#f5e0dc" style="--td:3.2s;--dl:.7s"/>
+  <circle class="tw" cx="302" cy="32" r="1.3" fill="#89dceb" style="--td:1.9s;--dl:1.4s"/>
+  <circle class="tw" cx="415" cy="19" r="0.8" fill="#fab387" style="--td:2.8s;--dl:.4s"/>
+  <circle class="tw" cx="558" cy="27" r="1.1" fill="#cba6f7" style="--td:4.1s;--dl:2.1s"/>
+  <circle class="tw" cx="672" cy="13" r="0.7" fill="#f5c2e7" style="--td:2.0s;--dl:.9s"/>
+  <circle class="tw" cx="785" cy="36" r="1.3" fill="#89dceb" style="--td:3.5s;--dl:.2s"/>
+  <circle class="tw" cx="899" cy="21" r="0.9" fill="#f9e2af" style="--td:2.5s;--dl:1.6s"/>
+  <circle class="tw" cx="984" cy="45" r="1.1" fill="#b4befe" style="--td:4.4s;--dl:2.9s"/>
+  <circle class="tw" cx="28" cy="514" r="1.0" fill="#94e2d5" style="--td:2.7s;--dl:1.2s"/>
   <circle class="tw" cx="450" cy="520" r="1.2" fill="#cba6f7" style="--td:3.8s;--dl:2.2s"/>
   <circle class="tw" cx="730" cy="516" r="0.9" fill="#f5e0dc" style="--td:2.1s;--dl:.6s"/>
   <circle class="tw" cx="960" cy="508" r="1.0" fill="#fab387" style="--td:4.0s;--dl:3.1s"/>
-  <circle class="tw" cx="8"   cy="270" r="0.8" fill="#b4befe" style="--td:3.1s;--dl:.5s"/>
+  <circle class="tw" cx="8" cy="270" r="0.8" fill="#b4befe" style="--td:3.1s;--dl:.5s"/>
   <circle class="tw" cx="1042" cy="200" r="0.9" fill="#f5c2e7" style="--td:2.4s;--dl:1.8s"/>
 </g>
 
@@ -314,10 +313,7 @@
 <!-- ═══════════════════════════════════════════════════════ -->
 <!--  TITLE BANNER                                            -->
 <!-- ═══════════════════════════════════════════════════════ -->
-<text x="525" y="30" text-anchor="middle"
-  font-family="'Exo 2',sans-serif" font-size="13" font-weight="900"
-  fill="#585b70" letter-spacing="6" class="glitch-text"
-  style="animation:labelPop 1.2s .2s both,glitchText 10s ease-in-out infinite,rgbSplit 10s ease-in-out infinite;--ls:6px">
+<text x="525" y="30" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="13" font-weight="900" fill="#585b70" letter-spacing="6" class="glitch-text" style="animation:labelPop 1.2s .2s both,glitchText 10s ease-in-out infinite,rgbSplit 10s ease-in-out infinite;--ls:6px">
   HOLOGRAPHIC  DASHBOARD  ·  SWADHINBISWAS
 </text>
 <line x1="210" y1="37" x2="840" y2="37" stroke="#45475a60" stroke-width=".7"/>
@@ -330,61 +326,36 @@
   <rect x="10" y="48" width="195" height="3" rx="1.5" fill="url(#shim)" opacity=".5"/>
 
   <!-- ── IDENTITY ──────────────────────────────────── -->
-  <text x="107" y="73"
-    text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="9.5" font-weight="900"
-    fill="#585b70" letter-spacing="3"
-    style="animation:labelPop .8s .4s both;--ls:3px">DEVELOPER  ID</text>
+  <text x="107" y="73" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="9.5" font-weight="900" fill="#585b70" letter-spacing="3" style="animation:labelPop .8s .4s both;--ls:3px">DEVELOPER  ID</text>
   <line x1="22" y1="79" x2="193" y2="79" stroke="#313244" stroke-width=".7"/>
 
   <!-- Avatar mini -->
   <circle cx="107" cy="108" r="26" fill="#1e1e2e"/>
   <circle cx="107" cy="108" r="26" fill="none" stroke="url(#avRing)" stroke-width="1.8" filter="url(#glow)"/>
-  <image href="data:image/jpeg;base64,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"
-    x="83" y="84" width="48" height="48"
-    clip-path="url(#miniAv)" preserveAspectRatio="xMidYMid slice"/>
+  <image href="data:image/jpeg;base64,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" x="83" y="84" width="48" height="48" clip-path="url(#miniAv)" preserveAspectRatio="xMidYMid slice"/>
 
-  <text x="107" y="148" text-anchor="middle"
-    font-family="'Exo 2',sans-serif" font-size="14" font-weight="900"
-    fill="#cdd6f4" filter="url(#textGlow)">Swadhin Biswas</text>
-  <text x="107" y="161" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="700"
-    fill="#7f849c" letter-spacing="1.5">github.com/swadhinbiswas</text>
+  <text x="107" y="148" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="14" font-weight="900" fill="#cdd6f4" filter="url(#textGlow)">Swadhin Biswas</text>
+  <text x="107" y="161" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="700" fill="#7f849c" letter-spacing="1.5">github.com/swadhinbiswas</text>
 
   <!-- badges -->
   <rect x="22" y="169" width="82" height="18" rx="9" fill="#181825" stroke="#94e2d544" stroke-width=".8"/>
-  <text x="63" y="181.5" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800"
-    fill="#94e2d5" letter-spacing="1">since 2022</text>
+  <text x="63" y="181.5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#94e2d5" letter-spacing="1">since 2022</text>
   <rect x="110" y="169" width="82" height="18" rx="9" fill="#181825" stroke="#f38ba844" stroke-width=".8"/>
-  <text x="151" y="181.5" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800"
-    fill="#f38ba8" letter-spacing="1">3 yrs old</text>
+  <text x="151" y="181.5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#f38ba8" letter-spacing="1">3 yrs old</text>
 
   <line x1="22" y1="196" x2="193" y2="196" stroke="#313244" stroke-width=".7"/>
 
   <!-- ── STREAK COUNTER ────────────────────────────── -->
-  <text x="107" y="214" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900"
-    fill="#585b70" letter-spacing="3">STREAK</text>
-  <text x="107" y="244" text-anchor="middle"
-    font-family="'Exo 2',sans-serif" font-size="38" font-weight="900"
-    fill="#fab387" filter="url(#bloom)">24</text>
-  <text x="107" y="258" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800"
-    fill="#a6adc8" letter-spacing="2">DAYS  ACTIVE</text>
+  <text x="107" y="214" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#585b70" letter-spacing="3">STREAK</text>
+  <text x="107" y="244" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="38" font-weight="900" fill="#fab387" filter="url(#bloom)">24</text>
+  <text x="107" y="258" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#a6adc8" letter-spacing="2">DAYS  ACTIVE</text>
 
   <line x1="22" y1="270" x2="193" y2="270" stroke="#313244" stroke-width=".7"/>
 
   <!-- ── ACCOUNT AGE ───────────────────────────────── -->
-  <text x="107" y="288" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900"
-    fill="#585b70" letter-spacing="3">ACCOUNT AGE</text>
-  <text id="age_data" x="107" y="310" text-anchor="middle"
-    font-family="'Exo 2',sans-serif" font-size="15" font-weight="900"
-    fill="#cba6f7">3 yrs · 8 mo · 27 d</text>
-  <text x="107" y="324" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="8" font-weight="700"
-    fill="#7f849c">joined · June 14, 2022</text>
+  <text x="107" y="288" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#585b70" letter-spacing="3">ACCOUNT AGE</text>
+  <text id="age_data" x="107" y="310" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="15" font-weight="900" fill="#cba6f7">23 yrs · 8 mo · 1 d</text>
+  <text x="107" y="324" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="700" fill="#7f849c">joined · June 14, 2022</text>
 
   <line x1="22" y1="338" x2="193" y2="338" stroke="#313244" stroke-width=".7"/>
 
@@ -453,47 +424,31 @@
     </g>
 
     <!-- Avatar rings -->
-    <circle cx="0" cy="0" r="47" fill="none" stroke="url(#avRing)" stroke-width="2.8" filter="url(#glow)"
-      style="animation:avRingGlow 3s ease-in-out infinite"/>
+    <circle cx="0" cy="0" r="47" fill="none" stroke="url(#avRing)" stroke-width="2.8" filter="url(#glow)" style="animation:avRingGlow 3s ease-in-out infinite"/>
     <circle cx="0" cy="0" r="44" fill="#1e1e2e"/>
     <!-- PROFILE PICTURE -->
-    <image href="data:image/jpeg;base64,/9j/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBCQkJDAsMGA0NGDIhHCEyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMv/AABEIAMgAyAMBIgACEQEDEQH/xAGiAAABBQEBAQEBAQAAAAAAAAAAAQIDBAUGBwgJCgsQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+gEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoLEQACAQIEBAMEBwUEBAABAncAAQIDEQQFITEGEkFRB2FxEyIygQgUQpGhscEJIzNS8BVictEKFiQ04SXxFxgZGiYnKCkqNTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqCg4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2dri4+Tl5ufo6ery8/T19vf4+fr/2gAMAwEAAhEDEQA/APf6KKKACiiigAooqtf6jZaXZyXeoXcNrbRjLyzOEUfiaALNFcOfjD4BE/knxHDvzjIhlK/99bcfrXWabqun6xZpeabeQXds/SWFwy/TI70AXKQkKpZiABySe1Y/iXxVo/hPTGv9YvEgj5CL1eQ/3VXua8mlk8afGRzHbrJ4f8JMcl3/ANbcr/7N9OF9zigD2qzvrTUbZbmyuYbmBiQskLh1ODg8jjrVivDfAM8vw3+J974Eu7iSTTL/APfae8n94jI/EgFT7qK9yoAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAjuJ4rW2luJ3CRRIXd2PCqBkk/hXxp8QfHuoeONfluJpXTT42K2tsD8qL2JH949z/Svq7x5DNcfD/xDFbgmZ9PnChep+Q8CviGgArovCHjXWfBWqi90qfAYYlgkyY5R/tD+vWudooA+r/Cfw/tNe+yeL/FN8Nf1G6jWeAOMW8CkZCqnfGe/wCWea9PVVRQqgBQMAAdK4z4TWdzY/C7QYbvIlMBkAPUKzsy/wDjpFdpQB438fdImi0vSvFdhmO90u5UGVOqqxBU/g4H/fVeneGNch8R+GdO1eAjbdQK5A/hboy/gQR+FVvG+j/2/wCCdZ0xV3ST2riMf7YGV/8AHgK82/Z0177X4Z1DRJCfMsZ/Njz/AHJO34MpP/AqAPaKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAQgMpBGQeCDXy18Tfg9qug6pcalodnLeaRKxk2wqWe37lSo52+hHbr7/U1FAHwNb2dzd3K21tbyzTsdqxRoWYn0wOa9o+HvwIv7y5g1PxWgtbNW3Cx/wCWsvoGx90e3X6V9HiNFYsFUMepxya5fxp4+0TwPp/najMXuHH7m0i5kk/wHuaAOoREjjVEUKijAUDAArE1vxn4c8OErq+s2lrIBnymkzJj/cGW/SvmTxd8afFPiV5Yba5Ol2DH5YbViHI/2n6n8MD2rzp3aRy7sWZjksTkk0AfUeqftCeD7N2jtINQ1A/344giH/vsg/pXjnw/+JUHgPWdXvo9Je8S+wscfn+X5ahieTtOeorz2igD6Fi/aXty+JvC0qL6pfBj+qCum0b4/wDg7UnEd59s0xz/ABXEW5PzQk/mBXypRQB94aTrml67a/adKv7a8h6F4JA2D6HHQ+xq/XwZpuraho14t3pt5PaXCniSFyp/TqPavUbD9ojxba28UVzaaXdlOGlkidXf67WC5+goA+oqK8g8JfH/AETWrmOz1q1Okzvwsxk3wk+5wCv4jHvXrysrqGUggjII70ALRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABWX4h8RaZ4X0ebVNVuBDbRfizt2VR3J9K1K+U/jp4tl1zxtLpUUpNhpZ8pUHQy/xsfcH5fw96ALPin4/eJNUuJI9C2aVZ9FO1ZJmHqWOQPwHHrXmGp6vqOtXjXep3s93cN1kmcsfpzVKigAooooAKKKKACiiigAooooAK+jf2f/HM+oWs/hbUJmkltY/Ns3br5ecMmfYkEexPpXzlXovwNeRfizpQTO10nD/TymP8wKAPrqiiigAooooAKKKKACiiigAooooAKKKKACvhzxoksfjnX0mBEg1G4zn/AK6NX3HXzT8fPA1xYa6fFNnCWsbzatzsH+qlAxk+zDHPrn1FAHi1FFFABRRW14SfR4/FWnHX4vN0oyhbldzDCnjPy84BIP4UAYuKK9v+I3hKzRrq20S3tIop1iubVIAqq8e0Dg+5BOf8a871HTtJ0fwikF3A58Ry3BY4lysUOBjIHcnNYxrxk3Hrex1TwlSMVPo1e/T0OUooorY5Qq7Z6Vd3sZliiYQjcDKwOzcqliufXAPFUq2tI8R3Gm2ZsXUS2bTrOYz2YKUOPqrEH8PSlK9tCoJOSUtijc6ZcWun2d7IpEN2HMRwRna2D9efSvUv2d4LOTx5dSTMftMVkxgXscsoY/XB/U151r2sRajHZ2lnHJFYWSMsEcjZI3NuY/ia6L4N372HxU0UpkiZ3gYeoZCP54P4UottXY6kVGVk7n2JRRRVEBRRRQAUUUUAFFFFABRRRQAUUUUAFYPjTSX13wXrGmRrmW4tXWMer4yv6gVvUUAfALKVYqwIIOCDSV6P8ZfBUnhXxjNdQQsNN1FjPCw6K5OXT8Ccj2IrzigAooooA04vEOqxacNPF47WinKRSAOIz32bgdmf9nGazndnYsxJJ5JNNopWV7ju7WCiiimIKKKKACvQvgnp7X/xU0psZS2Ek7+wCED/AMeK157X0h+zz4RksdLvPEt3CUkvR5Nru6+UDlm+hYAf8BoA9vooooAKKKKACiiigAooooAKKKKACiiigAooooAxPFfhbTfGGgzaTqcZaJ+UkXG+Jx0ZT2P/AOqvkbxv8P8AWfA2omG/h32jk+RdxgmOQemezex/WvtSq1/p1nqtlLZ39tFc20ow8UqhlYfSgD4Jor6O8Wfs72N40l14avjZSHkWlxlovoG+8v47q8a8UfDvxP4QXzdW01ktidouYmDxk/UdPxxQBy1FFFABRRRQAUUV9AfB74aeD9c0iLXbm4bVblDtltJV2RwSejLn5vUEnB9KAOP+F3wlvfF91FqeqRPb6GjZLH5WuMdk46erflz0+qra2hs7aK2tokihiQJHGgwFUDAAFPjjSKNY41CoowqqMAD0FOoAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigCO4nitbaW4nkWOGJS7uxwFUDJJr46+JXj+78c+IZJQ7ppluxW0gzwF/vkf3j19ule8/HnxA+jfD57OFsTanKLfPon3n/QAf8Cr5QoAKKKKACiiigArvPhP41k8HeMYGllYabeEQXaZ4AJ+V/8AgJOfpmuDooA+/gQRkUtcN8I/Ef8Awknw706aSUyXVqPss5J53JjBP1UqfxruaACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA+df2lNQL6toWnA8RQSTkf7zAD/0A14VXr37RYb/AIWDZE/d/syPH/fySvIaACiiigAooooAKKKKAPf/ANmrUjnXtMY8furhB6feVv8A2WvoCvmz9m2CRvFOs3AB8pLIIx92cEf+gmvpOgAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAPn79pPSDu0PWUU4xJayH8mX/wBnrwGvuDxl4VtPGXhm60a7OwSjdFLjJikH3WH+ehNfKPi34YeJ/Blu93qdpGbESiJbqKZWVic44zuHTuKAONooooAKKKKACvYtC+BsvinwNo+tafqSWt5cozTQ3CkoRvYKwI5HygcYP1ryG3gkubmKCJS0krhEUdyTgV90+H9KTQ/D2naVGcraW0cOfUqoBP4nmgDn/hz8P7XwBoklrHObm7uHD3E+3aGIGAAOwGT+ZrsqKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK8c/aOmKeBtOhBwJNRUn3Ajf8AxFemazrS6coiiAa4YZAPRR6mvA/jfeT3Wj6cZ5WkY3JPJ6fKen50AeJ0UUDrQAUVs+KbSGy1+eO2VRbMqSQ7PulGQMCPzrGoA9E+Cnhz+3/iLZySx7rbTwbuTjjK/cH/AH0QfwNfXdfGvwy8YXXhPxPH5czJa3jLFMB9flb8CfyJr6y0bW11EeVKAlwBnA6MPUUAbFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAef6qzvqt0ZM7hIRz6Dp+mK84+LGlSah4TFzENzWcolYf7BBB/mD+FexeItIkkc3tuu44/eKOvHcVy0kaTRPFIgdHBVlYZBB6gigD5Oor0/xP8Jb2K6e40ErPbuS32d3CunsCeCP1+tYFh8MvE97crHJYi1jzhpZpFAH4Akn8BQBp2Hg+fxX4Atb6zAOo2jvCqscCWMHIGfUFjj8q4O7s7mxuGgu4JIJVOCkilSPzr6b0HRoNA0a2022JKQrgserMeSfxOatz2tvcqFuIIplHQSIGA/OgD5y8IeG77xBrdvHbxP5EcitNNj5UUHJ59fQV9N6e7x6hbNHnd5i4x9aqxxrGqxxRqqjhVQYA+gFdToOiSRyreXS7SP9Wh6/U0AdLRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABWZfaFZXpLlTFIeS8fGfqK06KAOSm8KXSt+5mjkX/ayp/rVf/hGtR/uR/wDfddrRQBxi+GNQbr5S/V/8BV2Dwn0NxdfUIv8AU101FAFGz0mzsSGhhG8fxtyavUUUAFFFFABRRRQAUUUUAFFFFABRRRQB/9k="
-      x="-44" y="-44" width="88" height="88"
-      clip-path="url(#avClip)"
-      preserveAspectRatio="xMidYMid slice"/>
+    <image href="data:image/jpeg;base64,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" x="-44" y="-44" width="88" height="88" clip-path="url(#avClip)" preserveAspectRatio="xMidYMid slice"/>
 
     <!-- Name + title -->
-    <text x="0" y="64" text-anchor="middle"
-      font-family="'Exo 2',sans-serif" font-size="15" font-weight="900"
-      fill="#cdd6f4" filter="url(#textGlow)"
-      style="animation:labelPop 1s .5s both;--ls:1px">
+    <text x="0" y="64" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="15" font-weight="900" fill="#cdd6f4" filter="url(#textGlow)" style="animation:labelPop 1s .5s both;--ls:1px">
       Swadhin Biswas
     </text>
-    <text x="0" y="78" text-anchor="middle"
-      font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800"
-      fill="#7f849c" letter-spacing="2" class="glitch-text">
+    <text x="0" y="78" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#7f849c" letter-spacing="2" class="glitch-text">
       BACKEND &amp; AI/ML ENGINEER
     </text>
   </g>
 
   <!-- ── DATA STREAMS (connecting panels) ──────────── -->
   <!-- Left to center -->
-  <line x1="205" y1="270" x2="310" y2="250" stroke="url(#streamG)" stroke-width="1.5" stroke-dasharray="6 4"
-    style="animation:dataPulse 3s ease-in-out infinite"/>
-  <line x1="205" y1="350" x2="310" y2="340" stroke="url(#streamG)" stroke-width="1" stroke-dasharray="4 6"
-    style="animation:dataPulse 4s 1s ease-in-out infinite"/>
+  <line x1="205" y1="270" x2="310" y2="250" stroke="url(#streamG)" stroke-width="1.5" stroke-dasharray="6 4" style="animation:dataPulse 3s ease-in-out infinite"/>
+  <line x1="205" y1="350" x2="310" y2="340" stroke="url(#streamG)" stroke-width="1" stroke-dasharray="4 6" style="animation:dataPulse 4s 1s ease-in-out infinite"/>
   <!-- Center to right -->
-  <line x1="740" y1="250" x2="845" y2="270" stroke="url(#streamG)" stroke-width="1.5" stroke-dasharray="6 4"
-    style="animation:dataPulse 3.5s .5s ease-in-out infinite"/>
-  <line x1="740" y1="340" x2="845" y2="350" stroke="url(#streamG)" stroke-width="1" stroke-dasharray="4 6"
-    style="animation:dataPulse 4.5s 1.5s ease-in-out infinite"/>
+  <line x1="740" y1="250" x2="845" y2="270" stroke="url(#streamG)" stroke-width="1.5" stroke-dasharray="6 4" style="animation:dataPulse 3.5s .5s ease-in-out infinite"/>
+  <line x1="740" y1="340" x2="845" y2="350" stroke="url(#streamG)" stroke-width="1" stroke-dasharray="4 6" style="animation:dataPulse 4.5s 1.5s ease-in-out infinite"/>
   <!-- Vertical streams from avatar -->
-  <line x1="525" y1="210" x2="525" y2="240" stroke="url(#streamV)" stroke-width="1.5" stroke-dasharray="4 3"
-    style="animation:dataPulse 2.5s ease-in-out infinite"/>
-  <line x1="490" y1="210" x2="370" y2="250" stroke="url(#streamG)" stroke-width="1" stroke-dasharray="3 5" opacity=".5"
-    style="animation:dataPulse 3s .8s ease-in-out infinite"/>
-  <line x1="560" y1="210" x2="680" y2="250" stroke="url(#streamG)" stroke-width="1" stroke-dasharray="3 5" opacity=".5"
-    style="animation:dataPulse 3s 1.2s ease-in-out infinite"/>
+  <line x1="525" y1="210" x2="525" y2="240" stroke="url(#streamV)" stroke-width="1.5" stroke-dasharray="4 3" style="animation:dataPulse 2.5s ease-in-out infinite"/>
+  <line x1="490" y1="210" x2="370" y2="250" stroke="url(#streamG)" stroke-width="1" stroke-dasharray="3 5" opacity=".5" style="animation:dataPulse 3s .8s ease-in-out infinite"/>
+  <line x1="560" y1="210" x2="680" y2="250" stroke="url(#streamG)" stroke-width="1" stroke-dasharray="3 5" opacity=".5" style="animation:dataPulse 3s 1.2s ease-in-out infinite"/>
 
   <!-- ── HOLOGRAPHIC STAT PANELS ───────────────────── -->
 
@@ -508,15 +463,9 @@
     <line x1="318" y1="278" x2="452" y2="278" stroke="#f38ba8" stroke-width=".3" opacity=".10"/>
     <line x1="318" y1="288" x2="452" y2="288" stroke="#f38ba8" stroke-width=".3" opacity=".15"/>
     <line x1="318" y1="298" x2="452" y2="298" stroke="#f38ba8" stroke-width=".3" opacity=".10"/>
-    <text x="385" y="249" text-anchor="middle"
-      font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900"
-      fill="#a6adc8" letter-spacing="3">COMMITS</text>
-    <text id="commit_data" x="385" y="280" text-anchor="middle"
-      font-family="'Exo 2',sans-serif" font-size="28" font-weight="900"
-      fill="#f38ba8" filter="url(#glow)" class="glitch-text">2,410</text>
-    <text x="385" y="300" text-anchor="middle"
-      font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700"
-      fill="#585b70" letter-spacing="2">ALL AFFILIATIONS</text>
+    <text x="385" y="249" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8" letter-spacing="3">COMMITS</text>
+    <text id="commit_data" x="385" y="280" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="28" font-weight="900" fill="#f38ba8" filter="url(#glow)" class="glitch-text">1,420</text>
+    <text x="385" y="300" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700" fill="#585b70" letter-spacing="2">ALL AFFILIATIONS</text>
     <!-- Corner accents -->
     <polyline points="310,240 310,230 320,230" fill="none" stroke="#f38ba8" stroke-width="1.5" opacity=".6"/>
     <polyline points="450,230 460,230 460,240" fill="none" stroke="#f38ba8" stroke-width="1.5" opacity=".6"/>
@@ -534,15 +483,9 @@
     <line x1="598" y1="278" x2="732" y2="278" stroke="#fab387" stroke-width=".3" opacity=".10"/>
     <line x1="598" y1="288" x2="732" y2="288" stroke="#fab387" stroke-width=".3" opacity=".15"/>
     <line x1="598" y1="298" x2="732" y2="298" stroke="#fab387" stroke-width=".3" opacity=".10"/>
-    <text x="665" y="249" text-anchor="middle"
-      font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900"
-      fill="#a6adc8" letter-spacing="3">STARS</text>
-    <text id="star_data" x="665" y="280" text-anchor="middle"
-      font-family="'Exo 2',sans-serif" font-size="28" font-weight="900"
-      fill="#fab387" filter="url(#glow)" class="glitch-text">228</text>
-    <text id="star_planet" x="665" y="300" text-anchor="middle"
-      font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700"
-      fill="#585b70" letter-spacing="2">EARNED</text>
+    <text x="665" y="249" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8" letter-spacing="3">STARS</text>
+    <text id="star_data" x="665" y="280" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="28" font-weight="900" fill="#fab387" filter="url(#glow)" class="glitch-text">228</text>
+    <text id="star_planet" x="665" y="300" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700" fill="#585b70" letter-spacing="2">228</text>
     <polyline points="590,240 590,230 600,230" fill="none" stroke="#fab387" stroke-width="1.5" opacity=".6"/>
     <polyline points="730,230 740,230 740,240" fill="none" stroke="#fab387" stroke-width="1.5" opacity=".6"/>
     <polyline points="590,300 590,310 600,310" fill="none" stroke="#fab387" stroke-width="1.5" opacity=".4"/>
@@ -558,12 +501,8 @@
     <line x1="318" y1="366" x2="452" y2="366" stroke="#cba6f7" stroke-width=".3" opacity=".12"/>
     <line x1="318" y1="376" x2="452" y2="376" stroke="#cba6f7" stroke-width=".3" opacity=".08"/>
     <line x1="318" y1="386" x2="452" y2="386" stroke="#cba6f7" stroke-width=".3" opacity=".12"/>
-    <text x="385" y="347" text-anchor="middle"
-      font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900"
-      fill="#a6adc8" letter-spacing="3">REPOS</text>
-    <text id="repo_data" x="385" y="378" text-anchor="middle"
-      font-family="'Exo 2',sans-serif" font-size="26" font-weight="900"
-      fill="#cba6f7" filter="url(#glow)" class="glitch-text">83</text>
+    <text x="385" y="347" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8" letter-spacing="3">REPOS</text>
+    <text id="repo_data" x="385" y="378" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="26" font-weight="900" fill="#cba6f7" filter="url(#glow)" class="glitch-text">83</text>
     <polyline points="310,338 310,328 320,328" fill="none" stroke="#cba6f7" stroke-width="1.5" opacity=".6"/>
     <polyline points="450,328 460,328 460,338" fill="none" stroke="#cba6f7" stroke-width="1.5" opacity=".6"/>
     <polyline points="310,388 310,398 320,398" fill="none" stroke="#cba6f7" stroke-width="1.5" opacity=".4"/>
@@ -579,12 +518,8 @@
     <line x1="598" y1="366" x2="732" y2="366" stroke="#94e2d5" stroke-width=".3" opacity=".12"/>
     <line x1="598" y1="376" x2="732" y2="376" stroke="#94e2d5" stroke-width=".3" opacity=".08"/>
     <line x1="598" y1="386" x2="732" y2="386" stroke="#94e2d5" stroke-width=".3" opacity=".12"/>
-    <text x="665" y="347" text-anchor="middle"
-      font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900"
-      fill="#a6adc8" letter-spacing="3">FOLLOWERS</text>
-    <text id="follower_data" x="665" y="378" text-anchor="middle"
-      font-family="'Exo 2',sans-serif" font-size="26" font-weight="900"
-      fill="#94e2d5" filter="url(#glow)" class="glitch-text">66</text>
+    <text x="665" y="347" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8" letter-spacing="3">FOLLOWERS</text>
+    <text id="follower_data" x="665" y="378" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="26" font-weight="900" fill="#94e2d5" filter="url(#glow)" class="glitch-text">66</text>
     <polyline points="590,338 590,328 600,328" fill="none" stroke="#94e2d5" stroke-width="1.5" opacity=".6"/>
     <polyline points="730,328 740,328 740,338" fill="none" stroke="#94e2d5" stroke-width="1.5" opacity=".6"/>
     <polyline points="590,388 590,398 600,398" fill="none" stroke="#94e2d5" stroke-width="1.5" opacity=".4"/>
@@ -599,21 +534,15 @@
     <line x1="378" y1="444" x2="672" y2="444" stroke="#89dceb" stroke-width=".3" opacity=".08"/>
     <line x1="378" y1="454" x2="672" y2="454" stroke="#89dceb" stroke-width=".3" opacity=".12"/>
     <line x1="378" y1="464" x2="672" y2="464" stroke="#89dceb" stroke-width=".3" opacity=".08"/>
-    <text x="525" y="435" text-anchor="middle"
-      font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900"
-      fill="#a6adc8" letter-spacing="3">CONTRIBUTIONS</text>
-    <text id="contrib_data" x="525" y="464" text-anchor="middle"
-      font-family="'Exo 2',sans-serif" font-size="24" font-weight="900"
-      fill="#89dceb" filter="url(#glow)" class="glitch-text">3,177</text>
+    <text x="525" y="435" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8" letter-spacing="3">CONTRIBUTIONS</text>
+    <text id="contrib_data" x="525" y="464" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="24" font-weight="900" fill="#89dceb" filter="url(#glow)" class="glitch-text">91</text>
     <polyline points="370,426 370,416 380,416" fill="none" stroke="#89dceb" stroke-width="1.5" opacity=".6"/>
     <polyline points="670,416 680,416 680,426" fill="none" stroke="#89dceb" stroke-width="1.5" opacity=".6"/>
     <polyline points="370,471 370,481 380,481" fill="none" stroke="#89dceb" stroke-width="1.5" opacity=".4"/>
     <polyline points="670,481 680,481 680,471" fill="none" stroke="#89dceb" stroke-width="1.5" opacity=".4"/>
 
     <!-- Waveform inside contributions panel -->
-    <polyline points="390,455 400,450 410,458 420,448 430,456 440,446 450,454 460,444 470,455 480,442 490,453 500,445 510,456 520,440 530,454 540,448 550,456 560,442 570,452 580,448 590,455 600,444 610,453 620,449 630,456 640,445 650,452 660,450"
-      fill="none" stroke="#89dceb" stroke-width="1" opacity=".25" stroke-dasharray="3 2"
-      style="animation:waveformMove 4s linear infinite"/>
+    <polyline points="390,455 400,450 410,458 420,448 430,456 440,446 450,454 460,444 470,455 480,442 490,453 500,445 510,456 520,440 530,454 540,448 550,456 560,442 570,452 580,448 590,455 600,444 610,453 620,449 630,456 640,445 650,452 660,450" fill="none" stroke="#89dceb" stroke-width="1" opacity=".25" stroke-dasharray="3 2" style="animation:waveformMove 4s linear infinite"/>
   </g>
 
   <!-- ── HOLOGRAPHIC GRID OVERLAY ──────────────────── -->
@@ -652,18 +581,13 @@
   <rect x="845" y="48" width="195" height="3" rx="1.5" fill="url(#shim)" opacity=".5"/>
 
   <!-- ── CONTRIBUTION RINGS ────────────────────────── -->
-  <text x="942" y="73" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="9.5" font-weight="900"
-    fill="#585b70" letter-spacing="3"
-    style="animation:labelPop .8s .6s both;--ls:3px">CONTRIBUTION</text>
+  <text x="942" y="73" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" font-weight="900" fill="#585b70" letter-spacing="3" style="animation:labelPop .8s .6s both;--ls:3px">CONTRIBUTION</text>
   <line x1="857" y1="79" x2="1028" y2="79" stroke="#313244" stroke-width=".7"/>
 
   <!-- Ring 1: Commits (pink) -->
   <g transform="translate(902,132)">
     <circle cx="0" cy="0" r="36" fill="#181825" stroke="#313244" stroke-width="5.5"/>
-    <circle cx="0" cy="0" r="36" fill="none" stroke="url(#arcL)" stroke-width="5.5"
-      stroke-linecap="round" stroke-dasharray="200 220" stroke-dashoffset="220"
-      class="a1" style="transform:rotate(-90deg);transform-origin:0 0">
+    <circle cx="0" cy="0" r="36" fill="none" stroke="url(#arcL)" stroke-width="5.5" stroke-linecap="round" stroke-dasharray="200 220" stroke-dashoffset="220" class="a1" style="transform:rotate(-90deg);transform-origin:0 0">
       <animate attributeName="stroke-dashoffset" values="220;20;220" dur="8s" begin="3.4s" repeatCount="indefinite"/>
     </circle>
     <circle cx="0" cy="0" r="42" fill="none" stroke="#f38ba820" stroke-width=".8" stroke-dasharray="3 4">
@@ -676,9 +600,7 @@
   <!-- Ring 2: Stars (peach) -->
   <g transform="translate(982,132)">
     <circle cx="0" cy="0" r="36" fill="#181825" stroke="#313244" stroke-width="5.5"/>
-    <circle cx="0" cy="0" r="36" fill="none" stroke="url(#arcS)" stroke-width="5.5"
-      stroke-linecap="round" stroke-dasharray="176 220" stroke-dashoffset="220"
-      class="a2" style="transform:rotate(-90deg);transform-origin:0 0">
+    <circle cx="0" cy="0" r="36" fill="none" stroke="url(#arcS)" stroke-width="5.5" stroke-linecap="round" stroke-dasharray="176 220" stroke-dashoffset="220" class="a2" style="transform:rotate(-90deg);transform-origin:0 0">
       <animate attributeName="stroke-dashoffset" values="220;44;220" dur="10s" begin="3.7s" repeatCount="indefinite"/>
     </circle>
     <circle cx="0" cy="0" r="42" fill="none" stroke="#fab38720" stroke-width=".8" stroke-dasharray="4 4">
@@ -693,7 +615,7 @@
   <!-- ── COMMIT SPARKLINE ──────────────────────────── -->
   <text x="857" y="206" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#585b70" letter-spacing="3">COMMIT HISTORY</text>
   <g fill="#f38ba8" opacity=".6">
-    <rect x="860" y="228" width="4" height="8"  rx="2"/>
+    <rect x="860" y="228" width="4" height="8" rx="2"/>
     <rect x="866" y="224" width="4" height="12" rx="2"/>
     <rect x="872" y="220" width="4" height="16" rx="2"/>
     <rect x="878" y="226" width="4" height="10" rx="2"/>
@@ -728,44 +650,35 @@
   <!-- ── LOC BREAKDOWN ─────────────────────────────── -->
   <text x="857" y="264" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#585b70" letter-spacing="3">LINES OF CODE</text>
 
-  <text id="loc_data" x="942" y="296" text-anchor="middle"
-    font-family="'Exo 2',sans-serif" font-size="30" font-weight="900"
-    fill="#cba6f7" filter="url(#bloom)" class="glitch-text"
-    style="animation:labelPop 1s .8s both,glitchText 10s ease-in-out infinite,rgbSplit 10s ease-in-out infinite;--ls:0px">7,338,460</text>
-  <text x="942" y="308" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="800"
-    fill="#585b70" letter-spacing="2">NET LINES WRITTEN</text>
+  <text id="loc_data" x="942" y="296" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="30" font-weight="900" fill="#cba6f7" filter="url(#bloom)" class="glitch-text" style="animation:labelPop 1s .8s both,glitchText 10s ease-in-out infinite,rgbSplit 10s ease-in-out infinite;--ls:0px">7,388,265</text>
+  <text x="942" y="308" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="800" fill="#585b70" letter-spacing="2">NET LINES WRITTEN</text>
 
   <!-- Added -->
   <text x="857" y="328" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#a6e3a1">++ ADDED</text>
-  <text id="loc_add" x="1028" y="328" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#94e2d5">7,628,499</text>
+  <text id="loc_add" x="1028" y="328" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#94e2d5">7,690,915</text>
   <rect x="857" y="332" width="171" height="7" rx="3.5" fill="#181825"/>
   <rect class="b6" x="857" y="332" width="155" height="7" rx="3.5" fill="url(#bP)" filter="url(#glow)"/>
   <circle cx="1012" cy="335.5" r="3.5" fill="#a6e3a1" filter="url(#glow)" style="animation:dotPulse 2s 4s ease-in-out infinite"/>
 
   <!-- Deleted -->
   <text x="857" y="356" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#f38ba8">-- DELETED</text>
-  <text id="loc_del" x="1028" y="356" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#eba0ac">290,039</text>
+  <text id="loc_del" x="1028" y="356" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#eba0ac">302,650</text>
   <rect x="857" y="360" width="171" height="7" rx="3.5" fill="#181825"/>
   <rect class="b7" x="857" y="360" width="10" height="7" rx="3.5" fill="url(#bL)" filter="url(#glow)"/>
   <circle cx="867" cy="363.5" r="3.5" fill="#f38ba8" filter="url(#glow)" style="animation:dotPulse 2.2s 4.3s ease-in-out infinite"/>
 
   <!-- LOC planet (hidden helper for today.py) -->
-  <text id="loc_planet" x="942" y="0" text-anchor="middle" font-size="1" fill="none" opacity="0">7.34M</text>
+  <text id="loc_planet" x="942" y="0" text-anchor="middle" font-size="1" fill="none" opacity="0">7.39M</text>
 
   <line x1="857" y1="380" x2="1028" y2="380" stroke="#313244" stroke-width=".7"/>
 
   <!-- ── DEVELOPER SCORE ───────────────────────────── -->
-  <text x="942" y="398" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900"
-    fill="#585b70" letter-spacing="3">DEVELOPER  SCORE</text>
+  <text x="942" y="398" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#585b70" letter-spacing="3">DEVELOPER  SCORE</text>
 
   <!-- Score arc -->
   <g transform="translate(902,440)">
     <circle cx="0" cy="0" r="32" fill="#181825" stroke="#313244" stroke-width="5"/>
-    <circle cx="0" cy="0" r="32" fill="none" stroke="url(#arcC)" stroke-width="5"
-      stroke-linecap="round" stroke-dasharray="170 220" stroke-dashoffset="220"
-      class="a3" style="transform:rotate(-90deg);transform-origin:0 0">
+    <circle cx="0" cy="0" r="32" fill="none" stroke="url(#arcC)" stroke-width="5" stroke-linecap="round" stroke-dasharray="170 220" stroke-dashoffset="220" class="a3" style="transform:rotate(-90deg);transform-origin:0 0">
       <animate attributeName="stroke-dashoffset" values="220;50;220" dur="9s" begin="4s" repeatCount="indefinite"/>
     </circle>
     <circle cx="0" cy="0" r="38" fill="none" stroke="#89dceb20" stroke-width=".8" stroke-dasharray="4 4">
@@ -778,9 +691,7 @@
   <!-- Rank arc -->
   <g transform="translate(982,440)">
     <circle cx="0" cy="0" r="32" fill="#181825" stroke="#313244" stroke-width="5"/>
-    <circle cx="0" cy="0" r="32" fill="none" stroke="url(#arcS)" stroke-width="5"
-      stroke-linecap="round" stroke-dasharray="185 220" stroke-dashoffset="220"
-      style="transform:rotate(-90deg);transform-origin:0 0">
+    <circle cx="0" cy="0" r="32" fill="none" stroke="url(#arcS)" stroke-width="5" stroke-linecap="round" stroke-dasharray="185 220" stroke-dashoffset="220" style="transform:rotate(-90deg);transform-origin:0 0">
       <animate attributeName="stroke-dashoffset" values="220;35;220" dur="11s" begin="4.3s" repeatCount="indefinite"/>
     </circle>
     <circle cx="0" cy="0" r="38" fill="none" stroke="#fab38720" stroke-width=".8" stroke-dasharray="3 5">
@@ -808,33 +719,29 @@
 <!-- ═══════════════════════════════════════════════════════ -->
 <!--  FOOTER                                                  -->
 <!-- ═══════════════════════════════════════════════════════ -->
-<text x="525" y="528" text-anchor="middle"
-  font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="800"
-  fill="#45475a" letter-spacing="1.5">
+<text x="525" y="528" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="800" fill="#45475a" letter-spacing="1.5">
   CATPPUCCIN MOCHA  ·  SCI-FI HOLOGRAPHIC  ·  GLITCH PROTOCOL ACTIVE  ·  SWADHINBISWAS 2026
 </text>
 
 <!-- ═══════════════════════════════════════════════════════ -->
 <!--  CARD BORDER                                             -->
 <!-- ═══════════════════════════════════════════════════════ -->
-<rect x="1" y="1" width="1048" height="538" rx="22"
-  fill="none" stroke="url(#shim)" stroke-width="1.5" opacity=".5"
-  stroke-dasharray="3200" stroke-dashoffset="3200">
+<rect x="1" y="1" width="1048" height="538" rx="22" fill="none" stroke="url(#shim)" stroke-width="1.5" opacity=".5" stroke-dasharray="3200" stroke-dashoffset="3200">
   <animate attributeName="stroke-dashoffset" from="3200" to="0" dur="2.8s" fill="freeze"/>
 </rect>
 
 <!-- Corner accents -->
 <g filter="url(#glow)" stroke-linecap="round">
-  <polyline points="1,44  1,1  44,1"      fill="none" stroke="#cba6f7" stroke-width="3"/>
+  <polyline points="1,44  1,1  44,1" fill="none" stroke="#cba6f7" stroke-width="3"/>
   <polyline points="1006,1 1049,1 1049,44" fill="none" stroke="#f38ba8" stroke-width="3"/>
-  <polyline points="1,494 1,539 44,539"    fill="none" stroke="#89dceb" stroke-width="3"/>
+  <polyline points="1,494 1,539 44,539" fill="none" stroke="#89dceb" stroke-width="3"/>
   <polyline points="1006,539 1049,539 1049,494" fill="none" stroke="#fab387" stroke-width="3"/>
 </g>
 
 <!-- Corner pulse dots -->
-<circle cx="1"    cy="1"   r="4.5" fill="#cba6f7" filter="url(#glow)" style="animation:planetHalo 2s 0.0s ease-in-out infinite;--pr:4.5"/>
-<circle cx="1049" cy="1"   r="4.5" fill="#f38ba8" filter="url(#glow)" style="animation:planetHalo 2s 0.5s ease-in-out infinite;--pr:4.5"/>
-<circle cx="1"    cy="539" r="4.5" fill="#89dceb" filter="url(#glow)" style="animation:planetHalo 2s 1.0s ease-in-out infinite;--pr:4.5"/>
+<circle cx="1" cy="1" r="4.5" fill="#cba6f7" filter="url(#glow)" style="animation:planetHalo 2s 0.0s ease-in-out infinite;--pr:4.5"/>
+<circle cx="1049" cy="1" r="4.5" fill="#f38ba8" filter="url(#glow)" style="animation:planetHalo 2s 0.5s ease-in-out infinite;--pr:4.5"/>
+<circle cx="1" cy="539" r="4.5" fill="#89dceb" filter="url(#glow)" style="animation:planetHalo 2s 1.0s ease-in-out infinite;--pr:4.5"/>
 <circle cx="1049" cy="539" r="4.5" fill="#fab387" filter="url(#glow)" style="animation:planetHalo 2s 1.5s ease-in-out infinite;--pr:4.5"/>
 
 </svg>
