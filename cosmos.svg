@@ -298,14 +298,14 @@
 
   <!-- Added bar -->
   <text x="22" y="428" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6e3a1">++ ADDED</text>
-  <text id="loc_add" x="193" y="428" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#94e2d5">7,691,823</text>
+  <text id="loc_add" x="193" y="428" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#94e2d5">7,691,848</text>
   <rect x="22" y="432" width="171" height="6" rx="3" fill="#181825"/>
   <rect class="b6" x="22" y="432" width="155" height="6" rx="3" fill="url(#bP)" filter="url(#glow)"/>
   <circle cx="177" cy="435" r="3" fill="#a6e3a1" filter="url(#glow)" style="animation:dotPulse 2s 4s ease-in-out infinite"/>
 
   <!-- Deleted bar -->
   <text x="22" y="452" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#f38ba8">-- DELETED</text>
-  <text id="loc_del" x="193" y="452" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#eba0ac">303,464</text>
+  <text id="loc_del" x="193" y="452" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#eba0ac">303,489</text>
   <rect x="22" y="456" width="171" height="6" rx="3" fill="#181825"/>
   <rect class="b7" x="22" y="456" width="10" height="6" rx="3" fill="url(#bL)" filter="url(#glow)"/>
   <circle cx="32" cy="459" r="3" fill="#f38ba8" filter="url(#glow)" style="animation:dotPulse 2.2s 4.3s ease-in-out infinite"/>
@@ -376,7 +376,7 @@
     <rect x="440" y="208" width="170" height="60" rx="8" fill="url(#holoBg)" stroke="#f38ba844" stroke-width=".8"/>
     <rect x="440" y="208" width="170" height="2.5" rx="1" fill="#f38ba8" opacity=".4"/>
     <text x="525" y="228" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8" letter-spacing="3">COMMITS</text>
-    <text id="commit_data" x="525" y="255" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="26" font-weight="900" fill="#f38ba8" filter="url(#glow)">4,506</text>
+    <text id="commit_data" x="525" y="255" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="26" font-weight="900" fill="#f38ba8" filter="url(#glow)">4,507</text>
     <polyline points="440,218 440,208 450,208" fill="none" stroke="#f38ba8" stroke-width="1.5" opacity=".5"/>
     <polyline points="600,208 610,208 610,218" fill="none" stroke="#f38ba8" stroke-width="1.5" opacity=".5"/>
     <polyline points="440,258 440,268 450,268" fill="none" stroke="#f38ba8" stroke-width="1.5" opacity=".3"/>
@@ -444,7 +444,7 @@
   <text id="star_planet" x="0" y="0" font-size="1" fill="none" opacity="0">228</text>
   <text id="repo_data" x="0" y="0" font-size="1" fill="none" opacity="0">83</text>
   <text id="follower_data" x="0" y="0" font-size="1" fill="none" opacity="0">66</text>
-  <text id="contrib_data" x="0" y="0" font-size="1" fill="none" opacity="0">4,506</text>
+  <text id="contrib_data" x="0" y="0" font-size="1" fill="none" opacity="0">4,507</text>
 
 </g><!-- end center -->
 
@@ -551,7 +551,7 @@
 
   <!-- 2026 -->
   <text x="857" y="320" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#a6adc8">2026</text>
-  <text id="year_2026" x="1028" y="320" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#fab387">1,055</text>
+  <text id="year_2026" x="1028" y="320" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#fab387">1,056</text>
   <rect x="892" y="313" width="126" height="5" rx="2.5" fill="#181825"/>
   <rect x="892" y="313" width="58" height="5" rx="2.5" fill="#fab387" opacity=".8"/>
 
@@ -559,7 +559,7 @@
 
   <!-- ── TOTAL CONTRIBUTIONS ─────────────────────────── -->
   <text x="942" y="352" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#585b70" letter-spacing="3">TOTAL CONTRIBUTIONS</text>
-  <text id="total_contrib" x="942" y="382" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="32" font-weight="900" fill="#89dceb" filter="url(#bloom)" style="animation:labelPop 1s 1s both;--ls:0px">4,506</text>
+  <text id="total_contrib" x="942" y="382" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="32" font-weight="900" fill="#89dceb" filter="url(#bloom)" style="animation:labelPop 1s 1s both;--ls:0px">4,507</text>
   <text x="942" y="398" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700" fill="#585b70" letter-spacing="2">ALL TIME</text>
 
   <line x1="857" y1="412" x2="1028" y2="412" stroke="#313244" stroke-width=".7"/>
