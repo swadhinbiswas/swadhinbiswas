@@ -63,6 +63,29 @@
 ---
 
 <h3 align="center">
+  <img src="https://img.shields.io/badge/-Open_Source_Work-1a1b27?style=flat-square" alt="Projects"/>
+</h3>
+
+<p align="center">
+  <a href="https://github.com/swadhinbiswas/OpencodeHub">
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=swadhinbiswas&repo=OpencodeHub&theme=catppuccin_mocha&hide_border=true&bg_color=1e1e2e" alt="OpencodeHub"/>
+  </a>
+  <a href="https://github.com/swadhinbiswas/fetchx">
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=swadhinbiswas&repo=fetchx&theme=catppuccin_mocha&hide_border=true&bg_color=1e1e2e" alt="fetchx"/>
+  </a>
+</p>
+<p align="center">
+  <a href="https://github.com/swadhinbiswas/ls-f">
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=swadhinbiswas&repo=ls-f&theme=catppuccin_mocha&hide_border=true&bg_color=1e1e2e" alt="ls-f"/>
+  </a>
+  <a href="https://github.com/swadhinbiswas/FAANG-Playbook">
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=swadhinbiswas&repo=FAANG-Playbook&theme=catppuccin_mocha&hide_border=true&bg_color=1e1e2e" alt="FAANG-Playbook"/>
+  </a>
+</p>
+
+---
+
+<h3 align="center">
   <img src="https://img.shields.io/badge/-Reach_Out-1a1b27?style=flat-square" alt="Contact"/>
 </h3>
 
