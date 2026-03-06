@@ -254,10 +254,7 @@
 <!-- ════════════════════════════════════════════════════════ -->
 <!--  TITLE BANNER                                              -->
 <!-- ════════════════════════════════════════════════════════ -->
-<text x="525" y="32" text-anchor="middle"
-  font-family="'Exo 2',sans-serif" font-size="13" font-weight="900"
-  fill="#585b70" letter-spacing="6"
-  style="animation:labelPop 1.2s .2s both;--ls:6px">
+<text x="525" y="32" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="13" font-weight="900" fill="#585b70" letter-spacing="6" style="animation:labelPop 1.2s .2s both;--ls:6px">
   THE  DEVELOPER  COSMOS  ·  SWADHINBISWAS
 </text>
 <line x1="210" y1="39" x2="840" y2="39" stroke="#45475a60" stroke-width=".7"/>
@@ -268,7 +265,7 @@
 <g transform="translate(490,272)">
 
   <!-- ══ ORBIT RINGS ══════════════════════════════════════ -->
-  <circle cx="0" cy="0" r="72"  fill="none" stroke="#94e2d538" stroke-width="1" stroke-dasharray="3 5">
+  <circle cx="0" cy="0" r="72" fill="none" stroke="#94e2d538" stroke-width="1" stroke-dasharray="3 5">
     <animate attributeName="opacity" values=".25;.48;.25" dur="4s" repeatCount="indefinite"/>
   </circle>
   <circle cx="0" cy="0" r="112" fill="none" stroke="#f38ba834" stroke-width="1" stroke-dasharray="4 5">
@@ -349,16 +346,10 @@
   <!-- PROFILE PICTURE -->
   <image href="https://github.com/swadhinbiswas.png" x="-44" y="-44" width="88" height="88" clip-path="url(#avClip)" preserveAspectRatio="xMidYMid slice" style="animation:coronaCW 0s 0s 1 both"/>
   <!-- Avatar name below -->
-  <text x="0" y="64" text-anchor="middle"
-    font-family="'Exo 2',sans-serif" font-size="14" font-weight="900"
-    fill="#cdd6f4" filter="url(#textGlow)"
-    style="animation:labelPop 1s .5s both;--ls:1px">
+  <text x="0" y="64" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="14" font-weight="900" fill="#cdd6f4" filter="url(#textGlow)" style="animation:labelPop 1s .5s both;--ls:1px">
     Swadhin Biswas
   </text>
-  <text x="0" y="77" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800"
-    fill="#7f849c" letter-spacing="2"
-    style="animation:labelPop 1s .7s both;--ls:2px">
+  <text x="0" y="77" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#7f849c" letter-spacing="2" style="animation:labelPop 1s .7s both;--ls:2px">
     BACKEND &amp; AI/ML ENGINEER
   </text>
 
@@ -370,8 +361,7 @@
   <g>
     <animateTransform attributeName="transform" type="rotate" from="30" to="390" dur="6s" repeatCount="indefinite"/>
     <g transform="translate(72,0)">
-      <circle cx="0" cy="0" r="24" fill="#94e2d5" filter="url(#bigBloom)" opacity=".35"
-        style="animation:planetHalo 2.8s ease-in-out infinite;--pr:24"/>
+      <circle cx="0" cy="0" r="24" fill="#94e2d5" filter="url(#bigBloom)" opacity=".35" style="animation:planetHalo 2.8s ease-in-out infinite;--pr:24"/>
       <circle cx="0" cy="0" r="14" fill="url(#pTeal)" filter="url(#glow4)"/>
       <circle cx="0" cy="0" r="14" fill="none" stroke="#94e2d570" stroke-width="1.5"/>
       <circle cx="0" cy="0" r="18" fill="none" stroke="#94e2d555" stroke-width="1" stroke-dasharray="3 4">
@@ -380,7 +370,7 @@
       <g>
         <animateTransform attributeName="transform" type="rotate" from="-30" to="-390" dur="6s" repeatCount="indefinite"/>
         <text x="0" y="-3.5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="900" fill="#94e2d5">STREAK</text>
-        <text x="0" y="6.5"  text-anchor="middle" font-family="'Exo 2',sans-serif"        font-size="12"   font-weight="900" fill="#a6e3a1">24d</text>
+        <text x="0" y="6.5" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="12" font-weight="900" fill="#a6e3a1">24d</text>
       </g>
     </g>
   </g>
@@ -389,8 +379,7 @@
   <g>
     <animateTransform attributeName="transform" type="rotate" from="165" to="525" dur="10s" repeatCount="indefinite"/>
     <g transform="translate(112,0)">
-      <circle cx="0" cy="0" r="34" fill="#f5c2e7" filter="url(#bigBloom)" opacity=".30"
-        style="animation:planetHalo 3.2s .3s ease-in-out infinite;--pr:34"/>
+      <circle cx="0" cy="0" r="34" fill="#f5c2e7" filter="url(#bigBloom)" opacity=".30" style="animation:planetHalo 3.2s .3s ease-in-out infinite;--pr:34"/>
       <ellipse cx="0" cy="0" rx="30" ry="9" fill="none" stroke="#f5c2e760" stroke-width="2.5" transform="rotate(15)"/>
       <ellipse cx="0" cy="0" rx="26" ry="8" fill="none" stroke="#f38ba845" stroke-width="1.8" transform="rotate(15)"/>
       <circle cx="0" cy="0" r="22" fill="url(#pPink)" filter="url(#glow4)"/>
@@ -401,7 +390,7 @@
       <g>
         <animateTransform attributeName="transform" type="rotate" from="-165" to="-525" dur="10s" repeatCount="indefinite"/>
         <text x="0" y="-5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="900" fill="#f5c2e7">CONTRIB</text>
-        <text id="contrib_data" x="0" y="7"  text-anchor="middle" font-family="'Exo 2',sans-serif"        font-size="13"  font-weight="900" fill="#f2cdcd">3,177</text>
+        <text id="contrib_data" x="0" y="7" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="13" font-weight="900" fill="#f2cdcd">91</text>
       </g>
     </g>
   </g>
@@ -410,8 +399,7 @@
   <g>
     <animateTransform attributeName="transform" type="rotate" from="288" to="648" dur="16s" repeatCount="indefinite"/>
     <g transform="translate(152,0)">
-      <circle cx="0" cy="0" r="28" fill="#fab387" filter="url(#bigBloom)" opacity=".30"
-        style="animation:planetHalo 3.8s .6s ease-in-out infinite;--pr:28"/>
+      <circle cx="0" cy="0" r="28" fill="#fab387" filter="url(#bigBloom)" opacity=".30" style="animation:planetHalo 3.8s .6s ease-in-out infinite;--pr:28"/>
       <circle cx="0" cy="0" r="18" fill="url(#pPeach)" filter="url(#glow4)"/>
       <circle cx="0" cy="0" r="18" fill="none" stroke="#fab38760" stroke-width="1.8"/>
       <ellipse cx="0" cy="0" rx="24" ry="7" fill="none" stroke="#fab38750" stroke-width="2.2" transform="rotate(-10)"/>
@@ -425,7 +413,7 @@
       <g>
         <animateTransform attributeName="transform" type="rotate" from="-288" to="-648" dur="16s" repeatCount="indefinite"/>
         <text x="0" y="-4" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="900" fill="#fab387">STARS</text>
-        <text id="star_planet" x="0" y="7"  text-anchor="middle" font-family="'Exo 2',sans-serif"        font-size="13"  font-weight="900" fill="#f9e2af">228</text>
+        <text id="star_planet" x="0" y="7" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="13" font-weight="900" fill="#f9e2af">228</text>
       </g>
     </g>
   </g>
@@ -434,10 +422,9 @@
   <g>
     <animateTransform attributeName="transform" type="rotate" from="52" to="412" dur="24s" repeatCount="indefinite"/>
     <g transform="translate(190,0)">
-      <circle cx="0" cy="0" r="40" fill="#89dceb" filter="url(#bigBloom)" opacity=".28"
-        style="animation:planetHalo 4s .9s ease-in-out infinite;--pr:40"/>
+      <circle cx="0" cy="0" r="40" fill="#89dceb" filter="url(#bigBloom)" opacity=".28" style="animation:planetHalo 4s .9s ease-in-out infinite;--pr:40"/>
       <ellipse cx="0" cy="-5" rx="24" ry="5" fill="#74c7ec40"/>
-      <ellipse cx="0" cy="5"  rx="22" ry="4" fill="#89dceb30"/>
+      <ellipse cx="0" cy="5" rx="22" ry="4" fill="#89dceb30"/>
       <circle cx="0" cy="0" r="25" fill="url(#pSky)" filter="url(#glow4)"/>
       <circle cx="0" cy="0" r="25" fill="none" stroke="#89dceb60" stroke-width="2"/>
       <ellipse cx="0" cy="0" rx="35" ry="10" fill="none" stroke="#89dceb65" stroke-width="3" transform="rotate(8)"/>
@@ -456,7 +443,7 @@
       <g>
         <animateTransform attributeName="transform" type="rotate" from="-52" to="-412" dur="24s" repeatCount="indefinite"/>
         <text x="0" y="-5.5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="900" fill="#89dceb">LOC NET</text>
-        <text id="loc_planet" x="0" y="7"    text-anchor="middle" font-family="'Exo 2',sans-serif"        font-size="12"   font-weight="900" fill="#89b4fa">7.34M</text>
+        <text id="loc_planet" x="0" y="7" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="12" font-weight="900" fill="#89b4fa">7.39M</text>
       </g>
     </g>
   </g>
@@ -465,8 +452,7 @@
   <g>
     <animateTransform attributeName="transform" type="rotate" from="198" to="558" dur="33s" repeatCount="indefinite"/>
     <g transform="translate(215,0)">
-      <circle cx="0" cy="0" r="30" fill="#cba6f7" filter="url(#bigBloom)" opacity=".28"
-        style="animation:planetHalo 4.5s 1.2s ease-in-out infinite;--pr:30"/>
+      <circle cx="0" cy="0" r="30" fill="#cba6f7" filter="url(#bigBloom)" opacity=".28" style="animation:planetHalo 4.5s 1.2s ease-in-out infinite;--pr:30"/>
       <circle cx="0" cy="0" r="19" fill="url(#pMauve)" filter="url(#glow4)"/>
       <circle cx="0" cy="0" r="19" fill="none" stroke="#cba6f760" stroke-width="1.8"/>
       <ellipse cx="0" cy="0" rx="26" ry="8" fill="none" stroke="#cba6f760" stroke-width="2.2" transform="rotate(-12)"/>
@@ -480,7 +466,7 @@
       <g>
         <animateTransform attributeName="transform" type="rotate" from="-198" to="-558" dur="33s" repeatCount="indefinite"/>
         <text x="0" y="-4.5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="900" fill="#cba6f7">REPOS</text>
-        <text id="repo_data" x="0" y="7"    text-anchor="middle" font-family="'Exo 2',sans-serif"        font-size="13"  font-weight="900" fill="#b4befe">83</text>
+        <text id="repo_data" x="0" y="7" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="13" font-weight="900" fill="#b4befe">83</text>
       </g>
     </g>
   </g>
@@ -489,8 +475,7 @@
   <g>
     <animateTransform attributeName="transform" type="rotate" from="320" to="680" dur="44s" repeatCount="indefinite"/>
     <g transform="translate(232,0)">
-      <circle cx="0" cy="0" r="26" fill="#f5e0dc" filter="url(#bigBloom)" opacity=".26"
-        style="animation:planetHalo 5s 1.5s ease-in-out infinite;--pr:26"/>
+      <circle cx="0" cy="0" r="26" fill="#f5e0dc" filter="url(#bigBloom)" opacity=".26" style="animation:planetHalo 5s 1.5s ease-in-out infinite;--pr:26"/>
       <circle cx="0" cy="0" r="16" fill="url(#pRosewater)" filter="url(#glow4)"/>
       <circle cx="0" cy="0" r="16" fill="none" stroke="#f5e0dc60" stroke-width="1.8"/>
       <circle cx="0" cy="0" r="20" fill="none" stroke="#f5e0dc38" stroke-width="1" stroke-dasharray="3 6">
@@ -499,7 +484,7 @@
       <g>
         <animateTransform attributeName="transform" type="rotate" from="-320" to="-680" dur="44s" repeatCount="indefinite"/>
         <text x="0" y="-4" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="900" fill="#f5e0dc">FOLLOWERS</text>
-        <text id="follower_data" x="0" y="7"  text-anchor="middle" font-family="'Exo 2',sans-serif"        font-size="13" font-weight="900" fill="#f2cdcd">66</text>
+        <text id="follower_data" x="0" y="7" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="13" font-weight="900" fill="#f2cdcd">66</text>
       </g>
     </g>
   </g>
@@ -533,10 +518,7 @@
   <rect x="10" y="52" width="188" height="3" rx="1.5" fill="url(#shim)" opacity=".5"/>
 
   <!-- ══ IDENTITY ═══════════════════════════════════════ -->
-  <text x="104" y="78"
-    text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="9.5" font-weight="900"
-    fill="#585b70" letter-spacing="3"
-    style="animation:labelPop .8s .4s both;--ls:3px">DEVELOPER  ID</text>
+  <text x="104" y="78" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="9.5" font-weight="900" fill="#585b70" letter-spacing="3" style="animation:labelPop .8s .4s both;--ls:3px">DEVELOPER  ID</text>
   <line x1="22" y1="84" x2="186" y2="84" stroke="#313244" stroke-width=".7"/>
 
   <!-- Avatar mini -->
@@ -545,48 +527,28 @@
   <circle cx="104" cy="112" r="26" fill="none" stroke="url(#avRing)" stroke-width="1.8" filter="url(#glow)"/>
   <image href="https://github.com/swadhinbiswas.png" x="80" y="88" width="48" height="48" clip-path="url(#miniAv)" preserveAspectRatio="xMidYMid slice"/>
 
-  <text x="104" y="152" text-anchor="middle"
-    font-family="'Exo 2',sans-serif" font-size="14" font-weight="900"
-    fill="#cdd6f4" filter="url(#textGlow)">Swadhin Biswas</text>
-  <text x="104" y="165" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="8" font-weight="700"
-    fill="#7f849c" letter-spacing="1.5">github.com/swadhinbiswas</text>
+  <text x="104" y="152" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="14" font-weight="900" fill="#cdd6f4" filter="url(#textGlow)">Swadhin Biswas</text>
+  <text x="104" y="165" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="700" fill="#7f849c" letter-spacing="1.5">github.com/swadhinbiswas</text>
 
   <!-- badges -->
   <rect x="26" y="172" width="80" height="18" rx="9" fill="#181825" stroke="#94e2d544" stroke-width=".8"/>
-  <text x="66" y="184.5" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800"
-    fill="#94e2d5" letter-spacing="1">since 2022</text>
+  <text x="66" y="184.5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#94e2d5" letter-spacing="1">since 2022</text>
   <rect x="112" y="172" width="74" height="18" rx="9" fill="#181825" stroke="#f38ba844" stroke-width=".8"/>
-  <text x="149" y="184.5" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800"
-    fill="#f38ba8" letter-spacing="1">3 yrs old</text>
+  <text x="149" y="184.5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#f38ba8" letter-spacing="1">3 yrs old</text>
 
   <line x1="22" y1="200" x2="186" y2="200" stroke="#313244" stroke-width=".7"/>
 
   <!-- ══ STREAK COUNTER ══════════════════════════════════ -->
-  <text x="104" y="218" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900"
-    fill="#585b70" letter-spacing="3">STREAK</text>
-  <text x="104" y="248" text-anchor="middle"
-    font-family="'Exo 2',sans-serif" font-size="38" font-weight="900"
-    fill="#fab387" filter="url(#bloom)">24</text>
-  <text x="104" y="262" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800"
-    fill="#a6adc8" letter-spacing="2">DAYS  ACTIVE</text>
+  <text x="104" y="218" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#585b70" letter-spacing="3">STREAK</text>
+  <text x="104" y="248" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="38" font-weight="900" fill="#fab387" filter="url(#bloom)">24</text>
+  <text x="104" y="262" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#a6adc8" letter-spacing="2">DAYS  ACTIVE</text>
 
   <line x1="22" y1="276" x2="186" y2="276" stroke="#313244" stroke-width=".7"/>
 
   <!-- ══ ACCOUNT AGE ══════════════════════════════════════ -->
-  <text x="104" y="294" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900"
-    fill="#585b70" letter-spacing="3">ACCOUNT AGE</text>
-  <text id="age_data" x="104" y="316" text-anchor="middle"
-    font-family="'Exo 2',sans-serif" font-size="16" font-weight="900"
-    fill="#cba6f7">3 yrs · 8 mo · 27 d</text>
-  <text x="104" y="330" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="9" font-weight="700"
-    fill="#7f849c">joined · June 14, 2022</text>
+  <text x="104" y="294" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#585b70" letter-spacing="3">ACCOUNT AGE</text>
+  <text id="age_data" x="104" y="316" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="16" font-weight="900" fill="#cba6f7">23 yrs · 8 mo · 1 d</text>
+  <text x="104" y="330" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="700" fill="#7f849c">joined · June 14, 2022</text>
 
   <line x1="22" y1="342" x2="186" y2="342" stroke="#313244" stroke-width=".7"/>
 
@@ -634,10 +596,7 @@
   <rect x="852" y="52" width="188" height="3" rx="1.5" fill="url(#shim)" opacity=".5"/>
 
   <!-- ══ CONTRIBUTION RINGS ═════════════════════════════ -->
-  <text x="946" y="78" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="9.5" font-weight="900"
-    fill="#585b70" letter-spacing="3"
-    style="animation:labelPop .8s .6s both;--ls:3px">CONTRIBUTION</text>
+  <text x="946" y="78" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" font-weight="900" fill="#585b70" letter-spacing="3" style="animation:labelPop .8s .6s both;--ls:3px">CONTRIBUTION</text>
   <line x1="864" y1="84" x2="1028" y2="84" stroke="#313244" stroke-width=".7"/>
 
   <!-- Ring 1: Commits (pink) at (906, 140) -->
@@ -649,8 +608,8 @@
     <circle cx="0" cy="0" r="44" fill="none" stroke="#f38ba820" stroke-width=".8" stroke-dasharray="3 4">
       <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="14s" repeatCount="indefinite"/>
     </circle>
-    <text x="0" y="-5"  text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#a6adc8">COMMITS</text>
-    <text id="commit_data" x="0" y="11"  text-anchor="middle" font-family="'Exo 2',sans-serif"        font-size="19"  font-weight="900" fill="#f38ba8" filter="url(#glow)">2,410</text>
+    <text x="0" y="-5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#a6adc8">COMMITS</text>
+    <text id="commit_data" x="0" y="11" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="19" font-weight="900" fill="#f38ba8" filter="url(#glow)">1,418</text>
   </g>
 
   <!-- Ring 2: Stars (peach) at (986, 140) -->
@@ -662,8 +621,8 @@
     <circle cx="0" cy="0" r="44" fill="none" stroke="#fab38720" stroke-width=".8" stroke-dasharray="4 4">
       <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="18s" repeatCount="indefinite"/>
     </circle>
-    <text x="0" y="-5"  text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#a6adc8">STARS</text>
-    <text id="star_data" x="0" y="11"  text-anchor="middle" font-family="'Exo 2',sans-serif"        font-size="19"  font-weight="900" fill="#fab387" filter="url(#glow)">228</text>
+    <text x="0" y="-5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#a6adc8">STARS</text>
+    <text id="star_data" x="0" y="11" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="19" font-weight="900" fill="#fab387" filter="url(#glow)">228</text>
   </g>
 
   <line x1="864" y1="198" x2="1028" y2="198" stroke="#313244" stroke-width=".7"/>
@@ -709,24 +668,19 @@
   <!-- ══ LOC BREAKDOWN ══════════════════════════════════ -->
   <text x="864" y="276" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#585b70" letter-spacing="3">LINES OF CODE</text>
 
-  <text id="loc_data" x="946" y="308" text-anchor="middle"
-    font-family="'Exo 2',sans-serif" font-size="32" font-weight="900"
-    fill="#cba6f7" filter="url(#bloom)"
-    style="animation:labelPop 1s .8s both;--ls:0px">7,338,460</text>
-  <text x="946" y="320" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800"
-    fill="#585b70" letter-spacing="2">NET LINES WRITTEN</text>
+  <text id="loc_data" x="946" y="308" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="32" font-weight="900" fill="#cba6f7" filter="url(#bloom)" style="animation:labelPop 1s .8s both;--ls:0px">7,388,245</text>
+  <text x="946" y="320" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#585b70" letter-spacing="2">NET LINES WRITTEN</text>
 
   <!-- Added -->
   <text x="864" y="342" font-family="'JetBrains Mono',monospace" font-size="9.5" font-weight="900" fill="#a6e3a1">++ ADDED</text>
-  <text id="loc_add" x="1028" y="342" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#94e2d5">7,628,499</text>
+  <text id="loc_add" x="1028" y="342" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#94e2d5">7,690,201</text>
   <rect x="864" y="346" width="164" height="8" rx="4" fill="#181825"/>
   <rect class="b5" x="864" y="346" width="150" height="8" rx="4" fill="url(#bP)" filter="url(#glow)"/>
   <circle cx="1014" cy="350" r="4" fill="#a6e3a1" filter="url(#glow)" style="animation:dotPulse 2s 4s ease-in-out infinite"/>
 
   <!-- Deleted -->
   <text x="864" y="370" font-family="'JetBrains Mono',monospace" font-size="9.5" font-weight="900" fill="#f38ba8">-- DELETED</text>
-  <text id="loc_del" x="1028" y="370" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#eba0ac">290,039</text>
+  <text id="loc_del" x="1028" y="370" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#eba0ac">301,956</text>
   <rect x="864" y="374" width="164" height="8" rx="4" fill="#181825"/>
   <rect class="b6" x="864" y="374" width="10" height="8" rx="4" fill="url(#bL)" filter="url(#glow)"/>
   <circle cx="874" cy="378" r="4" fill="#f38ba8" filter="url(#glow)" style="animation:dotPulse 2.2s 4.3s ease-in-out infinite"/>
@@ -734,9 +688,7 @@
   <line x1="864" y1="396" x2="1028" y2="396" stroke="#313244" stroke-width=".7"/>
 
   <!-- ══ DEV SCORE ══════════════════════════════════════ -->
-  <text x="946" y="414" text-anchor="middle"
-    font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900"
-    fill="#585b70" letter-spacing="3">DEVELOPER  SCORE</text>
+  <text x="946" y="414" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#585b70" letter-spacing="3">DEVELOPER  SCORE</text>
 
   <!-- Score arc ring -->
   <g transform="translate(906,458)">
@@ -769,30 +721,22 @@
 <!-- ════════════════════════════════════════════════════════ -->
 <!--  PLANET LABELS (fixed subtitles near top)                 -->
 <!-- ════════════════════════════════════════════════════════ -->
-<text x="560" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#94e2d566" letter-spacing="1"
-  style="animation:labelPop 1s 1.0s both;--ls:1px">STREAK</text>
+<text x="560" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#94e2d566" letter-spacing="1" style="animation:labelPop 1s 1.0s both;--ls:1px">STREAK</text>
 <text x="580" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#585b7050">·</text>
-<text x="590" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#f5c2e766" letter-spacing="1"
-  style="animation:labelPop 1s 1.1s both;--ls:1px">CONTRIB</text>
+<text x="590" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#f5c2e766" letter-spacing="1" style="animation:labelPop 1s 1.1s both;--ls:1px">CONTRIB</text>
 <text x="648" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#585b7050">·</text>
-<text x="657" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#fab38766" letter-spacing="1"
-  style="animation:labelPop 1s 1.2s both;--ls:1px">STARS</text>
+<text x="657" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#fab38766" letter-spacing="1" style="animation:labelPop 1s 1.2s both;--ls:1px">STARS</text>
 <text x="693" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#585b7050">·</text>
-<text x="702" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#89dceb66" letter-spacing="1"
-  style="animation:labelPop 1s 1.3s both;--ls:1px">LOC</text>
+<text x="702" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#89dceb66" letter-spacing="1" style="animation:labelPop 1s 1.3s both;--ls:1px">LOC</text>
 <text x="725" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#585b7050">·</text>
-<text x="734" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#cba6f766" letter-spacing="1"
-  style="animation:labelPop 1s 1.4s both;--ls:1px">REPOS</text>
+<text x="734" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#cba6f766" letter-spacing="1" style="animation:labelPop 1s 1.4s both;--ls:1px">REPOS</text>
 <text x="773" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#585b7050">·</text>
-<text x="782" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#f5e0dc66" letter-spacing="1"
-  style="animation:labelPop 1s 1.5s both;--ls:1px">FOLLOWERS</text>
+<text x="782" y="46" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#f5e0dc66" letter-spacing="1" style="animation:labelPop 1s 1.5s both;--ls:1px">FOLLOWERS</text>
 
 <!-- ════════════════════════════════════════════════════════ -->
 <!--  BOTTOM FOOTER                                            -->
 <!-- ════════════════════════════════════════════════════════ -->
-<text x="525" y="526" text-anchor="middle"
-  font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800"
-  fill="#45475a" letter-spacing="1.5">
+<text x="525" y="526" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#45475a" letter-spacing="1.5">
   CATPPUCCIN MOCHA  ·  PLANET SIZE = STAT MAGNITUDE  ·  ORBITS SCALE WITH CONTRIBUTION  ·  SWADHINBISWAS 2026
 </text>
 
