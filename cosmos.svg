@@ -237,7 +237,7 @@
   <text x="107" y="42" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" font-weight="900" fill="#585b70" letter-spacing="3" style="animation:labelPop .8s .4s both;--ls:3px">STREAK</text>
   <line x1="22" y1="48" x2="193" y2="48" stroke="#313244" stroke-width=".7"/>
 
-  <text id="streak_data" x="107" y="82" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="38" font-weight="900" fill="#fab387" filter="url(#bloom)">24</text>
+  <text id="streak_data" x="107" y="82" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="38" font-weight="900" fill="#fab387" filter="url(#bloom)">12</text>
   <text x="107" y="98" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#a6adc8" letter-spacing="2">DAYS ACTIVE</text>
 
   <line x1="22" y1="112" x2="193" y2="112" stroke="#313244" stroke-width=".7"/>
@@ -245,7 +245,7 @@
   <!-- ── ACCOUNT AGE ─────────────────────────────────── -->
   <text x="107" y="132" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#585b70" letter-spacing="3">ACCOUNT AGE</text>
 
-  <text id="age_data" x="107" y="155" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="16" font-weight="900" fill="#cba6f7">3 yrs · 8 mo · 27 d</text>
+  <text id="age_data" x="107" y="155" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="16" font-weight="900" fill="#cba6f7">3 yrs · 8 mo · 20 d</text>
   <text x="107" y="170" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="700" fill="#7f849c">joined · June 14, 2022</text>
 
   <line x1="22" y1="184" x2="193" y2="184" stroke="#313244" stroke-width=".7"/>
@@ -255,35 +255,35 @@
 
   <!-- Python -->
   <text x="22" y="228" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#89b4fa">Python</text>
-  <text id="lang_pct_0" x="193" y="228" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#74c7ec">32%</text>
+  <text id="lang_pct_0" x="193" y="228" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#74c7ec">30%</text>
   <rect x="22" y="232" width="171" height="6" rx="3" fill="#181825"/>
   <rect class="b1" x="22" y="232" width="55" height="6" rx="3" fill="url(#bPy)" filter="url(#glow)"/>
   <circle cx="77" cy="235" r="3" fill="#89b4fa" filter="url(#glow)" style="animation:dotPulse 2s 3s ease-in-out infinite"/>
 
   <!-- Rust -->
   <text x="22" y="252" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#fab387">Rust</text>
-  <text id="lang_pct_1" x="193" y="252" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#fab387">22%</text>
+  <text id="lang_pct_1" x="193" y="252" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#fab387">25%</text>
   <rect x="22" y="256" width="171" height="6" rx="3" fill="#181825"/>
   <rect class="b2" x="22" y="256" width="38" height="6" rx="3" fill="url(#bRs)" filter="url(#glow)"/>
   <circle cx="60" cy="259" r="3" fill="#fab387" filter="url(#glow)" style="animation:dotPulse 2.2s 3.3s ease-in-out infinite"/>
 
   <!-- Go -->
   <text x="22" y="276" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#94e2d5">Go</text>
-  <text id="lang_pct_2" x="193" y="276" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#94e2d5">18%</text>
+  <text id="lang_pct_2" x="193" y="276" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#94e2d5">16%</text>
   <rect x="22" y="280" width="171" height="6" rx="3" fill="#181825"/>
   <rect class="b3" x="22" y="280" width="31" height="6" rx="3" fill="url(#bGo)" filter="url(#glow)"/>
   <circle cx="53" cy="283" r="3" fill="#94e2d5" filter="url(#glow)" style="animation:dotPulse 1.8s 3.6s ease-in-out infinite"/>
 
   <!-- JavaScript -->
   <text x="22" y="300" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#f9e2af">JavaScript</text>
-  <text id="lang_pct_3" x="193" y="300" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#f9e2af">16%</text>
+  <text id="lang_pct_3" x="193" y="300" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#f9e2af">10%</text>
   <rect x="22" y="304" width="171" height="6" rx="3" fill="#181825"/>
   <rect class="b4" x="22" y="304" width="27" height="6" rx="3" fill="url(#bJs)" filter="url(#glow)"/>
   <circle cx="49" cy="307" r="3" fill="#f9e2af" filter="url(#glow)" style="animation:dotPulse 2.4s 3.9s ease-in-out infinite"/>
 
   <!-- TypeScript -->
   <text x="22" y="324" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="800" fill="#cba6f7">TypeScript</text>
-  <text id="lang_pct_4" x="193" y="324" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#b4befe">12%</text>
+  <text id="lang_pct_4" x="193" y="324" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#b4befe">8%</text>
   <rect x="22" y="328" width="171" height="6" rx="3" fill="#181825"/>
   <rect class="b5" x="22" y="328" width="21" height="6" rx="3" fill="url(#bTs)" filter="url(#glow)"/>
   <circle cx="43" cy="331" r="3" fill="#cba6f7" filter="url(#glow)" style="animation:dotPulse 2.1s 4.2s ease-in-out infinite"/>
@@ -293,19 +293,19 @@
   <!-- ── LOC BREAKDOWN ───────────────────────────────── -->
   <text x="107" y="366" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#585b70" letter-spacing="3">LINES OF CODE</text>
 
-  <text id="loc_data" x="107" y="394" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="22" font-weight="900" fill="#cba6f7" filter="url(#glow)" style="animation:labelPop 1s .8s both;--ls:0px">7,388,265</text>
+  <text id="loc_data" x="107" y="394" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="22" font-weight="900" fill="#cba6f7" filter="url(#glow)" style="animation:labelPop 1s .8s both;--ls:0px">7,388,303</text>
   <text x="107" y="408" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="800" fill="#585b70" letter-spacing="1">NET LINES WRITTEN</text>
 
   <!-- Added bar -->
   <text x="22" y="428" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6e3a1">++ ADDED</text>
-  <text id="loc_add" x="193" y="428" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#94e2d5">7,690,915</text>
+  <text id="loc_add" x="193" y="428" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#94e2d5">7,691,549</text>
   <rect x="22" y="432" width="171" height="6" rx="3" fill="#181825"/>
   <rect class="b6" x="22" y="432" width="155" height="6" rx="3" fill="url(#bP)" filter="url(#glow)"/>
   <circle cx="177" cy="435" r="3" fill="#a6e3a1" filter="url(#glow)" style="animation:dotPulse 2s 4s ease-in-out infinite"/>
 
   <!-- Deleted bar -->
   <text x="22" y="452" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#f38ba8">-- DELETED</text>
-  <text id="loc_del" x="193" y="452" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#eba0ac">302,650</text>
+  <text id="loc_del" x="193" y="452" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#eba0ac">303,246</text>
   <rect x="22" y="456" width="171" height="6" rx="3" fill="#181825"/>
   <rect class="b7" x="22" y="456" width="10" height="6" rx="3" fill="url(#bL)" filter="url(#glow)"/>
   <circle cx="32" cy="459" r="3" fill="#f38ba8" filter="url(#glow)" style="animation:dotPulse 2.2s 4.3s ease-in-out infinite"/>
@@ -319,7 +319,7 @@
   <g transform="translate(70,515)">
     <circle cx="0" cy="0" r="18" fill="#181825" stroke="#313244" stroke-width="3"/>
     <circle cx="0" cy="0" r="18" fill="none" stroke="url(#arcC)" stroke-width="3" stroke-linecap="round" stroke-dasharray="95 120" stroke-dashoffset="120" class="a3" style="transform:rotate(-90deg);transform-origin:0 0"/>
-    <text id="score_left" x="0" y="5" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="13" font-weight="900" fill="#cdd6f4">82</text>
+    <text id="score_left" x="0" y="5" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="13" font-weight="900" fill="#cdd6f4">80</text>
   </g>
   <!-- Rank circle -->
   <g transform="translate(144,515)">
@@ -355,10 +355,7 @@
     <!-- Avatar ring + image -->
     <circle cx="0" cy="0" r="47" fill="none" stroke="url(#avRing)" stroke-width="2.8" filter="url(#glow)" style="animation:avRingGlow 3s ease-in-out infinite"/>
     <circle cx="0" cy="0" r="44" fill="#1e1e2e"/>
-    <image href="data:image/jpeg;base64,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"
-      x="-44" y="-44" width="88" height="88"
-      clip-path="url(#avClip)"
-      preserveAspectRatio="xMidYMid slice"/>
+    <image href="data:image/jpeg;base64,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" x="-44" y="-44" width="88" height="88" clip-path="url(#avClip)" preserveAspectRatio="xMidYMid slice"/>
 
     <!-- Name + title -->
     <text x="0" y="64" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="16" font-weight="900" fill="#cdd6f4" filter="url(#textGlow)" style="animation:labelPop 1s .5s both;--ls:1px">
@@ -381,7 +378,7 @@
     <rect x="310" y="220" width="150" height="80" rx="8" fill="url(#holoBg)" stroke="#f38ba844" stroke-width=".8"/>
     <rect x="310" y="220" width="150" height="2.5" rx="1" fill="#f38ba8" opacity=".4"/>
     <text x="385" y="243" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8" letter-spacing="3">COMMITS</text>
-    <text id="commit_data" x="385" y="275" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="30" font-weight="900" fill="#f38ba8" filter="url(#glow)">4,591</text>
+    <text id="commit_data" x="385" y="275" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="30" font-weight="900" fill="#f38ba8" filter="url(#glow)">4,502</text>
     <text x="385" y="292" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700" fill="#585b70" letter-spacing="2">ALL AFFILIATIONS</text>
     <!-- Corner accents -->
     <polyline points="310,230 310,220 320,220" fill="none" stroke="#f38ba8" stroke-width="1.5" opacity=".5"/>
@@ -396,7 +393,7 @@
     <rect x="590" y="220" width="150" height="2.5" rx="1" fill="#fab387" opacity=".4"/>
     <text x="665" y="243" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8" letter-spacing="3">STARS</text>
     <text id="star_data" x="665" y="275" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="30" font-weight="900" fill="#fab387" filter="url(#glow)">228</text>
-    <text id="star_planet" x="665" y="292" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700" fill="#585b70" letter-spacing="2">EARNED</text>
+    <text id="star_planet" x="665" y="292" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700" fill="#585b70" letter-spacing="2">228</text>
     <polyline points="590,230 590,220 600,220" fill="none" stroke="#fab387" stroke-width="1.5" opacity=".5"/>
     <polyline points="730,220 740,220 740,230" fill="none" stroke="#fab387" stroke-width="1.5" opacity=".5"/>
     <polyline points="590,290 590,300 600,300" fill="none" stroke="#fab387" stroke-width="1.5" opacity=".3"/>
@@ -432,7 +429,7 @@
     <rect x="370" y="406" width="310" height="65" rx="8" fill="url(#holoBg)" stroke="#89dceb44" stroke-width=".8"/>
     <rect x="370" y="406" width="310" height="2.5" rx="1" fill="#89dceb" opacity=".4"/>
     <text x="525" y="428" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8" letter-spacing="3">CONTRIBUTIONS</text>
-    <text id="contrib_data" x="525" y="456" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="26" font-weight="900" fill="#89dceb" filter="url(#glow)">4,591</text>
+    <text id="contrib_data" x="525" y="456" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="26" font-weight="900" fill="#89dceb" filter="url(#glow)">4,502</text>
     <!-- Waveform -->
     <polyline points="390,445 400,440 410,448 420,438 430,446 440,436 450,444 460,434 470,445 480,432 490,443 500,435 510,446 520,430 530,444 540,438 550,446 560,432 570,442 580,438 590,445 600,434 610,443 620,439 630,446 640,435 650,442 660,440" fill="none" stroke="#89dceb" stroke-width="1" opacity=".2" stroke-dasharray="3 2" style="animation:waveformMove 4s linear infinite"/>
     <polyline points="370,416 370,406 380,406" fill="none" stroke="#89dceb" stroke-width="1.5" opacity=".5"/>
@@ -464,7 +461,7 @@
       <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="14s" repeatCount="indefinite"/>
     </circle>
     <text x="0" y="-4" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8">COMMITS</text>
-    <text id="ring_commits" x="0" y="14" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="18" font-weight="900" fill="#f38ba8" filter="url(#glow)">4.6K</text>
+    <text id="ring_commits" x="0" y="14" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="18" font-weight="900" fill="#f38ba8" filter="url(#glow)">4.5K</text>
   </g>
 
   <!-- Ring 2: Stars (peach) -->
@@ -534,19 +531,19 @@
 
   <!-- 2024 -->
   <text x="857" y="288" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#a6adc8">2024</text>
-  <text id="year_2024" x="1028" y="288" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#cba6f7">877</text>
+  <text id="year_2024" x="1028" y="288" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#cba6f7">872</text>
   <rect x="892" y="281" width="126" height="5" rx="2.5" fill="#181825"/>
   <rect x="892" y="281" width="48" height="5" rx="2.5" fill="#cba6f7" opacity=".8"/>
 
   <!-- 2025 -->
   <text x="857" y="304" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#a6adc8">2025</text>
-  <text id="year_2025" x="1028" y="304" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#f38ba8">2,311</text>
+  <text id="year_2025" x="1028" y="304" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#f38ba8">2,233</text>
   <rect x="892" y="297" width="126" height="5" rx="2.5" fill="#181825"/>
   <rect x="892" y="297" width="126" height="5" rx="2.5" fill="#f38ba8" opacity=".8"/>
 
   <!-- 2026 -->
   <text x="857" y="320" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#a6adc8">2026</text>
-  <text id="year_2026" x="1028" y="320" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#fab387">1,057</text>
+  <text id="year_2026" x="1028" y="320" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="800" fill="#fab387">1,051</text>
   <rect x="892" y="313" width="126" height="5" rx="2.5" fill="#181825"/>
   <rect x="892" y="313" width="58" height="5" rx="2.5" fill="#fab387" opacity=".8"/>
 
@@ -554,7 +551,7 @@
 
   <!-- ── TOTAL CONTRIBUTIONS ─────────────────────────── -->
   <text x="942" y="352" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#585b70" letter-spacing="3">TOTAL CONTRIBUTIONS</text>
-  <text id="total_contrib" x="942" y="382" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="32" font-weight="900" fill="#89dceb" filter="url(#bloom)" style="animation:labelPop 1s 1s both;--ls:0px">4,591</text>
+  <text id="total_contrib" x="942" y="382" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="32" font-weight="900" fill="#89dceb" filter="url(#bloom)" style="animation:labelPop 1s 1s both;--ls:0px">4,502</text>
   <text x="942" y="398" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700" fill="#585b70" letter-spacing="2">ALL TIME</text>
 
   <line x1="857" y1="412" x2="1028" y2="412" stroke="#313244" stroke-width=".7"/>
@@ -572,7 +569,7 @@
       <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="10s" repeatCount="indefinite"/>
     </circle>
     <text x="0" y="-3" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8">SCORE</text>
-    <text id="score_right" x="0" y="13" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="17" font-weight="900" fill="#cdd6f4" filter="url(#glow)">82</text>
+    <text id="score_right" x="0" y="13" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="17" font-weight="900" fill="#cdd6f4" filter="url(#glow)">80</text>
   </g>
 
   <!-- Rank arc -->
