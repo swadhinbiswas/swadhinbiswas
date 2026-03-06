@@ -21,6 +21,7 @@ QUERY_COUNT = {
     "loc_query": 0,
     "streak_getter": 0,
     "language_getter": 0,
+    "recent_repos_getter": 0,
 }
 MAX_RETRIES = 10
 
@@ -497,6 +498,7 @@ def svg_overwrite(
     lang_data=None,
     yearly_data=None,
     score_data=None,
+    recent_repos=None,
 ):
     """
     Parse SVG files and update elements with my age, commits, stars, repositories, and lines written
@@ -616,6 +618,13 @@ def svg_overwrite(
         find_and_replace(root, "rank_left", rank_val)
         find_and_replace(root, "score_right", str(score_val))
         find_and_replace(root, "rank_right", rank_val)
+
+    # ── Recent Active Projects ──
+    if recent_repos is not None:
+        for i, (repo_name, repo_lang, repo_time) in enumerate(recent_repos[:4]):
+            find_and_replace(root, "project_name_{}".format(i), repo_name)
+            find_and_replace(root, "project_lang_{}".format(i), repo_lang)
+            find_and_replace(root, "project_time_{}".format(i), repo_time)
 
     tree.write(filename, encoding="utf-8", xml_declaration=True)
 
@@ -821,6 +830,67 @@ def language_getter():
     return result
 
 
+def recent_repos_getter():
+    """
+    Returns the 4 most recently pushed repositories (owned, non-fork) with:
+    - name (repo name only, not owner/name)
+    - primary language
+    - pushedAt timestamp (formatted as relative time like "2d ago", "1w ago")
+    Returns list of tuples: [(name, language, time_ago), ...]
+    """
+    query_count("recent_repos_getter")
+    query = """
+    query($login: String!) {
+        user(login: $login) {
+            repositories(
+                first: 4,
+                ownerAffiliations: OWNER,
+                isFork: false,
+                orderBy: {field: PUSHED_AT, direction: DESC}
+            ) {
+                nodes {
+                    name
+                    pushedAt
+                    primaryLanguage {
+                        name
+                    }
+                }
+            }
+        }
+    }"""
+    variables = {"login": USER_NAME}
+    request = simple_request(recent_repos_getter.__name__, query, variables)
+    result = []
+    if request.status_code == 200:
+        nodes = request.json()["data"]["user"]["repositories"]["nodes"]
+        now = datetime.datetime.now(datetime.timezone.utc)
+        for node in nodes:
+            name = node["name"]
+            lang = node["primaryLanguage"]["name"] if node["primaryLanguage"] else "---"
+            # Calculate relative time
+            pushed = datetime.datetime.strptime(
+                node["pushedAt"], "%Y-%m-%dT%H:%M:%SZ"
+            ).replace(tzinfo=datetime.timezone.utc)
+            delta = now - pushed
+            days = delta.days
+            if days == 0:
+                hours = delta.seconds // 3600
+                if hours == 0:
+                    time_ago = "just now"
+                else:
+                    time_ago = "{}h ago".format(hours)
+            elif days < 7:
+                time_ago = "{}d ago".format(days)
+            elif days < 30:
+                time_ago = "{}w ago".format(days // 7)
+            elif days < 365:
+                time_ago = "{}mo ago".format(days // 30)
+            else:
+                time_ago = "{}y ago".format(days // 365)
+            result.append((name, lang, time_ago))
+    return result
+
+
 def compute_score(commits, stars, repos, followers, loc_net):
     """
     Computes a developer score (0-100) and rank based on GitHub stats.
@@ -965,6 +1035,10 @@ if __name__ == "__main__":
     lang_data, lang_time = perf_counter(language_getter)
     formatter("languages", lang_time)
 
+    # Recent active projects
+    recent_repos, recent_repos_time = perf_counter(recent_repos_getter)
+    formatter("recent repos", recent_repos_time)
+
     for index in range(len(total_loc) - 1):
         total_loc[index] = "{:,}".format(
             total_loc[index]
@@ -1016,6 +1090,7 @@ if __name__ == "__main__":
         lang_data=lang_data,
         yearly_data=yearly_data,
         score_data=score_data,
+        recent_repos=recent_repos,
     )
 
     # Print total function time
@@ -1028,6 +1103,7 @@ if __name__ == "__main__":
         + repo_time
         + streak_time
         + lang_time
+        + recent_repos_time
     )
     print(
         "\n{:<21}".format("Total function time:"),

@@ -369,74 +369,82 @@
   <!-- ── DATA STREAMS (subtle connecting lines) ────── -->
   <line x1="205" y1="270" x2="310" y2="255" stroke="url(#streamG)" stroke-width="1" stroke-dasharray="6 4" style="animation:dataPulse 3s ease-in-out infinite"/>
   <line x1="740" y1="255" x2="845" y2="270" stroke="url(#streamG)" stroke-width="1" stroke-dasharray="6 4" style="animation:dataPulse 3.5s .5s ease-in-out infinite"/>
-  <line x1="525" y1="190" x2="525" y2="225" stroke="url(#streamV)" stroke-width="1" stroke-dasharray="4 3" style="animation:dataPulse 2.5s ease-in-out infinite"/>
+  <line x1="525" y1="190" x2="525" y2="210" stroke="url(#streamV)" stroke-width="1" stroke-dasharray="4 3" style="animation:dataPulse 2.5s ease-in-out infinite"/>
 
-  <!-- ── STAT PANELS ─────────────────────────────────── -->
-
-  <!-- Panel: COMMITS -->
+  <!-- ── COMMITS COUNTER ─────────────────────────────── -->
   <g style="animation:panelFloat 5s 0.5s ease-in-out infinite">
-    <rect x="310" y="220" width="150" height="80" rx="8" fill="url(#holoBg)" stroke="#f38ba844" stroke-width=".8"/>
-    <rect x="310" y="220" width="150" height="2.5" rx="1" fill="#f38ba8" opacity=".4"/>
-    <text x="385" y="243" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8" letter-spacing="3">COMMITS</text>
-    <text id="commit_data" x="385" y="275" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="30" font-weight="900" fill="#f38ba8" filter="url(#glow)">4,505</text>
-    <text x="385" y="292" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700" fill="#585b70" letter-spacing="2">ALL AFFILIATIONS</text>
-    <!-- Corner accents -->
-    <polyline points="310,230 310,220 320,220" fill="none" stroke="#f38ba8" stroke-width="1.5" opacity=".5"/>
-    <polyline points="450,220 460,220 460,230" fill="none" stroke="#f38ba8" stroke-width="1.5" opacity=".5"/>
-    <polyline points="310,290 310,300 320,300" fill="none" stroke="#f38ba8" stroke-width="1.5" opacity=".3"/>
-    <polyline points="450,300 460,300 460,290" fill="none" stroke="#f38ba8" stroke-width="1.5" opacity=".3"/>
+    <rect x="440" y="208" width="170" height="60" rx="8" fill="url(#holoBg)" stroke="#f38ba844" stroke-width=".8"/>
+    <rect x="440" y="208" width="170" height="2.5" rx="1" fill="#f38ba8" opacity=".4"/>
+    <text x="525" y="228" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8" letter-spacing="3">COMMITS</text>
+    <text id="commit_data" x="525" y="255" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="26" font-weight="900" fill="#f38ba8" filter="url(#glow)">4,504</text>
+    <polyline points="440,218 440,208 450,208" fill="none" stroke="#f38ba8" stroke-width="1.5" opacity=".5"/>
+    <polyline points="600,208 610,208 610,218" fill="none" stroke="#f38ba8" stroke-width="1.5" opacity=".5"/>
+    <polyline points="440,258 440,268 450,268" fill="none" stroke="#f38ba8" stroke-width="1.5" opacity=".3"/>
+    <polyline points="600,268 610,268 610,258" fill="none" stroke="#f38ba8" stroke-width="1.5" opacity=".3"/>
   </g>
 
-  <!-- Panel: STARS -->
-  <g style="animation:panelFloat 5s 1s ease-in-out infinite">
-    <rect x="590" y="220" width="150" height="80" rx="8" fill="url(#holoBg)" stroke="#fab38744" stroke-width=".8"/>
-    <rect x="590" y="220" width="150" height="2.5" rx="1" fill="#fab387" opacity=".4"/>
-    <text x="665" y="243" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8" letter-spacing="3">STARS</text>
-    <text id="star_data" x="665" y="275" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="30" font-weight="900" fill="#fab387" filter="url(#glow)">228</text>
-    <text id="star_planet" x="665" y="292" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700" fill="#585b70" letter-spacing="2">228</text>
-    <polyline points="590,230 590,220 600,220" fill="none" stroke="#fab387" stroke-width="1.5" opacity=".5"/>
-    <polyline points="730,220 740,220 740,230" fill="none" stroke="#fab387" stroke-width="1.5" opacity=".5"/>
-    <polyline points="590,290 590,300 600,300" fill="none" stroke="#fab387" stroke-width="1.5" opacity=".3"/>
-    <polyline points="730,300 740,300 740,290" fill="none" stroke="#fab387" stroke-width="1.5" opacity=".3"/>
+  <!-- ── ACTIVE PROJECTS ─────────────────────────────── -->
+  <g style="animation:panelFloat 5.5s 1.2s ease-in-out infinite">
+    <rect x="340" y="288" width="370" height="185" rx="10" fill="url(#holoBg)" stroke="#cba6f733" stroke-width=".8"/>
+    <rect x="340" y="288" width="370" height="2.5" rx="1" fill="url(#shim)" opacity=".35"/>
+    <text x="525" y="310" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" font-weight="900" fill="#585b70" letter-spacing="4">ACTIVE PROJECTS</text>
+    <polyline points="340,298 340,288 350,288" fill="none" stroke="#cba6f7" stroke-width="1.5" opacity=".5"/>
+    <polyline points="700,288 710,288 710,298" fill="none" stroke="#f38ba8" stroke-width="1.5" opacity=".5"/>
+    <polyline points="340,463 340,473 350,473" fill="none" stroke="#89dceb" stroke-width="1.5" opacity=".3"/>
+    <polyline points="700,473 710,473 710,463" fill="none" stroke="#fab387" stroke-width="1.5" opacity=".3"/>
+
+    <!-- Separator under title -->
+    <line x1="355" y1="318" x2="695" y2="318" stroke="#313244" stroke-width=".6"/>
+
+    <!-- Project 1 -->
+    <g>
+      <circle cx="365" cy="340" r="3.5" fill="#cba6f7" filter="url(#glow)" style="animation:dotPulse 2.5s 0s ease-in-out infinite"/>
+      <text x="377" y="337" font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="900" fill="#585b70" letter-spacing="1">01</text>
+      <text id="project_name_0" x="400" y="337" font-family="'JetBrains Mono',monospace" font-size="10" font-weight="800" fill="#cdd6f4">loading...</text>
+      <text id="project_lang_0" x="400" y="350" font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="700" fill="#cba6f7">---</text>
+      <text id="project_time_0" x="695" y="344" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700" fill="#585b70">--</text>
+    </g>
+
+    <line x1="365" y1="358" x2="685" y2="358" stroke="#313244" stroke-width=".4" stroke-dasharray="3 3"/>
+
+    <!-- Project 2 -->
+    <g>
+      <circle cx="365" cy="378" r="3.5" fill="#f38ba8" filter="url(#glow)" style="animation:dotPulse 2.5s .6s ease-in-out infinite"/>
+      <text x="377" y="375" font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="900" fill="#585b70" letter-spacing="1">02</text>
+      <text id="project_name_1" x="400" y="375" font-family="'JetBrains Mono',monospace" font-size="10" font-weight="800" fill="#cdd6f4">loading...</text>
+      <text id="project_lang_1" x="400" y="388" font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="700" fill="#f38ba8">---</text>
+      <text id="project_time_1" x="695" y="382" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700" fill="#585b70">--</text>
+    </g>
+
+    <line x1="365" y1="396" x2="685" y2="396" stroke="#313244" stroke-width=".4" stroke-dasharray="3 3"/>
+
+    <!-- Project 3 -->
+    <g>
+      <circle cx="365" cy="416" r="3.5" fill="#89dceb" filter="url(#glow)" style="animation:dotPulse 2.5s 1.2s ease-in-out infinite"/>
+      <text x="377" y="413" font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="900" fill="#585b70" letter-spacing="1">03</text>
+      <text id="project_name_2" x="400" y="413" font-family="'JetBrains Mono',monospace" font-size="10" font-weight="800" fill="#cdd6f4">loading...</text>
+      <text id="project_lang_2" x="400" y="426" font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="700" fill="#89dceb">---</text>
+      <text id="project_time_2" x="695" y="420" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700" fill="#585b70">--</text>
+    </g>
+
+    <line x1="365" y1="434" x2="685" y2="434" stroke="#313244" stroke-width=".4" stroke-dasharray="3 3"/>
+
+    <!-- Project 4 -->
+    <g>
+      <circle cx="365" cy="454" r="3.5" fill="#fab387" filter="url(#glow)" style="animation:dotPulse 2.5s 1.8s ease-in-out infinite"/>
+      <text x="377" y="451" font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="900" fill="#585b70" letter-spacing="1">04</text>
+      <text id="project_name_3" x="400" y="451" font-family="'JetBrains Mono',monospace" font-size="10" font-weight="800" fill="#cdd6f4">loading...</text>
+      <text id="project_lang_3" x="400" y="464" font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="700" fill="#fab387">---</text>
+      <text id="project_time_3" x="695" y="458" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700" fill="#585b70">--</text>
+    </g>
   </g>
 
-  <!-- Panel: REPOS -->
-  <g style="animation:panelFloat 5.5s 1.5s ease-in-out infinite">
-    <rect x="310" y="318" width="150" height="70" rx="8" fill="url(#holoBg)" stroke="#cba6f744" stroke-width=".8"/>
-    <rect x="310" y="318" width="150" height="2.5" rx="1" fill="#cba6f7" opacity=".4"/>
-    <text x="385" y="341" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8" letter-spacing="3">REPOS</text>
-    <text id="repo_data" x="385" y="371" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="28" font-weight="900" fill="#cba6f7" filter="url(#glow)">83</text>
-    <polyline points="310,328 310,318 320,318" fill="none" stroke="#cba6f7" stroke-width="1.5" opacity=".5"/>
-    <polyline points="450,318 460,318 460,328" fill="none" stroke="#cba6f7" stroke-width="1.5" opacity=".5"/>
-    <polyline points="310,378 310,388 320,388" fill="none" stroke="#cba6f7" stroke-width="1.5" opacity=".3"/>
-    <polyline points="450,388 460,388 460,378" fill="none" stroke="#cba6f7" stroke-width="1.5" opacity=".3"/>
-  </g>
-
-  <!-- Panel: FOLLOWERS -->
-  <g style="animation:panelFloat 5.5s 2s ease-in-out infinite">
-    <rect x="590" y="318" width="150" height="70" rx="8" fill="url(#holoBg)" stroke="#94e2d544" stroke-width=".8"/>
-    <rect x="590" y="318" width="150" height="2.5" rx="1" fill="#94e2d5" opacity=".4"/>
-    <text x="665" y="341" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8" letter-spacing="3">FOLLOWERS</text>
-    <text id="follower_data" x="665" y="371" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="28" font-weight="900" fill="#94e2d5" filter="url(#glow)">66</text>
-    <polyline points="590,328 590,318 600,318" fill="none" stroke="#94e2d5" stroke-width="1.5" opacity=".5"/>
-    <polyline points="730,318 740,318 740,328" fill="none" stroke="#94e2d5" stroke-width="1.5" opacity=".5"/>
-    <polyline points="590,378 590,388 600,388" fill="none" stroke="#94e2d5" stroke-width="1.5" opacity=".3"/>
-    <polyline points="730,388 740,388 740,378" fill="none" stroke="#94e2d5" stroke-width="1.5" opacity=".3"/>
-  </g>
-
-  <!-- Panel: CONTRIBUTIONS (wide bottom) -->
-  <g style="animation:panelFloat 6s 2.5s ease-in-out infinite">
-    <rect x="370" y="406" width="310" height="65" rx="8" fill="url(#holoBg)" stroke="#89dceb44" stroke-width=".8"/>
-    <rect x="370" y="406" width="310" height="2.5" rx="1" fill="#89dceb" opacity=".4"/>
-    <text x="525" y="428" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6adc8" letter-spacing="3">CONTRIBUTIONS</text>
-    <text id="contrib_data" x="525" y="456" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="26" font-weight="900" fill="#89dceb" filter="url(#glow)">4,505</text>
-    <!-- Waveform -->
-    <polyline points="390,445 400,440 410,448 420,438 430,446 440,436 450,444 460,434 470,445 480,432 490,443 500,435 510,446 520,430 530,444 540,438 550,446 560,432 570,442 580,438 590,445 600,434 610,443 620,439 630,446 640,435 650,442 660,440" fill="none" stroke="#89dceb" stroke-width="1" opacity=".2" stroke-dasharray="3 2" style="animation:waveformMove 4s linear infinite"/>
-    <polyline points="370,416 370,406 380,406" fill="none" stroke="#89dceb" stroke-width="1.5" opacity=".5"/>
-    <polyline points="670,406 680,406 680,416" fill="none" stroke="#89dceb" stroke-width="1.5" opacity=".5"/>
-    <polyline points="370,461 370,471 380,471" fill="none" stroke="#89dceb" stroke-width="1.5" opacity=".3"/>
-    <polyline points="670,471 680,471 680,461" fill="none" stroke="#89dceb" stroke-width="1.5" opacity=".3"/>
-  </g>
+  <!-- Hidden helpers for today.py (preserve IDs that svg_overwrite sets) -->
+  <text id="star_data" x="0" y="0" font-size="1" fill="none" opacity="0">228</text>
+  <text id="star_planet" x="0" y="0" font-size="1" fill="none" opacity="0">228</text>
+  <text id="repo_data" x="0" y="0" font-size="1" fill="none" opacity="0">83</text>
+  <text id="follower_data" x="0" y="0" font-size="1" fill="none" opacity="0">66</text>
+  <text id="contrib_data" x="0" y="0" font-size="1" fill="none" opacity="0">4,504</text>
 
 </g><!-- end center -->
 
