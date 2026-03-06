@@ -1,11 +1,7 @@
 
-
 <p align="center">
   <a href="https://github.com/swadhinbiswas/swadhinbiswas">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/dark_mode.svg">
-      <img alt="Swadhin Biswas's GitHub Profile" src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/light_mode.svg">
-    </picture>
+    <img alt="Swadhin Biswas - Developer Cosmos" src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/cosmos.svg" width="100%"/>
   </a>
 </p>
 
