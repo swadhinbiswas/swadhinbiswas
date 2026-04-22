@@ -6,6 +6,18 @@ interface HeroProps {
 
 export default function Hero({ config }: HeroProps) {
   const siteConfig = config;
+  const author = siteConfig.author || "";
+  const firstName = author.split(" ")[0] || "";
+  const lastName = author.split(" ").slice(1).join(" ");
+
+  const shortBio =
+    siteConfig.bio?.short?.trim() ||
+    "Backend Engineer & AI Systems Architect based in Dhaka, Bangladesh.";
+  const focusLabel = siteConfig.bio?.focusLabel?.trim() || "CURRENT DIRECTIVE";
+  const focusStatement =
+    siteConfig.bio?.researchStatement?.trim() ||
+    siteConfig.bio?.roleInterests?.trim() ||
+    shortBio;
 
   return (
     <section className="min-h-[80vh] flex flex-col justify-center relative overflow-hidden py-12 sm:py-20">
@@ -19,25 +31,25 @@ export default function Hero({ config }: HeroProps) {
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-sans tracking-tight mb-3 sm:mb-4 text-center md:text-left">
           <span className="text-gray-100">Hi, I'm </span>
           <span className="text-gray-100">
-            {siteConfig.author.split(' ')[0]}
+            {firstName}
           </span>
           <span className="text-neon-cyan opacity-100">
-            {' ' + siteConfig.author.split(' ').slice(1).join(' ')}
+            {lastName ? ` ${lastName}` : ""}
           </span>
         </h1>
 
         {/* Block 2: The Role */}
-        <div className="mb-8 font-mono text-sm sm:text-base text-gray-400 text-center md:text-left">
-          {siteConfig.bio.short}
+        <div className="mb-8 font-mono text-base sm:text-lg font-medium text-white/90 text-center md:text-left tracking-wide">
+          {shortBio}
         </div>
 
         {/* Block 3: The Core Focus */}
         <div className="mb-8 p-4 sm:p-6 rounded-lg border border-white/5 bg-[#191724]/40 max-w-3xl mx-auto md:mx-0">
           <p className="text-[11px] font-mono text-neon-cyan mb-3 uppercase tracking-widest">
-            {siteConfig.bio.focusLabel}
+            {focusLabel}
           </p>
           <p className="text-base font-sans text-gray-300 leading-relaxed font-medium">
-            {siteConfig.bio.researchStatement}
+            {focusStatement}
           </p>
         </div>
 
@@ -75,7 +87,7 @@ export default function Hero({ config }: HeroProps) {
 
         {/* Block 5: Social Links */}
         <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 mt-10 font-mono text-xs text-gray-500">
-          {siteConfig.socials.slice(0, 3).map((social, i) => (
+          {siteConfig.socials.slice(0, 3).map((social: any) => (
             <a
               key={social.name}
               href={social.url}

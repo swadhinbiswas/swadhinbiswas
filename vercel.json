@@ -2,7 +2,17 @@
     "regions": [
         "bom1"
     ],
-    "cleanUrls": true,
+    "functions": {
+        ".vercel/output/functions/_render.func/*": {
+            "runtime": "@vercel/node@3.x"
+        }
+    },
+    "routes": [
+        {
+            "src": "/api/(.*)",
+            "dest": "/_render"
+        }
+    ],
     "headers": [
         {
             "source": "/(.*)",

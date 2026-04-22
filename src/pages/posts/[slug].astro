@@ -15,6 +15,7 @@ import "katex/dist/katex.min.css";
 import "highlight.js/styles/github-dark.css";
 import { processVisualizations } from "../../utils/viz";
 import VizScripts from "../../components/VizScripts.astro";
+import { getDynamicConfig } from "../../lib/config";
 
 export async function getStaticPaths() {
   const allPosts = await db.query.posts.findMany();
@@ -42,9 +43,67 @@ const processedContent = await processor.process(processedVizContent);
 const contentHtml = processedContent.toString();
 
 const tags = JSON.parse(post.tags || "[]");
+const siteConfig = await getDynamicConfig();
+const siteUrl = (siteConfig.url || "https://swadhin.cv").replace(/\/$/, "");
+const canonicalUrl = `${siteUrl}/posts/${post.slug}/`;
+const publishedIso = new Date(post.publishedAt).toISOString();
+const modifiedIso = post.updatedAt
+  ? new Date(post.updatedAt).toISOString()
+  : publishedIso;
+const newsKeywords = (Array.isArray(tags) ? tags : [])
+  .map((tag: unknown) => String(tag).trim())
+  .filter(Boolean)
+  .slice(0, 10)
+  .concat(["Blog", "Engineering", "Software"]);
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "NewsArticle",
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": canonicalUrl,
+  },
+  headline: post.title,
+  description: post.description,
+  image: [`${siteUrl}/og-image.png`],
+  datePublished: publishedIso,
+  dateModified: modifiedIso,
+  keywords: newsKeywords,
+  author: {
+    "@type": "Person",
+    name: siteConfig.author || "Swadhin Biswas",
+    url: `${siteUrl}/`,
+  },
+  publisher: {
+    "@type": "Organization",
+    name: siteConfig.name || "Swadhin Biswas",
+    logo: {
+      "@type": "ImageObject",
+      url: `${siteUrl}/og-image.png`,
+    },
+  },
+};
 ---
 
-<BaseLayout title={post.title} description={post.description}>
+<BaseLayout
+  title={post.title}
+  description={post.description}
+  image={`${siteUrl}/og-image.png`}
+  ogType="article"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+    <meta name="news_keywords" content={newsKeywords.join(", ")} />
+    <meta property="article:published_time" content={publishedIso} />
+    <meta property="article:modified_time" content={modifiedIso} />
+    <meta property="article:author" content={siteConfig.author || "Swadhin Biswas"} />
+    <meta property="article:section" content="Engineering" />
+    <meta property="article:tag" content={newsKeywords.join(",")} />
+    <meta
+      name="robots"
+      content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+    />
+  </Fragment>
   <article class="prose prose-invert max-w-none">
     <h1 class="text-4xl font-bold text-text mb-4">{post.title}</h1>
 

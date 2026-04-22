@@ -20,7 +20,9 @@ export default defineConfig({
       remarkPlugins: [remarkMath],
       rehypePlugins: [rehypeKatex],
     }),
-    react(),
+    react({
+      include: ['**/components/**', '**/pages/**'],
+    }),
     sitemap({
       filter: (page) => {
         const url = new URL(page);

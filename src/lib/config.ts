@@ -82,6 +82,11 @@ export interface DynamicSiteConfig {
 let cachedConfig: DynamicSiteConfig | null = null;
 let cacheTimestamp: number = 0;
 const CACHE_TTL = 60 * 1000; // 1 minute cache
+const DEFAULT_SHORT_BIO =
+  "Backend Engineer & AI Systems Architect based in Dhaka, Bangladesh.";
+const DEFAULT_FOCUS_LABEL = "CURRENT DIRECTIVE";
+const DEFAULT_RESEARCH_STATEMENT =
+  "Open to backend and AI systems opportunities.";
 
 export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
   // Return cached config if still valid
@@ -122,6 +127,14 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
     bioData.forEach((b) => {
       bio[b.key] = b.value;
     });
+
+    const cleanValue = (value?: string) => value?.trim() || "";
+    const shortBio = cleanValue(bio.short) || DEFAULT_SHORT_BIO;
+    const focusLabel = cleanValue(bio.focusLabel) || DEFAULT_FOCUS_LABEL;
+    const researchStatement =
+      cleanValue(bio.researchStatement) ||
+      cleanValue(bio.roleInterests) ||
+      shortBio;
 
     // Parse keywords
     const keywords = settings.seo_keywords
@@ -230,13 +243,13 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
       skills: skillsData.length > 0 ? skillsData.map((s) => s.name) : [],
 
       bio: {
-        focusLabel: bio.focusLabel || "CURRENT DIRECTIVE",
-        short: bio.short || "",
+        focusLabel,
+        short: shortBio,
         long: bio.long || "",
         quote: bio.quote || "",
         funFact: bio.funFact || "",
-        researchStatement: bio.researchStatement || "",
-        roleInterests: bio.roleInterests || "",
+        researchStatement,
+        roleInterests: cleanValue(bio.roleInterests),
       },
     };
 
@@ -251,18 +264,35 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
       error,
     );
 
-    // Return static config as fallback
+    // Return safe defaults as fallback
     return {
-      name: [],
-      description: [],
-      url: [],
-      cvUrl: [],
-      author: [],
-      email: [],
-      location: { city: "Dhaka", country: "Bangladesh" },
-      timezone: [],
-      seo: [],
-      links: [],
+      name: "",
+      description: "",
+      url: "",
+      cvUrl: "",
+      author: "",
+      email: "",
+      location: "Dhaka, Bangladesh",
+      timezone: "Asia/Dhaka",
+      seo: {
+        author: "",
+        title: "",
+        keywords: [],
+        worksFor: {
+          name: "",
+          url: "",
+        },
+        location: {
+          city: "Dhaka",
+          country: "Bangladesh",
+        },
+      },
+      links: {
+        github: "",
+        linkedin: "",
+        twitter: "",
+        email: "",
+      },
       navItems: [],
       navMenuItems: [],
       socials: [],
@@ -270,7 +300,15 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
       featuredProjects: [],
       achievements: [],
       skills: [],
-      bio: [],
+      bio: {
+        focusLabel: DEFAULT_FOCUS_LABEL,
+        short: DEFAULT_SHORT_BIO,
+        long: "",
+        quote: "",
+        funFact: "",
+        researchStatement: DEFAULT_RESEARCH_STATEMENT,
+        roleInterests: "",
+      },
     };
   }
 }

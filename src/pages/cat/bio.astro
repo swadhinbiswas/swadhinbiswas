@@ -83,6 +83,34 @@ try {
         </div>
 
         <div>
+          <label class="block text-sm text-gray-400 mb-2">Focus Label</label>
+          <p class="text-xs text-gray-500 mb-2">
+            Small uppercase heading shown above your directive in the hero section
+          </p>
+          <input
+            type="text"
+            name="focusLabel"
+            value={bio.focusLabel || "CURRENT DIRECTIVE"}
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="CURRENT DIRECTIVE"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Directive Statement</label>
+          <p class="text-xs text-gray-500 mb-2">
+            Core message shown under the focus label in the hero section
+          </p>
+          <textarea
+            name="researchStatement"
+            rows="3"
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors resize-none"
+            placeholder="Open to backend and AI systems opportunities."
+            >{bio.researchStatement || bio.roleInterests || bio.short || ""}</textarea
+          >
+        </div>
+
+        <div>
           <label class="block text-sm text-gray-400 mb-2">Long Bio</label>
           <p class="text-xs text-gray-500 mb-2">
             A longer description for your About page

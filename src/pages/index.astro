@@ -1,95 +1,117 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/home/Hero.tsx";
 import FeaturedProjects from "../components/home/FeaturedProjects.astro";
 import BentoGrid from "../components/home/BentoGrid.astro";
-import { db, experiences } from "../db";
-import { getDynamicConfig } from "../lib/config";
-const siteConfig = await getDynamicConfig();
 import { getDynamicConfig } from "../lib/config";
 import JsonLd from "../components/seo/JsonLd.astro";
 
-const dynamicConfig = await getDynamicConfig();
+const siteConfig = await getDynamicConfig();
 
-let experiencesList: any[] = dynamicConfig.experience;
-try {
-  if (experiencesList.length === 0) {
-    experiencesList = await db
-      .select()
-      .from(experiences)
-      .orderBy(experiences.order);
-  }
-} catch (e) {
-  console.warn('[index] DB query failed, using fallback');
-  if (experiencesList.length === 0) experiencesList = siteConfig.experience;
-}
+const siteUrl = (siteConfig.url || Astro.url.origin).replace(/\/$/, "");
+const personName = siteConfig.author || "Swadhin Biswas";
+const shortBio =
+  siteConfig.bio?.short?.trim() ||
+  "Backend Engineer & AI Systems Architect based in Dhaka, Bangladesh.";
+const pageDescription = siteConfig.description?.trim() || shortBio;
+const primaryImageUrl = `${siteUrl}/og-image.png`;
+
+const locationText = siteConfig.location || "Dhaka, Bangladesh";
+const [cityPart, ...countryParts] = locationText
+  .split(",")
+  .map((part) => part.trim())
+  .filter(Boolean);
+
+const locationCity = cityPart || "Dhaka";
+const locationCountry = countryParts.join(", ") || "Bangladesh";
+
+const sameAs = [
+  siteConfig.links?.github,
+  siteConfig.links?.linkedin,
+  siteConfig.links?.twitter,
+  ...siteConfig.socials.map((social) => social.url),
+  "https://scholar.google.com/citations?hl=en&user=xHqlwTAAAAAJ",
+].filter((url, index, urls): url is string => {
+  return Boolean(url) && urls.indexOf(url) === index;
+});
 
 const homeSchema = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "WebSite",
-      "@id": `${siteConfig.url}/#website`,
-      url: siteConfig.url,
-      name: siteConfig.name,
-      alternateName: ["Swadhin Biswas", "Backend Engineer"],
-      description: siteConfig.description,
+      "@id": `${siteUrl}/#website`,
+      url: `${siteUrl}/`,
+      name: siteConfig.name || personName,
+      description: pageDescription,
       inLanguage: "en-US",
-      potentialAction: {
-        "@type": "SearchAction",
-        target: {
-          "@type": "EntryPoint",
-          urlTemplate: `${siteConfig.url}/?q={search_term_string}`,
-        },
-        "query-input": "required name=search_term_string",
+      publisher: {
+        "@id": `${siteUrl}/#person`,
       },
     },
     {
+      "@type": "ProfilePage",
+      "@id": `${siteUrl}/#webpage`,
+      url: `${siteUrl}/`,
+      name: `${personName} | ${siteConfig.name || "Portfolio"}`,
+      description: shortBio,
+      isPartOf: {
+        "@id": `${siteUrl}/#website`,
+      },
+      about: {
+        "@id": `${siteUrl}/#person`,
+      },
+      primaryImageOfPage: {
+        "@id": `${siteUrl}/#primaryimage`,
+      },
+      inLanguage: "en-US",
+    },
+    {
+      "@type": "ImageObject",
+      "@id": `${siteUrl}/#primaryimage`,
+      url: primaryImageUrl,
+      contentUrl: primaryImageUrl,
+      caption: personName,
+    },
+    {
       "@type": "Person",
-      "@id": `${siteConfig.url}/#person`,
-      name: "Swadhin Biswas",
-      alternateName: ["swadh1n", "Swadhin"],
-      url: siteConfig.url,
+      "@id": `${siteUrl}/#person`,
+      name: personName,
+      url: `${siteUrl}/`,
       image: {
-        "@type": "ImageObject",
-        url: "https://avatars.githubusercontent.com/u/13241788?v=4",
-        caption: "Swadhin Biswas",
+        "@id": `${siteUrl}/#primaryimage`,
       },
-      sameAs: [
-        ...siteConfig.socials.map((s) => s.url),
-        "https://scholar.google.com/citations?hl=en&user=xHqlwTAAAAAJ",
-        "https://thephonex.notion.site/Notes-2ad8fd44dc51802fbd38cd337776960d",
-      ],
-      jobTitle: "Backend Engineer",
-      worksFor: {
-        "@type": "Organization",
-        name: "BoringRats",
-        url: "https://boringrats.dev/",
-        logo: "https://raw.githubusercontent.com/BoringRats/.github/refs/heads/main/profile/boringrats.png",
-      },
+      description: shortBio,
+      jobTitle: "Backend Engineer & AI Systems Architect",
+      sameAs,
       knowsAbout: siteConfig.skills,
-      alumniOf: {
-        "@type": "CollegeOrUniversity",
-        name: "Computer Science & Engineering",
-      },
       address: {
         "@type": "PostalAddress",
-        addressLocality: "Dhaka",
-        addressCountry: "Bangladesh",
+        addressLocality: locationCity,
+        addressCountry: locationCountry,
       },
       email: siteConfig.email,
+      mainEntityOfPage: {
+        "@id": `${siteUrl}/#webpage`,
+      },
     },
   ],
 };
 ---
 
-<BaseLayout>
+<BaseLayout title="Home" description={pageDescription} ogType="profile">
   <JsonLd slot="head" schema={homeSchema} />
+  <Fragment slot="head">
+    <meta
+      name="googlebot"
+      content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+    />
+  </Fragment>
   <div class="space-y-16 animate-fade-in">
     <!-- Hero Section -->
-    <Hero client:load config={dynamicConfig} />
+    <Hero config={siteConfig} />
 
     <!-- Featured Projects -->
     <FeaturedProjects />
