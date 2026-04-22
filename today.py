@@ -748,11 +748,11 @@ def account_age(acc_date_str):
 
 def streak_getter():
     """
-    Returns the current contribution streak (consecutive days with ≥1 contribution).
+    Returns the longest contribution streak over the last 365 days.
     """
     query_count("streak_getter")
     today = datetime.datetime.today()
-    start = (today - datetime.timedelta(days=90)).strftime("%Y-%m-%dT00:00:00Z")
+    start = (today - datetime.timedelta(days=365)).strftime("%Y-%m-%dT00:00:00Z")
     end = today.strftime("%Y-%m-%dT23:59:59Z")
     query = """
     query($start_date: DateTime!, $end_date: DateTime!, $login: String!) {
@@ -776,19 +776,20 @@ def streak_getter():
     ]["weeks"]
     days = [day for week in weeks for day in week["contributionDays"]]
     day_map = {d["date"]: d["contributionCount"] for d in days}
-    today_str = today.strftime("%Y-%m-%d")
-    streak = 0
-    current = today
-    if day_map.get(today_str, 0) == 0:
-        current = today - datetime.timedelta(days=1)
-    while True:
-        date_str = current.strftime("%Y-%m-%d")
-        if day_map.get(date_str, 0) > 0:
-            streak += 1
-            current -= datetime.timedelta(days=1)
+    
+    longest_streak = 0
+    current_streak = 0
+    sorted_dates = sorted(day_map.keys())
+    
+    for date_str in sorted_dates:
+        if day_map[date_str] > 0:
+            current_streak += 1
+            if current_streak > longest_streak:
+                longest_streak = current_streak
         else:
-            break
-    return streak
+            current_streak = 0
+            
+    return longest_streak
 
 
 def language_getter():
@@ -1074,37 +1075,65 @@ if __name__ == "__main__":
         recent_repos=recent_repos,
     )
 
-    # Push stats to database
+    # Push stats to database directly via Turso
     try:
-        CRON_SECRET = os.environ.get("CRON_SECRET")
-        SITE_URL = os.environ.get("PUBLIC_SITE_URL") or "https://swadhin.cv"
-        if CRON_SECRET:
-            print("\n🚀 Pushing stats to database...")
-            stats_payload = {
-                "stats": {
-                    "loc": total_loc[:-1],
-                    "stars": star_data,
-                    "repos": repo_data,
-                    "followers": follower_data,
-                    "commits": commit_data,
-                    "streak": streak_data,
-                    "languages": lang_data,
-                    "score": score_data[0],
-                    "rank": score_data[1],
-                    "age": age_data,
-                }
+        TURSO_DATABASE_URL = os.environ.get("TURSO_DATABASE_URL")
+        TURSO_AUTH_TOKEN = os.environ.get("TURSO_AUTH_TOKEN")
+        
+        if TURSO_DATABASE_URL and TURSO_AUTH_TOKEN:
+            print("\n🚀 Pushing stats directly to database (Turso)...")
+            
+            stats_data = {
+                "loc": total_loc[:-1],
+                "stars": star_data,
+                "repos": repo_data,
+                "followers": follower_data,
+                "commits": commit_data,
+                "streak": streak_data,
+                "languages": lang_data,
+                "score": score_data[0],
+                "rank": score_data[1],
+                "age": age_data,
             }
-            res = requests.post(
-                f"{SITE_URL.rstrip('/')}/api/github/update-stats",
-                json=stats_payload,
-                headers={"Authorization": f"Bearer {CRON_SECRET}"},
-            )
+            
+            import json
+            import time
+            now = int(time.time() * 1000)
+            
+            requests_list = []
+            for key, value in stats_data.items():
+                cache_key = f"github_stat_{key}"
+                json_val = json.dumps(value)
+                requests_list.append({
+                    "type": "execute",
+                    "stmt": {
+                        "sql": "INSERT INTO api_cache (key, data, updated_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET data=excluded.data, updated_at=excluded.updated_at",
+                        "args": [
+                            {"type": "text", "value": cache_key},
+                            {"type": "text", "value": json_val},
+                            {"type": "integer", "value": str(now)}
+                        ]
+                    }
+                })
+                
+            requests_list.append({"type": "close"})
+            
+            url = TURSO_DATABASE_URL.replace("libsql://", "https://")
+            endpoint = f"{url}/v2/pipeline"
+            headers = {
+                "Authorization": f"Bearer {TURSO_AUTH_TOKEN}",
+                "Content-Type": "application/json"
+            }
+            payload = {"requests": requests_list}
+            
+            res = requests.post(endpoint, json=payload, headers=headers)
+            
             if res.status_code == 200:
                 print("  ✅ Database updated successfully!")
             else:
                 print(f"  ❌ Failed to update database: {res.status_code} {res.text}")
         else:
-            print("\n⚠️  CRON_SECRET not found, skipping database update.")
+            print("\n⚠️  TURSO_DATABASE_URL or TURSO_AUTH_TOKEN not found, skipping database update.")
     except Exception as e:
         print(f"\n❌ Error pushing to database: {e}")
 

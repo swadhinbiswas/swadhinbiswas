@@ -32,60 +32,12 @@ jobs:
           restore-keys: ${{ runner.os }}-loc-
       - name: Install dependencies
         run: python -m pip install -r cache/requirements.txt
-      - name: Sync CRON_SECRET to database
-        run: |
-          cat > sync_secret.cjs << 'EOF'
-          const https = require('https');
-
-          async function updateSecret() {
-            const payload = JSON.stringify({
-              settings: { github_update_secret: process.env.CRON_SECRET }
-            });
-
-            const options = {
-              hostname: new URL(process.env.PUBLIC_SITE_URL).hostname,
-              port: 443,
-              path: '/api/admin/settings',
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': payload.length,
-                'Authorization': `Bearer ${process.env.ADMIN_SECRET || process.env.CRON_SECRET}`
-              }
-            };
-
-            return new Promise((resolve, reject) => {
-              const req = https.request(options, (res) => {
-                let data = '';
-                res.on('data', chunk => data += chunk);
-                res.on('end', () => {
-                  if (res.statusCode === 200) {
-                    console.log('✅ CRON_SECRET synced');
-                    resolve();
-                  } else {
-                    console.warn('⚠️  Sync returned:', res.statusCode);
-                    resolve();
-                  }
-                });
-              });
-              req.on('error', reject);
-              req.write(payload);
-              req.end();
-            });
-          }
-
-          updateSecret().catch(e => console.error('Sync attempt:', e.message));
-          EOF
-          node sync_secret.cjs
-        env:
-          CRON_SECRET: ${{ secrets.CRON_SECRET || secrets.CORN_SECRET }}
-          PUBLIC_SITE_URL: ${{ secrets.PUBLIC_SITE_URL || 'https://swadhin.cv' }}
       - name: Update README file
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           USER_NAME: ${{ secrets.USER_NAME }}
-          CRON_SECRET: ${{ secrets.CRON_SECRET || secrets.CORN_SECRET }}
-          PUBLIC_SITE_URL: ${{ secrets.PUBLIC_SITE_URL || 'https://swadhin.cv' }}
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
         run: python today.py
       - name: Commit
         run: |-
