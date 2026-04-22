@@ -1,5 +1,6 @@
 ---
-import { siteConfig } from '../../config/site';
+import { getDynamicConfig } from "../../lib/config";
+const siteConfig = await getDynamicConfig();
 
 // Get experience data
 const experiences = siteConfig.experience;
@@ -25,10 +26,10 @@ function formatDate(dateString: string): string {
         href={exp.url}
         target="_blank"
         rel="noopener noreferrer"
-        class="group flex-1 flex items-center gap-4 p-4 glass-panel rounded-xl hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] transition-all duration-300"
+        class="group flex-1 flex items-center gap-4 p-4 glass-panel rounded-none hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] transition-all duration-300"
       >
         <!-- Company Logo -->
-        <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-white/5 overflow-hidden flex items-center justify-center border border-glass-border">
+        <div class="flex-shrink-0 w-12 h-12 rounded-none bg-white/5 overflow-hidden flex items-center justify-center border border-glass-border">
           {exp.logoUrl ? (
             <img 
               src={exp.logoUrl} 

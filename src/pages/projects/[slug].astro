@@ -16,22 +16,26 @@ import { processVisualizations } from "../../utils/viz";
 import VizScripts from "../../components/VizScripts.astro";
 
 export async function getStaticPaths() {
-    const allProjects = await db.select().from(projects);
+    try {
+        const allProjects = await db.select().from(projects);
 
-    return allProjects.map((project) => {
-        // Basic slugify: lowercase, replace spaces/special chars with hyphens
-        const slug = project.name
-            .toLowerCase()
-            .trim()
-            .replace(/[^\w\s-]/g, "")
-            .replace(/[\s_-]+/g, "-")
-            .replace(/^-+|-+$/g, "");
+        return allProjects.map((project) => {
+            const slug = project.name
+                .toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, "")
+                .replace(/[\s_-]+/g, "-")
+                .replace(/^-+|-+$/g, "");
 
-        return {
-            params: { slug },
-            props: { project },
-        };
-    });
+            return {
+                params: { slug },
+                props: { project },
+            };
+        });
+    } catch (e) {
+        console.warn('[projects/[slug]] DB query failed, no paths generated');
+        return [];
+    }
 }
 
 const { project } = Astro.props;
@@ -57,14 +61,25 @@ const tags = JSON.parse(project.tags || "[]");
 const projectDate =
     project.projectDate || project.createdAt || new Date().toISOString();
 
+const slug = project.name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\\w\\s-]/g, "")
+    .replace(/[\\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
 const schema = {
     "@context": "https://schema.org",
     "@type": "NewsArticle",
+    mainEntityOfPage: {
+        "@type": "WebPage",
+        "@id": `${import.meta.env.SITE || "https://swadhin.cv"}/projects/${slug}`
+    },
     headline: project.name,
+    description: project.description,
     image: [
         project.image ||
             `${import.meta.env.SITE || "https://swadhin.cv"}/og/${project.name.toLowerCase()}.png`,
-        // Note: Assuming logic for OG or fallback
     ],
     datePublished: new Date(projectDate).toISOString(),
     dateModified: new Date(projectDate).toISOString(),
@@ -75,15 +90,25 @@ const schema = {
             url: import.meta.env.SITE || "https://swadhin.cv",
         },
     ],
+    publisher: {
+        "@type": "Organization",
+        name: "Swadhin's Engineering Portfolio",
+        logo: {
+            "@type": "ImageObject",
+            url: `${import.meta.env.SITE || "https://swadhin.cv"}/favicon.svg`
+        }
+    }
 };
 ---
 
-<BaseLayout title={project.name} description={project.description}>
-    <script
-        type="application/ld+json"
-        slot="head"
-        set:html={JSON.stringify(schema)}
-    />
+<BaseLayout title={project.name} description={project.description} ogType="article">
+    <Fragment slot="head">
+        <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+        <meta name="news_keywords" content={(Array.isArray(tags) ? tags : []).concat(['Project', 'Engineering', 'Portfolio']).join(", ")} />
+        <meta property="article:published_time" content={new Date(projectDate).toISOString()} />
+        <meta property="article:modified_time" content={new Date(projectDate).toISOString()} />
+        <meta property="article:author" content="Swadhin" />
+    </Fragment>
     <div class="animate-fade-in max-w-4xl mx-auto">
         {/* Header */}
         <div class="mb-12 pt-8">

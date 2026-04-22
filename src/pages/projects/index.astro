@@ -1,40 +1,72 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { siteConfig } from "../../config/site";
+import { getDynamicConfig } from "../../lib/config";
+const siteConfig = await getDynamicConfig();
 
 import { db } from "../../db";
 import { projects } from "../../db/schema";
 import { desc } from "drizzle-orm";
 import ProjectCard from "../../components/projects/ProjectCard.astro";
-import ProjectDetailsModal from "../../components/projects/ProjectDetailsModal.astro";
 import VizScripts from "../../components/VizScripts.astro";
 
-// Fetch all projects
-const dbProjects = await db
-  .select()
-  .from(projects)
-  .orderBy(desc(projects.order));
+// Fetch all projects with fallback
+let dbProjects: any[] = [];
+try {
+  dbProjects = await db
+    .select()
+    .from(projects)
+    .orderBy(desc(projects.order));
+} catch (e) {
+  console.warn('[projects] DB query failed, using fallback');
+  dbProjects = siteConfig.featuredProjects.map((p, i) => ({
+    id: `fallback-${i}`,
+    name: p.name,
+    description: p.description,
+    url: p.url,
+    github: p.github || null,
+    image: p.image || null,
+    tags: JSON.stringify(p.tags),
+    featured: p.featured,
+    status: 'published',
+    projectDate: new Date().toISOString(),
+    stars: p.stars || 0,
+    order: i,
+    content: p.description,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }));
+}
 
-// Fetch settings (keeping for now if needed elsewhere or backward compat)
 import { siteSettings, supportOptions } from "../../db";
 import { asc } from "drizzle-orm";
 
-const settingsData = await db.select().from(siteSettings);
-const settings = settingsData.reduce(
-  (acc, curr) => {
-    acc[curr.key] = curr.value;
-    return acc;
-  },
-  {} as Record<string, string>,
-);
+// Fetch settings with fallback
+let settings: Record<string, string> = {};
+try {
+  const settingsData = await db.select().from(siteSettings);
+  settings = settingsData.reduce(
+    (acc, curr) => {
+      acc[curr.key] = curr.value;
+      return acc;
+    },
+    {} as Record<string, string>,
+  );
+} catch (e) {
+  console.warn('[projects] Settings query failed');
+}
 
-// Fetch support options
-const options = await db
-  .select()
-  .from(supportOptions)
-  .orderBy(asc(supportOptions.order));
+// Fetch support options with fallback
+let options: any[] = [];
+try {
+  options = await db
+    .select()
+    .from(supportOptions)
+    .orderBy(asc(supportOptions.order));
+} catch (e) {
+  console.warn('[projects] Support options query failed');
+}
 
 const allProjects = dbProjects.map((p) => ({
   ...p,
@@ -50,9 +82,25 @@ const gradients = [
   "from-red to-maroon",
   "from-lavender to-blue",
 ];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "itemListElement": allProjects.map((p, i) => ({
+    "@type": "ListItem",
+    "position": i + 1,
+    "url": `${siteConfig.url}/projects/${p.name.toLowerCase().trim().replace(/[^\\w\\s-]/g, '').replace(/[\\s_-]+/g, '-').replace(/^-+|-+$/g, '')}`,
+    "name": p.name,
+    "description": p.description
+  }))
+};
 ---
 
 <BaseLayout title="Projects">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    <meta name="news_keywords" content="Software Projects, Open Source, Portfolio, Applications" />
+  </Fragment>
   <div class="animate-fade-in">
     <!-- Header -->
     <div
@@ -145,8 +193,6 @@ const gradients = [
         {allProjects.map((project) => <ProjectCard project={project} />)}
       </div>
     </section>
-
-    <ProjectDetailsModal />
 
     <!-- CTA -->
     <div class="mt-12 text-center">

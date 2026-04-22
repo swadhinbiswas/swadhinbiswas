@@ -32,21 +32,29 @@ export const GET: APIRoute = async () => {
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { name, description, content, url, github, image, tags = [], featured = false, stars = 0, order = 0 } = body;
+    const { name, description, content, url, github, image, tags = [], featured = false, stars = 0, order = 0, status = 'Active' } = body;
+
+    if (!name || !description || !url) {
+      return new Response(JSON.stringify({ success: false, error: 'Name, description, and URL are required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
     const now = new Date().toISOString();
 
     const result = await db.insert(projects).values({
       name,
       description,
-      content,
+      content: content || '',
       url,
-      github,
-      image,
+      github: github || null,
+      image: image || null,
       tags: JSON.stringify(tags),
       featured,
       stars,
       order,
+      status,
       createdAt: now,
       updatedAt: now,
     }).returning();
@@ -68,27 +76,43 @@ export const POST: APIRoute = async ({ request }) => {
 export const PUT: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { id, name, description, content, url, github, image, tags = [], featured, stars, order } = body;
+    const { id, name, description, content, url, github, image, tags = [], featured, stars, order, status } = body;
+
+    if (!id) {
+      return new Response(JSON.stringify({ success: false, error: 'Project ID is required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
     const now = new Date().toISOString();
 
-    await db.update(projects)
+    const result = await db.update(projects)
       .set({
         name,
         description,
-        content,
+        content: content || '',
         url,
-        github,
-        image,
+        github: github || null,
+        image: image || null,
         tags: JSON.stringify(tags),
         featured,
         stars,
         order,
+        status: status || 'Active',
         updatedAt: now
       })
-      .where(eq(projects.id, id));
+      .where(eq(projects.id, id))
+      .returning();
 
-    return new Response(JSON.stringify({ success: true }), {
+    if (result.length === 0) {
+      return new Response(JSON.stringify({ success: false, error: 'Project not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    return new Response(JSON.stringify({ success: true, data: { ...result[0], tags } }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

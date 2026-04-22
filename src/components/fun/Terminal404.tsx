@@ -103,17 +103,19 @@ function SnakeGame({ onExit }: { onExit: () => void }) {
 
         let snake = [{ x: 10, y: 10 }];
         let food = { x: 15, y: 15 };
-        let dx = 0;
+        let dx = 1;
         let dy = 0;
         let speed = 7;
-        let tileCount = 20; // 20x20 grid
+        let tileCount = 20;
         let tileSize = canvas.width / tileCount;
+        let gameStarted = false;
 
         const gameLoop = setInterval(drawGame, 1000 / speed);
 
         function drawGame() {
             if (!ctx || !canvas) return;
-            // Logic
+            if (!gameStarted) return;
+
             let head = { x: snake[0].x + dx, y: snake[0].y + dy };
 
             // Wall collision - game over
@@ -161,11 +163,13 @@ function SnakeGame({ onExit }: { onExit: () => void }) {
         }
 
         const handleKey = (e: KeyboardEvent) => {
+            if (!gameStarted && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                gameStarted = true;
+            }
             if (e.key === 'ArrowUp' && dy === 0) { dx = 0; dy = -1; }
             if (e.key === 'ArrowDown' && dy === 0) { dx = 0; dy = 1; }
             if (e.key === 'ArrowLeft' && dx === 0) { dx = -1; dy = 0; }
             if (e.key === 'ArrowRight' && dx === 0) { dx = 1; dy = 0; }
-            // Start on any key
         };
 
         window.addEventListener('keydown', handleKey);

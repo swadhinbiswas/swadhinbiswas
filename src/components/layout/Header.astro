@@ -1,7 +1,9 @@
 ---
-import { siteConfig } from "../../config/site";
+import { getDynamicConfig } from "../../lib/config";
 import { db, navigationItems } from "../../db";
 import { eq, or, asc } from "drizzle-orm";
+
+const siteConfig = await getDynamicConfig();
 
 const pathname = Astro.url.pathname;
 
@@ -27,7 +29,7 @@ try {
     }));
   }
 } catch (error) {
-  console.error("Failed to fetch nav items:", error);
+  console.warn("Failed to fetch nav items, using fallback:", error);
 }
 
 // Fallback if DB is empty or failed
@@ -48,7 +50,7 @@ const activeNav = navItems.find((item) =>
 
 <header class="fixed top-0 w-full z-50 px-3 sm:px-6 py-3 sm:py-4">
   <div
-    class="glass-panel max-w-7xl mx-auto rounded-xl flex items-center justify-between px-3 sm:px-6 py-2 sm:py-3"
+    class="bg-mantle/60 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl max-w-7xl mx-auto flex items-center justify-between px-3 sm:px-6 py-2 sm:py-3"
   >
     <!-- Terminal Breadcrumb / Logo -->
     <a
@@ -91,7 +93,7 @@ const activeNav = navItems.find((item) =>
       <a
         href={siteConfig.links.github}
         target="_blank"
-        class="text-sm px-3 lg:px-4 py-1 border border-glass-border rounded-full hover:bg-white/5 transition-colors text-white"
+        class="text-sm px-3 lg:px-4 py-1 border-2 border-surface1 hover:bg-surface0 transition-colors text-white"
       >
         git_repo*
       </a>

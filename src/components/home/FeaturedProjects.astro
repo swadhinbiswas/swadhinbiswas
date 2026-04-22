@@ -3,18 +3,62 @@ import { db } from "../../db";
 import { projects } from "../../db/schema";
 import { eq, asc } from "drizzle-orm";
 import ProjectCard from "../projects/ProjectCard.astro";
-import ProjectDetailsModal from "../projects/ProjectDetailsModal.astro";
+import { getDynamicConfig } from "../../lib/config";
 
-// Fetch projects
-const dbProjects = await db
-  .select()
-  .from(projects)
-  .where(eq(projects.featured, true))
-  .orderBy(asc(projects.order));
+const siteConfig = await getDynamicConfig();
+
+// Fetch projects with fallback
+let dbProjects: any[] = [];
+try {
+  dbProjects = await db
+    .select()
+    .from(projects)
+    .where(eq(projects.featured, true))
+    .orderBy(asc(projects.order));
+
+  if (dbProjects.length === 0) {
+    dbProjects = siteConfig.featuredProjects.map((p, i) => ({
+      id: `fallback-${i}`,
+      name: p.name,
+      description: p.description,
+      url: p.url,
+      github: p.github || null,
+      image: p.image || null,
+      tags: JSON.stringify(p.tags),
+      featured: p.featured,
+      status: 'published',
+      projectDate: new Date().toISOString(),
+      stars: p.stars || 0,
+      order: i,
+      content: p.description,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }));
+  }
+} catch (e) {
+  console.warn('[FeaturedProjects] DB query failed, using siteConfig fallback');
+  dbProjects = siteConfig.featuredProjects.map((p, i) => ({
+    id: `fallback-${i}`,
+    name: p.name,
+    description: p.description,
+    url: p.url,
+    github: p.github || null,
+    image: p.image || null,
+    tags: JSON.stringify(p.tags),
+    featured: p.featured,
+    status: 'published',
+    projectDate: new Date().toISOString(),
+    stars: p.stars || 0,
+    order: i,
+    content: p.description,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }));
+}
 
 const featuredProjects = dbProjects.map((p) => ({
   ...p,
-  tags: JSON.parse(p.tags) as string[],
+  tags: JSON.parse(p.tags || '[]') as string[],
 }));
 ---
 
@@ -52,6 +96,4 @@ const featuredProjects = dbProjects.map((p) => ({
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     {featuredProjects.map((project, i) => <ProjectCard project={project} />)}
   </div>
-
-  <ProjectDetailsModal />
 </section>

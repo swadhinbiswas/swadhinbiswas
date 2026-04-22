@@ -1,5 +1,6 @@
 ---
-import { siteConfig } from "../../../config/site";
+import { getDynamicConfig } from "../../../lib/config";
+const siteConfig = await getDynamicConfig();
 ---
 
 <div class="h-full flex flex-col relative group">
@@ -96,6 +97,8 @@ import { siteConfig } from "../../../config/site";
 </style>
 
 <script>
+  let mapInstance = null;
+
   function initMap() {
     const mapContainer = document.getElementById("leaflet-map");
     // @ts-ignore
@@ -104,17 +107,23 @@ import { siteConfig } from "../../../config/site";
       return;
     }
 
+    // Clean up existing map instance to prevent memory leaks
+    if (mapInstance) {
+      mapInstance.remove();
+      mapInstance = null;
+    }
+
     // Coordinates for Dhaka
     const lat = 23.8041;
     const lng = 90.4152;
 
     // @ts-ignore
-    const map = L.map("leaflet-map", {
+    mapInstance = L.map("leaflet-map", {
       center: [lat, lng],
       zoom: 12,
-      zoomControl: false, // minimalist
+      zoomControl: false,
       attributionControl: true,
-      scrollWheelZoom: "center", // prevent interfering with page scroll
+      scrollWheelZoom: "center",
     });
 
     // Dark Matter Tiles
@@ -127,7 +136,7 @@ import { siteConfig } from "../../../config/site";
         subdomains: "abcd",
         maxZoom: 20,
       },
-    ).addTo(map);
+    ).addTo(mapInstance);
 
     // Custom Icon
     // @ts-ignore
@@ -139,10 +148,7 @@ import { siteConfig } from "../../../config/site";
     });
 
     // @ts-ignore
-    L.marker([lat, lng], { icon: icon }).addTo(map);
-
-    // Disable dragging on mobile to prevent scroll trap, maybe allow on Click?
-    // For bento grid, standard behavior is usually ok if scrollWheelZoom is handled.
+    L.marker([lat, lng], { icon: icon }).addTo(mapInstance);
   }
 
   // Time
@@ -163,12 +169,21 @@ import { siteConfig } from "../../../config/site";
   updateTime();
   setInterval(updateTime, 1000);
 
-  // Init Map when ready of DOM content loaded
+  // Init map when DOM is ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", initMap);
   } else {
     initMap();
   }
+
   // Astro view transitions support
   document.addEventListener("astro:page-load", initMap);
+
+  // Cleanup on page unload
+  window.addEventListener("beforeunload", () => {
+    if (mapInstance) {
+      mapInstance.remove();
+      mapInstance = null;
+    }
+  });
 </script>

@@ -5,7 +5,6 @@ import { eq, sql } from "drizzle-orm";
 
 export const GET: APIRoute = async () => {
     try {
-        // Atomically increment the view count and return the new value
         const result = await db
             .update(pageViews)
             .set({
@@ -20,7 +19,6 @@ export const GET: APIRoute = async () => {
         if (result.length > 0) {
             newCount = result[0].count ?? 0;
         } else {
-            // Initialize if missing (should be covered by seed, but failsafe)
             const inserted = await db
                 .insert(pageViews)
                 .values({ id: 1, count: 1 })
@@ -29,21 +27,19 @@ export const GET: APIRoute = async () => {
         }
 
         return new Response(
-            JSON.stringify({
-                views: newCount,
-            }),
+            JSON.stringify({ views: newCount }),
             {
                 status: 200,
                 headers: {
                     "Content-Type": "application/json",
-                    "Cache-Control": "no-store, max-age=0", // Ensure fresh count
+                    "Cache-Control": "no-store, max-age=0",
                 },
             }
         );
     } catch (error) {
-        console.error("Error updating views:", error);
-        return new Response(JSON.stringify({ error: "Failed to update views" }), {
-            status: 500,
+        console.warn("[views] DB unavailable, returning fallback");
+        return new Response(JSON.stringify({ views: 0 }), {
+            status: 200,
             headers: { "Content-Type": "application/json" },
         });
     }

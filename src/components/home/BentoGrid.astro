@@ -1,127 +1,301 @@
 ---
 import LocationMap from "./bento/LocationMap.astro";
 import Clicker from "./bento/Clicker.astro";
-import { siteConfig } from "../../config/site";
+import {
+  db,
+  siteSettings,
+  experiences,
+  projects,
+  publications,
+  pageViews,
+  bioContent,
+} from "../../db";
+
+const [settingsRows, experienceRows, projectRows, publicationRows, pageViewRows, bioRows] = await Promise.all([
+  db.select().from(siteSettings),
+  db.select().from(experiences).orderBy(experiences.order),
+  db.select().from(projects).orderBy(projects.order),
+  db.select().from(publications).orderBy(publications.order),
+  db.select().from(pageViews),
+  db.select().from(bioContent),
+]);
+
+const settings = Object.fromEntries(settingsRows.map((row) => [row.key, row.value]));
+const bio = Object.fromEntries(bioRows.map((row) => [row.key, row.value]));
+
+const descriptionParts = String(settings.site_description || "")
+  .split("|")
+  .map((part) => part.trim())
+  .filter(Boolean);
+
+const currentRole = settings.current_role || descriptionParts[0] || settings.seo_title || "Indie Engineer";
+const currentFocus = descriptionParts[1] || "AI Systems Architect";
+const currentDescriptor = descriptionParts[2] || "Data Science Enthusiast";
+const currentCompany = settings.works_for_name || "Self-Employed";
+const currentLocation = settings.location || "Dhaka, Bangladesh";
+const currentTimezone = settings.timezone || "Asia/Dhaka";
+
+const careerSummary = (() => {
+  const source = bio.long || bio.short || settings.site_description || "";
+  const sentences = source
+    .split(/\.\s+/)
+    .map((sentence) => sentence.trim())
+    .filter(Boolean);
+
+  if (sentences.length <= 2) return source;
+  return `${sentences.slice(0, 2).join(". ")}.`;
+})();
+
+const earliestExperience = experienceRows.length
+  ? experienceRows.slice().sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())[0]
+  : null;
+
+const experienceYears = earliestExperience
+  ? Math.max(1, new Date().getFullYear() - new Date(earliestExperience.startDate).getFullYear())
+  : 0;
+
+const featuredProjects = projectRows.filter((project) => project.featured);
+const totalProjectStars = featuredProjects.reduce((sum, project) => sum + (project.stars ?? 0), 0);
+const latestPublication = publicationRows[0];
+const pageViewCount = pageViewRows[0]?.count ?? 0;
+const reachLabel = pageViewCount >= 1000000
+  ? `${(pageViewCount / 1000000).toFixed(pageViewCount >= 10000000 ? 0 : 1)}M+`
+  : pageViewCount.toLocaleString();
+
+const recruiterMetrics = [
+  {
+    label: "Current Role",
+    value: currentRole,
+    detail: `${currentFocus} @ ${currentCompany}`,
+    accent: "text-blue",
+    dot: "bg-blue",
+  },
+  {
+    label: "Experience",
+    value: `${experienceYears}+ yrs`,
+    detail: earliestExperience ? `Since ${new Date(earliestExperience.startDate).getFullYear()}` : "Hands-on delivery",
+    accent: "text-sky",
+    dot: "bg-sky",
+  },
+  {
+    label: "Location",
+    value: currentLocation,
+    detail: currentTimezone,
+    accent: "text-mauve",
+    dot: "bg-mauve",
+  },
+  {
+    label: "Featured Projects",
+    value: `${featuredProjects.length}`,
+    detail: `${totalProjectStars} total stars`,
+    accent: "text-green-400",
+    dot: "bg-green-400",
+  },
+  {
+    label: "Publications",
+    value: `${publicationRows.length}`,
+    detail: latestPublication?.venue || latestPublication?.title || "Research-ready",
+    accent: "text-blue",
+    dot: "bg-blue",
+  },
+];
+
+const signalPills = [
+  `${reachLabel} page views`,
+  currentDescriptor,
+  `${publicationRows.length} publication${publicationRows.length === 1 ? "" : "s"}`,
+];
 ---
 
-<section id="projects" class="space-y-8 py-20 relative">
-  <h2 class="text-3xl font-bold font-mono text-white flex items-center gap-3">
-    <span class="text-neon-cyan">></span>
-    <span>System_Modules</span>
-    <span class="animate-pulse text-electric-purple">_</span>
-  </h2>
+<section id="projects" class="space-y-6 py-12 relative">
+  <div class="flex items-center justify-between mb-8">
+    <h2 class="text-2xl font-bold font-mono text-white flex items-center gap-3">
+      <span class="text-neon-cyan animate-pulse">●</span>
+      <span>SYSTEM_COMMAND_CENTER</span>
+    </h2>
+    <div class="hidden md:flex gap-4 font-mono text-[9px] text-gray-500 uppercase tracking-widest">
+      <span>ENV: PRODUCTION</span>
+      <span>|</span>
+      <span id="system-uptime">UPTIME: 00:00:00</span>
+    </div>
+  </div>
 
-  <div class="bento-grid gap-6 auto-rows-[minmax(180px,auto)]">
-    <!-- Row 1: Profile/Connect + Location -->
+  <div class="bento-grid w-full gap-4">
+    <!-- Row 1: The Core HUD -->
 
-    <!-- Location Map - Small -->
-    <div
-      class="bento-item bento-location glass-panel rounded-xl overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,243,255,0.2)]"
-    >
+    <!-- Developer Core OS - High Density -->
+    <div class="bento-item bento-metrics glass-panel hud-scan p-4 flex flex-col border-accent/10">
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <div class="text-[8px] font-mono text-neon-cyan uppercase tracking-widest mb-1">Identity_Kernel</div>
+          <div class="text-3xl font-bold text-white font-mono leading-none tracking-tighter" id="dev-score">000</div>
+        </div>
+        <div id="dev-rank-badge" class="px-2 py-1 bg-electric-purple text-white font-bold text-[10px] font-mono opacity-0 transition-opacity shadow-[0_0_15px_rgba(188,19,254,0.3)]">
+          RANK: S+
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 mb-4 border-t border-white/5 pt-4">
+        <div class="space-y-3">
+          <div>
+            <div class="text-[7px] text-gray-500 font-mono uppercase mb-1">Nodes_Connected</div>
+            <div class="text-sm font-bold text-white font-mono" id="dev-followers">0</div>
+          </div>
+          <div>
+            <div class="text-[7px] text-gray-500 font-mono uppercase mb-1">Stars_Captured</div>
+            <div class="text-sm font-bold text-white font-mono" id="dev-stars">0</div>
+          </div>
+        </div>
+        <div class="space-y-3 text-right">
+          <div>
+            <div class="text-[7px] text-gray-500 font-mono uppercase mb-1">Repositories</div>
+            <div class="text-sm font-bold text-white font-mono" id="dev-repos">0</div>
+          </div>
+          <div>
+            <div class="text-[7px] text-gray-500 font-mono uppercase mb-1">Active_Streak</div>
+            <div class="text-sm font-bold text-green-400 font-mono" id="dev-streak">0d</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-auto pt-4 border-t border-white/5">
+        <div class="flex justify-between items-center text-[8px] font-mono text-gray-500 mb-2">
+          <span>CORE_INTEGRITY</span>
+          <span id="integrity-val" class="text-neon-cyan">0%</span>
+        </div>
+        <div class="h-1 bg-white/5 relative overflow-hidden">
+          <div id="score-progress" class="absolute top-0 left-0 h-full bg-neon-cyan transition-all duration-1000" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity Matrix - Sparkline Version -->
+    <div class="bento-item bento-productivity glass-panel p-4 flex flex-col">
+      <div class="flex justify-between items-center mb-4">
+        <div class="text-[8px] font-mono text-electric-purple uppercase tracking-widest">Efficiency_Logic</div>
+        <span id="velocity-badge" class="text-[8px] font-mono px-1.5 py-0.5 bg-green-500/10 text-green-400 border border-green-500/20 opacity-0">
+          +0% VEL
+        </span>
+      </div>
+
+      <div class="flex flex-1 gap-4 items-center">
+        <div class="w-20 h-20 flex-shrink-0">
+           <svg viewBox="0 0 200 200" class="w-full h-full opacity-80">
+              <path id="radar-polygon" d="M100,100 L100,100 L100,100 L100,100 Z" fill="rgba(188, 19, 254, 0.1)" stroke="#bc13fe" stroke-width="2" />
+              <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
+           </svg>
+        </div>
+        <div class="flex-1 grid grid-cols-1 gap-2">
+          <div class="bg-white/5 p-2 border-l border-neon-cyan/30">
+            <div class="text-[7px] text-gray-500 font-mono uppercase mb-0.5">Intensity</div>
+            <div class="text-xs font-bold text-white font-mono" id="metric-intensity">0.0h</div>
+          </div>
+          <div class="bg-white/5 p-2 border-l border-electric-purple/30">
+            <div class="text-[7px] text-gray-500 font-mono uppercase mb-0.5">Focus</div>
+            <div class="text-xs font-bold text-white font-mono" id="metric-focus">0%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 flex flex-col gap-1">
+        <div class="flex justify-between text-[7px] font-mono text-gray-500 uppercase">
+          <span>Neural_Sync</span>
+          <span id="metric-top-lang" class="text-neon-cyan">---</span>
+        </div>
+        <div class="h-0.5 w-full bg-white/5 relative">
+          <div id="consistency-bar" class="absolute top-0 left-0 h-full bg-electric-purple transition-all duration-1000" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Load Graph - Ultra Refined -->
+    <div class="bento-item bento-posts glass-panel p-3 flex flex-col min-h-0">
+      <div class="flex justify-between items-center mb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-1.5 h-1.5 rounded-full bg-blue shadow-[0_0_10px_rgba(137,180,250,0.35)]"></div>
+          <h3 class="text-[9px] md:text-[10px] font-mono text-blue font-bold uppercase tracking-widest">Module_Activity_Index</h3>
+        </div>
+        <div class="flex gap-4">
+          <div id="loc-stats" class="text-[8px] font-mono text-gray-500 opacity-0 transition-opacity">
+            <span class="text-blue" id="loc-total">0</span> LOC <span class="text-green-500/40">(+<span id="loc-added"></span>)</span>
+          </div>
+          <div class="text-[8px] font-mono text-gray-500">
+            LIFETIME: <span id="total-contributions" class="text-sky font-bold">0</span>
+          </div>
+        </div>
+      </div>
+      <div class="w-full relative h-[220px] md:h-[280px] max-w-[760px] mx-auto">
+        <canvas id="activityChart"></canvas>
+      </div>
+
+      <div class="mt-4 grid grid-cols-2 gap-2 md:flex md:flex-wrap md:gap-3">
+        {recruiterMetrics.map((metric) => (
+          <div class="flex-1 min-w-[140px] rounded-2xl border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-3 md:p-4 min-h-[108px] flex flex-col justify-between backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+            <div class="flex items-center justify-between gap-2 text-[8px] font-mono uppercase tracking-widest text-gray-500">
+              <span>{metric.label}</span>
+              <span class={`w-1.5 h-1.5 rounded-full ${metric.dot} shadow-[0_0_8px_currentColor]`}></span>
+            </div>
+            <div class={`text-lg md:text-2xl font-bold font-mono tracking-tight leading-tight break-words ${metric.accent}`}>
+              {metric.value}
+            </div>
+            <div class="text-[10px] md:text-xs text-subtext1 leading-snug">
+              {metric.detail}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="mt-4 rounded-2xl border border-white/8 bg-white/5 p-4 md:p-5 backdrop-blur-sm">
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <div class="flex items-center gap-2 text-[8px] font-mono uppercase tracking-widest text-gray-500">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue shadow-[0_0_10px_rgba(137,180,250,0.35)]"></span>
+            <span>Dev_Matrix</span>
+          </div>
+          <div class="text-[8px] font-mono uppercase tracking-widest text-gray-500">GitHub DB</div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 md:flex md:flex-wrap md:gap-8 md:items-center mt-4">
+          <div class="flex flex-col gap-1">
+             <span class="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Total Contributions</span>
+             <span class="text-xl md:text-2xl font-bold font-mono text-sky tracking-tight" id="dev-commits">0</span>
+          </div>
+          <div class="flex flex-col gap-1">
+             <span class="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Total Stars</span>
+             <span class="text-xl md:text-2xl font-bold font-mono text-yellow-400 tracking-tight" id="dev-stars-matrix">0</span>
+          </div>
+          <div class="flex flex-col gap-1">
+             <span class="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Repositories</span>
+             <span class="text-xl md:text-2xl font-bold font-mono text-electric-purple tracking-tight" id="dev-repos-matrix">0</span>
+          </div>
+          <div class="flex flex-col gap-1">
+             <span class="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Longest Streak</span>
+             <span class="text-xl md:text-2xl font-bold font-mono text-green-400 tracking-tight" id="dev-streak-matrix">0d</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Location Map -->
+    <div class="bento-item bento-location glass-panel overflow-hidden border-white/5">
       <LocationMap />
     </div>
 
-    <div
-      class="bento-item bento-clicker glass-panel rounded-xl p-5 transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,243,255,0.2)]"
-    >
+    <!-- Clicker Challenge -->
+    <div class="bento-item bento-clicker glass-panel p-4">
       <Clicker />
     </div>
 
-    <!-- Productivity Pattern - Small (Below Clicker) -->
-    <div
-      class="bento-item bento-productivity glass-panel rounded-xl p-5 transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] flex flex-col items-center justify-center"
-    >
-      <h3 class="text-xs font-mono text-neon-cyan mb-2 w-full text-left">
-        Productivity Pattern
-      </h3>
-      <div class="w-full h-[200px] relative">
-        <canvas id="productivityChart"></canvas>
-      </div>
-    </div>
-
-    <!-- Row 2: Recent Commits + Latest Posts -->
-
-    <!-- Recent Commits - Medium -->
-    <div
-      class="bento-item bento-commits glass-panel rounded-xl p-5 transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] flex flex-col"
-    >
-      <h3
-        class="text-sm font-mono text-electric-purple mb-4 flex items-center gap-2"
-      >
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-          <path
-            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-          ></path>
-        </svg>
-        git_activity
-      </h3>
-      <div
-        id="recent-commits"
-        class="space-y-2 text-xs font-mono max-h-[160px] overflow-y-auto custom-scrollbar pr-2"
-      >
-        <div class="animate-pulse space-y-2">
-          <div class="h-3 bg-white/10 rounded w-3/4"></div>
-          <div class="h-3 bg-white/10 rounded w-1/2"></div>
+    <!-- Terminal Events -->
+    <div class="bento-item bento-commits glass-panel p-4 flex flex-col">
+      <div class="flex justify-between items-center mb-3">
+        <div class="text-[8px] font-mono text-gray-500 uppercase tracking-widest">Kernel_Log</div>
+        <div class="flex gap-1">
+          <div class="w-1 h-1 bg-green-500"></div>
+          <div class="w-1 h-1 bg-yellow-500"></div>
+          <div class="w-1 h-1 bg-red-500"></div>
         </div>
       </div>
-      <a
-        href={siteConfig.links.github}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="mt-4 inline-flex items-center gap-1 text-xs text-gray-400 hover:text-neon-cyan transition-colors font-mono"
-      >
-        view_all.sh
-      </a>
-    </div>
-
-    <!-- Contribution Graph - Wide (Row 2, spanning 2 cols) -->
-    <div
-      class="bento-item bento-posts glass-panel rounded-xl p-5 transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] flex flex-col"
-    >
-      <div class="flex items-center justify-between mb-2">
-        <h3 class="text-sm font-mono text-neon-cyan flex items-center gap-2">
-          <svg
-            class="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            ><path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-            ></path></svg
-          >
-          Coding Activity on Projects
-        </h3>
-        <div class="text-right">
-          <!-- LOC Stats -->
-          <div
-            id="loc-stats"
-            class="text-[10px] text-gray-500 font-mono opacity-0 transition-opacity duration-500 text-right inline-block mr-4"
-          >
-            <div class="flex items-center justify-end gap-2">
-              <span class="text-neon-cyan" id="loc-total">...</span> LOC
-              <span class="text-green-400 text-[9px]"
-                >(+<span id="loc-added">...</span>)</span
-              >
-              <span class="text-red-400 text-[9px]"
-                >(-<span id="loc-deleted">...</span>)</span
-              >
-            </div>
-          </div>
-
-          <span class="text-[10px] text-gray-500 font-mono">All Time: </span>
-          <span
-            id="total-contributions"
-            class="text-xs text-electric-purple font-mono animate-pulse"
-            >loading...</span
-          >
-        </div>
-      </div>
-
-      <div class="w-full h-full min-h-[300px] relative">
-        <canvas id="activityChart"></canvas>
+      <div id="recent-commits" class="space-y-2 text-[8px] font-mono max-h-[120px] overflow-y-auto custom-scrollbar pr-2">
+        <!-- Commits -->
       </div>
     </div>
   </div>
@@ -131,530 +305,256 @@ import { siteConfig } from "../../config/site";
   .bento-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1.5rem;
     grid-template-areas:
+      "metrics"
+      "productivity"
+      "overview"
       "location"
       "clicker"
-      "productivity"
-      "commits"
-      "overview";
+      "commits";
   }
 
   @media (min-width: 768px) {
     .bento-grid {
-      grid-template-columns: 300px 1fr; /* Fixed width for left col, flex for right */
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(3, auto);
       grid-template-areas:
-        "location commits"
-        "clicker overview"
-        "productivity overview";
-      grid-gap: 1.5rem;
-      /* grid-template-rows: 1fr 1fr; - Removed to allow natural sizing or auto */
-      grid-auto-rows: minmax(180px, auto);
+        "metrics productivity overview overview"
+        "location clicker overview overview"
+        "commits commits overview overview";
+      grid-auto-rows: minmax(160px, auto);
     }
   }
 
-  /* Assign Grid Areas */
-  .bento-location {
-    grid-area: location;
-  }
-  .bento-clicker {
-    grid-area: clicker;
-  }
-  .bento-productivity {
-    grid-area: productivity;
-  }
-  .bento-commits {
-    grid-area: commits;
-  }
-  .bento-posts {
-    grid-area: overview;
-  }
+  .bento-metrics { grid-area: metrics; }
+  .bento-productivity { grid-area: productivity; }
+  .bento-posts { grid-area: overview; }
+  .bento-location { grid-area: location; }
+  .bento-clicker { grid-area: clicker; }
+  .bento-commits { grid-area: commits; }
 
-  /* Timeline styling */
-  .timeline-item {
+  /* HUD Scanline Effect */
+  .hud-scan {
     position: relative;
-    padding-left: 24px;
+    overflow: hidden;
   }
-  .timeline-item::before {
+  .hud-scan::after {
     content: "";
     position: absolute;
-    left: 7px;
-    top: 24px;
-    bottom: -16px;
-    width: 2px;
-    background: #333;
-  }
-  .timeline-item:last-child::before {
-    display: none;
-  }
-
-  /* Custom Scrollbar for Recent Commits */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 4px;
-  }
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(0, 243, 255, 0.3);
-    border-radius: 4px;
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 243, 255, 0.5);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+    z-index: 2;
   }
 </style>
 
 <script>
   import Chart from "chart.js/auto";
 
-  function initGitHubActivity() {
-    const commitsContainer = document.getElementById("recent-commits");
-    const weeklyGraphContainer = document.getElementById("weekly-graph");
-    const totalContributionsEl = document.getElementById("total-contributions");
-    const radarPolygon = document.getElementById("radar-polygon");
+  function initEliteDashboard() {
+    const uptimeEl = document.getElementById("system-uptime");
+    const startTime = Date.now() - (Math.random() * 1000000); // Simulated boot time
 
-    if (!commitsContainer) {
-      setTimeout(initGitHubActivity, 500);
-      return;
+    setInterval(() => {
+      const diff = Date.now() - startTime;
+      const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
+      const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+      const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+      if (uptimeEl) uptimeEl.textContent = `UPTIME: ${h}:${m}:${s}`;
+    }, 1000);
+
+    // Data Fetching Logic (Unified for performance)
+    async function fetchAll() {
+      await Promise.all([
+        fetchDevStats(),
+        fetchGitHubEvents(),
+        fetchWakaTime(),
+        fetchLOC()
+      ]);
     }
 
-    async function fetchGitHubData() {
+    async function fetchDevStats() {
       try {
-        fetchCommits();
-        fetchContributions();
-      } catch (err) {
-        console.error("Master fetch error", err);
-      }
-    }
+        const response = await fetch(`/api/github/stats?t=${Date.now()}`);
+        if (!response.ok) return;
+        const stats = await response.json();
 
-    const simpleIcons = {
-      star: `<svg viewBox="0 0 16 16" width="14" height="14" class="text-yellow-300"><path fill="currentColor" d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.719-4.192-3.046-2.97a.75.75 0 0 1 .416-1.28l4.21-.612L7.327.668A.75.75 0 0 1 8 .25Z"></path></svg>`,
-    };
+        const updateText = (id: string, val: any) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = val?.toLocaleString() || "0";
+        };
 
-    async function fetchCommits() {
-      if (!commitsContainer) return;
-      try {
-        const response = await fetch(`/api/github/events?t=${Date.now()}`);
-        if (!response.ok)
-          throw new Error(`HTTP error! status: ${response.status}`);
+        updateText("dev-score", stats.score?.toString().padStart(3, '0'));
+        updateText("dev-streak", `${stats.streak}d`);
+        updateText("dev-streak-matrix", `${stats.streak}d`);
+        updateText("dev-stars", stats.stars);
+        updateText("dev-stars-matrix", stats.stars);
+        updateText("dev-repos", stats.repos);
+        updateText("dev-repos-matrix", stats.repos);
+        updateText("dev-followers", stats.followers);
+        updateText("dev-commits", stats.commits);
+        updateText("integrity-val", `${stats.score}%`);
 
-        const data = await response.json();
-        if (data.commits && data.commits.length > 0) {
-          commitsContainer.innerHTML = data.commits
-            .map((commit: any) => {
-              const hash = commit.hash;
-              const isVerified = commit.verified
-                ? `<span class="px-1.5 py-0.5 rounded-full border border-green-500/30 text-green-400 bg-green-500/10 flex items-center gap-1">Verified</span>`
-                : "";
-
-              return `
-            <div class="timeline-item flex flex-col gap-1 mb-4 group">
-              <!-- Icon absolute positioned -->
-              <div class="absolute left-0 top-1 w-4 h-4 flex items-center justify-center bg-[#0d1117] rounded-full ring-2 ring-[#333] z-10">
-                  ${simpleIcons.star} 
-              </div>
-              
-              <div class="flex items-center gap-2">
-                 <a href="${commit.url}" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-200 font-bold hover:text-neon-cyan transition-colors truncate block max-w-[200px]">
-                    ${commit.message}
-                 </a>
-              </div>
-              
-              <div class="flex flex-wrap items-center gap-2 text-[10px] text-gray-500 font-mono">
-                  <span class="text-gray-400">${commit.repo}</span>
-                  <span>•</span>
-                  <a href="${commit.url}" target="_blank" class="hover:text-neon-cyan hover:underline">${hash}</a>
-                  ${isVerified}
-                  <span class="ml-auto text-xs opacity-70">${commit.time}</span>
-              </div>
-            </div>
-          `;
-            })
-            .join("");
-
-          // Re-enable scroll classes
-          commitsContainer.classList.add("overflow-y-auto", "custom-scrollbar");
-          commitsContainer.classList.remove("overflow-hidden");
-        } else {
-          commitsContainer.innerHTML = `<div class="text-gray-500 text-xs">No recent commits found.</div>`;
-        }
-      } catch (error) {
-        commitsContainer.innerHTML = `<div class="text-red-400 text-xs">Failed to load commits.</div>`;
-      }
-    }
-
-    async function fetchContributions() {
-      try {
-        const response = await fetch(
-          `/api/github/contributions?t=${Date.now()}`,
-        );
-        if (!response.ok)
-          throw new Error(`HTTP error! status: ${response.status}`);
-
-        const data = await response.json();
-
-        // Update total with LIFETIME data
-        if (totalContributionsEl) {
-          const total = data.lifetimeContributions || data.totalContributions;
-          totalContributionsEl.textContent = `${total.toLocaleString()}`;
-          totalContributionsEl.classList.remove("animate-pulse");
+        const badge = document.getElementById("dev-rank-badge");
+        if (badge && stats.rank) {
+          badge.textContent = `RANK: ${stats.rank}`;
+          badge.style.opacity = "1";
         }
 
-        // Update Radar Chart
-        if (data.breakdown && radarPolygon) {
-          updateRadarChart(data.breakdown);
-        }
-
-        // Graph is now handled by WakaTime
-        /* 
-        if (
-          weeklyGraphContainer &&
-          data.last7Days &&
-          data.last7Days.length > 0
-        ) {
-          renderWeeklyGraph(data.last7Days[0]);
-        } 
-        */
-      } catch (error) {
-        console.error(error);
-        if (weeklyGraphContainer)
-          weeklyGraphContainer.innerHTML = `<div class="text-red-400 text-xs">Failed load.</div>`;
-      }
+        const progress = document.getElementById("score-progress");
+        if (progress && stats.score) progress.style.width = `${stats.score}%`;
+      } catch (err) {}
     }
 
     async function fetchLOC() {
-      const locContainer = document.getElementById("loc-stats");
-      const locTotal = document.getElementById("loc-total");
-      const locAdded = document.getElementById("loc-added");
-      const locDeleted = document.getElementById("loc-deleted");
-
-      if (!locContainer || !locTotal || !locAdded || !locDeleted) return;
-
       try {
         const response = await fetch(`/api/github/loc?t=${Date.now()}`);
-        if (!response.ok) throw new Error("Failed to fetch LOC");
-
+        if (!response.ok) return;
         const data = await response.json();
 
-        locTotal.textContent = data.loc;
-        locAdded.textContent = data.added;
-        locDeleted.textContent = data.deleted;
+        const container = document.getElementById("loc-stats");
+        const total = document.getElementById("loc-total");
+        const added = document.getElementById("loc-added");
 
-        locContainer.classList.remove("opacity-0");
-      } catch (err) {
-        console.error("LOC fetch error", err);
-      }
+        if (total) total.textContent = data.loc;
+        if (added) added.textContent = data.added;
+        if (container) container.style.opacity = "1";
+      } catch (err) {}
     }
 
-    // Call fetchLOC inside the main flow
-    fetchLOC();
-
-    function updateRadarChart(breakdown: any) {
-      if (!radarPolygon) return;
-
-      const center = 100;
-      const maxRadius = 80;
-
-      // Calculate total for percentage
-      const total =
-        breakdown.commits +
-          breakdown.issues +
-          breakdown.prs +
-          breakdown.reviews || 1;
-
-      // Calculate Percentages (0-1)
-      // If data is missing (0), use the user's requested specific distribution as a fallback/default view
-      // to ensure the "Spider Graph" looks correct even with low/no data initially.
-      const useDefault = total === 1; // Basic check if total is 0 (or 1 from fallback)
-
-      const commitRatio = useDefault ? 0.85 : breakdown.commits / total;
-      const reviewRatio = useDefault ? 0.55 : breakdown.reviews / total;
-      const issueRatio = useDefault ? 0.45 : breakdown.issues / total;
-      const prRatio = useDefault ? 0.35 : breakdown.prs / total;
-
-      // Normalize roughly to maxRadius (map 100% to maxRadius, or scale slightly so small values are visible)
-      // User wants "72% commit" to look like the main spike.
-      // We map the ratio (0-1) directly to radius factor.
-      // e.g. 72% -> 0.72 * 80 radius = 57.6
-
-      // We scale it up a bit so 72% fills almost the whole graph if it's the dominant one.
-      // Let's map the largest ratio to 100% radius (80px) so it touches the edge?
-      // No, user specifically said "72% commit", implying absolute connection.
-      // Let's stick to direct percentage mapping: 100% = maxRadius.
-      // Visual tweak: ensure min value is visible (e.g. 10%)
-
-      const getRadius = (ratio: number) =>
-        Math.max(ratio * maxRadius * 1.2, 10); // 1.2 scale factor to fill more space
-
-      const reviewR = getRadius(reviewRatio);
-      const issueR = getRadius(issueRatio);
-      const prR = getRadius(prRatio);
-      const commitR = getRadius(commitRatio);
-
-      // Coordinates
-      // Top (Review): x=100, y=100-val
-      const reviewY = center - reviewR;
-      // Right (Issues): x=100+val, y=100
-      const issueX = center + issueR;
-      // Bottom (PRs): x=100, y=100+val
-      const prY = center + prR;
-      // Left (Commits): x=100-val, y=100
-      const commitX = center - commitR;
-
-      const targetPoints = `100,${reviewY} ${issueX},100 100,${prY} ${commitX},100`;
-
-      // Animation
-      radarPolygon.style.transition =
-        "all 1s cubic-bezier(0.34, 1.56, 0.64, 1)";
-      // Start from center
-      radarPolygon.setAttribute("points", "100,100 100,100 100,100 100,100");
-
-      // Trigger animation
-      requestAnimationFrame(() => {
-        radarPolygon.setAttribute("points", targetPoints);
-      });
-    }
-
-    function renderStackGraph(days: any[]) {
-      if (!weeklyGraphContainer) return;
-
-      const projectColors: Record<string, string> = {
-        OpenCodeHub: "#00f3ff", // Neon Cyan
-        see: "#bc13fe", // Electric Purple
-        FLUXPLAY: "#39d353", // Green
-        swadhin: "#ff0080", // Pink/Red
-        Other: "#333333",
-      };
-
-      const fallbackColors = ["#facc15", "#f472b6", "#60a5fa", "#a3e635"]; // Yellow, Pink, Blue, Lime
-
-      let html = "";
-
-      // Calculate global max for scaling height relative to the max day
-      const maxSeconds = Math.max(...days.map((d) => d.total_seconds), 1);
-
-      days.forEach((day: any) => {
-        const totalHeightPercent = Math.max(
-          (day.total_seconds / maxSeconds) * 100,
-          10,
-        );
-        const dateObj = new Date(day.date);
-        const dayName = dateObj.toLocaleDateString("en-US", {
-          weekday: "narrow",
-        });
-
-        // Generate stack segments
-        let stackHtml = "";
-        let currentStackHeight = 0;
-
-        day.projects.forEach((proj: any, index: number) => {
-          // Calculate segment height proportional to the *day's total active time* (or totalHeightPercent for global scale?
-          // Ideally we want the bar to represent total time, and segments to split that bar.
-
-          // Segment height as % of the bar:
-          const segmentPercent = (proj.seconds / day.total_seconds) * 100;
-          const color =
-            projectColors[proj.name] ||
-            fallbackColors[index % fallbackColors.length];
-
-          stackHtml += `<div style="height: ${segmentPercent}%; background-color: ${color};" class="w-full transition-all hover:opacity-80" title="${proj.name}: ${proj.text}"></div>`;
-        });
-
-        html += `
-            <div class="flex flex-col items-center gap-1 flex-1 h-full justify-end group/day relative">
-                 <!-- Tooltip for Day Total -->
-                 <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 bg-gray-900 border border-white/10 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover/day:opacity-100 transition-opacity whitespace-nowrap z-20 pointer-events-none shadow-xl">
-                    <span class="font-bold text-neon-cyan">${dayName}</span>: ${day.text}
-                 </div>
-                 
-                <div class="w-full bg-[#161b22]/30 rounded-sm relative overflow-hidden flex flex-col justify-end" style="height: ${totalHeightPercent}%;">
-                    ${stackHtml}
+    async function fetchGitHubEvents() {
+      const container = document.getElementById("recent-commits");
+      if (!container) return;
+      try {
+        const res = await fetch(`/api/github/events?t=${Date.now()}`);
+        const data = await res.json();
+        if (data.commits) {
+          container.innerHTML = data.commits.slice(0, 6).map((c: any) => `
+            <div class="flex items-start gap-2 group/log">
+              <span class="text-neon-cyan opacity-50">#</span>
+              <div class="flex-1 overflow-hidden">
+                <div class="flex justify-between">
+                  <span class="text-white font-bold truncate hover:text-neon-cyan cursor-pointer transition-colors">${c.message}</span>
+                  <span class="opacity-30 flex-shrink-0">${c.time}</span>
                 </div>
-                 <span class="text-[9px] text-gray-500 font-mono">${dayName}</span>
+                <div class="flex gap-2 opacity-40 group-hover/log:opacity-100 transition-opacity">
+                  <span>${c.repo}</span>
+                  <span>>></span>
+                  <span>${c.hash}</span>
+                </div>
+              </div>
             </div>
-         `;
-      });
-
-      weeklyGraphContainer.innerHTML = html;
+          `).join("");
+        }
+      } catch (e) {}
     }
 
-    async function fetchWakaTimeData() {
-      const activityCanvas = document.getElementById("activityChart");
-      const productivityCanvas = document.getElementById("productivityChart");
+    async function fetchWakaTime() {
+      const canvas = document.getElementById("activityChart") as HTMLCanvasElement;
+      if (!canvas) return;
 
-      if (!activityCanvas || !productivityCanvas) return;
+      try {
+        const res = await fetch(`/api/wakatime/timeline?t=${Date.now()}`);
+        const data = await res.json();
 
-      let activityChart: Chart | null = null;
-      let productivityChart: Chart | null = null;
+        // Update Metrics
+        if (data.metrics) {
+          const m = data.metrics;
+          const setMetric = (id: string, val: string) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = val;
+          };
+          setMetric("metric-intensity", `${m.intensity}h`);
+          setMetric("metric-focus", `${m.focus}%`);
+          setMetric("metric-top-lang", m.top_language);
+          const bar = document.getElementById("consistency-bar");
+          if (bar) bar.style.width = `${m.consistency}%`;
 
-      // Function to get current theme colors - ensures we use the soft CSS variables
-      const getThemeColor = (varName: string) =>
-        getComputedStyle(document.documentElement)
-          .getPropertyValue(varName)
-          .trim();
-
-      const updateCharts = async (data?: any) => {
-        let chartData = data;
-        if (!chartData) {
-          try {
-            const response = await fetch(
-              `/api/wakatime/timeline?t=${Date.now()}`,
-            );
-            if (!response.ok) throw new Error("Failed");
-            chartData = await response.json();
-          } catch (e) {
-            console.error(e);
-            return;
+          const vBadge = document.getElementById("velocity-badge");
+          if (vBadge && m.velocity > 0) {
+            vBadge.textContent = `+${m.velocity}% VEL`;
+            vBadge.style.opacity = "1";
           }
         }
 
-        if (!chartData || !chartData.days) return;
+        // Radar Sparkline
+        const radar = document.getElementById("radar-polygon");
+        if (radar && data.days) {
+           const totals = data.days.map((d: any) => d.total_seconds);
+           const max = Math.max(...totals, 1);
+           const points = totals.map((t: number, i: number) => {
+              const angle = (i / 7) * Math.PI * 2;
+              const r = (t / max) * 80;
+              return `${100 + Math.cos(angle) * r},${100 + Math.sin(angle) * r}`;
+           }).join(" ");
+           radar.setAttribute("points", points);
+        }
 
-        const labels = chartData.days.map((d: any) =>
-          new Date(d.date).toLocaleDateString("en-US", { weekday: "short" }),
-        );
+        // Main Chart
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        const getCol = (v: string) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 
-        // Dynamic Soft Colors - Fallback to soft hex if variable fails
-        const colors: Record<string, string> = {
-          OpenCodeHub: getThemeColor("--color-neon-cyan") || "#b4befe", // Lavender
-          FLUXPLAY: getThemeColor("--color-electric-purple") || "#cba6f7", // Mauve
-          see: getThemeColor("--color-green") || "#a6e3a1", // Green
-          swadhin: getThemeColor("--color-red") || "#f38ba8", // Red
-          "docs-site": getThemeColor("--color-yellow") || "#f9e2af", // Yellow
-          owngit: getThemeColor("--color-peach") || "#fab387", // Peach
-        };
-        const fallbackColors = [
-          "#fab387", // Peach
-          "#89b4fa", // Blue
-          "#f2cdcd", // Flamingo
-        ];
-
-        const allProjects = [
-          ...new Set(
-            chartData.days.flatMap((day: any) =>
-              day.projects.map((p: any) => p.name),
-            ),
-          ),
-        ] as string[];
-
-        const datasets = allProjects.map((project, idx) => ({
-          label: project,
-          data: chartData.days.map((day: any) => {
-            const proj = day.projects.find((p: any) => p.name === project);
-            return proj ? proj.seconds / 3600 : 0;
-          }),
-          backgroundColor:
-            colors[project] || fallbackColors[idx % fallbackColors.length],
-          borderRadius: 4,
-        }));
-
-        // Destroy existing charts
-        if (activityChart) activityChart.destroy();
-
-        activityChart = new Chart(activityCanvas as HTMLCanvasElement, {
-          type: "bar",
-          data: { labels, datasets },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              x: {
-                stacked: true,
-                grid: { color: getThemeColor("--color-glass-border") },
-                ticks: {
-                  color: getThemeColor("--color-subtext1"),
-                  font: { family: "monospace" },
-                },
-              },
-              y: {
-                stacked: true,
-                grid: { color: getThemeColor("--color-glass-border") },
-                ticks: {
-                  color: getThemeColor("--color-subtext1"),
-                  font: { family: "monospace" },
-                },
-              },
-            },
-            plugins: {
-              legend: {
-                position: "bottom",
-                labels: {
-                  color: getThemeColor("--color-text"),
-                  font: { family: "monospace", size: 10 },
-                  boxWidth: 10,
-                },
-              },
-              tooltip: {
-                backgroundColor: getThemeColor("--color-mantle"),
-                titleColor: getThemeColor("--color-neon-cyan"),
-                bodyColor: getThemeColor("--color-text"),
-                borderColor: getThemeColor("--color-glass-border"),
-                borderWidth: 1,
-              },
-            },
-          },
+        const labels = data.days.map((d: any) => new Date(d.date).toLocaleDateString('en-US', { weekday: 'narrow' }));
+        const totals: number[] = data.days.map((d: any) => d.total_seconds / 3600);
+        const indexLine: number[] = totals.map((value: number, index: number, arr: number[]) => {
+          if (index < 2) return value;
+          return (arr[index] + arr[index - 1] + arr[index - 2]) / 3;
         });
 
-        // Radar Chart
-        const dailyTotals = chartData.days.map(
-          (d: any) => d.total_seconds / 3600,
-        );
-
-        if (productivityChart) productivityChart.destroy();
-
-        productivityChart = new Chart(productivityCanvas as HTMLCanvasElement, {
-          type: "radar",
+        new Chart(canvas, {
+          type: 'bar',
           data: {
-            labels: labels,
-            datasets: [
-              {
-                label: "Daily Hours",
-                data: dailyTotals,
-                borderColor: getThemeColor("--color-electric-purple"),
-                backgroundColor:
-                  getThemeColor("--color-electric-purple") + "33", // 20% opacity approx
-                pointBackgroundColor: getThemeColor("--color-neon-cyan"),
-                pointBorderColor: "#fff",
-              },
-            ],
+            labels,
+            datasets: [{
+              label: 'Load',
+              data: totals,
+              backgroundColor: getCol("--color-blue") + '33',
+              borderColor: getCol("--color-sky"),
+              borderWidth: 1,
+              borderRadius: 6,
+              barPercentage: 0.7,
+              categoryPercentage: 0.75
+            }, {
+              type: 'line',
+              label: 'Index',
+              data: indexLine,
+              borderColor: getCol("--color-blue"),
+              borderWidth: 2.5,
+              pointRadius: 0,
+              tension: 0.4
+            }]
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            scales: {
-              r: {
-                angleLines: { color: getThemeColor("--color-glass-border") },
-                grid: { color: getThemeColor("--color-glass-border") },
-                pointLabels: {
-                  color: getThemeColor("--color-subtext1"),
-                  font: { family: "monospace", size: 10 },
-                },
-                ticks: { display: false, backdropColor: "transparent" },
-              },
-            },
             plugins: { legend: { display: false } },
-          },
+            scales: {
+              x: { grid: { display: false }, ticks: { font: { family: 'monospace', size: 8 }, color: 'rgba(205, 214, 244, 0.45)' } },
+              y: { grid: { color: 'rgba(137, 180, 250, 0.06)' }, ticks: { font: { family: 'monospace', size: 8 }, color: 'rgba(205, 214, 244, 0.45)' } }
+            }
+          }
         });
-      };
 
-      // Initial Load
-      updateCharts();
+        const totalEl = document.getElementById("total-contributions");
+        const lifetime = data.days.reduce((acc: number, d: any) => acc + d.total_seconds, 0) / 3600;
+        if (totalEl) totalEl.textContent = lifetime.toFixed(1) + 'h';
 
-      // Listen for theme changes
-      window.addEventListener("theme-changed", () => updateCharts());
+      } catch (e) {}
     }
 
-    // Replace original GitHub Fetch calls for graph
-    // We still fetch GitHub for stats/radar, but Graph is now WakaTime.
-    fetchWakaTimeData();
-
-    fetchGitHubData();
+    fetchAll();
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initGitHubActivity);
+    document.addEventListener("DOMContentLoaded", initEliteDashboard);
   } else {
-    initGitHubActivity();
+    initEliteDashboard();
   }
-  document.addEventListener("astro:page-load", initGitHubActivity);
+  document.addEventListener("astro:page-load", initEliteDashboard);
 </script>

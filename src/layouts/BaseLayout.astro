@@ -1,10 +1,9 @@
 ---
 import "../styles/global.css";
 import "katex/dist/katex.min.css";
-import { siteConfig } from "../config/site";
+import { getDynamicConfig } from "../lib/config";
 import Header from "../components/layout/Header.astro";
 import Footer from "../components/layout/Footer.astro";
-import FloatingPet from "../components/fun/FloatingPet";
 import GoogleAnalytics from "../components/GoogleAnalytics.astro";
 import KonamiCode from "../components/fun/KonamiCode.astro";
 import ScrollProgress from "../components/ui/ScrollProgress.astro";
@@ -15,6 +14,7 @@ interface Props {
   title?: string;
   description?: string;
   image?: string;
+  ogType?: string;
 }
 
 // Fetch settings for global components (like SupportModal)
@@ -44,10 +44,17 @@ try {
 }
 
 const { title, description, image } = Astro.props;
+const siteConfig = await getDynamicConfig();
+
 const pageTitle = title ? `${title} | ${siteConfig.name}` : siteConfig.name;
 const pageDescription = description || siteConfig.description;
 const ogImage = image || `${siteConfig.url}/og-image.png`;
 const canonicalURL = new URL(Astro.url.pathname, siteConfig.url);
+
+// Feature toggles
+const showKonamiCode = settings.show_konami_code !== "false";
+const showScrollProgress = settings.show_scroll_progress !== "false";
+const showSupportModal = settings.show_support_modal !== "false";
 ---
 
 <!doctype html>
@@ -68,7 +75,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url);
     <!-- Open Graph -->
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={Astro.props.ogType || "website"} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:site_name" content={siteConfig.name} />
@@ -87,11 +94,16 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url);
     <meta property="twitter:image" content={ogImage} />
 
     <title>{pageTitle}</title>
+    <!-- Auto Discovery Links for RSS and News -->
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed for Projects and Posts" href="/rss.xml" />
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap-index.xml" />
+    <link rel="sitemap" type="application/xml" title="Google News Sitemap" href="/google-news.xml" />
+
     <GoogleAnalytics />
     <slot name="head" />
   </head>
   <body
-    class="min-h-screen flex flex-col font-mono text-white overflow-x-hidden selection:bg-neon-cyan selection:text-void-black"
+    class="min-h-screen flex flex-col font-sans text-white overflow-x-hidden selection:bg-neon-cyan selection:text-void-black"
   >
     <div
       id="app-content"
@@ -107,16 +119,71 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url);
       >
         <slot />
       </main>
-      <FloatingPet client:idle />
       <Footer />
     </div>
-    <KonamiCode />
-    <ScrollProgress />
+    {showKonamiCode && <KonamiCode />}
+    {showScrollProgress && <ScrollProgress />}
 
+    <!-- Scroll to Top Button -->
     <script>
-      // Essential scripts can go here if needed in the future
+      // Scroll to top button logic
+      const scrollBtn = document.createElement('button');
+      scrollBtn.id = 'scroll-to-top';
+      scrollBtn.innerHTML = `
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+        </svg>
+      `;
+      scrollBtn.style.cssText = `
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        z-index: 50;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(34, 211, 238, 0.15);
+        border: 1px solid rgba(34, 211, 238, 0.3);
+        color: #22d3ee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        pointer-events: none;
+      `;
+      scrollBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      document.body.appendChild(scrollBtn);
+
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 500) {
+          scrollBtn.style.opacity = '1';
+          scrollBtn.style.transform = 'translateY(0)';
+          scrollBtn.style.pointerEvents = 'auto';
+        } else {
+          scrollBtn.style.opacity = '0';
+          scrollBtn.style.transform = 'translateY(10px)';
+          scrollBtn.style.pointerEvents = 'none';
+        }
+      }, { passive: true });
+
+      scrollBtn.addEventListener('mouseenter', () => {
+        scrollBtn.style.background = 'rgba(34, 211, 238, 0.25)';
+        scrollBtn.style.borderColor = 'rgba(34, 211, 238, 0.6)';
+        scrollBtn.style.boxShadow = '0 0 20px rgba(34, 211, 238, 0.3)';
+      });
+      scrollBtn.addEventListener('mouseleave', () => {
+        scrollBtn.style.background = 'rgba(34, 211, 238, 0.15)';
+        scrollBtn.style.borderColor = 'rgba(34, 211, 238, 0.3)';
+        scrollBtn.style.boxShadow = 'none';
+      });
     </script>
-    <SupportModal settings={settings} />
+    {showSupportModal && <SupportModal settings={settings} />}
     <VercelAnalytics />
   </body>
 </html>

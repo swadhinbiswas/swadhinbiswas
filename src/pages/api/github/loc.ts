@@ -1,27 +1,38 @@
-
-import { getCachedData, setCachedData } from '../../../lib/redis';
+import { db } from '../../../db';
+import { apiCache } from '../../../db/schema';
+import { eq } from 'drizzle-orm';
 import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
 export const GET: APIRoute = async () => {
     try {
-        // Try to get from cache first
-        const cacheKey = 'github_loc_stats';
-        const cached = await getCachedData(cacheKey);
+        // 1. Try to get the fresh data pushed by today.py from DB
+        const dbResult = await db
+            .select()
+            .from(apiCache)
+            .where(eq(apiCache.key, 'github_stat_loc'))
+            .get();
 
-        if (cached) {
-            return new Response(JSON.stringify(cached), {
+        if (dbResult) {
+            const locData = JSON.parse(dbResult.data);
+            return new Response(JSON.stringify({
+                loc: locData[2],
+                added: locData[0],
+                deleted: locData[1],
+                source: 'database'
+            }), {
                 status: 200,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Cache-Control': 'public, max-age=86400' // 24 hours
+                    'Cache-Control': 'public, max-age=3600'
                 }
             });
         }
 
-        // Fetch the SVG
-        const response = await fetch('https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/dark_mode.svg');
+        // 2. Fallback: Fetch the SVG if DB doesn't have it yet
+        const username = import.meta.env.PUBLIC_GITHUB || 'swadhinbiswas';
+        const response = await fetch(`https://raw.githubusercontent.com/${username}/${username}/main/dark_mode.svg`);
 
         if (!response.ok) {
             throw new Error(`Failed to fetch SVG: ${response.status}`);
@@ -42,11 +53,9 @@ export const GET: APIRoute = async () => {
         const data = {
             loc: totalMatch[1],
             added: addedMatch[1],
-            deleted: deletedMatch[1]
+            deleted: deletedMatch[1],
+            source: 'svg-fallback'
         };
-
-        // Cache the result for 24 hours
-        await setCachedData(cacheKey, data, 86400);
 
         return new Response(JSON.stringify(data), {
             status: 200,

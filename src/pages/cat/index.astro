@@ -9,21 +9,17 @@ import {
   experiences,
   projects,
   skills,
-  achievements,
   education,
   publications,
   interests,
-  posts,
 } from "../../db";
 
 // Fetch counts for dashboard
 let settingsCount = 0;
 let socialsCount = 0;
-let blogCount = 0;
 let experiencesCount = 0;
 let projectsCount = 0;
 let skillsCount = 0;
-let achievementsCount = 0;
 let educationCount = 0;
 let publicationsCount = 0;
 let interestsCount = 0;
@@ -33,22 +29,18 @@ try {
   const [
     settings,
     socials,
-    rawPosts,
     exps,
     projs,
     sklls,
-    achvs,
     educs,
     pubs,
     ints,
   ] = await Promise.all([
     db.select().from(siteSettings),
     db.select().from(socialLinks),
-    db.select().from(posts),
     db.select().from(experiences),
     db.select().from(projects),
     db.select().from(skills),
-    db.select().from(achievements),
     db.select().from(education),
     db.select().from(publications),
     db.select().from(interests),
@@ -56,11 +48,9 @@ try {
 
   settingsCount = settings.length;
   socialsCount = socials.length;
-  blogCount = rawPosts.length;
   experiencesCount = exps.length;
   projectsCount = projs.length;
   skillsCount = sklls.length;
-  achievementsCount = achvs.length;
   educationCount = educs.length;
   publicationsCount = pubs.length;
   interestsCount = ints.length;
@@ -125,19 +115,6 @@ try {
       </a>
 
       <a
-        href="/cat/blog"
-        class="glass-panel rounded-xl p-6 border border-white/10 hover:border-neon-cyan/50 transition-colors group"
-      >
-        <div class="text-3xl mb-2">✍️</div>
-        <div
-          class="text-2xl font-bold text-white group-hover:text-neon-cyan transition-colors"
-        >
-          {blogCount}
-        </div>
-        <div class="text-sm text-gray-400">Blog Posts</div>
-      </a>
-
-      <a
         href="/cat/experiences"
         class="glass-panel rounded-xl p-6 border border-white/10 hover:border-neon-cyan/50 transition-colors group"
       >
@@ -174,19 +151,6 @@ try {
           {skillsCount}
         </div>
         <div class="text-sm text-gray-400">Skills</div>
-      </a>
-
-      <a
-        href="/cat/achievements"
-        class="glass-panel rounded-xl p-6 border border-white/10 hover:border-neon-cyan/50 transition-colors group"
-      >
-        <div class="text-3xl mb-2">🏆</div>
-        <div
-          class="text-2xl font-bold text-white group-hover:text-neon-cyan transition-colors"
-        >
-          {achievementsCount}
-        </div>
-        <div class="text-sm text-gray-400">Achievements</div>
       </a>
 
       <a
@@ -253,10 +217,11 @@ try {
           Edit Site Settings
         </a>
         <a
-          href="/cat/blog"
+          href="https://blog.swadhin.cv/"
+          target="_blank"
           class="px-4 py-3 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors text-center"
         >
-          Add New Post
+          Open Blog (External)
         </a>
         <a
           href="/cat/projects"

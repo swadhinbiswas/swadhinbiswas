@@ -1093,6 +1093,43 @@ if __name__ == "__main__":
         recent_repos=recent_repos,
     )
 
+    # --- Push to Database ---
+    try:
+        CRON_SECRET = os.environ.get("CRON_SECRET")
+        SITE_URL = os.environ.get("PUBLIC_SITE_URL") or "https://swadhin.cv"
+        
+        if CRON_SECRET:
+            print("\n🚀 Pushing stats to database...")
+            stats_payload = {
+                "stats": {
+                    "loc": total_loc[:-1], # [added, deleted, net]
+                    "stars": star_data,
+                    "repos": repo_data,
+                    "followers": follower_data,
+                    "commits": commit_data,
+                    "streak": streak_data,
+                    "languages": lang_data,
+                    "score": score_data[0],
+                    "rank": score_data[1],
+                    "age": age_data
+                }
+            }
+            
+            res = requests.post(
+                f"{SITE_URL.rstrip('/')}/api/github/update-stats",
+                json=stats_payload,
+                headers={"Authorization": f"Bearer {CRON_SECRET}"}
+            )
+            
+            if res.status_code == 200:
+                print("  ✅ Database updated successfully!")
+            else:
+                print(f"  ❌ Failed to update database: {res.status_code} {res.text}")
+        else:
+            print("\n⚠️ CRON_SECRET not found, skipping database update.")
+    except Exception as e:
+        print(f"\n❌ Error pushing to database: {e}")
+
     # Print total function time
     total_time = (
         user_time

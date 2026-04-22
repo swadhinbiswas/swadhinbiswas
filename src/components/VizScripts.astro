@@ -20,18 +20,20 @@
 <!-- Plotly Script -->
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" is:inline></script>
 <script is:inline>
-    // Expose for manual triggering (e.g., in modals)
     window.hydratePlotly = hydratePlotly;
     window.runMermaid = runMermaid;
+    window.hydrateCharts = hydrateCharts;
 
     document.addEventListener("astro:page-load", () => {
         hydratePlotly();
         runMermaid();
+        hydrateCharts();
     });
 
     document.addEventListener("DOMContentLoaded", () => {
         hydratePlotly();
         runMermaid();
+        hydrateCharts();
     });
 
     async function runMermaid() {
@@ -125,16 +127,4 @@
     }
 
     window.hydrateCharts = hydrateCharts;
-
-    document.addEventListener("astro:page-load", () => {
-        hydratePlotly();
-        runMermaid();
-        hydrateCharts();
-    });
-
-    document.addEventListener("DOMContentLoaded", () => {
-        hydratePlotly();
-        runMermaid();
-        hydrateCharts();
-    });
 </script>

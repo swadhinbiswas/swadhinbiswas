@@ -28,16 +28,28 @@ function timeAgo(dateString: string) {
 }
 
 export const GET: APIRoute = async () => {
-    try {
-        const token = import.meta.env.GITHUB_TOKEN || process.env.GITHUB_TOKEN;
-        const username = import.meta.env.PUBLIC_GITHUB || process.env.PUBLIC_GITHUB || 'swadhinbiswas';
+    const token = import.meta.env.GITHUB_TOKEN || process.env.GITHUB_TOKEN;
+    const username = import.meta.env.PUBLIC_GITHUB || process.env.PUBLIC_GITHUB || 'swadhinbiswas';
 
-        if (!token) {
-            return new Response(JSON.stringify({ error: 'Missing GitHub Token' }), {
-                status: 500,
-                headers: { 'Content-Type': 'application/json' }
-            });
-        }
+    // Return fallback data if no token
+    if (!token) {
+        console.warn('GitHub token not configured - returning fallback data');
+        return new Response(JSON.stringify({
+            commits: [{
+                message: 'GitHub token not configured',
+                repo: 'system',
+                time: 'now',
+                url: '#',
+                hash: 'config',
+                verified: false
+            }]
+        }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
+    try {
 
         // Try to get from cache first
         const cacheKey = `github_events_${username}`;
@@ -136,13 +148,13 @@ export const GET: APIRoute = async () => {
         const responseData = { commits: activity };
 
         // Cache the result
-        await setCachedData(cacheKey, responseData, 600); // 10 minutes
+        await setCachedData(cacheKey, responseData, 120);
 
         return new Response(JSON.stringify(responseData), {
             status: 200,
             headers: {
                 'Content-Type': 'application/json',
-                'Cache-Control': 'public, max-age=600',
+                'Cache-Control': 'public, max-age=120, stale-while-revalidate=60',
                 'X-Cache': 'MISS'
             }
         });

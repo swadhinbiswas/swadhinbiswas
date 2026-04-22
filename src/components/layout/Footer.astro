@@ -1,34 +1,46 @@
 ---
-import { siteConfig } from "../../config/site";
+import { getDynamicConfig } from "../../lib/config";
 import ThemeToggle from "../ThemeToggle.astro";
 import GlobalClicker from "../fun/GlobalClicker";
-import FooterCat from "../fun/FooterCat";
+import { db, siteSettings } from "../../db";
 
+const siteConfig = await getDynamicConfig();
 const currentYear = new Date().getFullYear();
+
+// Fetch feature settings
+let showFooterCatImage = true;
+let showGlobalClicker = true;
+
+try {
+  const settingsData = await db.select().from(siteSettings);
+  const settings = settingsData.reduce(
+    (acc, curr) => {
+      acc[curr.key] = curr.value;
+      return acc;
+    },
+    {} as Record<string, string>,
+  );
+  showFooterCatImage = settings.show_footer_cat_image !== "false";
+  showGlobalClicker = settings.show_global_clicker !== "false";
+} catch (e) {
+  console.error("Failed to fetch footer settings", e);
+}
 ---
 
 <!-- Bottom Spacer to prevent content overlap -->
 <div class="h-24"></div>
-
-<!-- Footer Cat Pet - Hidden on very small screens for cleaner mobile UX -->
-<div
-  class="fixed bottom-14 sm:bottom-18 md:bottom-20 left-0 right-0 z-40 pointer-events-none hidden sm:block"
->
-  <div class="max-w-4xl mx-auto px-4 pointer-events-auto">
-    <FooterCat client:visible />
-  </div>
-</div>
 
 <!-- Floating Command Bar / Footer -->
 <footer
   class="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-fit px-2 sm:px-4"
 >
   <div
-    class="glass-panel px-2 sm:px-4 py-2 sm:py-3 rounded-full flex items-center gap-2 sm:gap-4 md:gap-8 text-[10px] sm:text-xs font-mono text-gray-400 border border-white/5 shadow-2xl backdrop-blur-xl bg-mantle/80"
+    class="px-2 sm:px-4 py-2 sm:py-3 rounded-full flex items-center gap-2 sm:gap-4 md:gap-8 text-[10px] sm:text-xs font-mono text-gray-400 border border-white/10 shadow-lg backdrop-blur-md bg-mantle/60"
   >
     <!-- Copyright with Cat Image floating above -->
     <div class="flex items-center gap-1 sm:gap-1.5 whitespace-nowrap relative">
       <!-- Cat floating above the footer bar - responsive sizes -->
+      {showFooterCatImage && (
       <img
         id="footer-cat-image"
         src="/icons/catimage.png"
@@ -40,6 +52,7 @@ const currentYear = new Date().getFullYear();
         data-image-component
         class="absolute -top-10 sm:-top-14 md:-top-20 left-1/2 -translate-x-1/2 w-[40px] sm:w-[60px] md:w-[100px] h-auto object-contain z-10 cursor-pointer hover:scale-110 transition-transform"
       />
+      )}
       <span class="hidden sm:inline">&copy; {currentYear}</span>
       <span
         id="footer-author-name"
@@ -56,9 +69,11 @@ const currentYear = new Date().getFullYear();
     </div>
 
     <!-- Global Clicker -->
+    {showGlobalClicker && (
     <div class="hidden sm:block">
       <GlobalClicker client:visible />
     </div>
+    )}
 
     <!-- Status Indicator -->
     <div class="flex items-center gap-1 sm:gap-2 whitespace-nowrap">
@@ -125,6 +140,23 @@ const currentYear = new Date().getFullYear();
         <line x1="17.01" y1="12" x2="22.96" y2="12"></line>
       </svg>
       <span id="commit-hash" class="font-mono">...</span>
+    </a>
+
+    <!-- Separator -->
+    <div class="h-4 w-px bg-white/10 hidden sm:block"></div>
+
+    <!-- SaaS / Products Link -->
+    <a
+      href="https://saas.swadhin.cv"
+      target="_blank"
+      class="flex items-center gap-1.5 text-neon-cyan hover:text-white transition-colors font-bold px-2 py-0.5 rounded-md hover:bg-white/5"
+      title="My SaaS Products"
+    >
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+      <span class="hidden sm:inline">Products</span>
+      <span class="sm:hidden">SaaS</span>
     </a>
 
     <!-- Separator -->
@@ -323,7 +355,4 @@ const currentYear = new Date().getFullYear();
   updateFooterTime();
   updateViewCount();
   updateCommitInfo();
-
-  // --- Cat Image (Local) ---
-  // Note: To use Storage, upload the image first and update the URL
 </script>

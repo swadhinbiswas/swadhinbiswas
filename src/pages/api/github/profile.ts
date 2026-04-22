@@ -2,7 +2,8 @@ import type { APIRoute } from "astro";
 import { db } from "../../../db";
 import { apiCache } from "../../../db/schema";
 import { eq } from "drizzle-orm";
-import { siteConfig } from "../../../config/site";
+import { getDynamicConfig } from "../../../lib/config";
+const siteConfig = await getDynamicConfig();
 
 const CACHE_KEY = "github_profile";
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hour (User profile changes less often)

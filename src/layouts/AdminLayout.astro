@@ -43,6 +43,12 @@ const { title = "Admin Panel" } = Astro.props;
             <span class="mr-2">📊</span> Dashboard
           </a>
           <a
+            href="/cat/profile"
+            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
+          >
+            <span class="mr-2">👤</span> User Profile
+          </a>
+          <a
             href="/cat/settings"
             class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
           >
@@ -83,12 +89,6 @@ const { title = "Admin Panel" } = Astro.props;
             class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
           >
             <span class="mr-2">🛠️</span> Skills
-          </a>
-          <a
-            href="/cat/achievements"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">🏆</span> Achievements
           </a>
           <a
             href="/cat/bio"

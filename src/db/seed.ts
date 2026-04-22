@@ -17,15 +17,20 @@ import {
   publications,
   interests,
   pageViews,
+  supportOptions,
 } from './schema';
 
 // Import static config
-import { siteConfig } from '../config/site';
+import { getDynamicConfig } from "../lib/config";
+const siteConfig = await getDynamicConfig();
 
-// Create client
+// Create client - support local SQLite file for development
+const dbUrl = process.env.TURSO_DATABASE_URL || 'file:local.db';
+const authToken = process.env.TURSO_AUTH_TOKEN || '';
+
 const client = createClient({
-  url: process.env.TURSO_DATABASE_URL || '',
-  authToken: process.env.TURSO_AUTH_TOKEN || '',
+  url: dbUrl,
+  authToken: authToken,
 });
 
 const db = drizzle(client);
@@ -67,6 +72,7 @@ async function seed() {
       { key: 'seo_keywords', value: siteConfig.seo.keywords.join(', ') },
       { key: 'works_for_name', value: siteConfig.seo.worksFor.name },
       { key: 'works_for_url', value: siteConfig.seo.worksFor.url },
+      { key: 'github_update_secret', value: process.env.CRON_SECRET || 'secret_key_change_me' },
     ];
 
     for (const setting of settingsData) {
@@ -165,24 +171,8 @@ async function seed() {
       });
     }
     console.log(`  ✅ Inserted ${siteConfig.featuredProjects.length} projects`);
-
-    // 6. Achievements
-    console.log('🏆 Seeding achievements...');
-    for (let i = 0; i < siteConfig.achievements.length; i++) {
-      const ach = siteConfig.achievements[i];
-      await db.insert(achievements).values({
-        name: ach.name,
-        icon: ach.icon,
-        description: ach.description,
-        order: i,
-        createdAt: now,
-        updatedAt: now,
-      });
-    }
-    console.log(`  ✅ Inserted ${siteConfig.achievements.length} achievements`);
-
-    // 7. Skills
-    console.log('🛠️ Seeding skills...');
+// 7. Skills
+console.log('🛠️ Seeding skills...');
     for (let i = 0; i < siteConfig.skills.length; i++) {
       const skill = siteConfig.skills[i];
       // Determine category based on skill name
@@ -283,7 +273,23 @@ async function seed() {
     }
     console.log(`  ✅ Inserted ${interestsData.length} interests`);
 
-    // 12. Page Views
+    // 12. Support Options
+    console.log('💖 Seeding support options...');
+    const supportData = [
+      { name: 'Buy Me a Coffee', icon: '☕', type: 'link', value: 'https://buymeacoffee.com/swadhinbiswas', order: 0 },
+      { name: 'GitHub Sponsors', icon: '❤️', type: 'link', value: 'https://github.com/sponsors/swadhinbiswas', order: 1 },
+      { name: 'UPI', icon: '💳', type: 'copy', value: 'swadhinbiswas@upi', order: 2 },
+    ];
+
+    for (let i = 0; i < supportData.length; i++) {
+      await db.insert(supportOptions).values({
+        ...supportData[i],
+        createdAt: now,
+      });
+    }
+    console.log(`  ✅ Inserted ${supportData.length} support options`);
+
+    // 13. Page Views
     console.log('👀 Seeding page views...');
     await db.insert(pageViews).values({ id: 1, count: 1030333 }).onConflictDoNothing();
     console.log('  ✅ Page views initialized');

@@ -1,0 +1,84 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const tools = [
+  { category: "Languages", items: ["Python", "TypeScript", "JavaScript", "Go", "C++", "SQL", "Bash"] },
+  { category: "Backend", items: ["FastAPI", "Django", "Node.js", "Express", "Flask", "gRPC", "REST"] },
+  { category: "AI / ML", items: ["PyTorch", "TensorFlow", "LangChain", "Hugging Face", "scikit-learn", "OpenCV"] },
+  { category: "Database", items: ["PostgreSQL", "MongoDB", "Redis", "SQLite", "Turso (libSQL)", "Elasticsearch"] },
+  { category: "Infrastructure", items: ["Docker", "Kubernetes", "AWS", "GCP", "Vercel", "Cloudflare", "Nginx"] },
+  { category: "DevOps", items: ["GitHub Actions", "CI/CD", "Terraform", "Ansible", "Prometheus", "Grafana"] },
+  { category: "Tools", items: ["Neovim", "Git", "tmux", "fzf", "ripgrep", "lazygit", "zsh"] },
+  { category: "Editor", items: ["Neovim (primary)", "VS Code (when needed)", "JetBrains (for large projects)"] },
+];
+---
+
+<BaseLayout title="Uses">
+  <div class="animate-fade-in max-w-4xl mx-auto">
+
+    <!-- Page Header -->
+    <div class="mb-16 pb-8 border-b border-glass-border">
+      <p class="text-xs font-mono text-overlay0 mb-3">~/uses</p>
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold font-mono tracking-tight text-text mb-4">
+        Uses <span class="text-accent">& Setup</span>
+      </h1>
+      <p class="text-lg font-serif text-subtext0 max-w-2xl leading-relaxed italic">
+        A curated list of the tools, technologies, and setups I use daily for building systems and writing code.
+      </p>
+    </div>
+
+    <!-- Tech Stack -->
+    <section class="mb-16">
+      <h2 class="text-lg font-mono text-text mb-6 flex items-center gap-3 pb-3 border-b border-glass-border">
+        <span class="section-number">01.</span>
+        Tech Stack
+      </h2>
+      <div class="space-y-8">
+        {tools.map((group) => (
+          <div>
+            <h3 class="text-sm font-mono text-accent mb-3 uppercase tracking-wider">{group.category}</h3>
+            <div class="flex flex-wrap gap-2">
+              {group.items.map((item) => (
+                <span class="text-xs px-3 py-1.5 bg-surface0/50 text-subtext0 rounded-lg border border-surface0 hover:text-accent hover:border-accent/30 transition-colors">
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Philosophy -->
+    <section class="mb-16">
+      <h2 class="text-lg font-mono text-text mb-6 flex items-center gap-3 pb-3 border-b border-glass-border">
+        <span class="section-number">02.</span>
+        Philosophy
+      </h2>
+      <div class="academic-card space-y-4 font-serif text-subtext0 leading-relaxed">
+        <p>
+          I believe in using the right tool for the job — not the trendiest one. Simplicity beats complexity. Reliability beats novelty. And the best code is the code you don't have to write.
+        </p>
+        <p>
+          My setup prioritizes <strong class="text-text">keyboard-driven workflows</strong>, <strong class="text-text">minimalism</strong>, and <strong class="text-text">reproducibility</strong>. Every tool here has earned its place through daily use.
+        </p>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="text-center py-12 border-t border-glass-border">
+      <h2 class="text-xl font-mono text-text mb-3">Have a tool recommendation?</h2>
+      <p class="text-subtext0 font-serif mb-6 italic">I'm always looking to improve my workflow.</p>
+      <a
+        href="/contact"
+        class="inline-flex items-center gap-2 px-6 py-2.5 bg-accent/10 border border-accent/30 text-accent font-mono text-sm font-bold rounded-lg hover:bg-accent/20 hover:border-accent/50 transition-all"
+      >
+        <span>></span>
+        <span>share_your_tool</span>
+        <span class="animate-pulse">_</span>
+      </a>
+    </section>
+  </div>
+</BaseLayout>

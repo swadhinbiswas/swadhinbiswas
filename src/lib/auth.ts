@@ -1,6 +1,6 @@
 // Helper functions for admin authentication
 import { db, adminSessions } from '../db';
-import { eq } from 'drizzle-orm';
+import { eq, lt } from 'drizzle-orm';
 
 export function generateSessionToken(): string {
   const array = new Uint8Array(32);
@@ -32,7 +32,7 @@ export async function deleteSession(token: string): Promise<void> {
 
 export async function cleanExpiredSessions(): Promise<void> {
   const now = new Date().toISOString();
-  await db.delete(adminSessions).where(eq(adminSessions.expiresAt, now));
+  await db.delete(adminSessions).where(lt(adminSessions.expiresAt, now));
 }
 
 export function verifyCredentials(username: string, password: string): boolean {

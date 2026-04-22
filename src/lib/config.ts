@@ -1,16 +1,26 @@
 // Dynamic configuration loader that fetches from database with fallback to static config
-import { db, siteSettings, socialLinks, navigationItems, experiences, projects, achievements, skills, bioContent } from '../db';
-import { siteConfig as staticConfig } from '../config/site';
+import {
+  db,
+  siteSettings,
+  socialLinks,
+  navigationItems,
+  experiences,
+  projects,
+  achievements,
+  skills,
+  bioContent,
+} from "../db";
 
 export interface DynamicSiteConfig {
   name: string;
   description: string;
   url: string;
+  cvUrl?: string;
   author: string;
   email: string;
   location: string;
   timezone: string;
-  
+
   seo: {
     author: string;
     title: string;
@@ -24,14 +34,14 @@ export interface DynamicSiteConfig {
       country: string;
     };
   };
-  
+
   links: {
     github: string;
     linkedin: string;
     twitter: string;
     [key: string]: string;
   };
-  
+
   navItems: Array<{ label: string; href: string; external?: boolean }>;
   navMenuItems: Array<{ label: string; href: string; external?: boolean }>;
   socials: Array<{ name: string; url: string; icon: string; footer?: boolean }>;
@@ -56,12 +66,15 @@ export interface DynamicSiteConfig {
   }>;
   achievements: Array<{ name: string; icon: string; description: string }>;
   skills: string[];
-  
+
   bio: {
+    focusLabel: string;
     short: string;
     long: string;
     quote: string;
     funFact: string;
+    researchStatement: string;
+    roleInterests?: string;
   };
 }
 
@@ -75,7 +88,7 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
   if (cachedConfig && Date.now() - cacheTimestamp < CACHE_TTL) {
     return cachedConfig;
   }
-  
+
   try {
     // Fetch all data from database in parallel
     const [
@@ -97,149 +110,167 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
       db.select().from(skills).orderBy(skills.order),
       db.select().from(bioContent),
     ]);
-    
+
     // Convert settings to object
     const settings: Record<string, string> = {};
-    settingsData.forEach(s => {
+    settingsData.forEach((s) => {
       settings[s.key] = s.value;
     });
-    
+
     // Convert bio to object
     const bio: Record<string, string> = {};
-    bioData.forEach(b => {
+    bioData.forEach((b) => {
       bio[b.key] = b.value;
     });
-    
+
     // Parse keywords
-    const keywords = settings.seo_keywords 
-      ? settings.seo_keywords.split(',').map(k => k.trim()) 
-      : staticConfig.seo.keywords;
-    
+    const keywords = settings.seo_keywords
+      ? settings.seo_keywords.split(",").map((k) => k.trim())
+      : [];
+
     // Build config
     const config: DynamicSiteConfig = {
-      name: settings.site_name || staticConfig.name,
-      description: settings.site_description || staticConfig.description,
-      url: settings.site_url || staticConfig.url,
-      author: settings.author || staticConfig.author,
-      email: settings.email || staticConfig.email,
-      location: settings.location || staticConfig.location,
-      timezone: settings.timezone || staticConfig.timezone,
-      
+      name: settings.site_name || "",
+      description: settings.site_description || "",
+      url: settings.site_url || "",
+      cvUrl: settings.cv_url || "",
+      author: settings.author || "",
+      email: settings.email || "",
+      location: settings.location || "",
+      timezone: settings.timezone || "",
+
       seo: {
-        author: settings.author || staticConfig.seo.author,
-        title: settings.seo_title || staticConfig.seo.title,
+        author: settings.author || "",
+        title: settings.seo_title || "",
         keywords,
         worksFor: {
-          name: settings.works_for_name || staticConfig.seo.worksFor.name,
-          url: settings.works_for_url || staticConfig.seo.worksFor.url,
+          name: settings.works_for_name || "",
+          url: settings.works_for_url || "",
         },
-        location: staticConfig.seo.location,
+        location: { city: "Dhaka", country: "Bangladesh" },
       },
-      
+
       links: {
-        github: socialsData.find(s => s.icon === 'github')?.url || staticConfig.links.github,
-        linkedin: socialsData.find(s => s.icon === 'linkedin')?.url || staticConfig.links.linkedin,
-        twitter: socialsData.find(s => s.icon === 'twitter')?.url || staticConfig.links.twitter,
-        email: `mailto:${settings.email || staticConfig.email}`,
+        github: socialsData.find((s) => s.icon === "github")?.url || "",
+        linkedin: socialsData.find((s) => s.icon === "linkedin")?.url || "",
+        twitter: socialsData.find((s) => s.icon === "twitter")?.url || "",
+        email: `mailto:${settings.email || ""}`,
       },
-      
-      navItems: navData.length > 0 
-        ? navData.filter(n => n.location === 'header' || n.location === 'both').map(n => ({
-            label: n.label,
-            href: n.href,
-            external: n.external || false,
-          }))
-        : staticConfig.navItems,
-      
-      navMenuItems: navData.length > 0 
-        ? navData.filter(n => n.location === 'menu' || n.location === 'both').map(n => ({
-            label: n.label,
-            href: n.href,
-            external: n.external || false,
-          }))
-        : staticConfig.navMenuItems,
-      
-      socials: socialsData.length > 0 
-        ? socialsData.map(s => ({
-            name: s.name,
-            url: s.url,
-            icon: s.icon,
-            footer: s.footer || false,
-          }))
-        : staticConfig.socials,
-      
-      experience: experiencesData.length > 0 
-        ? experiencesData.map(e => ({
-            company: e.company,
-            role: e.role,
-            url: e.url,
-            logoUrl: e.logoUrl || undefined,
-            startDate: e.startDate,
-            endDate: e.endDate || undefined,
-            details: e.details || undefined,
-          }))
-        : staticConfig.experience,
-      
-      featuredProjects: projectsData.length > 0 
-        ? projectsData.filter(p => p.featured).map(p => ({
-            name: p.name,
-            description: p.description,
-            url: p.url,
-            github: p.github || undefined,
-            image: p.image || undefined,
-            tags: JSON.parse(p.tags || '[]'),
-            featured: p.featured || false,
-            stars: p.stars || 0,
-          }))
-        : staticConfig.featuredProjects,
-      
-      achievements: achievementsData.length > 0 
-        ? achievementsData.map(a => ({
-            name: a.name,
-            icon: a.icon,
-            description: a.description,
-          }))
-        : staticConfig.achievements,
-      
-      skills: skillsData.length > 0 
-        ? skillsData.map(s => s.name)
-        : staticConfig.skills,
-      
+
+      navItems:
+        navData.length > 0
+          ? navData
+              .filter((n) => n.location === "header" || n.location === "both")
+              .map((n) => ({
+                label: n.label,
+                href: n.href,
+                external: n.external || false,
+              }))
+          : [],
+
+      navMenuItems:
+        navData.length > 0
+          ? navData
+              .filter((n) => n.location === "menu" || n.location === "both")
+              .map((n) => ({
+                label: n.label,
+                href: n.href,
+                external: n.external || false,
+              }))
+          : [],
+
+      socials:
+        socialsData.length > 0
+          ? socialsData.map((s) => ({
+              name: s.name,
+              url: s.url,
+              icon: s.icon,
+              footer: s.footer || false,
+            }))
+          : [],
+
+      experience:
+        experiencesData.length > 0
+          ? experiencesData.map((e) => ({
+              company: e.company,
+              role: e.role,
+              url: e.url,
+              logoUrl: e.logoUrl || undefined,
+              startDate: e.startDate,
+              endDate: e.endDate || undefined,
+              details: e.details || undefined,
+            }))
+          : [],
+
+      featuredProjects:
+        projectsData.length > 0
+          ? projectsData
+              .filter((p) => p.featured)
+              .map((p) => ({
+                name: p.name,
+                description: p.description,
+                url: p.url,
+                github: p.github || undefined,
+                image: p.image || undefined,
+                tags: JSON.parse(p.tags || "[]"),
+                featured: p.featured || false,
+                stars: p.stars || 0,
+              }))
+          : [],
+
+      achievements:
+        achievementsData.length > 0
+          ? achievementsData.map((a) => ({
+              name: a.name,
+              icon: a.icon,
+              description: a.description,
+            }))
+          : [],
+
+      skills: skillsData.length > 0 ? skillsData.map((s) => s.name) : [],
+
       bio: {
-        short: bio.short || staticConfig.bio.short,
-        long: bio.long || staticConfig.bio.long,
-        quote: bio.quote || staticConfig.bio.quote,
-        funFact: bio.funFact || staticConfig.bio.funFact,
+        focusLabel: bio.focusLabel || "CURRENT DIRECTIVE",
+        short: bio.short || "",
+        long: bio.long || "",
+        quote: bio.quote || "",
+        funFact: bio.funFact || "",
+        researchStatement: bio.researchStatement || "",
+        roleInterests: bio.roleInterests || "",
       },
     };
-    
+
     // Update cache
     cachedConfig = config;
     cacheTimestamp = Date.now();
-    
+
     return config;
   } catch (error) {
-    console.error('Error loading dynamic config, falling back to static:', error);
-    
+    console.error(
+      "Error loading dynamic config, falling back to static:",
+      error,
+    );
+
     // Return static config as fallback
     return {
-      name: staticConfig.name,
-      description: staticConfig.description,
-      url: staticConfig.url,
-      author: staticConfig.author,
-      email: staticConfig.email,
-      location: staticConfig.location,
-      timezone: staticConfig.timezone,
-      seo: staticConfig.seo,
-      links: staticConfig.links,
-      navItems: staticConfig.navItems,
-      navMenuItems: staticConfig.navMenuItems,
-      socials: staticConfig.socials,
-      experience: staticConfig.experience,
-      featuredProjects: staticConfig.featuredProjects,
-      achievements: staticConfig.achievements,
-      skills: staticConfig.skills,
-      bio: staticConfig.bio,
+      name: [],
+      description: [],
+      url: [],
+      cvUrl: [],
+      author: [],
+      email: [],
+      location: { city: "Dhaka", country: "Bangladesh" },
+      timezone: [],
+      seo: [],
+      links: [],
+      navItems: [],
+      navMenuItems: [],
+      socials: [],
+      experience: [],
+      featuredProjects: [],
+      achievements: [],
+      skills: [],
+      bio: [],
     };
   }
 }

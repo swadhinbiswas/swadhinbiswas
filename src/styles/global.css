@@ -2,6 +2,8 @@
 
 @theme {
   --font-mono: 'JetBrains Mono', monospace;
+  --font-serif: 'Source Serif 4', 'Computer Modern', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   /* Default theme (Catppuccin Mocha) */
   --color-rosewater: #f5e0dc;
@@ -31,15 +33,13 @@
   --color-mantle: #181825;
   --color-crust: #11111b;
 
-  /* Semantic Mappings - Watercolor / Soft */
+  /* Semantic Mappings */
   --color-void-black: var(--color-crust);
+  --color-accent: #b4befe;
   --color-neon-cyan: #b4befe;
-  /* Using Lavender instead of Cyan */
   --color-electric-purple: #cba6f7;
-  /* Using Soft Mauve */
   --color-glass-border: rgba(255, 255, 255, 0.05);
   --color-glass-surface: rgba(30, 30, 46, 0.4);
-  /* Very translucent */
 }
 
 /* Theme Definitions */
@@ -74,14 +74,51 @@
     --color-mantle: #1f1d2e;
     --color-crust: #191724;
 
-    /* Semantic Redefinitions - Soft */
+    /* Semantic Redefinitions */
     --color-void-black: #191724;
+    --color-accent: #c4a7e7;
     --color-neon-cyan: #c4a7e7;
-    /* Iris (Lavender) */
     --color-electric-purple: #ebbcba;
-    /* Rose */
     --color-glass-border: rgba(255, 255, 255, 0.05);
     --color-glass-surface: rgba(25, 23, 36, 0.4);
+  }
+
+  /* Dracula Theme */
+  [data-theme="dracula"] {
+    --color-rosewater: #ffb86c;
+    --color-flamingo: #ff79c6;
+    --color-pink: #ff79c6;
+    --color-mauve: #bd93f9;
+    --color-red: #ff5555;
+    --color-maroon: #ff5555;
+    --color-peach: #ffb86c;
+    --color-yellow: #f1fa8c;
+    --color-green: #50fa7b;
+    --color-teal: #8be9fd;
+    --color-sky: #8be9fd;
+    --color-sapphire: #8be9fd;
+    --color-blue: #bd93f9;
+    --color-lavender: #bd93f9;
+    --color-text: #f8f8f2;
+    --color-subtext1: #e2e2dc;
+    --color-subtext0: #bfbfb9;
+    --color-overlay2: #6272a4;
+    --color-overlay1: #6272a4;
+    --color-overlay0: #44475a;
+    --color-surface2: #44475a;
+    --color-surface1: #44475a;
+    --color-surface0: #282a36;
+    --color-base: #282a36;
+    --color-mantle: #282a36;
+    --color-crust: #21222c;
+
+    /* Semantic Redefinitions */
+    --color-void-black: #21222c;
+    --color-accent: #bd93f9;
+    --color-neon-cyan: #8be9fd;
+    --color-electric-purple: #ff79c6;
+    --color-glass-border: rgba(255, 255, 255, 0.08);
+    --color-glass-surface: rgba(40, 42, 54, 0.4);
   }
 }
 
@@ -102,6 +139,38 @@
     font-display: swap;
   }
 
+  @font-face {
+    font-family: 'Source Serif 4';
+    src: url('https://cdn.jsdelivr.net/npm/@fontsource/source-serif-4@5.0.0/files/source-serif-4-latin-400-normal.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Source Serif 4';
+    src: url('https://cdn.jsdelivr.net/npm/@fontsource/source-serif-4@5.0.0/files/source-serif-4-latin-600-normal.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Inter';
+    src: url('https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.0/files/inter-latin-400-normal.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Inter';
+    src: url('https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.0/files/inter-latin-600-normal.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
+
   html {
     font-family: var(--font-mono);
     background-color: var(--color-crust);
@@ -112,21 +181,55 @@
 
   body {
     @apply antialiased min-h-screen relative overflow-x-hidden;
-    /* Default Background (Catppuccin) - Soft/Muted */
-    background-image:
-      radial-gradient(circle at 50% 0%, rgba(203, 166, 247, 0.05), transparent 40%),
-      radial-gradient(circle at 80% 80%, rgba(180, 190, 254, 0.05), transparent 30%);
-    transition: background-image 0.5s ease;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-position: center;
+    background-color: var(--color-base);
+    transition: background-color 0.5s ease, background-image 0.5s ease;
   }
 
-  /* Rose Pine Background Override - Soft/Muted */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  @keyframes scanline {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(1000%); }
+  }
+
+  .hud-scan {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hud-scan::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: linear-gradient(to bottom, transparent, rgba(34, 211, 238, 0.1), transparent);
+    animation: scanline 8s linear infinite;
+    pointer-events: none;
+  }
+
   [data-theme="rose-pine"] body {
     background-image:
       radial-gradient(circle at 50% 0%, rgba(196, 167, 231, 0.05), transparent 40%),
       radial-gradient(circle at 80% 80%, rgba(235, 188, 186, 0.05), transparent 30%);
   }
 
-  /* Custom Scrollbar */
   ::-webkit-scrollbar {
     width: 10px;
   }
@@ -146,20 +249,93 @@
 
 @layer utilities {
   .glass-panel {
-    @apply backdrop-blur-md border border-glass-border bg-glass-surface shadow-lg;
+    @apply backdrop-blur-none border-2 border-surface1 bg-mantle shadow-none rounded-none;
+    box-shadow: 4px 4px 0px var(--color-surface1);
     transition: background-color 0.3s ease, border-color 0.3s ease;
   }
 
-  /* Soft Glow - No Neon */
   .text-glow {
     text-shadow: 0 0 10px rgba(180, 190, 254, 0.3);
-    /* Lavender glow */
   }
 
   .text-glow-purple {
     text-shadow: 0 0 10px rgba(203, 166, 247, 0.3);
-    /* Mauve glow */
   }
+
+  /* Academic Section Styles */
+  .academic-section {
+    @apply font-serif;
+  }
+
+  .academic-section h2 {
+    font-family: var(--font-mono);
+  }
+
+  .section-number {
+    @apply text-accent font-mono text-sm mr-3 opacity-70;
+  }
+
+  .academic-card {
+    @apply border border-glass-border rounded-xl p-6 transition-all duration-300;
+    background: linear-gradient(135deg, rgba(30, 30, 46, 0.6), rgba(17, 17, 27, 0.8));
+  }
+
+  .academic-card:hover {
+    border-color: rgba(180, 190, 254, 0.2);
+    box-shadow: 0 0 30px rgba(180, 190, 254, 0.05);
+  }
+
+  .paper-title {
+    @apply font-serif text-lg font-semibold text-text leading-relaxed;
+  }
+
+  .paper-meta {
+    @apply font-mono text-xs text-overlay0 mt-1;
+  }
+
+  .terminal-input {
+    @apply font-mono bg-mantle border border-surface0 rounded-lg px-4 py-3 text-text placeholder-overlay0 focus:outline-none focus:border-accent/50 transition-colors;
+  }
+
+  .metric-card {
+    @apply text-center p-4 rounded-xl border border-glass-border bg-glass-surface/50;
+  }
+
+  .metric-value {
+    @apply text-2xl font-bold font-mono text-accent;
+  }
+
+  .metric-label {
+    @apply text-xs font-mono text-overlay0 mt-1 uppercase tracking-wider;
+  }
+
+  /* Animations */
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.4s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 /* Prose Styles for Code and Tables */
@@ -260,5 +436,30 @@
 
   .prose li {
     margin: 0.5rem 0;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  header, footer, .no-print, button, script {
+    display: none !important;
+  }
+  body {
+    background: white;
+    color: black;
+  }
+  a {
+    color: black;
+    text-decoration: underline;
   }
 }

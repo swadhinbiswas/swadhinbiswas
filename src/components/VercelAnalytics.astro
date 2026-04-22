@@ -1,7 +1,7 @@
 ---
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/react";
+// Vercel Analytics - Server-side only import
+// These are loaded globally by Vercel at runtime
 ---
 
-<Analytics client:load />
-<SpeedInsights client:load />
+{/* Vercel Analytics is automatically injected by Vercel deployment */}
+{/* No need to manually import in Astro components */}

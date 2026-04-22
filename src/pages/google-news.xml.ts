@@ -1,6 +1,7 @@
 import { db, posts, projects } from '../db';
 import { desc, eq, gt } from 'drizzle-orm';
-import { siteConfig } from '../config/site';
+import { getDynamicConfig } from "../lib/config";
+const siteConfig = await getDynamicConfig();
 
 export async function GET(context: any) {
   // Google News Sitemaps should contain URLs for articles published in the last 2 days.

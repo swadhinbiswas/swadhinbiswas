@@ -1,28 +1,60 @@
-# build output
-dist/
-# generated types
-.astro/
-
-# dependencies
+# Dependencies
 node_modules/
 
-# logs
+# Build output
+dist/
+.vercel/
+.vercel
+
+# Astro & Generated types
+.astro/
+
+# Logs
+logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-
-# environment variables
+# Environment and Local Database
 .env
-.env.production
-
-# macOS-specific files
-.DS_Store
-
-# jetbrains setting folder
-.idea/
-.vercel/
-.astro/
+.env.*
+!.env.example
 .wrangler/
-.vercel
+local.db
+*.sqlite
+*.sqlite3
+
+# Python environments and caches
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.env/
+
+# Custom caches/directories
+cache/
+shop/
+
+# OS and Editor files
+.DS_Store
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Temporary patch, utility and debug scripts
+patch_*.js
+fix_*.js
+update_*.sh
+debug*.*
+check_*.ts
+create_*.ts
+hydrate*.mjs
+*.html

@@ -1,0 +1,320 @@
+---
+export const prerender = false;
+
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, bioContent, siteSettings, socialLinks } from "../../db";
+import { eq } from "drizzle-orm";
+
+let bio: Record<string, string> = {};
+let settings: Record<string, string> = {};
+let socials: any[] = [];
+
+try {
+  const allSettings = await db.select().from(siteSettings);
+  allSettings.forEach((s) => {
+    settings[s.key] = s.value;
+  });
+
+  const bioData = await db.select().from(bioContent);
+  bioData.forEach((b) => {
+    bio[b.key] = b.value;
+  });
+
+  socials = await db.select().from(socialLinks).orderBy(socialLinks.order);
+} catch (error) {
+  console.error("Fetch user profile error:", error);
+}
+---
+
+<AdminLayout title="User Profile">
+  <div class="space-y-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-white">User Profile</h1>
+        <p class="text-gray-400 mt-2">
+          Configure all your personal information and profile details
+        </p>
+      </div>
+    </div>
+
+    <form id="userProfileForm" class="space-y-8">
+      <!-- Personal Information -->
+      <div class="glass-panel rounded-xl p-6 border border-white/10 space-y-6">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <span>👤</span> Personal Information
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Full Name</label>
+            <input
+              type="text"
+              name="author"
+              value={settings.author || ""}
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+              placeholder="Your Full Name"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={settings.email || ""}
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+              placeholder="you@example.com"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Location</label>
+            <input
+              type="text"
+              name="location"
+              value={settings.location || ""}
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+              placeholder="City, Country"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-400 mb-2">Timezone</label>
+            <input
+              type="text"
+              name="timezone"
+              value={settings.timezone || ""}
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+              placeholder="Asia/Dhaka"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Professional Title</label>
+          <input
+            type="text"
+            name="seo_title"
+            value={settings.seo_title || ""}
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="Backend Engineer & AI Systems Architect"
+          />
+        </div>
+      </div>
+
+      <!-- Bio Content -->
+      <div class="glass-panel rounded-xl p-6 border border-white/10 space-y-6">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <span>📝</span> Bio Content
+        </h2>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Short Bio</label>
+          <p class="text-xs text-gray-500 mb-2">
+            A brief one-liner about yourself
+          </p>
+          <input
+            type="text"
+            name="short"
+            value={bio.short || ""}
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="Backend Engineer & AI Systems Architect based in Dhaka, Bangladesh."
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Long Bio</label>
+          <p class="text-xs text-gray-500 mb-2">
+            A longer description for your About page
+          </p>
+          <textarea
+            name="long"
+            rows="4"
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors resize-none"
+            placeholder="I'm currently working as a Backend Engineer..."
+          >{bio.long || ""}</textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Quote</label>
+          <p class="text-xs text-gray-500 mb-2">Your favorite quote or motto</p>
+          <input
+            type="text"
+            name="quote"
+            value={bio.quote || ""}
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="Move fast, break things, and optimize later."
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400 mb-2">Fun Fact</label>
+          <p class="text-xs text-gray-500 mb-2">
+            Something interesting about you
+          </p>
+          <input
+            type="text"
+            name="funFact"
+            value={bio.funFact || ""}
+            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+            placeholder="I believe every problem has a solution; you need to find the right algorithm!"
+          />
+        </div>
+      </div>
+
+      <!-- Social Links -->
+      <div class="glass-panel rounded-xl p-6 border border-white/10 space-y-6">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <span>🔗</span> Social Links
+        </h2>
+
+        <div id="socials-container" class="space-y-4">
+          {socials.map((social, index) => (
+            <div class="social-entry grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-white/5 rounded-lg border border-white/10">
+              <input
+                type="hidden"
+                name={`socials[${index}][id]`}
+                value={social.id}
+              />
+              <div>
+                <label class="block text-xs text-gray-400 mb-1">Name</label>
+                <input
+                  type="text"
+                  name={`socials[${index}][name]`}
+                  value={social.name}
+                  class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+                  placeholder="GitHub"
+                />
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-xs text-gray-400 mb-1">URL</label>
+                <input
+                  type="url"
+                  name={`socials[${index}][url]`}
+                  value={social.url}
+                  class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+                  placeholder="https://github.com/username"
+                />
+              </div>
+              <div>
+                <label class="block text-xs text-gray-400 mb-1">Icon</label>
+                <input
+                  type="text"
+                  name={`socials[${index}][icon]`}
+                  value={social.icon}
+                  class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-neon-cyan/50 transition-colors"
+                  placeholder="github"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="flex items-center justify-between">
+        <div id="statusMessage" class="text-sm"></div>
+        <button
+          type="submit"
+          class="px-6 py-3 bg-neon-cyan text-black font-bold rounded-lg hover:bg-neon-cyan/90 transition-colors"
+        >
+          Save Profile
+        </button>
+      </div>
+    </form>
+  </div>
+</AdminLayout>
+
+<script>
+  const form = document.getElementById("userProfileForm") as HTMLFormElement;
+  const statusMessage = document.getElementById(
+    "statusMessage",
+  ) as HTMLDivElement;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const bio: Record<string, string> = {};
+    const settings: Record<string, string> = {};
+    const socials: any[] = [];
+
+    // Parse form data
+    formData.forEach((value, key) => {
+      const strValue = value.toString();
+      
+      // Check if it's a social link
+      const socialMatch = key.match(/^socials\[(\d+)\]\[(\w+)\]$/);
+      if (socialMatch) {
+        const [, index, field] = socialMatch;
+        if (!socials[parseInt(index)]) {
+          socials[parseInt(index)] = {};
+        }
+        socials[parseInt(index)][field] = strValue;
+      } else if (key === "author" || key === "email" || key === "location" || 
+                 key === "timezone" || key === "seo_title") {
+        settings[key] = strValue;
+      } else {
+        bio[key] = strValue;
+      }
+    });
+
+    try {
+      // Update Bio
+      const bioResponse = await fetch("/api/admin/bio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bio }),
+      });
+
+      // Update Settings
+      const settingsResponse = await fetch("/api/admin/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ settings }),
+      });
+
+      // Update Socials
+      const socialsPromises = socials
+        .filter((s) => s.id)
+        .map((social) =>
+          fetch("/api/admin/socials", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: social.id,
+              name: social.name,
+              url: social.url,
+              icon: social.icon,
+            }),
+          })
+        );
+
+      const socialsResults = await Promise.all(socialsPromises);
+
+      const bioResult = await bioResponse.json();
+      const settingsResult = await settingsResponse.json();
+
+      if (
+        bioResult.success &&
+        settingsResult.success &&
+        socialsResults.every((r) => r.ok)
+      ) {
+        statusMessage.textContent = "✅ Profile updated successfully!";
+        statusMessage.className = "text-sm text-green-400";
+      } else {
+        statusMessage.textContent = "❌ Failed to save changes";
+        statusMessage.className = "text-sm text-red-400";
+      }
+    } catch (error) {
+      statusMessage.textContent = "❌ Network error";
+      statusMessage.className = "text-sm text-red-400";
+    }
+
+    setTimeout(() => {
+      statusMessage.textContent = "";
+    }, 3000);
+  });
+</script>

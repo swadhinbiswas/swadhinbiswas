@@ -1,4 +1,8 @@
-export const prerender = false; // API endpoints must be server-rendered
+export const prerender = false;
+
+function escapeMarkdown(text: string): string {
+    return text.replace(/([_*\[\]()~`>#+\-=|{}.!])/g, '\\$1');
+}
 
 
 
@@ -37,12 +41,12 @@ export const POST = async ({ request }: { request: Request }) => {
     const telegramMessage = `
 📩 *New Contact Form Submission*
 
-👤 *Name:* ${name}
-📧 *Email:* ${email}
-📝 *Subject:* ${subject}
+👤 *Name:* ${escapeMarkdown(name)}
+📧 *Email:* ${escapeMarkdown(email)}
+📝 *Subject:* ${escapeMarkdown(subject)}
 
 💬 *Message:*
-${message}
+${escapeMarkdown(message)}
   `;
 
     try {

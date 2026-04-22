@@ -6,13 +6,25 @@ import Hero from "../components/home/Hero.tsx";
 import FeaturedProjects from "../components/home/FeaturedProjects.astro";
 import BentoGrid from "../components/home/BentoGrid.astro";
 import { db, experiences } from "../db";
-import { siteConfig } from "../config/site";
+import { getDynamicConfig } from "../lib/config";
+const siteConfig = await getDynamicConfig();
+import { getDynamicConfig } from "../lib/config";
 import JsonLd from "../components/seo/JsonLd.astro";
 
-const experiencesList = await db
-  .select()
-  .from(experiences)
-  .orderBy(experiences.order);
+const dynamicConfig = await getDynamicConfig();
+
+let experiencesList: any[] = dynamicConfig.experience;
+try {
+  if (experiencesList.length === 0) {
+    experiencesList = await db
+      .select()
+      .from(experiences)
+      .orderBy(experiences.order);
+  }
+} catch (e) {
+  console.warn('[index] DB query failed, using fallback');
+  if (experiencesList.length === 0) experiencesList = siteConfig.experience;
+}
 
 const homeSchema = {
   "@context": "https://schema.org",
@@ -77,7 +89,7 @@ const homeSchema = {
   <JsonLd slot="head" schema={homeSchema} />
   <div class="space-y-16 animate-fade-in">
     <!-- Hero Section -->
-    <Hero client:load experiences={experiencesList} />
+    <Hero client:load config={dynamicConfig} />
 
     <!-- Featured Projects -->
     <FeaturedProjects />

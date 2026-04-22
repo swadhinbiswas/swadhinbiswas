@@ -1,0 +1,95 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getDynamicConfig } from "../lib/config";
+const siteConfig = await getDynamicConfig();
+import { db, publications } from "../db";
+
+async function safeQuery(query: Promise<any[]>): Promise<any[]> {
+  try {
+    return await query;
+  } catch (e) {
+    console.warn('[research] DB query failed:', e);
+    return [];
+  }
+}
+
+const publicationsList = await safeQuery(db.select().from(publications).orderBy(publications.order));
+
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+}
+---
+
+<BaseLayout title="Research">
+  <div class="animate-fade-in max-w-5xl mx-auto">
+
+    <!-- Page Header -->
+    <div class="mb-16 pb-8 border-b border-glass-border">
+      <h1 class="text-3xl md:text-5xl font-bold text-text mb-4 font-mono tracking-tight">
+        <span class="text-accent">></span> research_focus
+      </h1>
+      <p class="text-lg text-subtext0 font-serif leading-relaxed italic max-w-3xl">
+        Building production-ready, scalable systems & researching efficient AI inference for edge deployment — making intelligence more reliable, cost-effective, and accessible.
+      </p>
+    </div>
+
+    <!-- Publications -->
+    {publicationsList.length > 0 && (
+      <section class="mb-20">
+        <h2 class="text-lg font-mono text-text mb-8 flex items-center gap-3 pb-3 border-b border-glass-border">
+          <span class="section-number">01.</span>
+          Selected Publications
+        </h2>
+        <div class="space-y-6">
+          {publicationsList.map((pub) => (
+            <div class="group relative academic-card border-l-2 border-accent/30 hover:border-accent p-6 transition-all duration-300">
+              <div class="flex flex-col gap-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-mono text-overlay0 uppercase tracking-widest">{formatDate(pub.date)}</span>
+                  {pub.url && (
+                    <a 
+                      href={pub.url} 
+                      target="_blank" 
+                      class="p-2 rounded-lg bg-surface0/50 text-subtext1 hover:text-accent hover:bg-accent/10 transition-all duration-300"
+                      title="View Publication"
+                    >
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  )}
+                </div>
+                <h3 class="text-xl font-bold text-text group-hover:text-accent transition-colors">
+                  {pub.title}
+                </h3>
+                {pub.venue && (
+                  <p class="text-xs font-mono text-accent/70">{pub.venue}</p>
+                )}
+                {pub.description && (
+                  <p class="text-sm text-subtext1 leading-relaxed">{pub.description}</p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Collaboration CTA -->
+    <section class="text-center py-12 border-t border-glass-border mb-16">
+      <h2 class="text-xl font-mono text-text mb-3">Interested in Collaboration?</h2>
+      <p class="text-subtext0 font-serif mb-6 italic">I'm always open to discussing research ideas and potential collaborations.</p>
+      <a
+        href="/contact"
+        class="inline-flex items-center gap-2 px-6 py-2.5 bg-accent/10 border border-accent/30 text-accent font-mono text-sm font-bold rounded-lg hover:bg-accent/20 hover:border-accent/50 transition-all"
+      >
+        <span>></span>
+        <span>get_in_touch</span>
+        <span class="animate-pulse">_</span>
+      </a>
+    </section>
+  </div>
+</BaseLayout>
