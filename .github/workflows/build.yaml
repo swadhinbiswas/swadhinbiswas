@@ -39,14 +39,14 @@ jobs:
 
           async function updateSecret() {
             const payload = JSON.stringify({
-              stats: { github_update_secret: process.env.CRON_SECRET }
+              settings: { github_update_secret: process.env.CRON_SECRET }
             });
 
             const options = {
               hostname: new URL(process.env.PUBLIC_SITE_URL).hostname,
               port: 443,
               path: '/api/admin/settings',
-              method: 'PUT',
+              method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': payload.length,
