@@ -78,13 +78,13 @@ jobs:
           EOF
           node sync_secret.cjs
         env:
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET || secrets.CORN_SECRET }}
           PUBLIC_SITE_URL: ${{ secrets.PUBLIC_SITE_URL || 'https://swadhin.cv' }}
       - name: Update README file
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           USER_NAME: ${{ secrets.USER_NAME }}
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET || secrets.CORN_SECRET }}
           PUBLIC_SITE_URL: ${{ secrets.PUBLIC_SITE_URL || 'https://swadhin.cv' }}
         run: python today.py
       - name: Commit
