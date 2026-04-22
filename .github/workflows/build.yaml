@@ -34,7 +34,7 @@ jobs:
         run: python -m pip install -r cache/requirements.txt
       - name: Sync CRON_SECRET to database
         run: |
-          cat > sync_secret.js << 'EOF'
+          cat > sync_secret.cjs << 'EOF'
           const https = require('https');
 
           async function updateSecret() {
@@ -76,7 +76,7 @@ jobs:
 
           updateSecret().catch(e => console.error('Sync attempt:', e.message));
           EOF
-          node sync_secret.js
+          node sync_secret.cjs
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
           PUBLIC_SITE_URL: ${{ secrets.PUBLIC_SITE_URL || 'https://swadhin.cv' }}
