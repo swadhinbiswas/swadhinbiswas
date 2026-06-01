@@ -1,99 +1,133 @@
 ---
-import { db } from "../../db";
-import { projects } from "../../db/schema";
+import { db, projects } from "../../db";
 import { eq, asc } from "drizzle-orm";
-import ProjectCard from "../projects/ProjectCard.astro";
-import { getDynamicConfig } from "../../lib/config";
 
-const siteConfig = await getDynamicConfig();
+interface Project {
+  id: number | string;
+  name: string;
+  description: string;
+  url: string;
+  github?: string | null;
+  tags: string[];
+  featured?: boolean;
+  stars?: number;
+}
 
-// Fetch projects with fallback
-let dbProjects: any[] = [];
+let featuredProjects: Project[] = [];
 try {
-  dbProjects = await db
+  const rows = await db
     .select()
     .from(projects)
     .where(eq(projects.featured, true))
     .orderBy(asc(projects.order));
 
-  if (dbProjects.length === 0) {
-    dbProjects = siteConfig.featuredProjects.map((p, i) => ({
-      id: `fallback-${i}`,
-      name: p.name,
-      description: p.description,
-      url: p.url,
-      github: p.github || null,
-      image: p.image || null,
-      tags: JSON.stringify(p.tags),
-      featured: p.featured,
-      status: 'published',
-      projectDate: new Date().toISOString(),
-      stars: p.stars || 0,
-      order: i,
-      content: p.description,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    }));
-  }
-} catch (e) {
-  console.warn('[FeaturedProjects] DB query failed, using siteConfig fallback');
-  dbProjects = siteConfig.featuredProjects.map((p, i) => ({
-    id: `fallback-${i}`,
-    name: p.name,
-    description: p.description,
-    url: p.url,
-    github: p.github || null,
-    image: p.image || null,
-    tags: JSON.stringify(p.tags),
-    featured: p.featured,
-    status: 'published',
-    projectDate: new Date().toISOString(),
-    stars: p.stars || 0,
-    order: i,
-    content: p.description,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  }));
+  featuredProjects = rows.map((r) => ({
+    ...r,
+    tags: safeJSON(r.tags) as string[],
+  })) as Project[];
+} catch {
+  featuredProjects = [];
 }
 
-const featuredProjects = dbProjects.map((p) => ({
-  ...p,
-  tags: JSON.parse(p.tags || '[]') as string[],
-}));
+function safeJSON(s: any): string[] {
+  try {
+    return JSON.parse(s);
+  } catch {
+    return [];
+  }
+}
+
+function slug(name: string) {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
 ---
 
-<section class="space-y-8">
-  <div
-    class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-  >
-    <h2
-      class="text-2xl sm:text-3xl font-bold font-mono text-white flex flex-wrap items-center gap-2 sm:gap-3"
-    >
-      <span class="text-neon-cyan">></span>
-      <span>Featured_Deployments</span>
-      <span class="animate-pulse text-electric-purple">_</span>
-    </h2>
-    <a
-      href="/projects"
-      class="group flex items-center gap-1 text-sm text-gray-400 hover:text-neon-cyan transition-colors font-mono self-end sm:self-auto"
-    >
-      view_all.sh
-      <svg
-        class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9 5l7 7-7 7"></path>
-      </svg>
-    </a>
-  </div>
+<section class="section border-t border-[var(--color-border)]">
+  <div class="container-page">
+    <div class="mb-10 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end reveal">
+      <div>
+        <p class="section-eyebrow">Featured Projects</p>
+        <h2 class="section-title mt-3">Selected deployments.</h2>
+        <p class="section-description mt-3 max-w-xl">
+          A curated set of production platforms, open-source tools, and research artifacts.
+        </p>
+      </div>
+      <a href="/projects" class="btn btn-secondary btn-sm">
+        View all projects
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M5 12h14M13 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    {featuredProjects.map((project, i) => <ProjectCard project={project} />)}
+    {featuredProjects.length === 0 ? (
+      <div class="card p-16 text-center reveal">
+        <div class="mx-auto max-w-md">
+          <p class="text-base font-medium text-white">No featured projects yet</p>
+          <p class="mt-2 text-sm text-[var(--color-fg-muted)]">
+            Add your projects from the admin panel and mark them as featured. They'll appear here automatically.
+          </p>
+          <a href="/projects" class="btn btn-secondary mt-6 inline-flex">
+            Browse projects
+          </a>
+        </div>
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {featuredProjects.slice(0, 6).map((p, i) => (
+          <a
+            href={`/projects/${slug(p.name)}`}
+            class="card card-hover halo group p-6 sm:p-8 reveal flex flex-col"
+            style={`transition-delay: ${i * 60}ms`}
+          >
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md border border-[var(--color-border)] bg-[var(--color-surface-2)] text-sm font-semibold text-white">
+                {p.name.charAt(0).toUpperCase()}
+              </div>
+              {p.featured && (
+                <span class="text-mono text-[10px] uppercase tracking-widest text-[var(--color-fg-subtle)]">
+                  Featured
+                </span>
+              )}
+            </div>
+
+            <h3 class="mt-5 text-xl font-semibold tracking-tight text-white transition-colors group-hover:text-[var(--color-accent)]">
+              {p.name}
+            </h3>
+
+            <p class="mt-3 text-[15px] leading-relaxed text-[var(--color-fg-muted)] line-clamp-3">
+              {p.description}
+            </p>
+
+            {p.tags.length > 0 && (
+              <div class="mt-5 flex flex-wrap gap-1.5">
+                {p.tags.slice(0, 4).map((t) => (
+                  <span class="tag">{t}</span>
+                ))}
+                {p.tags.length > 4 && (
+                  <span class="tag text-[var(--color-fg-subtle)]">+{p.tags.length - 4}</span>
+                )}
+              </div>
+            )}
+
+            <div class="mt-auto pt-6 flex items-center justify-between">
+              <span class="text-sm text-[var(--color-fg-muted)] transition-colors group-hover:text-white">
+                View case study →
+              </span>
+              {p.github && (
+                <span class="text-mono text-xs text-[var(--color-fg-subtle)]">
+                  {p.github.replace(/^https?:\/\//, "")}
+                </span>
+              )}
+            </div>
+          </a>
+        ))}
+      </div>
+    )}
   </div>
 </section>

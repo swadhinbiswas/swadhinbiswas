@@ -1,0 +1,48 @@
+---
+import { getDynamicConfig } from "../../lib/config";
+
+const siteConfig = await getDynamicConfig();
+const longBio = siteConfig.bio?.long || "";
+const shortBio = siteConfig.bio?.short || "";
+
+// Default professional summary (only used if no bio in admin)
+const defaultSummary = "I design and ship scalable data platforms, distributed systems, and machine learning infrastructure used in real production environments. My work spans backend engineering, data engineering, cloud architecture, AI systems, and startup leadership.";
+---
+
+<section class="section">
+  <div class="container-page">
+    <div class="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-4 reveal">
+        <p class="section-eyebrow">Summary</p>
+        <h2 class="section-title mt-3">A short brief.</h2>
+      </div>
+
+      <div class="lg:col-span-8 reveal reveal-delay-1">
+        <p class="text-xl leading-relaxed text-white sm:text-2xl">
+          {longBio || defaultSummary}
+        </p>
+
+        {shortBio && shortBio !== longBio && (
+          <p class="mt-6 text-base leading-relaxed text-[var(--color-fg-muted)]">
+            {shortBio}
+          </p>
+        )}
+
+        <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
+          <div>
+            <p class="text-eyebrow">Disciplines</p>
+            <p class="mt-2 text-base text-white">Data · ML · Backend · Cloud</p>
+          </div>
+          <div>
+            <p class="text-eyebrow">Approach</p>
+            <p class="mt-2 text-base text-white">Production-first, research-driven</p>
+          </div>
+          <div>
+            <p class="text-eyebrow">Leadership</p>
+            <p class="mt-2 text-base text-white">Founder, mentor, open-source maintainer</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -2,156 +2,88 @@
 export const prerender = false;
 
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Hero from "../components/home/Hero.tsx";
-import FeaturedProjects from "../components/home/FeaturedProjects.astro";
-import BentoGrid from "../components/home/BentoGrid.astro";
 import { getDynamicConfig } from "../lib/config";
 import JsonLd from "../components/seo/JsonLd.astro";
 
-const siteConfig = await getDynamicConfig();
+import Hero from "../components/home/Hero.astro";
+import Impact from "../components/home/Impact.astro";
+import Summary from "../components/home/Summary.astro";
+import Timeline from "../components/home/Timeline.astro";
+import Experience from "../components/home/Experience.astro";
+import Skills from "../components/home/Skills.astro";
+import FeaturedProjects from "../components/home/FeaturedProjects.astro";
+import Research from "../components/home/Research.astro";
+import OpenSource from "../components/home/OpenSource.astro";
+import Writing from "../components/home/Writing.astro";
+import Contact from "../components/home/Contact.astro";
 
+const siteConfig = await getDynamicConfig();
 const siteUrl = (siteConfig.url || Astro.url.origin).replace(/\/$/, "");
-const personName = siteConfig.author || "Swadhin Biswas";
+const author = siteConfig.author || "Portfolio";
 const shortBio =
   siteConfig.bio?.short?.trim() ||
-  "Data Engineer & MLOps Engineer. Open to EU Relocation 🇳🇱🇩🇪";
-const pageDescription = siteConfig.description?.trim() || shortBio;
-const primaryImageUrl = `${siteUrl}/og-image.png`;
+  "Senior Data Engineer & MLOps Engineer. Open to global opportunities.";
 
-const locationText = siteConfig.location || "Dhaka, Bangladesh";
+const locationText = siteConfig.location || "";
 const [cityPart, ...countryParts] = locationText
   .split(",")
-  .map((part) => part.trim())
+  .map((p) => p.trim())
   .filter(Boolean);
-
-const locationCity = cityPart || "Dhaka";
-const locationCountry = countryParts.join(", ") || "Bangladesh";
 
 const sameAs = [
   siteConfig.links?.github,
   siteConfig.links?.linkedin,
   siteConfig.links?.twitter,
-  ...siteConfig.socials.map((social) => social.url),
+  ...(siteConfig.socials || []).map((s) => s.url),
   "https://scholar.google.com/citations?hl=en&user=xHqlwTAAAAAJ",
-].filter((url, index, urls): url is string => {
-  return Boolean(url) && urls.indexOf(url) === index;
-});
+].filter((u, i, arr): u is string => Boolean(u) && arr.indexOf(u) === i);
 
-const homeSchema = {
+const schema = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "WebSite",
       "@id": `${siteUrl}/#website`,
       url: `${siteUrl}/`,
-      name: siteConfig.name || personName,
-      description: pageDescription,
-      inLanguage: "en-US",
-      publisher: {
-        "@id": `${siteUrl}/#person`,
-      },
-    },
-    {
-      "@type": "ProfilePage",
-      "@id": `${siteUrl}/#webpage`,
-      url: `${siteUrl}/`,
-      name: `${personName} | ${siteConfig.name || "Portfolio"}`,
+      name: author,
       description: shortBio,
-      isPartOf: {
-        "@id": `${siteUrl}/#website`,
-      },
-      about: {
-        "@id": `${siteUrl}/#person`,
-      },
-      primaryImageOfPage: {
-        "@id": `${siteUrl}/#primaryimage`,
-      },
       inLanguage: "en-US",
-    },
-    {
-      "@type": "ImageObject",
-      "@id": `${siteUrl}/#primaryimage`,
-      url: primaryImageUrl,
-      contentUrl: primaryImageUrl,
-      caption: personName,
     },
     {
       "@type": "Person",
       "@id": `${siteUrl}/#person`,
-      name: personName,
+      name: author,
       url: `${siteUrl}/`,
-      image: {
-        "@id": `${siteUrl}/#primaryimage`,
-      },
+      image: `${siteUrl}/og-image.png`,
       description: shortBio,
-      jobTitle: "Data Engineer & MLOps Engineer",
+      jobTitle: "Senior Data Engineer & MLOps Engineer",
       sameAs,
-      knowsAbout: siteConfig.skills,
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: locationCity,
-        addressCountry: locationCountry,
-      },
+      address: cityPart
+        ? { "@type": "PostalAddress", addressLocality: cityPart, addressCountry: countryParts.join(", ") || "" }
+        : undefined,
       email: siteConfig.email,
-      mainEntityOfPage: {
-        "@id": `${siteUrl}/#webpage`,
-      },
+      knowsAbout: siteConfig.skills || [],
     },
   ],
 };
 ---
 
-<BaseLayout title="Home" description={pageDescription} ogType="profile">
-  <JsonLd slot="head" schema={homeSchema} />
-  <Fragment slot="head">
-    <meta
-      name="googlebot"
-      content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
-    />
-  </Fragment>
-  <div class="space-y-16 animate-fade-in">
-    <!-- Hero Section -->
-    <Hero config={siteConfig} />
+<BaseLayout
+  title={undefined}
+  description={shortBio}
+  ogType="profile"
+>
+  <JsonLd slot="head" schema={schema} />
 
-    <!-- Featured Projects -->
-    <FeaturedProjects />
-
-    <!-- Bento Dashboard Grid -->
-    <BentoGrid />
-  </div>
+  <Hero />
+  <Impact />
+  <Summary />
+  <Timeline />
+  <Experience />
+  <Skills />
+  <FeaturedProjects />
+  <Research />
+  <OpenSource />
+  <Writing />
+  <Contact />
 </BaseLayout>
-
-<style>
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-fade-in {
-    animation: fadeIn 0.5s ease-out;
-  }
-
-  .animate-fade-in > * {
-    animation: fadeIn 0.5s ease-out;
-    animation-fill-mode: both;
-  }
-
-  .animate-fade-in > *:nth-child(1) {
-    animation-delay: 0.1s;
-  }
-  .animate-fade-in > *:nth-child(2) {
-    animation-delay: 0.2s;
-  }
-  .animate-fade-in > *:nth-child(3) {
-    animation-delay: 0.3s;
-  }
-  .animate-fade-in > *:nth-child(4) {
-    animation-delay: 0.4s;
-  }
-</style>

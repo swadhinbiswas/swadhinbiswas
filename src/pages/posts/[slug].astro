@@ -2,7 +2,6 @@
 export const prerender = true;
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { db, posts } from "../../db";
-import { eq } from "drizzle-orm";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
@@ -13,20 +12,21 @@ import rehypeHighlight from "rehype-highlight";
 import rehypeStringify from "rehype-stringify";
 import "katex/dist/katex.min.css";
 import "highlight.js/styles/github-dark.css";
-import { processVisualizations } from "../../utils/viz";
-import VizScripts from "../../components/VizScripts.astro";
 import { getDynamicConfig } from "../../lib/config";
 
 export async function getStaticPaths() {
-  const allPosts = await db.query.posts.findMany();
-  return allPosts.map((post) => ({
-    params: { slug: post.slug },
-    props: { post },
-  }));
+  try {
+    const allPosts = await db.query.posts.findMany();
+    return allPosts.map((post) => ({
+      params: { slug: post.slug },
+      props: { post },
+    }));
+  } catch {
+    return [];
+  }
 }
 
 const { post } = Astro.props;
-
 if (!post) return Astro.redirect("/404");
 
 const processor = unified()
@@ -38,51 +38,28 @@ const processor = unified()
   .use(rehypeHighlight)
   .use(rehypeStringify, { allowDangerousHtml: true });
 
-const processedVizContent = await processVisualizations(post.content);
-const processedContent = await processor.process(processedVizContent);
+const processedContent = await processor.process(post.content);
 const contentHtml = processedContent.toString();
 
-const tags = JSON.parse(post.tags || "[]");
+const tags = (() => { try { return JSON.parse(post.tags || "[]"); } catch { return []; } })();
 const siteConfig = await getDynamicConfig();
 const siteUrl = (siteConfig.url || "https://swadhin.cv").replace(/\/$/, "");
 const canonicalUrl = `${siteUrl}/posts/${post.slug}/`;
 const publishedIso = new Date(post.publishedAt).toISOString();
-const modifiedIso = post.updatedAt
-  ? new Date(post.updatedAt).toISOString()
-  : publishedIso;
-const newsKeywords = (Array.isArray(tags) ? tags : [])
-  .map((tag: unknown) => String(tag).trim())
-  .filter(Boolean)
-  .slice(0, 10)
-  .concat(["Blog", "Engineering", "Software"]);
 
-const articleSchema = {
+const schema = {
   "@context": "https://schema.org",
-  "@type": "NewsArticle",
-  mainEntityOfPage: {
-    "@type": "WebPage",
-    "@id": canonicalUrl,
-  },
+  "@type": "Article",
+  mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
   headline: post.title,
   description: post.description,
-  image: [`${siteUrl}/og-image.png`],
   datePublished: publishedIso,
-  dateModified: modifiedIso,
-  keywords: newsKeywords,
-  author: {
-    "@type": "Person",
-    name: siteConfig.author || "Swadhin Biswas",
-    url: `${siteUrl}/`,
-  },
-  publisher: {
-    "@type": "Organization",
-    name: siteConfig.name || "Swadhin Biswas",
-    logo: {
-      "@type": "ImageObject",
-      url: `${siteUrl}/og-image.png`,
-    },
-  },
+  author: { "@type": "Person", name: siteConfig.author || "Swadhin Biswas" },
+  keywords: tags,
 };
+
+const formatDate = (date: any) =>
+  new Date(date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 ---
 
 <BaseLayout
@@ -92,45 +69,114 @@ const articleSchema = {
   ogType="article"
 >
   <Fragment slot="head">
-    <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
-    <meta name="news_keywords" content={newsKeywords.join(", ")} />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
     <meta property="article:published_time" content={publishedIso} />
-    <meta property="article:modified_time" content={modifiedIso} />
-    <meta property="article:author" content={siteConfig.author || "Swadhin Biswas"} />
-    <meta property="article:section" content="Engineering" />
-    <meta property="article:tag" content={newsKeywords.join(",")} />
-    <meta
-      name="robots"
-      content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
-    />
   </Fragment>
-  <article class="prose prose-invert max-w-none">
-    <h1 class="text-4xl font-bold text-text mb-4">{post.title}</h1>
 
-    <div class="flex items-center gap-4 text-sm text-subtext1 mb-8">
-      <time datetime={post.publishedAt.toISOString()}>
-        {
-          post.publishedAt.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })
-        }
-      </time>
-      {
-        tags && tags.length > 0 && (
-          <div class="flex gap-2">
-            {tags.map((tag: string) => (
-              <span class="text-xs px-2 py-1 bg-surface0 text-subtext1 rounded-md">
-                {tag}
-              </span>
-            ))}
+  <article class="pb-24">
+    <header class="border-b border-[var(--color-border)]">
+      <div class="container-page max-w-3xl py-16 sm:py-20">
+        <a href="/posts" class="inline-flex items-center gap-2 text-sm text-[var(--color-fg-muted)] transition-colors hover:text-white">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          All writing
+        </a>
+
+        <div class="mt-8 reveal">
+          <div class="flex flex-wrap items-center gap-3 text-sm text-[var(--color-fg-subtle)]">
+            <time datetime={publishedIso}>{formatDate(post.publishedAt)}</time>
+            {tags.length > 0 && (
+              <>
+                <span>·</span>
+                <div class="flex flex-wrap gap-1.5">
+                  {tags.slice(0, 3).map((t: string) => (
+                    <span class="tag">{t}</span>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
-        )
-      }
-    </div>
 
-    <div class="text-subtext0" set:html={contentHtml} />
+          <h1 class="text-display mt-5 text-3xl text-white sm:text-4xl lg:text-5xl">
+            {post.title}
+          </h1>
+
+          {post.description && (
+            <p class="mt-5 text-lg leading-relaxed text-[var(--color-fg-muted)]">
+              {post.description}
+            </p>
+          )}
+        </div>
+      </div>
+    </header>
+
+    <div class="container-page max-w-3xl mt-12">
+      <div class="prose-content" set:html={contentHtml} />
+    </div>
   </article>
-  <VizScripts />
 </BaseLayout>
+
+<style is:global>
+  .prose-content {
+    color: var(--color-fg-muted);
+    line-height: 1.75;
+    font-size: 1.0625rem;
+  }
+  .prose-content h1,
+  .prose-content h2,
+  .prose-content h3,
+  .prose-content h4 {
+    color: var(--color-fg);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.25;
+  }
+  .prose-content h2 { font-size: 1.5rem; }
+  .prose-content h3 { font-size: 1.25rem; }
+  .prose-content p { margin: 1.25rem 0; }
+  .prose-content a {
+    color: var(--color-fg);
+    text-decoration: underline;
+    text-decoration-color: var(--color-border-strong);
+    text-underline-offset: 4px;
+    transition: text-decoration-color 0.2s;
+  }
+  .prose-content a:hover { text-decoration-color: var(--color-accent); }
+  .prose-content ul, .prose-content ol { padding-left: 1.5rem; margin: 1.25rem 0; }
+  .prose-content li { margin: 0.5rem 0; }
+  .prose-content code {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    padding: 0.1rem 0.35rem;
+    border-radius: 0.3rem;
+    font-size: 0.875em;
+    color: var(--color-fg);
+  }
+  .prose-content pre {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.6rem;
+    padding: 1.25rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+  .prose-content pre code { background: none; border: none; padding: 0; }
+  .prose-content blockquote {
+    border-left: 2px solid var(--color-accent);
+    padding-left: 1.25rem;
+    margin: 1.5rem 0;
+    color: var(--color-fg);
+    font-style: italic;
+  }
+  .prose-content table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+  .prose-content th, .prose-content td {
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.75rem;
+    text-align: left;
+  }
+  .prose-content th { color: var(--color-fg); font-weight: 600; }
+  .prose-content img { border-radius: 0.6rem; margin: 1.5rem 0; }
+</style>

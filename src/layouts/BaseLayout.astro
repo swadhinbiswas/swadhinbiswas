@@ -1,13 +1,9 @@
 ---
 import "../styles/global.css";
-import "katex/dist/katex.min.css";
 import { getDynamicConfig } from "../lib/config";
 import Header from "../components/layout/Header.astro";
 import Footer from "../components/layout/Footer.astro";
 import GoogleAnalytics from "../components/GoogleAnalytics.astro";
-import KonamiCode from "../components/fun/KonamiCode.astro";
-import ScrollProgress from "../components/ui/ScrollProgress.astro";
-import SupportModal from "../components/ui/SupportModal.astro";
 import VercelAnalytics from "../components/VercelAnalytics.astro";
 
 interface Props {
@@ -15,175 +11,97 @@ interface Props {
   description?: string;
   image?: string;
   ogType?: string;
+  noindex?: boolean;
 }
 
-// Fetch settings for global components (like SupportModal)
-import { db, siteSettings, supportOptions } from "../db";
-import { asc } from "drizzle-orm";
-
-let settings: Record<string, string> = {};
-let options: any[] = [];
-
-try {
-  const data = await db.select().from(siteSettings);
-  settings = data.reduce(
-    (acc, curr) => {
-      acc[curr.key] = curr.value;
-      return acc;
-    },
-    {} as Record<string, string>,
-  );
-
-  // Fetch dynamic support options
-  options = await db
-    .select()
-    .from(supportOptions)
-    .orderBy(asc(supportOptions.order));
-} catch (e) {
-  // console.error("Failed to fetch settings in BaseLayout", e);
-}
-
-const { title, description, image } = Astro.props;
+const { title, description, image, ogType, noindex = false } = Astro.props;
 const siteConfig = await getDynamicConfig();
 
-const pageTitle = title ? `${title} | ${siteConfig.name}` : siteConfig.name;
-const pageDescription = description || siteConfig.description;
+const fullTitle = title
+  ? `${title} — ${siteConfig.author}`
+  : `${siteConfig.author} — ${siteConfig.bio?.short || "Engineering Portfolio"}`;
+const pageDescription = description || siteConfig.description || siteConfig.bio?.short || "";
 const ogImage = image || `${siteConfig.url}/og-image.png`;
 const canonicalURL = new URL(Astro.url.pathname, siteConfig.url);
-
-// Feature toggles
-const showKonamiCode = false; // Disabled for professional EU recruiter optimization
-const showScrollProgress = settings.show_scroll_progress !== "false";
-const showSupportModal = settings.show_support_modal !== "false";
 ---
-
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content={pageDescription} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={pageDescription} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
-
-    <!-- SEO Meta Tags -->
     <meta name="author" content={siteConfig.author} />
-    <meta name="keywords" content={siteConfig.seo.keywords.join(", ")} />
-    <meta name="robots" content="index, follow" />
+    {siteConfig.seo?.keywords?.length > 0 && (
+      <meta name="keywords" content={siteConfig.seo.keywords.join(", ")} />
+    )}
+    <meta name="robots" content={noindex ? "noindex,nofollow" : "index,follow"} />
+    <meta name="theme-color" content="#0A0A0A" />
+    <title>{fullTitle}</title>
 
-    <!-- Open Graph -->
-    <meta property="og:title" content={pageTitle} />
+    <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={pageDescription} />
-    <meta property="og:type" content={Astro.props.ogType || "website"} />
+    <meta property="og:type" content={ogType || "website"} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:site_name" content={siteConfig.name} />
+    <meta property="og:site_name" content={siteConfig.author} />
+    <meta property="og:locale" content="en_US" />
 
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={ogImage} />
-    <meta name="twitter:creator" content="@swadh1n" />
+    {siteConfig.links?.twitter && (
+      <meta name="twitter:creator" content={"@" + (siteConfig.links.twitter.split("/").pop() || "")} />
+    )}
 
-    <!-- Twitter Card (Property Fallback for some scrapers) -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:title" content={pageTitle} />
-    <meta property="twitter:description" content={pageDescription} />
-    <meta property="twitter:image" content={ogImage} />
-
-    <title>{pageTitle}</title>
-    <!-- Auto Discovery Links for RSS and News -->
-    <link rel="alternate" type="application/rss+xml" title="RSS Feed for Projects and Posts" href="/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${siteConfig.author} — RSS`} href="/rss.xml" />
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap-index.xml" />
-    <link rel="sitemap" type="application/xml" title="Google News Sitemap" href="/google-news.xml" />
 
     <GoogleAnalytics />
     <slot name="head" />
   </head>
-  <body
-    class="min-h-screen flex flex-col font-sans text-white overflow-x-hidden selection:bg-neon-cyan selection:text-void-black"
-  >
-    <div
-      id="app-content"
-      class="transition-transform duration-[2000ms] ease-in-out"
+  <body>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-black"
     >
-      <div
-        class="fixed inset-0 z-[-1] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-[#050510] to-[#050510]"
-      >
-      </div>
-      <Header />
-      <main
-        class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-8 relative z-10"
-      >
-        <slot />
-      </main>
-      <Footer />
-    </div>
-    {showKonamiCode && <KonamiCode />}
-    {showScrollProgress && <ScrollProgress />}
+      Skip to content
+    </a>
 
-    <!-- Scroll to Top Button -->
+    <Header />
+    <main id="main" class="min-h-screen">
+      <slot />
+    </main>
+    <Footer />
+
     <script>
-      // Scroll to top button logic
-      const scrollBtn = document.createElement('button');
-      scrollBtn.id = 'scroll-to-top';
-      scrollBtn.innerHTML = `
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
-        </svg>
-      `;
-      scrollBtn.style.cssText = `
-        position: fixed;
-        bottom: 80px;
-        right: 20px;
-        z-index: 50;
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background: rgba(34, 211, 238, 0.15);
-        border: 1px solid rgba(34, 211, 238, 0.3);
-        color: #22d3ee;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        opacity: 0;
-        transform: translateY(10px);
-        transition: all 0.3s ease;
-        backdrop-filter: blur(10px);
-        pointer-events: none;
-      `;
-      scrollBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-      document.body.appendChild(scrollBtn);
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target);
+            }
+          }
+        },
+        { threshold: 0.12, rootMargin: "0px 0px -60px 0px" }
+      );
 
-      window.addEventListener('scroll', () => {
-        if (window.scrollY > 500) {
-          scrollBtn.style.opacity = '1';
-          scrollBtn.style.transform = 'translateY(0)';
-          scrollBtn.style.pointerEvents = 'auto';
-        } else {
-          scrollBtn.style.opacity = '0';
-          scrollBtn.style.transform = 'translateY(10px)';
-          scrollBtn.style.pointerEvents = 'none';
-        }
-      }, { passive: true });
+      const init = () => {
+        document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+      };
 
-      scrollBtn.addEventListener('mouseenter', () => {
-        scrollBtn.style.background = 'rgba(34, 211, 238, 0.25)';
-        scrollBtn.style.borderColor = 'rgba(34, 211, 238, 0.6)';
-        scrollBtn.style.boxShadow = '0 0 20px rgba(34, 211, 238, 0.3)';
-      });
-      scrollBtn.addEventListener('mouseleave', () => {
-        scrollBtn.style.background = 'rgba(34, 211, 238, 0.15)';
-        scrollBtn.style.borderColor = 'rgba(34, 211, 238, 0.3)';
-        scrollBtn.style.boxShadow = 'none';
-      });
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+      } else {
+        init();
+      }
+      document.addEventListener("astro:page-load", init);
     </script>
-    {showSupportModal && <SupportModal settings={settings} />}
+
     <VercelAnalytics />
   </body>
 </html>

@@ -1,0 +1,81 @@
+---
+import { db, skills } from "../../db";
+import { asc } from "drizzle-orm";
+
+interface Skill {
+  id: number;
+  name: string;
+  category?: string;
+}
+
+let all: Skill[] = [];
+try {
+  const rows = await db.select().from(skills).orderBy(asc(skills.order));
+  all = rows as Skill[];
+} catch {
+  all = [];
+}
+
+// Group by category
+const groups = new Map<string, string[]>();
+for (const s of all) {
+  const cat = s.category || "general";
+  if (!groups.has(cat)) groups.set(cat, []);
+  groups.get(cat)!.push(s.name);
+}
+
+// Ordered labels (premium categories)
+const labelOrder = ["data", "backend", "language", "cloud", "ai", "mlops", "framework", "tool", "general"];
+const labelMap: Record<string, string> = {
+  data: "Data Engineering",
+  backend: "Backend",
+  language: "Languages",
+  cloud: "Cloud & DevOps",
+  ai: "AI",
+  mlops: "MLOps",
+  framework: "Frameworks",
+  tool: "Tools",
+  general: "Other",
+};
+
+const orderedCats = [
+  ...labelOrder.filter((c) => groups.has(c)),
+  ...[...groups.keys()].filter((c) => !labelOrder.includes(c)),
+];
+---
+
+<section class="section border-t border-[var(--color-border)]">
+  <div class="container-page">
+    <div class="section-header reveal">
+      <p class="section-eyebrow">Skills Architecture</p>
+      <h2 class="section-title">What I work with.</h2>
+      <p class="section-description">
+        A focused stack, refined across years of building production systems. No buzzword lists, just the tools that ship.
+      </p>
+    </div>
+
+    {orderedCats.length === 0 ? (
+      <div class="card p-12 text-center reveal">
+        <p class="text-sm text-[var(--color-fg-muted)]">
+          Skills will appear here once added from the admin panel.
+        </p>
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-border)] sm:grid-cols-2 lg:grid-cols-4">
+        {orderedCats.map((cat, i) => (
+          <div
+            class="bg-[var(--color-bg)] p-6 reveal"
+            style={`transition-delay: ${i * 60}ms`}
+          >
+            <h3 class="text-eyebrow text-[var(--color-fg-subtle)]">{labelMap[cat] || cat}</h3>
+            <div class="mt-5 flex flex-wrap gap-2">
+              {(groups.get(cat) || []).map((name) => (
+                <span class="tag">{name}</span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</section>

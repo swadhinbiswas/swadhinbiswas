@@ -1,48 +1,35 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Terminal404 from "../components/fun/Terminal404";
 ---
 
-<BaseLayout
-    title="404 - Not Found"
-    description="System Error: Location inaccessible."
->
-    <div
-        class="min-h-[70vh] flex flex-col items-center justify-center relative"
-    >
-        <!-- Glitchy 404 Text -->
-        <h1
-            class="text-6xl md:text-9xl font-bold font-mono tracking-tighter mb-8 relative group select-none"
-        >
-            <span
-                class="absolute inset-0 text-red-500 translate-x-[2px] opacity-0 group-hover:opacity-70 transition-opacity"
-                >404</span
-            >
-            <span
-                class="absolute inset-0 text-blue-500 -translate-x-[2px] opacity-0 group-hover:opacity-70 transition-opacity"
-                >404</span
-            >
-            <span
-                class="relative z-10 bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-500"
-                >404</span
-            >
-        </h1>
+<BaseLayout title="Page not found" description="The page you're looking for doesn't exist." noindex>
+  <section class="relative min-h-[80vh] overflow-hidden">
+    <div class="bg-grid absolute inset-0 -z-10" aria-hidden="true"></div>
 
-        <div class="w-full max-w-2xl h-[500px] relative z-20">
-            <Terminal404 client:load />
-        </div>
-
-        <p class="mt-8 text-gray-500 text-sm font-mono text-center">
-            LOST_IN_CYBERSPACE // <a
-                href="/"
-                class="text-neon-cyan hover:underline">RETURN_TO_BASE</a
-            >
+    <div class="container-page flex min-h-[80vh] flex-col items-center justify-center text-center">
+      <div class="reveal">
+        <p class="text-mono text-sm uppercase tracking-widest text-[var(--color-fg-subtle)]">
+          Error 404
         </p>
 
-        <!-- Background Decoration -->
-        <div
-            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-neon-cyan/5 blur-[100px] rounded-full pointer-events-none z-0"
-        >
+        <h1 class="text-display mt-6 text-6xl text-white sm:text-7xl lg:text-8xl">
+          Page not <span class="text-gradient-accent">found</span>
+        </h1>
+
+        <p class="mx-auto mt-6 max-w-md text-lg text-[var(--color-fg-muted)]">
+          The page you're looking for doesn't exist or has been moved. Let's get you back on track.
+        </p>
+
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+          <a href="/" class="btn btn-primary btn-lg">
+            Back to home
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M5 12h14M13 5l7 7-7 7"/>
+            </svg>
+          </a>
+          <a href="/projects" class="btn btn-secondary btn-lg">View projects</a>
         </div>
+      </div>
     </div>
+  </section>
 </BaseLayout>

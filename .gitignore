@@ -58,3 +58,6 @@ check_*.ts
 create_*.ts
 hydrate*.mjs
 *.html
+
+# Local tooling state
+.antigravitycli/

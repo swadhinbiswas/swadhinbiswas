@@ -1,0 +1,115 @@
+---
+import { getDynamicConfig } from "../../lib/config";
+import { db, projects } from "../../db";
+import { desc, sql } from "drizzle-orm";
+
+const siteConfig = await getDynamicConfig();
+
+let repoCount = 0;
+let totalStars = 0;
+let topRepos: { name: string; description: string; url: string; stars: number; tags: string[] }[] = [];
+
+try {
+  const rows = await db
+    .select()
+    .from(projects)
+    .orderBy(desc(projects.stars));
+
+  repoCount = rows.length;
+  totalStars = rows.reduce((sum, r) => sum + (r.stars || 0), 0);
+
+  topRepos = rows.slice(0, 4).map((r) => ({
+    name: r.name,
+    description: r.description,
+    url: r.github || r.url,
+    stars: r.stars || 0,
+    tags: (() => { try { return JSON.parse(r.tags); } catch { return []; } })(),
+  }));
+} catch {}
+
+const githubUrl = siteConfig.links?.github || "#";
+---
+
+<section class="section border-t border-[var(--color-border)] bg-[var(--color-surface)]/40">
+  <div class="container-page">
+    <div class="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-4 reveal">
+        <p class="section-eyebrow">Open Source</p>
+        <h2 class="section-title mt-3">Building in the open.</h2>
+        <p class="section-description">
+          A focused set of public repositories for production data, ML, and developer tooling.
+        </p>
+
+        <div class="mt-8 space-y-4">
+          {repoCount > 0 && (
+            <div class="card p-5">
+              <p class="text-eyebrow">Public Repositories</p>
+              <p class="mt-2 text-3xl font-semibold text-white">{repoCount}</p>
+            </div>
+          )}
+          {totalStars > 0 && (
+            <div class="card p-5">
+              <p class="text-eyebrow">GitHub Stars</p>
+              <p class="mt-2 text-3xl font-semibold text-white">{totalStars.toLocaleString()}</p>
+            </div>
+          )}
+        </div>
+
+        <a
+          href={githubUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-secondary mt-8"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          View on GitHub
+        </a>
+      </div>
+
+      <div class="lg:col-span-8">
+        {topRepos.length === 0 ? (
+          <div class="card p-12 text-center">
+            <p class="text-sm text-[var(--color-fg-muted)]">
+              Open-source repositories will appear here once added from the admin panel.
+            </p>
+          </div>
+        ) : (
+          <div class="space-y-3">
+            {topRepos.map((repo, i) => (
+              <a
+                href={repo.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="card card-hover group flex items-start justify-between gap-6 p-5 reveal"
+                style={`transition-delay: ${i * 60}ms`}
+              >
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-[var(--color-fg-subtle)]"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    <h3 class="truncate font-medium text-white transition-colors group-hover:text-[var(--color-accent)]">
+                      {repo.name}
+                    </h3>
+                  </div>
+                  <p class="mt-2 text-sm text-[var(--color-fg-muted)] line-clamp-2">
+                    {repo.description}
+                  </p>
+                  {repo.tags.length > 0 && (
+                    <div class="mt-3 flex flex-wrap gap-1.5">
+                      {repo.tags.slice(0, 3).map((t) => (
+                        <span class="tag">{t}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div class="flex flex-shrink-0 items-center gap-1.5 text-sm text-[var(--color-fg-subtle)]">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279L.001 9.306l8.332-1.151z"/></svg>
+                  {repo.stars.toLocaleString()}
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
