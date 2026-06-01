@@ -15,19 +15,11 @@ const shortBio = siteConfig.bio?.short || "";
       </div>
 
       <div class="lg:col-span-8 reveal reveal-delay-1">
-        {longBio && (
-          <p class="text-xl leading-relaxed text-white sm:text-2xl">
-            {longBio}
-          </p>
-        )}
-
-        {shortBio && shortBio !== longBio && (
-          <p class="mt-6 text-base leading-relaxed text-[var(--color-fg-muted)]">
-            {shortBio}
-          </p>
-        )}
-
-        {!longBio && !shortBio && (
+        {longBio ? (
+          <p class="text-xl leading-relaxed text-white sm:text-2xl">{longBio}</p>
+        ) : shortBio ? (
+          <p class="text-xl leading-relaxed text-white sm:text-2xl">{shortBio}</p>
+        ) : (
           <p class="text-base leading-relaxed text-[var(--color-fg-subtle)]">
             Bio not set — edit it in the admin panel.
           </p>
