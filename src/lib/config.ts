@@ -83,10 +83,10 @@ let cachedConfig: DynamicSiteConfig | null = null;
 let cacheTimestamp: number = 0;
 const CACHE_TTL = 60 * 1000; // 1 minute cache
 const DEFAULT_SHORT_BIO =
-  "Backend Engineer & AI Systems Architect based in Dhaka, Bangladesh.";
+  "Data Engineer & MLOps Engineer. Open to EU Relocation 🇳🇱🇩🇪";
 const DEFAULT_FOCUS_LABEL = "CURRENT DIRECTIVE";
 const DEFAULT_RESEARCH_STATEMENT =
-  "Open to backend and AI systems opportunities.";
+  "Open to Data Engineering and MLOps opportunities.";
 
 export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
   // Return cached config if still valid

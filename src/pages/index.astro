@@ -14,7 +14,7 @@ const siteUrl = (siteConfig.url || Astro.url.origin).replace(/\/$/, "");
 const personName = siteConfig.author || "Swadhin Biswas";
 const shortBio =
   siteConfig.bio?.short?.trim() ||
-  "Backend Engineer & AI Systems Architect based in Dhaka, Bangladesh.";
+  "Data Engineer & MLOps Engineer. Open to EU Relocation 🇳🇱🇩🇪";
 const pageDescription = siteConfig.description?.trim() || shortBio;
 const primaryImageUrl = `${siteUrl}/og-image.png`;
 
@@ -84,7 +84,7 @@ const homeSchema = {
         "@id": `${siteUrl}/#primaryimage`,
       },
       description: shortBio,
-      jobTitle: "Backend Engineer & AI Systems Architect",
+      jobTitle: "Data Engineer & MLOps Engineer",
       sameAs,
       knowsAbout: siteConfig.skills,
       address: {

@@ -54,10 +54,10 @@ const bioLong = bio.long || siteConfig.bio.long;
 const bioQuote = bio.quote || siteConfig.bio.quote;
 const bioIntro =
   bio.intro ||
-  `I'm ${author} (স্বাধীন বিশ্বাস), which means "Freedom" in Bengali. I'm a Backend Engineer and AI Systems Architect based in ${location}.`;
+  `I'm ${author} (স্বাধীন বিশ্বাস), which means "Freedom" in Bengali. I'm a Data Engineer and MLOps Engineer. Co-founder of Boringrats — scaled to 1M+ users before successful acquisition.`;
 const bioStory =
   bio.story ||
-  "With a deep love for problem-solving and building systems that scale, I've dedicated my career to creating backend infrastructure and AI solutions that help people express and share their ideas more effectively. I believe every problem has a solution — you just need to find the right algorithm.";
+  "With a deep love for building robust data pipelines, scaling infrastructure, and managing machine learning systems (MLOps), I've dedicated my career to designing architecture that transforms raw data into reliable insights. Co-founded Boringrats, scaling it to 1M+ users before its successful acquisition.";
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
@@ -129,8 +129,11 @@ function formatDate(dateString: string): string {
                       <div class="flex-1 min-w-0">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                           <h3 class="text-base font-semibold text-text group-hover:text-accent transition-colors">{exp.role}</h3>
-                          <span class="text-xs font-mono text-overlay0 whitespace-nowrap">
+                          <span class="text-xs font-mono text-overlay0 whitespace-nowrap flex items-center gap-2">
                             {formatDate(exp.startDate)} — {exp.endDate ? formatDate(exp.endDate) : "Present"}
+                            {exp.company.toLowerCase().includes("boringrats") && (
+                              <span class="px-1.5 py-0.5 bg-green-500/10 text-green-400 border border-green-500/20 text-[9px] rounded font-bold uppercase tracking-wider">Acquired ✓</span>
+                            )}
                           </span>
                         </div>
                         <p class="text-sm text-accent/80 font-mono">{exp.company}</p>
@@ -197,8 +200,14 @@ function formatDate(dateString: string): string {
             </h2>
             <div class="space-y-4">
               {publicationsList.map((pub, idx) => (
-                <div class="academic-card">
+                <div class={`academic-card ${idx === 0 ? 'border border-neon-cyan/30 shadow-[0_0_15px_rgba(180,190,254,0.15)] bg-gradient-to-r from-neon-cyan/5 to-transparent' : ''}`}>
                   <div class="flex flex-col gap-2">
+                    {idx === 0 && (
+                      <div class="flex items-center gap-1.5 text-[9px] font-mono text-neon-cyan uppercase tracking-widest font-bold">
+                        <span class="w-1.5 h-1.5 rounded-full bg-neon-cyan animate-pulse"></span>
+                        Featured Research / arXiv Preprint
+                      </div>
+                    )}
                     <div class="flex justify-between items-start gap-4">
                       <h3 class="paper-title">
                         {pub.url ? (
@@ -296,12 +305,12 @@ function formatDate(dateString: string): string {
             <a
               href="https://cdn.swadhin.cv/swadhinbiswas.pdf"
               target="_blank"
-              class="flex items-center justify-center gap-2 w-full bg-accent/10 border border-accent/30 hover:bg-accent/20 text-accent font-mono text-sm font-bold py-2.5 rounded-lg transition-all"
+              class="flex items-center justify-center gap-2 w-full bg-neon-cyan text-void-black font-mono text-sm font-bold py-2.5 rounded-lg transition-all shadow-[0_0_15px_rgba(180,190,254,0.35)] hover:shadow-[0_0_25px_rgba(180,190,254,0.55)] hover:bg-neon-cyan/95 hover:scale-[1.02] transform active:scale-[0.98]"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              Download CV
+              Download CV ↓
             </a>
           </div>
         </div>

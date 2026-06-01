@@ -1,6 +1,5 @@
 ---
 import LocationMap from "./bento/LocationMap.astro";
-import Clicker from "./bento/Clicker.astro";
 import {
   db,
   siteSettings,
@@ -279,10 +278,6 @@ const signalPills = [
       <LocationMap />
     </div>
 
-    <!-- Clicker Challenge -->
-    <div class="bento-item bento-clicker glass-panel p-4">
-      <Clicker />
-    </div>
 
     <!-- Terminal Events -->
     <div class="bento-item bento-commits glass-panel p-4 flex flex-col">
@@ -310,7 +305,6 @@ const signalPills = [
       "productivity"
       "overview"
       "location"
-      "clicker"
       "commits";
   }
 
@@ -320,7 +314,7 @@ const signalPills = [
       grid-template-rows: repeat(3, auto);
       grid-template-areas:
         "metrics productivity overview overview"
-        "location clicker overview overview"
+        "location location overview overview"
         "commits commits overview overview";
       grid-auto-rows: minmax(160px, auto);
     }
@@ -330,7 +324,6 @@ const signalPills = [
   .bento-productivity { grid-area: productivity; }
   .bento-posts { grid-area: overview; }
   .bento-location { grid-area: location; }
-  .bento-clicker { grid-area: clicker; }
   .bento-commits { grid-area: commits; }
 
   /* HUD Scanline Effect */

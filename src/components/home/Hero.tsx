@@ -27,6 +27,14 @@ export default function Hero({ config }: HeroProps) {
 
       <div className="z-10 max-w-4xl w-full mx-auto px-4 sm:px-6">
 
+        {/* Relocation Banner / Badge */}
+        <div className="flex justify-center md:justify-start mb-6 animate-pulse">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-neon-cyan/30 bg-neon-cyan/5 text-neon-cyan text-xs font-mono tracking-wide shadow-[0_0_10px_rgba(180,190,254,0.1)]">
+            <span className="w-2 h-2 rounded-full bg-neon-cyan"></span>
+            Open to EU Relocation 🇳🇱🇩🇪
+          </div>
+        </div>
+
         {/* Block 1: Greeting & Name */}
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-sans tracking-tight mb-3 sm:mb-4 text-center md:text-left">
           <span className="text-gray-100">Hi, I'm </span>
@@ -48,9 +56,21 @@ export default function Hero({ config }: HeroProps) {
           <p className="text-[11px] font-mono text-neon-cyan mb-3 uppercase tracking-widest">
             {focusLabel}
           </p>
-          <p className="text-base font-sans text-gray-300 leading-relaxed font-medium">
+          <p className="text-base font-sans text-gray-300 leading-relaxed font-medium mb-3">
             {focusStatement}
           </p>
+          <div className="flex items-center gap-2 font-mono text-xs text-neon-cyan/85 pt-3 border-t border-white/5">
+            <span className="text-sm">📚</span>
+            <span className="whitespace-nowrap">Latest Research:</span>
+            <a
+              href="https://arxiv.org/abs/2509.00988"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-white transition-colors truncate max-w-full"
+            >
+              "Sounds & NLP: A Unified Denoising and Adaptation Framework for Self-Supervised Bengali Dialectal ASR"
+            </a>
+          </div>
         </div>
 
         {/* Block 4: Navigation/Actions */}
@@ -59,9 +79,15 @@ export default function Hero({ config }: HeroProps) {
             href={siteConfig.cvUrl || "/cv"}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-5 py-2.5 bg-transparent border border-white/20 rounded text-gray-300 font-sans text-sm hover:border-white/50 hover:text-white transition-all"
+            className="px-6 py-2.5 bg-neon-cyan text-void-black font-semibold rounded font-sans text-sm hover:bg-neon-cyan/95 transition-all shadow-[0_0_15px_rgba(180,190,254,0.35)] hover:shadow-[0_0_25px_rgba(180,190,254,0.55)] hover:scale-[1.02] transform active:scale-[0.98]"
           >
             Download CV ↓
+          </a>
+          <a
+            href="/contact"
+            className="px-6 py-2.5 bg-transparent border border-neon-cyan text-neon-cyan font-semibold rounded font-sans text-sm hover:bg-neon-cyan/10 transition-all hover:scale-[1.02] transform active:scale-[0.98]"
+          >
+            Hire Me 🎯
           </a>
           <a
             href="/projects"
@@ -74,14 +100,6 @@ export default function Hero({ config }: HeroProps) {
             className="px-5 py-2.5 bg-transparent border border-white/20 rounded text-gray-300 font-sans text-sm hover:border-white/50 hover:text-white transition-all"
           >
             About Me →
-          </a>
-          <a
-            href={siteConfig.links.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-5 py-2.5 bg-transparent border border-white/20 rounded text-gray-300 font-sans text-sm hover:border-white/50 hover:text-white transition-all"
-          >
-            Open Source →
           </a>
         </div>
 

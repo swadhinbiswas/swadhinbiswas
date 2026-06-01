@@ -52,7 +52,7 @@ const ogImage = image || `${siteConfig.url}/og-image.png`;
 const canonicalURL = new URL(Astro.url.pathname, siteConfig.url);
 
 // Feature toggles
-const showKonamiCode = settings.show_konami_code !== "false";
+const showKonamiCode = false; // Disabled for professional EU recruiter optimization
 const showScrollProgress = settings.show_scroll_progress !== "false";
 const showSupportModal = settings.show_support_modal !== "false";
 ---
