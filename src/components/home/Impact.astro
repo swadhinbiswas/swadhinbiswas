@@ -2,7 +2,6 @@
 import { db, projects, experiences, publications } from "../../db";
 import { eq, sql } from "drizzle-orm";
 
-// Pull real numbers from the database (no fake data)
 async function safeCount<T extends Promise<unknown[]>>(q: T): Promise<number> {
   try {
     const rows = (await q) as any[];
@@ -12,63 +11,47 @@ async function safeCount<T extends Promise<unknown[]>>(q: T): Promise<number> {
   }
 }
 
-const [projectCountRow, featuredCountRow, experienceCountRow, publicationCountRow, repoCountRow] = await Promise.all([
+const [projectCountRow, featuredCountRow, experienceCountRow, publicationCountRow] = await Promise.all([
   safeCount(db.select({ count: sql<number>`count(*)` }).from(projects)),
   safeCount(db.select({ count: sql<number>`count(*)` }).from(projects).where(eq(projects.featured, true))),
   safeCount(db.select({ count: sql<number>`count(*)` }).from(experiences)),
   safeCount(db.select({ count: sql<number>`count(*)` }).from(publications)),
-  safeCount(db.select({ count: sql<number>`count(*)` }).from(projects)),
 ]);
 
-// Only show metrics that are non-zero (no fake numbers)
+// Only show metrics that have real numbers behind them. No fakes.
 const metrics: { label: string; value: string; sublabel?: string }[] = [];
 
 if (projectCountRow > 0) {
   metrics.push({
-    label: "Production platforms",
-    value: projectCountRow >= 10 ? `${projectCountRow}+` : projectCountRow.toString(),
-    sublabel: "Built end-to-end",
+    label: "Projects",
+    value: projectCountRow.toString(),
+    sublabel: "Shipped end-to-end",
   });
 }
 
 if (experienceCountRow > 0) {
   metrics.push({
-    label: "Years engineering",
-    value: `${experienceCountRow}+`,
+    label: "Roles",
+    value: experienceCountRow.toString(),
     sublabel: "In production",
   });
 }
 
 if (publicationCountRow > 0) {
   metrics.push({
-    label: "Research published",
+    label: "Publications",
     value: publicationCountRow.toString(),
-    sublabel: "Peer-reviewed work",
+    sublabel: "Peer-reviewed",
   });
 }
 
 if (featuredCountRow > 0) {
   metrics.push({
-    label: "Featured projects",
+    label: "Featured",
     value: featuredCountRow.toString(),
     sublabel: "Public deployments",
   });
 }
-
-if (repoCountRow > 0) {
-  metrics.push({
-    label: "Open source",
-    value: `${repoCountRow}+`,
-    sublabel: "Repositories maintained",
-  });
-}
-
-// Always include these professional standards — sourced from real data when possible
-metrics.push({
-  label: "Disciplines",
-  value: "5+",
-  sublabel: "Data, ML, Backend, Cloud, Research",
-});
 ---
 
 <section class="border-y border-[var(--color-border)] bg-[var(--color-surface)]/40">

@@ -1,9 +1,11 @@
 ---
 import { getDynamicConfig } from "../../lib/config";
+import { env } from "../../lib/env";
 
 const siteConfig = await getDynamicConfig();
 const year = new Date().getFullYear();
-const author = siteConfig.author || "";
+const author = siteConfig.author || env.siteName;
+const tagline = siteConfig.bio?.quote || "";
 
 const socials = (siteConfig.socials || []).filter((s) =>
   ["github", "linkedin", "twitter", "youtube", "scholar", "email"].includes(s.icon)
@@ -44,10 +46,11 @@ const navGroups = [
           <span class="text-sm font-medium text-white">{author}</span>
         </a>
 
-        <p class="mt-6 max-w-sm text-[15px] leading-relaxed text-[var(--color-fg-muted)]">
-          {siteConfig.bio?.short ||
-            "Senior Data Engineer & MLOps Engineer. Open to global opportunities."}
-        </p>
+        {tagline && (
+          <p class="mt-6 max-w-sm text-[15px] leading-relaxed text-[var(--color-fg-muted)]">
+            {tagline}
+          </p>
+        )}
 
         <div class="mt-8 flex flex-wrap items-center gap-3">
           <a href="/contact" class="btn btn-primary">

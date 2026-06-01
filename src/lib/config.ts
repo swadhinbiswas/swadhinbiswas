@@ -1,4 +1,4 @@
-// Dynamic configuration loader that fetches from database with fallback to static config
+// Dynamic configuration loader: DB → .env → empty string
 import {
   db,
   siteSettings,
@@ -10,6 +10,7 @@ import {
   skills,
   bioContent,
 } from "../db";
+import { env } from "./env";
 
 export interface DynamicSiteConfig {
   name: string;
@@ -39,6 +40,7 @@ export interface DynamicSiteConfig {
     github: string;
     linkedin: string;
     twitter: string;
+    youtube?: string;
     [key: string]: string;
   };
 
@@ -82,11 +84,21 @@ export interface DynamicSiteConfig {
 let cachedConfig: DynamicSiteConfig | null = null;
 let cacheTimestamp: number = 0;
 const CACHE_TTL = 60 * 1000; // 1 minute cache
-const DEFAULT_SHORT_BIO =
-  "Data Engineer & MLOps Engineer. Open to EU Relocation 🇳🇱🇩🇪";
-const DEFAULT_FOCUS_LABEL = "CURRENT DIRECTIVE";
-const DEFAULT_RESEARCH_STATEMENT =
-  "Open to Data Engineering and MLOps opportunities.";
+const DEFAULT_SHORT_BIO = "";
+const DEFAULT_FOCUS_LABEL = "FOCUS";
+const DEFAULT_RESEARCH_STATEMENT = "";
+
+/**
+ * Split "Dhaka, Bangladesh" → { city: "Dhaka", country: "Bangladesh" }
+ */
+function parseLocation(raw: string): { city: string; country: string } {
+  if (!raw) return { city: "", country: "" };
+  const parts = raw.split(",").map((p) => p.trim()).filter(Boolean);
+  return {
+    city: parts[0] || "",
+    country: parts.slice(1).join(", ") || "",
+  };
+}
 
 export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
   // Return cached config if still valid
@@ -141,33 +153,34 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
       ? settings.seo_keywords.split(",").map((k) => k.trim())
       : [];
 
-    // Build config
+    // Build config — DB first, .env as fallback, empty string last
     const config: DynamicSiteConfig = {
-      name: settings.site_name || "",
-      description: settings.site_description || "",
-      url: settings.site_url || "",
+      name: settings.site_name || env.siteName,
+      description: settings.site_description || env.siteDescription,
+      url: settings.site_url || env.siteUrl,
       cvUrl: settings.cv_url || "",
-      author: settings.author || "",
-      email: settings.email || "",
-      location: settings.location || "",
-      timezone: settings.timezone || "",
+      author: settings.author || env.siteName,
+      email: settings.email || env.email,
+      location: settings.location || env.location,
+      timezone: settings.timezone || env.timezone,
 
       seo: {
-        author: settings.author || "",
+        author: settings.author || env.siteName,
         title: settings.seo_title || "",
         keywords,
         worksFor: {
           name: settings.works_for_name || "",
           url: settings.works_for_url || "",
         },
-        location: { city: "Dhaka", country: "Bangladesh" },
+        location: parseLocation(settings.location || env.location),
       },
 
       links: {
-        github: socialsData.find((s) => s.icon === "github")?.url || "",
-        linkedin: socialsData.find((s) => s.icon === "linkedin")?.url || "",
-        twitter: socialsData.find((s) => s.icon === "twitter")?.url || "",
-        email: `mailto:${settings.email || ""}`,
+        github: socialsData.find((s) => s.icon === "github")?.url || env.github,
+        linkedin: socialsData.find((s) => s.icon === "linkedin")?.url || env.linkedin,
+        twitter: socialsData.find((s) => s.icon === "twitter")?.url || env.twitter,
+        youtube: socialsData.find((s) => s.icon === "youtube")?.url || env.youtube,
+        email: `mailto:${settings.email || env.email}`,
       },
 
       navItems:
@@ -264,34 +277,29 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
       error,
     );
 
-    // Return safe defaults as fallback
+    // Return safe defaults from .env (DB is the source of truth but env is the bootstrap fallback)
     return {
-      name: "",
-      description: "",
-      url: "",
+      name: env.siteName,
+      description: env.siteDescription,
+      url: env.siteUrl,
       cvUrl: "",
-      author: "",
-      email: "",
-      location: "Dhaka, Bangladesh",
-      timezone: "Asia/Dhaka",
+      author: env.siteName,
+      email: env.email,
+      location: env.location,
+      timezone: env.timezone,
       seo: {
-        author: "",
+        author: env.siteName,
         title: "",
         keywords: [],
-        worksFor: {
-          name: "",
-          url: "",
-        },
-        location: {
-          city: "Dhaka",
-          country: "Bangladesh",
-        },
+        worksFor: { name: "", url: "" },
+        location: parseLocation(env.location),
       },
       links: {
-        github: "",
-        linkedin: "",
-        twitter: "",
-        email: "",
+        github: env.github,
+        linkedin: env.linkedin,
+        twitter: env.twitter,
+        youtube: env.youtube,
+        email: `mailto:${env.email}`,
       },
       navItems: [],
       navMenuItems: [],

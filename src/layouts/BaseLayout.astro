@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import { getDynamicConfig } from "../lib/config";
+import { env } from "../lib/env";
 import Header from "../components/layout/Header.astro";
 import Footer from "../components/layout/Footer.astro";
 import GoogleAnalytics from "../components/GoogleAnalytics.astro";
@@ -17,12 +18,13 @@ interface Props {
 const { title, description, image, ogType, noindex = false } = Astro.props;
 const siteConfig = await getDynamicConfig();
 
+const authorName = siteConfig.author || env.siteName;
 const fullTitle = title
-  ? `${title} — ${siteConfig.author}`
-  : `${siteConfig.author} — ${siteConfig.bio?.short || "Engineering Portfolio"}`;
-const pageDescription = description || siteConfig.description || siteConfig.bio?.short || "";
-const ogImage = image || `${siteConfig.url}/og-image.png`;
-const canonicalURL = new URL(Astro.url.pathname, siteConfig.url);
+  ? `${title} — ${authorName}`
+  : `${authorName} — Portfolio`;
+const pageDescription = description || siteConfig.description || env.siteDescription;
+const ogImage = image || `${siteConfig.url || env.siteUrl}/og-image.png`;
+const canonicalURL = new URL(Astro.url.pathname, siteConfig.url || env.siteUrl);
 ---
 <!doctype html>
 <html lang="en">

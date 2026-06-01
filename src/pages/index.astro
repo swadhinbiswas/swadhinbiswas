@@ -3,6 +3,7 @@ export const prerender = false;
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getDynamicConfig } from "../lib/config";
+import { env } from "../lib/env";
 import JsonLd from "../components/seo/JsonLd.astro";
 
 import Hero from "../components/home/Hero.astro";
@@ -18,11 +19,10 @@ import Writing from "../components/home/Writing.astro";
 import Contact from "../components/home/Contact.astro";
 
 const siteConfig = await getDynamicConfig();
-const siteUrl = (siteConfig.url || Astro.url.origin).replace(/\/$/, "");
-const author = siteConfig.author || "Portfolio";
-const shortBio =
-  siteConfig.bio?.short?.trim() ||
-  "Senior Data Engineer & MLOps Engineer. Open to global opportunities.";
+const siteUrl = (siteConfig.url || env.siteUrl || Astro.url.origin).replace(/\/$/, "");
+const author = siteConfig.author || env.siteName;
+const siteDescription = siteConfig.description || env.siteDescription;
+const shortBio = siteConfig.bio?.short?.trim() || "";
 
 const locationText = siteConfig.location || "";
 const [cityPart, ...countryParts] = locationText
@@ -34,9 +34,32 @@ const sameAs = [
   siteConfig.links?.github,
   siteConfig.links?.linkedin,
   siteConfig.links?.twitter,
+  siteConfig.links?.youtube,
   ...(siteConfig.socials || []).map((s) => s.url),
-  "https://scholar.google.com/citations?hl=en&user=xHqlwTAAAAAJ",
 ].filter((u, i, arr): u is string => Boolean(u) && arr.indexOf(u) === i);
+
+const personSchema: Record<string, unknown> = {
+  "@type": "Person",
+  "@id": `${siteUrl}/#person`,
+  name: author,
+  url: `${siteUrl}/`,
+  image: `${siteUrl}/og-image.png`,
+  description: siteDescription,
+  sameAs,
+  address: cityPart
+    ? { "@type": "PostalAddress", addressLocality: cityPart, addressCountry: countryParts.join(", ") || "" }
+    : undefined,
+  email: siteConfig.email,
+  knowsAbout: siteConfig.skills || [],
+};
+if (shortBio) personSchema.jobTitle = shortBio;
+if (siteConfig.seo?.worksFor?.name) {
+  personSchema.worksFor = {
+    "@type": "Organization",
+    name: siteConfig.seo.worksFor.name,
+    url: siteConfig.seo.worksFor.url || undefined,
+  };
+}
 
 const schema = {
   "@context": "https://schema.org",
@@ -46,31 +69,17 @@ const schema = {
       "@id": `${siteUrl}/#website`,
       url: `${siteUrl}/`,
       name: author,
-      description: shortBio,
+      description: siteDescription,
       inLanguage: "en-US",
     },
-    {
-      "@type": "Person",
-      "@id": `${siteUrl}/#person`,
-      name: author,
-      url: `${siteUrl}/`,
-      image: `${siteUrl}/og-image.png`,
-      description: shortBio,
-      jobTitle: "Senior Data Engineer & MLOps Engineer",
-      sameAs,
-      address: cityPart
-        ? { "@type": "PostalAddress", addressLocality: cityPart, addressCountry: countryParts.join(", ") || "" }
-        : undefined,
-      email: siteConfig.email,
-      knowsAbout: siteConfig.skills || [],
-    },
+    personSchema,
   ],
 };
 ---
 
 <BaseLayout
   title={undefined}
-  description={shortBio}
+  description={siteDescription}
   ogType="profile"
 >
   <JsonLd slot="head" schema={schema} />

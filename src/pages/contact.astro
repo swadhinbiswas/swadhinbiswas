@@ -3,32 +3,32 @@ export const prerender = true;
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getDynamicConfig } from "../lib/config";
+import { env } from "../lib/env";
 
 const siteConfig = await getDynamicConfig();
-const email = siteConfig.email || "";
+const email = siteConfig.email || env.email;
 const socials = (siteConfig.socials || []).filter((s) =>
   ["github", "linkedin", "twitter", "youtube", "scholar"].includes(s.icon)
 );
 ---
 
-<BaseLayout title="Contact" description="Get in touch — open to senior data, ML, and platform engineering roles, consulting, and research collaboration.">
+<BaseLayout title="Contact" description={siteConfig.description || env.siteDescription}>
   <section class="section">
     <div class="container-page">
       <div class="grid grid-cols-1 gap-16 lg:grid-cols-12">
         <div class="lg:col-span-5 reveal">
           <p class="section-eyebrow">Contact</p>
           <h1 class="section-title mt-3">Let's talk.</h1>
-          <p class="mt-6 text-lg leading-relaxed text-[var(--color-fg-muted)]">
-            Open to full-time roles, consulting, research collaboration, and advisory work in data, ML, and platform engineering.
-          </p>
 
           <div class="mt-10 space-y-5">
-            <div>
-              <p class="text-eyebrow">Email</p>
-              <a href={`mailto:${email}`} class="mt-1.5 inline-block text-base text-white hover:underline">
-                {email}
-              </a>
-            </div>
+            {email && (
+              <div>
+                <p class="text-eyebrow">Email</p>
+                <a href={`mailto:${email}`} class="mt-1.5 inline-block text-base text-white hover:underline">
+                  {email}
+                </a>
+              </div>
+            )}
 
             {siteConfig.location && (
               <div>
@@ -37,16 +37,12 @@ const socials = (siteConfig.socials || []).filter((s) =>
               </div>
             )}
 
-            <div>
-              <p class="text-eyebrow">Response time</p>
-              <p class="mt-1.5 inline-flex items-center gap-2 text-base text-white">
-                <span class="relative inline-flex h-2 w-2">
-                  <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--color-success)] opacity-60"></span>
-                  <span class="relative inline-flex h-2 w-2 rounded-full bg-[var(--color-success)]"></span>
-                </span>
-                Within 24 hours
-              </p>
-            </div>
+            {siteConfig.timezone && (
+              <div>
+                <p class="text-eyebrow">Timezone</p>
+                <p class="mt-1.5 text-base text-white">{siteConfig.timezone}</p>
+              </div>
+            )}
           </div>
 
           {socials.length > 0 && (
@@ -72,35 +68,6 @@ const socials = (siteConfig.socials || []).filter((s) =>
             </div>
           )}
 
-          <div class="mt-10 card p-5">
-            <p class="text-eyebrow">Currently open to</p>
-            <ul class="mt-3 space-y-2 text-sm text-white">
-              <li class="flex items-center gap-2">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="text-[var(--color-success)]">
-                  <path d="M20 6 9 17l-5-5"/>
-                </svg>
-                Full-time roles
-              </li>
-              <li class="flex items-center gap-2">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="text-[var(--color-success)]">
-                  <path d="M20 6 9 17l-5-5"/>
-                </svg>
-                Remote / Hybrid
-              </li>
-              <li class="flex items-center gap-2">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="text-[var(--color-success)]">
-                  <path d="M20 6 9 17l-5-5"/>
-                </svg>
-                Consulting / Advisory
-              </li>
-              <li class="flex items-center gap-2">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="text-[var(--color-success)]">
-                  <path d="M20 6 9 17l-5-5"/>
-                </svg>
-                Research collaboration
-              </li>
-            </ul>
-          </div>
         </div>
 
         <div class="lg:col-span-7 reveal reveal-delay-1">

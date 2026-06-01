@@ -1,15 +1,16 @@
 ---
 import { getDynamicConfig } from "../../lib/config";
+import { env } from "../../lib/env";
 
 const siteConfig = await getDynamicConfig();
-const author = siteConfig.author || "Engineer";
+const author = siteConfig.author || env.siteName;
 const [firstName, ...rest] = author.split(" ");
 const lastName = rest.join(" ");
-const shortBio =
-  siteConfig.bio?.short ||
-  "Senior Data Engineer & MLOps Engineer.";
+const shortBio = siteConfig.bio?.short || "";
+const longBio = siteConfig.bio?.long || "";
 const cvUrl = siteConfig.cvUrl;
 const initials = (firstName?.[0] || "") + (lastName?.[0] || "");
+const heroBlurb = (longBio || shortBio).split(/(?<=[.!?])\s+/)[0] || shortBio;
 ---
 
 <section class="relative overflow-hidden">
@@ -20,25 +21,22 @@ const initials = (firstName?.[0] || "") + (lastName?.[0] || "");
     <div class="grid grid-cols-1 items-center gap-16 lg:grid-cols-12">
       <!-- Copy -->
       <div class="lg:col-span-7">
-        <div class="reveal">
-          <span class="section-eyebrow">
-            Available for global opportunities · 2026
-          </span>
-        </div>
+        {siteConfig.description && (
+          <div class="reveal">
+            <span class="section-eyebrow">{siteConfig.description}</span>
+          </div>
+        )}
 
         <h1 class="text-display mt-6 reveal reveal-delay-1 text-4xl text-white sm:text-5xl lg:text-[4.5rem]">
           <span class="block text-gradient">{firstName}</span>
           <span class="block text-gradient-accent">{lastName}</span>
         </h1>
 
-        <p class="mt-6 max-w-xl text-lg leading-relaxed text-[var(--color-fg-muted)] reveal reveal-delay-2 sm:text-xl">
-          {shortBio}
-        </p>
-
-        <p class="mt-4 max-w-xl text-base leading-relaxed text-[var(--color-fg-subtle)] reveal reveal-delay-3">
-          Founder, open-source builder, and researcher designing the data, ML,
-          and platform systems that move real products forward.
-        </p>
+        {heroBlurb && (
+          <p class="mt-6 max-w-xl text-lg leading-relaxed text-[var(--color-fg-muted)] reveal reveal-delay-2 sm:text-xl">
+            {heroBlurb}
+          </p>
+        )}
 
         <div class="mt-10 flex flex-wrap items-center gap-3 reveal reveal-delay-4">
           <a href={cvUrl || "/cv"} target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">
@@ -96,49 +94,44 @@ const initials = (firstName?.[0] || "") + (lastName?.[0] || "");
               </div>
               <div>
                 <p class="text-sm font-medium text-white">{author}</p>
-                <p class="text-xs text-[var(--color-fg-subtle)]">Data · MLOps · Founder</p>
               </div>
             </div>
 
-            <div class="divider my-6"></div>
+            {siteConfig.location && (
+              <div class="divider my-6"></div>
+            )}
 
             <dl class="space-y-4 text-sm">
-              <div class="flex items-center justify-between">
-                <dt class="text-[var(--color-fg-subtle)]">Focus</dt>
-                <dd class="text-white">Data Platforms & ML Infra</dd>
-              </div>
-              <div class="flex items-center justify-between">
-                <dt class="text-[var(--color-fg-subtle)]">Status</dt>
-                <dd class="inline-flex items-center gap-2 text-white">
-                  <span class="relative inline-flex h-2 w-2">
-                    <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--color-success)] opacity-60"></span>
-                    <span class="relative inline-flex h-2 w-2 rounded-full bg-[var(--color-success)]"></span>
-                  </span>
-                  Open to opportunities
-                </dd>
-              </div>
+              {siteConfig.seo?.worksFor?.name && (
+                <div class="flex items-center justify-between">
+                  <dt class="text-[var(--color-fg-subtle)]">Works at</dt>
+                  <dd class="text-white">{siteConfig.seo.worksFor.name}</dd>
+                </div>
+              )}
               {siteConfig.location && (
                 <div class="flex items-center justify-between">
                   <dt class="text-[var(--color-fg-subtle)]">Based in</dt>
                   <dd class="text-white">{siteConfig.location}</dd>
                 </div>
               )}
-              <div class="flex items-center justify-between">
-                <dt class="text-[var(--color-fg-subtle)]">Work mode</dt>
-                <dd class="text-white">Remote · Hybrid · On-site</dd>
-              </div>
+              {siteConfig.timezone && (
+                <div class="flex items-center justify-between">
+                  <dt class="text-[var(--color-fg-subtle)]">Timezone</dt>
+                  <dd class="text-white">{siteConfig.timezone}</dd>
+                </div>
+              )}
             </dl>
 
-            <div class="divider my-6"></div>
-
-            <div class="flex flex-wrap gap-2">
-              <span class="tag">Python</span>
-              <span class="tag">Rust</span>
-              <span class="tag">Spark</span>
-              <span class="tag">Kafka</span>
-              <span class="tag">Kubernetes</span>
-              <span class="tag">AWS</span>
-            </div>
+            {siteConfig.skills && siteConfig.skills.length > 0 && (
+              <>
+                <div class="divider my-6"></div>
+                <div class="flex flex-wrap gap-2">
+                  {siteConfig.skills.slice(0, 6).map((s) => (
+                    <span class="tag">{s}</span>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
