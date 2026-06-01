@@ -23,7 +23,11 @@ const heroBlurb = (longBio || shortBio).split(/(?<=[.!?])\s+/)[0] || shortBio;
       <div class="lg:col-span-7">
         {siteConfig.description && (
           <div class="reveal">
-            <span class="section-eyebrow">{siteConfig.description}</span>
+            <span class="section-eyebrow">
+              {siteConfig.description.length > 60
+                ? siteConfig.description.split(/(?<=[.!?])\s+/)[0]
+                : siteConfig.description}
+            </span>
           </div>
         )}
 
