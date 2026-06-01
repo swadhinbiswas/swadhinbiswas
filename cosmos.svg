@@ -293,19 +293,19 @@
   <!-- ── LOC BREAKDOWN ───────────────────────────────── -->
   <text x="107" y="366" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#585b70" letter-spacing="3">LINES OF CODE</text>
 
-  <text id="loc_data" x="107" y="394" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="22" font-weight="900" fill="#cba6f7" filter="url(#glow)" style="animation:labelPop 1s .8s both;--ls:0px">8,194,028</text>
+  <text id="loc_data" x="107" y="394" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="22" font-weight="900" fill="#cba6f7" filter="url(#glow)" style="animation:labelPop 1s .8s both;--ls:0px">8,193,326</text>
   <text x="107" y="408" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="800" fill="#585b70" letter-spacing="1">NET LINES WRITTEN</text>
 
   <!-- Added bar -->
   <text x="22" y="428" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6e3a1">++ ADDED</text>
-  <text id="loc_add" x="193" y="428" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#94e2d5">8,732,674</text>
+  <text id="loc_add" x="193" y="428" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#94e2d5">8,733,931</text>
   <rect x="22" y="432" width="171" height="6" rx="3" fill="#181825"/>
   <rect class="b6" x="22" y="432" width="155" height="6" rx="3" fill="url(#bP)" filter="url(#glow)"/>
   <circle cx="177" cy="435" r="3" fill="#a6e3a1" filter="url(#glow)" style="animation:dotPulse 2s 4s ease-in-out infinite"/>
 
   <!-- Deleted bar -->
   <text x="22" y="452" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#f38ba8">-- DELETED</text>
-  <text id="loc_del" x="193" y="452" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#eba0ac">538,646</text>
+  <text id="loc_del" x="193" y="452" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#eba0ac">540,605</text>
   <rect x="22" y="456" width="171" height="6" rx="3" fill="#181825"/>
   <rect class="b7" x="22" y="456" width="10" height="6" rx="3" fill="url(#bL)" filter="url(#glow)"/>
   <circle cx="32" cy="459" r="3" fill="#f38ba8" filter="url(#glow)" style="animation:dotPulse 2.2s 4.3s ease-in-out infinite"/>
@@ -413,7 +413,7 @@
       <text x="377" y="375" font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="900" fill="#585b70" letter-spacing="1">02</text>
       <text id="project_name_1" x="400" y="375" font-family="'JetBrains Mono',monospace" font-size="10" font-weight="800" fill="#cdd6f4">HiFiLinux</text>
       <text id="project_lang_1" x="400" y="388" font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="700" fill="#f38ba8">Shell</text>
-      <text id="project_time_1" x="695" y="382" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700" fill="#585b70">2h ago</text>
+      <text id="project_time_1" x="695" y="382" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="700" fill="#585b70">3h ago</text>
     </g>
 
     <line x1="365" y1="396" x2="685" y2="396" stroke="#313244" stroke-width=".4" stroke-dasharray="3 3"/>
