@@ -16,64 +16,37 @@ try {
   all = [];
 }
 
-// Group by category
-const groups = new Map<string, string[]>();
-for (const s of all) {
-  const cat = s.category || "general";
-  if (!groups.has(cat)) groups.set(cat, []);
-  groups.get(cat)!.push(s.name);
+function initials(name: string) {
+  return name
+    .replace(/[^a-zA-Z0-9+#.]/g, "")
+    .slice(0, 3)
+    .toUpperCase();
 }
-
-// Ordered labels (premium categories)
-const labelOrder = ["data", "backend", "language", "cloud", "ai", "mlops", "framework", "tool", "general"];
-const labelMap: Record<string, string> = {
-  data: "Data Engineering",
-  backend: "Backend",
-  language: "Languages",
-  cloud: "Cloud & DevOps",
-  ai: "AI",
-  mlops: "MLOps",
-  framework: "Frameworks",
-  tool: "Tools",
-  general: "Other",
-};
-
-const orderedCats = [
-  ...labelOrder.filter((c) => groups.has(c)),
-  ...[...groups.keys()].filter((c) => !labelOrder.includes(c)),
-];
 ---
 
-<section class="section border-t border-[var(--color-border)]">
-  <div class="container-page">
-    <div class="section-header reveal">
-      <p class="section-eyebrow">Skills Architecture</p>
-      <h2 class="section-title">What I work with.</h2>
-      <p class="section-description">
-        A focused stack, refined across years of building production systems. No buzzword lists, just the tools that ship.
-      </p>
+<section class="screen-line-after">
+  <div class="container-narrow py-12 sm:py-16">
+    <div class="mb-6 flex items-baseline justify-between reveal">
+      <h2 class="panel-title">
+        Stack<span class="count-badge">{all.length || ""}</span>
+      </h2>
     </div>
 
-    {orderedCats.length === 0 ? (
-      <div class="card p-12 text-center reveal">
-        <p class="text-sm text-[var(--color-fg-muted)]">
-          Skills will appear here once added from the admin panel.
-        </p>
-      </div>
+    {all.length === 0 ? (
+      <p class="text-sm text-[var(--color-fg-muted)] reveal">
+        Skills will appear here once added from the admin panel.
+      </p>
     ) : (
-      <div class="grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-border)] sm:grid-cols-2 lg:grid-cols-4">
-        {orderedCats.map((cat, i) => (
-          <div
-            class="bg-[var(--color-bg)] p-6 reveal"
-            style={`transition-delay: ${i * 60}ms`}
+      <div class="flex flex-wrap gap-2 reveal">
+        {all.map((s) => (
+          <a
+            href={`#${s.name.toLowerCase()}`}
+            class="icon-chip"
+            title={s.name}
+            aria-label={s.name}
           >
-            <h3 class="text-eyebrow text-[var(--color-fg-subtle)]">{labelMap[cat] || cat}</h3>
-            <div class="mt-5 flex flex-wrap gap-2">
-              {(groups.get(cat) || []).map((name) => (
-                <span class="tag">{name}</span>
-              ))}
-            </div>
-          </div>
+            {initials(s.name)}
+          </a>
         ))}
       </div>
     )}

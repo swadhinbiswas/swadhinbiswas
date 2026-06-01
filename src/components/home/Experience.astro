@@ -30,72 +30,65 @@ function formatDate(s?: string) {
 }
 ---
 
-<section class="section border-t border-[var(--color-border)]">
-  <div class="container-page">
-    <div class="section-header reveal">
-      <p class="section-eyebrow">Experience</p>
-      <h2 class="section-title">Where I've shipped real work.</h2>
-      <p class="section-description">A focused history of building, leading, and scaling.</p>
+<section class="screen-line-after">
+  <div class="container-narrow py-12 sm:py-16">
+    <div class="mb-6 flex items-baseline justify-between reveal">
+      <h2 class="panel-title">
+        Experience<span class="count-badge">{experiencesList.length || ""}</span>
+      </h2>
+      <a href="/about" class="text-mono text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-white">
+        View all →
+      </a>
     </div>
 
     {experiencesList.length === 0 ? (
-      <div class="card p-12 text-center reveal">
+      <div class="px-4 py-8 text-center reveal">
         <p class="text-sm text-[var(--color-fg-muted)]">
           No experience entries yet. Add them from the admin panel.
         </p>
       </div>
     ) : (
-      <div class="space-y-4">
-        {experiencesList.map((exp, i) => (
-          <article
-            class="card card-hover group p-6 sm:p-8 reveal halo"
-            style={`transition-delay: ${i * 60}ms`}
-          >
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-12 md:items-start">
-              <!-- Logo / monogram -->
-              <div class="md:col-span-2">
-                <div class="flex h-12 w-12 items-center justify-center rounded-md border border-[var(--color-border)] bg-[var(--color-surface-2)] text-base font-semibold text-white">
-                  {exp.logoUrl ? (
-                    <img src={exp.logoUrl} alt={exp.company} class="h-7 w-7 object-contain" loading="lazy" />
-                  ) : (
-                    exp.company.charAt(0).toUpperCase()
-                  )}
-                </div>
-              </div>
-
-              <!-- Body -->
-              <div class="md:col-span-7">
-                <h3 class="text-lg font-semibold text-white">
-                  {exp.role}
-                </h3>
-                <p class="mt-1 text-sm text-[var(--color-fg-muted)]">
-                  {exp.url ? (
-                    <a href={exp.url} target="_blank" rel="noopener noreferrer" class="hover:text-white">
-                      {exp.company}
-                    </a>
-                  ) : (
-                    exp.company
-                  )}
-                </p>
-                {exp.companyDescription && (
-                  <p class="mt-2 text-sm text-[var(--color-fg-subtle)]">{exp.companyDescription}</p>
-                )}
-                {exp.details && (
-                  <p class="mt-4 max-w-2xl text-[15px] leading-relaxed text-[var(--color-fg-muted)]">
-                    {exp.details}
-                  </p>
-                )}
-              </div>
-
-              <!-- Date -->
-              <div class="md:col-span-3 md:text-right">
-                <p class="text-mono text-sm text-[var(--color-fg-subtle)]">
-                  {formatDate(exp.startDate)} — {formatDate(exp.endDate)}
-                </p>
-              </div>
+      <div class="panel">
+        <div class="panel-top"></div>
+        {experiencesList.map((exp) => (
+          <div class="row-card group">
+            <div class="row-card-logo" aria-hidden="true">
+              {exp.logoUrl ? (
+                <img src={exp.logoUrl} alt={exp.company} class="h-5 w-5 object-contain" loading="lazy" />
+              ) : (
+                exp.company.charAt(0).toUpperCase()
+              )}
             </div>
-          </article>
+
+            <div class="min-w-0 flex-1">
+              <h3 class="row-card-title">
+                {exp.role}
+                {exp.company && (
+                  <span class="text-[var(--color-fg-muted)]"> · {exp.company}</span>
+                )}
+              </h3>
+              {exp.details && (
+                <p class="prose-mono mt-1 line-clamp-2">{exp.details}</p>
+              )}
+            </div>
+
+            <div class="row-card-actions flex flex-col items-end gap-1.5 text-right">
+              <span class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)]">
+                {formatDate(exp.startDate)} — {formatDate(exp.endDate)}
+              </span>
+              {exp.url && (
+                <a href={exp.url} target="_blank" rel="noopener noreferrer" aria-label={`${exp.company} website`}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                    <polyline points="15 3 21 3 21 9"/>
+                    <line x1="10" y1="14" x2="21" y2="3"/>
+                  </svg>
+                </a>
+              )}
+            </div>
+          </div>
         ))}
+        <div class="panel-bottom"></div>
       </div>
     )}
   </div>

@@ -26,6 +26,7 @@ const pageDescription = description || siteConfig.description || env.siteDescrip
 const ogImage = image || `${siteConfig.url || env.siteUrl}/og-image.png`;
 const canonicalURL = new URL(Astro.url.pathname, siteConfig.url || env.siteUrl);
 ---
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -40,7 +41,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url || env.siteUrl);
       <meta name="keywords" content={siteConfig.seo.keywords.join(", ")} />
     )}
     <meta name="robots" content={noindex ? "noindex,nofollow" : "index,follow"} />
-    <meta name="theme-color" content="#0A0A0A" />
+    <meta name="theme-color" content="#09090b" />
     <title>{fullTitle}</title>
 
     <meta property="og:title" content={fullTitle} />
@@ -73,11 +74,13 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url || env.siteUrl);
       Skip to content
     </a>
 
-    <Header />
-    <main id="main" class="min-h-screen">
-      <slot />
-    </main>
-    <Footer />
+    <div class="column-frame min-h-screen">
+      <Header />
+      <main id="main" class="min-h-screen">
+        <slot />
+      </main>
+      <Footer />
+    </div>
 
     <script>
       const observer = new IntersectionObserver(
@@ -94,6 +97,16 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url || env.siteUrl);
 
       const init = () => {
         document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+
+        const sticky = document.querySelector(".sticky-nav");
+        if (sticky) {
+          const onScroll = () => {
+            if (window.scrollY > 8) sticky.setAttribute("data-affix", "true");
+            else sticky.setAttribute("data-affix", "false");
+          };
+          onScroll();
+          window.addEventListener("scroll", onScroll, { passive: true });
+        }
       };
 
       if (document.readyState === "loading") {

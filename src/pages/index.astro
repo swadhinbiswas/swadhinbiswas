@@ -7,14 +7,11 @@ import { env } from "../lib/env";
 import JsonLd from "../components/seo/JsonLd.astro";
 
 import Hero from "../components/home/Hero.astro";
-import Impact from "../components/home/Impact.astro";
 import Summary from "../components/home/Summary.astro";
-import Timeline from "../components/home/Timeline.astro";
 import Experience from "../components/home/Experience.astro";
 import Skills from "../components/home/Skills.astro";
 import FeaturedProjects from "../components/home/FeaturedProjects.astro";
 import Research from "../components/home/Research.astro";
-import OpenSource from "../components/home/OpenSource.astro";
 import Writing from "../components/home/Writing.astro";
 import Contact from "../components/home/Contact.astro";
 
@@ -85,14 +82,11 @@ const schema = {
   <JsonLd slot="head" schema={schema} />
 
   <Hero />
-  <Impact />
   <Summary />
-  <Timeline />
   <Experience />
   <Skills />
   <FeaturedProjects />
   <Research />
-  <OpenSource />
   <Writing />
   <Contact />
 </BaseLayout>

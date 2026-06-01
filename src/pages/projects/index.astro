@@ -1,15 +1,11 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import ProjectCard from "../../components/projects/ProjectCard.astro";
-import { getDynamicConfig } from "../../lib/config";
 import { db, projects } from "../../db";
-import { desc, eq } from "drizzle-orm";
-
-const siteConfig = await getDynamicConfig();
+import { desc, asc } from "drizzle-orm";
 
 let dbProjects: any[] = [];
 try {
-  dbProjects = await db.select().from(projects).orderBy(desc(projects.order));
+  dbProjects = await db.select().from(projects).orderBy(asc(projects.order), desc(projects.stars));
 } catch {
   dbProjects = [];
 }
@@ -19,8 +15,14 @@ const allProjects = dbProjects.map((p) => ({
   tags: (() => { try { return JSON.parse(p.tags || "[]"); } catch { return []; } })(),
 }));
 
-const featured = allProjects.filter((p) => p.featured);
-const others = allProjects.filter((p) => !p.featured);
+function slug(name: string) {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
 
 const schema = {
   "@context": "https://schema.org",
@@ -39,44 +41,59 @@ const schema = {
     <script type="application/ld+json" set:html={JSON.stringify(schema)} />
   </Fragment>
 
-  <section class="section">
-    <div class="container-page">
-      <div class="max-w-3xl reveal">
-        <p class="section-eyebrow">Projects</p>
-        <h1 class="section-title mt-3">Selected work.</h1>
-        <p class="section-description">
-          Production platforms, open source tools, and research deployments. All projects are real and live in some form — full case studies are available on each project page.
+  <section class="screen-line-after">
+    <div class="container-narrow py-12 sm:py-16">
+      <div class="reveal">
+        <p class="text-eyebrow">Projects</p>
+        <h1 class="text-display mt-3 text-3xl sm:text-4xl text-gradient">Selected work</h1>
+        <p class="prose-mono mt-4 max-w-prose">
+          Production platforms, open source tools, and research deployments. Case studies are available on each project page.
         </p>
       </div>
+    </div>
+  </section>
 
+  <section class="screen-line-after">
+    <div class="container-narrow py-12 sm:py-16">
       {allProjects.length === 0 ? (
-        <div class="card p-16 text-center reveal">
-          <p class="text-base font-medium text-white">No projects yet</p>
-          <p class="mt-2 text-sm text-[var(--color-fg-muted)]">
-            Add your projects from the admin panel — they'll appear here automatically.
-          </p>
-        </div>
+        <p class="text-sm text-[var(--color-fg-muted)] reveal">No projects yet.</p>
       ) : (
-        <div class="mt-12 space-y-16">
-          {featured.length > 0 && (
-            <div>
-              <h2 class="text-eyebrow text-[var(--color-fg-subtle)] mb-6">Featured</h2>
-              <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {featured.map((p) => <ProjectCard project={p} />)}
+        <div class="panel">
+          <div class="panel-top"></div>
+          {allProjects.map((p) => (
+            <a href={`/projects/${slug(p.name)}`} class="row-card group">
+              <div class="row-card-logo" aria-hidden="true">
+                {p.name.charAt(0).toUpperCase()}
               </div>
-            </div>
-          )}
-
-          {others.length > 0 && (
-            <div>
-              {featured.length > 0 && (
-                <h2 class="text-eyebrow text-[var(--color-fg-subtle)] mb-6">All projects</h2>
-              )}
-              <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {others.map((p) => <ProjectCard project={p} />)}
+              <div class="min-w-0 flex-1">
+                <h3 class="row-card-title">
+                  {p.name}
+                  {p.featured && <span class="ml-1.5 text-[var(--color-fg-subtle)]">★</span>}
+                </h3>
+                {p.description && (
+                  <p class="prose-mono mt-1 line-clamp-2">{p.description}</p>
+                )}
+                {p.tags.length > 0 && (
+                  <div class="mt-2 flex flex-wrap gap-1.5">
+                    {p.tags.slice(0, 5).map((t: string) => (
+                      <span class="tag">{t}</span>
+                    ))}
+                  </div>
+                )}
               </div>
-            </div>
-          )}
+              <div class="row-card-actions">
+                {p.stars != null && p.stars > 0 && (
+                  <span class="text-mono text-[10px] text-[var(--color-fg-subtle)]">
+                    ★ {p.stars.toLocaleString()}
+                  </span>
+                )}
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5">
+                  <path d="M5 12h14M13 5l7 7-7 7"/>
+                </svg>
+              </div>
+            </a>
+          ))}
+          <div class="panel-bottom"></div>
         </div>
       )}
     </div>

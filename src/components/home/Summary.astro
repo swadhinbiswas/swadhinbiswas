@@ -4,25 +4,20 @@ import { getDynamicConfig } from "../../lib/config";
 const siteConfig = await getDynamicConfig();
 const longBio = siteConfig.bio?.long || "";
 const shortBio = siteConfig.bio?.short || "";
+const bio = longBio || shortBio;
 ---
 
-<section class="section">
-  <div class="container-page">
-    <div class="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
-      <div class="lg:col-span-4 reveal">
-        <p class="section-eyebrow">Summary</p>
-        <h2 class="section-title mt-3">A short brief.</h2>
+<section class="screen-line-after">
+  <div class="container-narrow py-10 sm:py-14">
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-12 md:gap-10">
+      <div class="md:col-span-3 reveal">
+        <p class="text-eyebrow">Summary</p>
       </div>
-
-      <div class="lg:col-span-8 reveal reveal-delay-1">
-        {longBio ? (
-          <p class="text-xl leading-relaxed text-white sm:text-2xl">{longBio}</p>
-        ) : shortBio ? (
-          <p class="text-xl leading-relaxed text-white sm:text-2xl">{shortBio}</p>
+      <div class="md:col-span-9 reveal reveal-delay-1">
+        {bio ? (
+          <p class="prose-mono">{bio}</p>
         ) : (
-          <p class="text-base leading-relaxed text-[var(--color-fg-subtle)]">
-            Bio not set — edit it in the admin panel.
-          </p>
+          <p class="prose-mono italic">Bio not set — edit it in the admin panel.</p>
         )}
       </div>
     </div>

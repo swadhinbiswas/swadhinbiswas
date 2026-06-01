@@ -16,52 +16,43 @@ const tools = [
 ---
 
 <BaseLayout title="Uses" description="The tools, technologies, and setups I use daily for building systems and writing code.">
-  <section class="section">
-    <div class="container-page">
-      <div class="max-w-3xl reveal">
-        <p class="section-eyebrow">Uses</p>
-        <h1 class="section-title mt-3">Tools & setup.</h1>
-        <p class="section-description">
+  <section class="screen-line-after">
+    <div class="container-narrow py-12 sm:py-16">
+      <div class="reveal">
+        <p class="text-eyebrow">Uses</p>
+        <h1 class="text-display mt-3 text-3xl sm:text-4xl text-gradient">Tools & setup</h1>
+        <p class="prose-mono mt-4 max-w-prose">
           A curated list of the tools, technologies, and setups I use daily. Every tool here has earned its place through daily use — no trend chasing.
         </p>
       </div>
+    </div>
+  </section>
 
-      <div class="mt-16 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-border)] sm:grid-cols-2 lg:grid-cols-4">
-        {tools.map((group, i) => (
-          <div
-            class="bg-[var(--color-bg)] p-6 reveal"
-            style={`transition-delay: ${i * 50}ms`}
-          >
-            <h3 class="text-eyebrow text-[var(--color-fg-subtle)]">{group.category}</h3>
-            <div class="mt-5 flex flex-wrap gap-1.5">
-              {group.items.map((item) => (
-                <span class="tag">{item}</span>
-              ))}
-            </div>
+  <section class="screen-line-after">
+    <div class="container-narrow py-12 sm:py-16 space-y-10">
+      {tools.map((group) => (
+        <div class="reveal">
+          <p class="text-eyebrow">{group.category}</p>
+          <div class="mt-3 flex flex-wrap gap-1.5">
+            {group.items.map((item) => (
+              <span class="tag">{item}</span>
+            ))}
           </div>
-        ))}
-      </div>
-
-      <div class="mt-20 card p-8 sm:p-12 reveal">
-        <h2 class="text-2xl font-semibold tracking-tight text-white">Philosophy</h2>
-        <div class="mt-6 space-y-4 text-[15px] leading-relaxed text-[var(--color-fg-muted)]">
-          <p>
-            I believe in using the right tool for the job — not the trendiest one. Simplicity beats complexity. Reliability beats novelty. And the best code is the code you don't have to write.
-          </p>
-          <p>
-            My setup prioritizes <strong class="text-white">keyboard-driven workflows</strong>, <strong class="text-white">minimalism</strong>, and <strong class="text-white">reproducibility</strong>.
-          </p>
         </div>
-      </div>
+      ))}
+    </div>
+  </section>
 
-      <div class="mt-16 text-center reveal">
-        <p class="text-[var(--color-fg-muted)]">Have a tool recommendation?</p>
-        <a href="/contact" class="btn btn-primary mt-4 inline-flex">
-          Share it with me
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <path d="M5 12h14M13 5l7 7-7 7"/>
-          </svg>
-        </a>
+  <section class="screen-line-after">
+    <div class="container-narrow py-12 sm:py-16">
+      <p class="text-eyebrow reveal">Philosophy</p>
+      <div class="mt-4 prose-mono max-w-prose reveal reveal-delay-1">
+        <p>
+          I believe in using the right tool for the job — not the trendiest one. Simplicity beats complexity. Reliability beats novelty. And the best code is the code you don't have to write.
+        </p>
+        <p>
+          My setup prioritizes keyboard-driven workflows, minimalism, and reproducibility.
+        </p>
       </div>
     </div>
   </section>

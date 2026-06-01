@@ -25,69 +25,58 @@ try {
 
 function formatDate(date: any) {
   const d = date instanceof Date ? date : new Date(date);
-  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 ---
 
 <BaseLayout title="Writing" description="Essays on systems, ML infrastructure, and engineering practice.">
-  <section class="section">
-    <div class="container-page">
-      <div class="max-w-3xl reveal">
-        <p class="section-eyebrow">Writing</p>
-        <h1 class="section-title mt-3">Essays & notes.</h1>
-        <p class="section-description">
+  <section class="screen-line-after">
+    <div class="container-narrow py-12 sm:py-16">
+      <div class="reveal">
+        <p class="text-eyebrow">Writing</p>
+        <h1 class="text-display mt-3 text-3xl sm:text-4xl text-gradient">Essays & notes</h1>
+        <p class="prose-mono mt-4 max-w-prose">
           Thoughts on systems, ML infrastructure, and engineering practice.
         </p>
       </div>
+    </div>
+  </section>
 
-      <div class="mt-12">
-        {posts.length === 0 ? (
-          <div class="card p-16 text-center reveal">
-            <p class="text-base font-medium text-white">No articles yet</p>
-            <p class="mt-2 text-sm text-[var(--color-fg-muted)]">
-              New writing will appear here once published from the admin panel.
-            </p>
-          </div>
-        ) : (
-          <div class="space-y-3">
-            {posts.map((post, i) => (
-              <a
-                href={`/posts/${post.slug}`}
-                class="card card-hover group p-6 sm:p-7 reveal"
-                style={`transition-delay: ${i * 50}ms`}
-              >
-                <div class="grid grid-cols-1 gap-6 md:grid-cols-12 md:items-center">
-                  <div class="md:col-span-2">
-                    <p class="text-mono text-sm text-[var(--color-fg-subtle)]">
-                      {formatDate(post.publishedAt)}
-                    </p>
+  <section class="screen-line-after">
+    <div class="container-narrow py-12 sm:py-16">
+      {posts.length === 0 ? (
+        <p class="text-sm text-[var(--color-fg-muted)] reveal">No articles yet.</p>
+      ) : (
+        <div class="panel">
+          <div class="panel-top"></div>
+          {posts.map((post) => (
+            <a href={`/posts/${post.slug}`} class="row-card group">
+              <div class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)] w-24 flex-shrink-0 pt-1">
+                {formatDate(post.publishedAt)}
+              </div>
+              <div class="min-w-0 flex-1 row-card-divider">
+                <h3 class="row-card-title">{post.title}</h3>
+                {post.description && (
+                  <p class="prose-mono mt-1 line-clamp-2">{post.description}</p>
+                )}
+                {post.tags.length > 0 && (
+                  <div class="mt-2 flex flex-wrap gap-1.5">
+                    {post.tags.slice(0, 3).map((t: string) => (
+                      <span class="tag">{t}</span>
+                    ))}
                   </div>
-                  <div class="md:col-span-8">
-                    <h2 class="text-lg font-semibold text-white transition-colors group-hover:text-[var(--color-accent)]">
-                      {post.title}
-                    </h2>
-                    <p class="mt-2 text-sm leading-relaxed text-[var(--color-fg-muted)]">
-                      {post.description}
-                    </p>
-                    {post.tags.length > 0 && (
-                      <div class="mt-3 flex flex-wrap gap-1.5">
-                        {post.tags.slice(0, 3).map((t: string) => (
-                          <span class="tag">{t}</span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  <div class="md:col-span-2 md:text-right">
-                    <span class="text-sm text-[var(--color-fg-muted)] transition-colors group-hover:text-white">
-                      Read →
-                    </span>
-                  </div>
-                </div>
-              </a>
-            ))}
-          </div>
-        )}
-      </div>
+                )}
+              </div>
+              <div class="row-card-actions">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5">
+                  <path d="M5 12h14M13 5l7 7-7 7"/>
+                </svg>
+              </div>
+            </a>
+          ))}
+          <div class="panel-bottom"></div>
+        </div>
+      )}
     </div>
   </section>
 </BaseLayout>

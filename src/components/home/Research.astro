@@ -26,82 +26,59 @@ function formatDate(s: string) {
 }
 ---
 
-<section class="section border-t border-[var(--color-border)]">
-  <div class="container-page">
-    <div class="section-header reveal">
-      <p class="section-eyebrow">Research & Publications</p>
-      <h2 class="section-title">Credibility, on the record.</h2>
-      <p class="section-description">
-        Published work spanning AI systems, ML infrastructure, and applied research.
-      </p>
+<section class="screen-line-after">
+  <div class="container-narrow py-12 sm:py-16">
+    <div class="mb-6 flex items-baseline justify-between reveal">
+      <h2 class="panel-title">
+        Research<span class="count-badge">{pubs.length || ""}</span>
+      </h2>
+      {pubs.length > 0 && (
+        <a href="/research" class="text-mono text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-white">
+          All publications →
+        </a>
+      )}
     </div>
 
     {pubs.length === 0 ? (
-      <div class="card p-12 text-center reveal">
-        <p class="text-sm text-[var(--color-fg-muted)]">
-          Publications will appear here once added from the admin panel.
-        </p>
-      </div>
+      <p class="text-sm text-[var(--color-fg-muted)] reveal">
+        Publications will appear here once added from the admin panel.
+      </p>
     ) : (
-      <div class="space-y-4">
-        {pubs.map((pub, i) => (
-          <article
-            class="card card-hover group p-6 sm:p-8 reveal halo"
-            style={`transition-delay: ${i * 60}ms`}
+      <div class="panel">
+        <div class="panel-top"></div>
+        {pubs.map((pub) => (
+          <a
+            href={pub.url || "#"}
+            target={pub.url ? "_blank" : undefined}
+            rel={pub.url ? "noopener noreferrer" : undefined}
+            class="row-card group"
           >
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-12">
-              <div class="md:col-span-2">
-                <p class="text-mono text-sm text-[var(--color-fg-subtle)]">
-                  {formatDate(pub.date)}
-                </p>
-              </div>
-
-              <div class="md:col-span-8">
-                <h3 class="text-lg font-semibold text-white transition-colors group-hover:text-[var(--color-accent)]">
-                  {pub.url ? (
-                    <a href={pub.url} target="_blank" rel="noopener noreferrer">
-                      {pub.title}
-                    </a>
-                  ) : (
-                    pub.title
-                  )}
-                </h3>
-                {pub.venue && (
-                  <p class="mt-1 text-sm text-[var(--color-fg-muted)]">{pub.venue}</p>
-                )}
-                {pub.description && (
-                  <p class="mt-3 max-w-2xl text-[15px] leading-relaxed text-[var(--color-fg-muted)]">
-                    {pub.description}
-                  </p>
-                )}
-              </div>
-
-              <div class="md:col-span-2 flex md:justify-end">
-                {pub.url && (
-                  <a
-                    href={pub.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-mono text-xs uppercase tracking-widest text-[var(--color-fg-muted)] transition-colors hover:text-white"
-                  >
-                    Read →
-                  </a>
-                )}
-              </div>
+            <div class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)] w-14 flex-shrink-0 pt-1">
+              {formatDate(pub.date)}
             </div>
-          </article>
-        ))}
-      </div>
-    )}
 
-    {pubs.length > 0 && (
-      <div class="mt-10 reveal">
-        <a href="/research" class="btn btn-secondary">
-          All publications
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <path d="M5 12h14M13 5l7 7-7 7"/>
-          </svg>
-        </a>
+            <div class="min-w-0 flex-1 row-card-divider">
+              <h3 class="row-card-title">{pub.title}</h3>
+              {pub.venue && (
+                <p class="row-card-meta">{pub.venue}</p>
+              )}
+              {pub.description && (
+                <p class="prose-mono mt-1 line-clamp-2">{pub.description}</p>
+              )}
+            </div>
+
+            <div class="row-card-actions">
+              {pub.url && (
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                  <polyline points="15 3 21 3 21 9"/>
+                  <line x1="10" y1="14" x2="21" y2="3"/>
+                </svg>
+              )}
+            </div>
+          </a>
+        ))}
+        <div class="panel-bottom"></div>
       </div>
     )}
   </div>

@@ -17,7 +17,7 @@ try {
     .from(posts)
     .where(eq(posts.draft, false))
     .orderBy(desc(posts.publishedAt))
-    .limit(3);
+    .limit(5);
   recent = rows as Post[];
 } catch {
   recent = [];
@@ -34,59 +34,55 @@ function safeJSON(s: any): string[] {
 }
 ---
 
-<section class="section border-t border-[var(--color-border)]">
-  <div class="container-page">
-    <div class="mb-10 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end reveal">
-      <div>
-        <p class="section-eyebrow">Writing</p>
-        <h2 class="section-title mt-3">Recent notes.</h2>
-        <p class="section-description mt-3 max-w-xl">
-          Essays on systems, ML infrastructure, and engineering practice.
-        </p>
-      </div>
-      <a href="/posts" class="btn btn-secondary btn-sm">
-        All writing
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <path d="M5 12h14M13 5l7 7-7 7"/>
-        </svg>
+<section class="screen-line-after">
+  <div class="container-narrow py-12 sm:py-16">
+    <div class="mb-6 flex items-baseline justify-between reveal">
+      <h2 class="panel-title">
+        Writing<span class="count-badge">{recent.length || ""}</span>
+      </h2>
+      <a href="/posts" class="text-mono text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-white">
+        All writing →
       </a>
     </div>
 
     {recent.length === 0 ? (
-      <div class="card p-12 text-center reveal">
-        <p class="text-sm text-[var(--color-fg-muted)]">
-          Articles will appear here once published from the admin panel.
-        </p>
-      </div>
+      <p class="text-sm text-[var(--color-fg-muted)] reveal">
+        Articles will appear here once published from the admin panel.
+      </p>
     ) : (
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-        {recent.map((post, i) => {
+      <div class="panel">
+        <div class="panel-top"></div>
+        {recent.map((post) => {
           const tags = safeJSON(post.tags);
           return (
-            <a
-              href={`/posts/${post.slug}`}
-              class="card card-hover halo group p-6 reveal flex flex-col"
-              style={`transition-delay: ${i * 60}ms`}
-            >
-              <p class="text-mono text-xs text-[var(--color-fg-subtle)]">
+            <a href={`/posts/${post.slug}`} class="row-card group">
+              <div class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)] w-20 flex-shrink-0 pt-1">
                 {formatDate(post.publishedAt)}
-              </p>
-              <h3 class="mt-4 text-base font-semibold text-white transition-colors group-hover:text-[var(--color-accent)] line-clamp-2">
-                {post.title}
-              </h3>
-              <p class="mt-2 text-sm text-[var(--color-fg-muted)] line-clamp-3">
-                {post.description}
-              </p>
-              {tags.length > 0 && (
-                <div class="mt-5 flex flex-wrap gap-1.5">
-                  {tags.slice(0, 2).map((t) => (
-                    <span class="tag">{t}</span>
-                  ))}
-                </div>
-              )}
+              </div>
+
+              <div class="min-w-0 flex-1 row-card-divider">
+                <h3 class="row-card-title">{post.title}</h3>
+                {post.description && (
+                  <p class="prose-mono mt-1 line-clamp-2">{post.description}</p>
+                )}
+                {tags.length > 0 && (
+                  <div class="mt-2 flex flex-wrap gap-1.5">
+                    {tags.slice(0, 3).map((t) => (
+                      <span class="tag">{t}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div class="row-card-actions">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5">
+                  <path d="M5 12h14M13 5l7 7-7 7"/>
+                </svg>
+              </div>
             </a>
           );
         })}
+        <div class="panel-bottom"></div>
       </div>
     )}
   </div>

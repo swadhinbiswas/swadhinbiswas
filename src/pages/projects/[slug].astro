@@ -86,56 +86,41 @@ const schema = {
     <meta property="article:published_time" content={publishedIso} />
   </Fragment>
 
-  <article class="pb-24">
-    <!-- Header -->
-    <header class="border-b border-[var(--color-border)]">
-      <div class="container-page py-16 sm:py-20">
-        <a href="/projects" class="inline-flex items-center gap-2 text-sm text-[var(--color-fg-muted)] transition-colors hover:text-white">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
-          </svg>
-          All projects
+  <article>
+    <section class="screen-line-after">
+      <div class="container-narrow py-12 sm:py-16">
+        <a href="/projects" class="text-mono inline-flex items-center gap-1.5 text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-white reveal">
+          ← All projects
         </a>
 
-        <div class="mt-8 max-w-3xl reveal">
-          <div class="flex flex-wrap items-center gap-3 text-sm text-[var(--color-fg-muted)]">
-            {project.featured && (
-              <span class="text-mono text-[10px] uppercase tracking-widest text-[var(--color-fg-subtle)]">
-                Featured
-              </span>
-            )}
-            <span class="text-mono text-sm">
-              {new Date(projectDate).toLocaleDateString("en-US", { year: "numeric", month: "long" })}
-            </span>
+        <div class="mt-8 reveal reveal-delay-1">
+          <div class="flex flex-wrap items-center gap-3 text-mono text-xs text-[var(--color-fg-subtle)]">
+            {project.featured && <span>★ Featured</span>}
+            <span>{new Date(projectDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}</span>
+            {project.status && <span>· {project.status}</span>}
           </div>
 
-          <h1 class="text-display mt-4 text-4xl text-white sm:text-5xl lg:text-6xl">
-            {project.name}
+          <h1 class="text-display mt-3 text-3xl text-white sm:text-4xl">
+            <span class="text-gradient">{project.name}</span>
           </h1>
 
-          <p class="mt-6 text-lg leading-relaxed text-[var(--color-fg-muted)] sm:text-xl">
-            {project.description}
-          </p>
+          <p class="prose-mono mt-4 max-w-prose">{project.description}</p>
 
-          <div class="mt-8 flex flex-wrap items-center gap-3">
+          <div class="mt-6 flex flex-wrap items-center gap-2">
             {project.url && (
               <a href={project.url} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-                <span>Live demo</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
-                </svg>
+                Live demo →
               </a>
             )}
             {project.github && (
-              <a href={project.github} target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              <a href={project.github} target="_blank" rel="noopener noreferrer" class="btn btn-outline">
                 Source
               </a>
             )}
           </div>
 
           {tags.length > 0 && (
-            <div class="mt-8 flex flex-wrap gap-1.5">
+            <div class="mt-6 flex flex-wrap gap-1.5">
               {tags.map((t: string) => (
                 <span class="tag">{t}</span>
               ))}
@@ -143,56 +128,23 @@ const schema = {
           )}
         </div>
       </div>
-    </header>
+    </section>
 
-    <!-- Featured image -->
     {project.image && (
-      <div class="container-page mt-12">
-        <div class="overflow-hidden rounded-xl border border-[var(--color-border)]">
-          <img src={project.image} alt={project.name} class="w-full h-auto" loading="lazy" />
-        </div>
-      </div>
-    )}
-
-    <!-- Content -->
-    <div class="container-page mt-12 grid grid-cols-1 gap-12 lg:grid-cols-12">
-      <div class="lg:col-span-8 lg:col-start-1">
-        <div
-          class="prose-content max-w-none"
-          set:html={contentHtml}
-        />
-      </div>
-
-      <aside class="lg:col-span-4">
-        <div class="sticky top-28 space-y-6">
-          <div class="card p-5">
-            <p class="text-eyebrow">Project details</p>
-            <dl class="mt-4 space-y-3 text-sm">
-              <div>
-                <dt class="text-[var(--color-fg-subtle)]">Status</dt>
-                <dd class="mt-0.5 text-white">{project.status || "Active"}</dd>
-              </div>
-              <div>
-                <dt class="text-[var(--color-fg-subtle)]">Date</dt>
-                <dd class="mt-0.5 text-white">
-                  {new Date(projectDate).toLocaleDateString("en-US", { year: "numeric", month: "long" })}
-                </dd>
-              </div>
-              {tags.length > 0 && (
-                <div>
-                  <dt class="text-[var(--color-fg-subtle)]">Stack</dt>
-                  <dd class="mt-2 flex flex-wrap gap-1.5">
-                    {tags.map((t: string) => (
-                      <span class="tag">{t}</span>
-                    ))}
-                  </dd>
-                </div>
-              )}
-            </dl>
+      <section class="screen-line-after">
+        <div class="container-narrow py-8 sm:py-12">
+          <div class="overflow-hidden rounded-md border border-[var(--color-edge)]">
+            <img src={project.image} alt={project.name} class="w-full h-auto" loading="lazy" />
           </div>
         </div>
-      </aside>
-    </div>
+      </section>
+    )}
+
+    <section class="screen-line-after">
+      <div class="container-narrow py-12 sm:py-16">
+        <div class="prose-content" set:html={contentHtml} />
+      </div>
+    </section>
   </article>
 </BaseLayout>
 
@@ -220,12 +172,12 @@ const schema = {
   .prose-content a {
     color: var(--color-fg);
     text-decoration: underline;
-    text-decoration-color: var(--color-border-strong);
+    text-decoration-color: var(--color-edge-strong);
     text-underline-offset: 4px;
     transition: text-decoration-color 0.2s;
   }
   .prose-content a:hover {
-    text-decoration-color: var(--color-accent);
+    text-decoration-color: var(--color-fg);
   }
   .prose-content ul, .prose-content ol {
     padding-left: 1.5rem;
@@ -233,17 +185,18 @@ const schema = {
   }
   .prose-content li { margin: 0.5rem 0; }
   .prose-content code {
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
+    background-color: var(--color-card);
+    border: 1px solid var(--color-edge);
     padding: 0.1rem 0.35rem;
     border-radius: 0.3rem;
     font-size: 0.875em;
     color: var(--color-fg);
+    font-family: var(--font-mono);
   }
   .prose-content pre {
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 0.6rem;
+    background-color: var(--color-card);
+    border: 1px solid var(--color-edge);
+    border-radius: 0.5rem;
     padding: 1.25rem;
     overflow-x: auto;
     margin: 1.5rem 0;
@@ -254,7 +207,7 @@ const schema = {
     padding: 0;
   }
   .prose-content blockquote {
-    border-left: 2px solid var(--color-accent);
+    border-left: 2px solid var(--color-fg-subtle);
     padding-left: 1.25rem;
     margin: 1.5rem 0;
     color: var(--color-fg);
@@ -266,10 +219,10 @@ const schema = {
     margin: 1.5rem 0;
   }
   .prose-content th, .prose-content td {
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-edge);
     padding: 0.75rem;
     text-align: left;
   }
   .prose-content th { color: var(--color-fg); font-weight: 600; }
-  .prose-content img { border-radius: 0.6rem; margin: 1.5rem 0; }
+  .prose-content img { border-radius: 0.5rem; margin: 1.5rem 0; }
 </style>

@@ -28,8 +28,6 @@ for (const s of settingsData as any[]) settings[s.key] = s.value;
 const author = settings.author || siteConfig.author;
 const location = settings.location || siteConfig.location;
 const bioLong = bio.long || siteConfig.bio?.long || "";
-const bioIntro = bio.intro ||
-  `${author} designs and ships data platforms, ML systems, and production infrastructure that move real products. Co-founder of a 1M+ user product, now open to senior data, ML, and platform engineering roles globally.`;
 
 function formatDate(s?: string) {
   if (!s) return "Present";
@@ -38,47 +36,27 @@ function formatDate(s?: string) {
   return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
 }
 
-// Group skills
-const groups = new Map<string, string[]>();
-for (const s of skillsList as any[]) {
-  const c = s.category || "general";
-  if (!groups.has(c)) groups.set(c, []);
-  groups.get(c)!.push(s.name);
+function initials(name: string) {
+  return name
+    .replace(/[^a-zA-Z0-9+#.]/g, "")
+    .slice(0, 3)
+    .toUpperCase();
 }
-const labelMap: Record<string, string> = {
-  data: "Data Engineering",
-  backend: "Backend",
-  language: "Languages",
-  cloud: "Cloud & DevOps",
-  ai: "AI",
-  mlops: "MLOps",
-  framework: "Frameworks",
-  tool: "Tools",
-  general: "Other",
-};
-const labelOrder = ["data", "backend", "language", "cloud", "ai", "mlops", "framework", "tool", "general"];
-const orderedCats = [
-  ...labelOrder.filter((c) => groups.has(c)),
-  ...[...groups.keys()].filter((c) => !labelOrder.includes(c)),
-];
 ---
 
-<BaseLayout title="About" description={`About ${author} — ${siteConfig.bio?.short || ""}`}>
-  <section class="section">
-    <div class="container-page">
-      <div class="max-w-3xl reveal">
-        <p class="section-eyebrow">About</p>
-        <h1 class="section-title mt-3">{author.split(" ")[0]}, in brief.</h1>
-        <p class="mt-6 text-lg leading-relaxed text-[var(--color-fg-muted)] sm:text-xl">
-          {bioLong || bioIntro}
-        </p>
-        {bioIntro && bioIntro !== bioLong && (
-          <p class="mt-4 text-base leading-relaxed text-[var(--color-fg-subtle)]">
-            {bioIntro}
-          </p>
+<BaseLayout title="About" description={`About ${author}.`}>
+  <section class="screen-line-after">
+    <div class="container-narrow py-12 sm:py-16">
+      <div class="reveal">
+        <p class="text-eyebrow">About</p>
+        <h1 class="text-display mt-3 text-3xl sm:text-4xl">
+          <span class="text-gradient">{author.split(" ")[0]}</span>
+        </h1>
+        {bioLong && (
+          <p class="prose-mono mt-6 max-w-prose">{bioLong}</p>
         )}
         {bio.quote && (
-          <blockquote class="mt-8 border-l-2 border-[var(--color-accent)] pl-4 text-lg italic text-white">
+          <blockquote class="mt-6 border-l-2 border-[var(--color-fg-subtle)] pl-4 text-base italic text-[var(--color-fg-muted)]">
             "{bio.quote}"
           </blockquote>
         )}
@@ -87,184 +65,144 @@ const orderedCats = [
   </section>
 
   {experiencesList.length > 0 && (
-    <section class="section border-t border-[var(--color-border)]">
-      <div class="container-page">
-        <div class="section-header reveal">
-          <p class="section-eyebrow">Experience</p>
-          <h2 class="section-title">Where I've worked.</h2>
-        </div>
-
-        <ol class="relative space-y-8">
-          {([...experiencesList] as any[]).reverse().map((exp, i) => (
-            <li
-              class="grid grid-cols-1 gap-6 md:grid-cols-12 reveal halo"
-              style={`transition-delay: ${i * 50}ms`}
-            >
-              <div class="md:col-span-3">
-                <p class="text-mono text-sm text-[var(--color-fg-subtle)]">
-                  {formatDate(exp.startDate)} — {formatDate(exp.endDate)}
-                </p>
-                {exp.company.toLowerCase().includes("boringrats") && (
-                  <span class="mt-2 inline-flex items-center gap-1.5 text-mono text-[10px] uppercase tracking-widest text-[var(--color-success)]">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                      <path d="M20 6 9 17l-5-5"/>
-                    </svg>
-                    Acquired
-                  </span>
-                )}
+    <section class="screen-line-after">
+      <div class="container-narrow py-12 sm:py-16">
+        <h2 class="panel-title mb-6 reveal">
+          Experience<span class="count-badge">{experiencesList.length}</span>
+        </h2>
+        <div class="panel">
+          <div class="panel-top"></div>
+          {([...experiencesList] as any[]).reverse().map((exp) => (
+            <div class="row-card group">
+              <div class="row-card-logo" aria-hidden="true">
+                {exp.company.charAt(0).toUpperCase()}
               </div>
-              <div class="md:col-span-9 card card-hover p-6 sm:p-7">
-                <h3 class="text-lg font-semibold text-white">{exp.role}</h3>
-                <p class="mt-1 text-sm text-[var(--color-fg-muted)]">
-                  {exp.url ? (
-                    <a href={exp.url} target="_blank" rel="noopener noreferrer" class="hover:text-white">
-                      {exp.company}
-                    </a>
-                  ) : exp.company}
-                </p>
-                {exp.companyDescription && (
-                  <p class="mt-2 text-sm text-[var(--color-fg-subtle)]">{exp.companyDescription}</p>
-                )}
+              <div class="min-w-0 flex-1">
+                <h3 class="row-card-title">
+                  {exp.role}
+                  <span class="text-[var(--color-fg-muted)]"> · {exp.company}</span>
+                </h3>
                 {exp.details && (
-                  <p class="mt-4 text-[15px] leading-relaxed text-[var(--color-fg-muted)]">
-                    {exp.details}
-                  </p>
+                  <p class="prose-mono mt-1 line-clamp-3">{exp.details}</p>
                 )}
               </div>
-            </li>
+              <div class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)]">
+                {formatDate(exp.startDate)} — {formatDate(exp.endDate)}
+              </div>
+            </div>
           ))}
-        </ol>
+          <div class="panel-bottom"></div>
+        </div>
       </div>
     </section>
   )}
 
   {educationList.length > 0 && (
-    <section class="section border-t border-[var(--color-border)]">
-      <div class="container-page">
-        <div class="section-header reveal">
-          <p class="section-eyebrow">Education</p>
-          <h2 class="section-title">Academic background.</h2>
-        </div>
-
-        <div class="space-y-3">
-          {(educationList as any[]).map((edu, i) => (
-            <div class="card card-hover p-6 sm:p-7 reveal" style={`transition-delay: ${i * 50}ms`}>
-              <div class="grid grid-cols-1 gap-4 md:grid-cols-12 md:items-center">
-                <div class="md:col-span-8">
-                  <h3 class="text-base font-semibold text-white">{edu.institution}</h3>
-                  <p class="mt-1 text-sm text-[var(--color-fg-muted)]">{edu.degree}</p>
-                  {edu.details && (
-                    <p class="mt-2 text-sm text-[var(--color-fg-subtle)]">{edu.details}</p>
-                  )}
-                </div>
-                <div class="md:col-span-4 md:text-right">
-                  <p class="text-mono text-sm text-[var(--color-fg-subtle)]">
-                    {formatDate(edu.startDate)} — {formatDate(edu.endDate)}
-                  </p>
-                </div>
+    <section class="screen-line-after">
+      <div class="container-narrow py-12 sm:py-16">
+        <h2 class="panel-title mb-6 reveal">
+          Education<span class="count-badge">{educationList.length}</span>
+        </h2>
+        <div class="panel">
+          <div class="panel-top"></div>
+          {(educationList as any[]).map((edu) => (
+            <div class="row-card group">
+              <div class="row-card-logo" aria-hidden="true">
+                {edu.institution.charAt(0).toUpperCase()}
+              </div>
+              <div class="min-w-0 flex-1">
+                <h3 class="row-card-title">{edu.institution}</h3>
+                {edu.degree && <p class="row-card-meta">{edu.degree}</p>}
+                {edu.details && (
+                  <p class="prose-mono mt-1 line-clamp-2">{edu.details}</p>
+                )}
+              </div>
+              <div class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)]">
+                {formatDate(edu.startDate)} — {formatDate(edu.endDate)}
               </div>
             </div>
           ))}
+          <div class="panel-bottom"></div>
         </div>
       </div>
     </section>
   )}
 
   {publicationsList.length > 0 && (
-    <section class="section border-t border-[var(--color-border)]">
-      <div class="container-page">
-        <div class="section-header reveal">
-          <p class="section-eyebrow">Publications</p>
-          <h2 class="section-title">Research, on the record.</h2>
-        </div>
-
-        <div class="space-y-3">
-          {(publicationsList as any[]).map((pub, i) => (
-            <article class="card card-hover group p-6 sm:p-7 reveal" style={`transition-delay: ${i * 50}ms`}>
-              <div class="grid grid-cols-1 gap-4 md:grid-cols-12">
-                <div class="md:col-span-2">
-                  <p class="text-mono text-sm text-[var(--color-fg-subtle)]">{formatDate(pub.date)}</p>
-                </div>
-                <div class="md:col-span-8">
-                  <h3 class="text-base font-semibold text-white transition-colors group-hover:text-[var(--color-accent)]">
-                    {pub.url ? (
-                      <a href={pub.url} target="_blank" rel="noopener noreferrer">{pub.title}</a>
-                    ) : pub.title}
-                  </h3>
-                  {pub.venue && <p class="mt-1 text-sm text-[var(--color-fg-muted)]">{pub.venue}</p>}
-                  {pub.description && (
-                    <p class="mt-2 text-sm leading-relaxed text-[var(--color-fg-subtle)]">{pub.description}</p>
-                  )}
-                </div>
-                <div class="md:col-span-2 md:text-right">
-                  {pub.url && (
-                    <a href={pub.url} target="_blank" rel="noopener noreferrer" class="text-mono text-xs uppercase tracking-widest text-[var(--color-fg-muted)] transition-colors hover:text-white">
-                      Read →
-                    </a>
-                  )}
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  )}
-
-  {orderedCats.length > 0 && (
-    <section class="section border-t border-[var(--color-border)]">
-      <div class="container-page">
-        <div class="section-header reveal">
-          <p class="section-eyebrow">Skills</p>
-          <h2 class="section-title">What I work with.</h2>
-        </div>
-
-        <div class="grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-border)] sm:grid-cols-2 lg:grid-cols-3">
-          {orderedCats.map((cat, i) => (
-            <div
-              class="bg-[var(--color-bg)] p-6 reveal"
-              style={`transition-delay: ${i * 50}ms`}
+    <section class="screen-line-after">
+      <div class="container-narrow py-12 sm:py-16">
+        <h2 class="panel-title mb-6 reveal">
+          Publications<span class="count-badge">{publicationsList.length}</span>
+        </h2>
+        <div class="panel">
+          <div class="panel-top"></div>
+          {(publicationsList as any[]).map((pub) => (
+            <a
+              href={pub.url || "#"}
+              target={pub.url ? "_blank" : undefined}
+              rel={pub.url ? "noopener noreferrer" : undefined}
+              class="row-card group"
             >
-              <h3 class="text-eyebrow text-[var(--color-fg-subtle)]">{labelMap[cat] || cat}</h3>
-              <div class="mt-5 flex flex-wrap gap-1.5">
-                {(groups.get(cat) || []).map((n) => (
-                  <span class="tag">{n}</span>
-                ))}
+              <div class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)] w-14 flex-shrink-0 pt-1">
+                {formatDate(pub.date)}
               </div>
-            </div>
+              <div class="min-w-0 flex-1 row-card-divider">
+                <h3 class="row-card-title">{pub.title}</h3>
+                {pub.venue && <p class="row-card-meta">{pub.venue}</p>}
+                {pub.description && (
+                  <p class="prose-mono mt-1 line-clamp-2">{pub.description}</p>
+                )}
+              </div>
+              <div class="row-card-actions">
+                {pub.url && (
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                    <polyline points="15 3 21 3 21 9"/>
+                    <line x1="10" y1="14" x2="21" y2="3"/>
+                  </svg>
+                )}
+              </div>
+            </a>
+          ))}
+          <div class="panel-bottom"></div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  {skillsList.length > 0 && (
+    <section class="screen-line-after">
+      <div class="container-narrow py-12 sm:py-16">
+        <h2 class="panel-title mb-6 reveal">
+          Stack<span class="count-badge">{skillsList.length}</span>
+        </h2>
+        <div class="flex flex-wrap gap-2 reveal">
+          {(skillsList as any[]).map((s) => (
+            <span class="icon-chip" title={s.name}>{initials(s.name)}</span>
           ))}
         </div>
       </div>
     </section>
   )}
 
-  <section class="section border-t border-[var(--color-border)]">
-    <div class="container-page">
-      <div class="card p-8 sm:p-12 reveal">
-        <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-          <div>
-            <p class="text-eyebrow">Based in</p>
-            <p class="mt-2 text-base text-white">{location || "—"}</p>
-          </div>
-          <div>
-            <p class="text-eyebrow">Email</p>
-            <p class="mt-2">
-              <a href={`mailto:${siteConfig.email}`} class="text-base text-white hover:underline">
-                {siteConfig.email}
-              </a>
-            </p>
-          </div>
-          <div>
-            <p class="text-eyebrow">Timezone</p>
-            <p class="mt-2 text-base text-white">{siteConfig.timezone || "—"}</p>
-          </div>
+  <section class="screen-line-after">
+    <div class="container-narrow py-12 sm:py-16">
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-3 reveal">
+        <div>
+          <p class="text-eyebrow">Based in</p>
+          <p class="mt-1.5 text-sm text-white">{location || "—"}</p>
         </div>
-
-        <div class="mt-8 flex flex-wrap gap-3">
-          <a href="/contact" class="btn btn-primary">Get in touch</a>
-          {siteConfig.cvUrl && (
-            <a href={siteConfig.cvUrl} target="_blank" rel="noopener noreferrer" class="btn btn-secondary">Download CV</a>
-          )}
+        <div>
+          <p class="text-eyebrow">Email</p>
+          <p class="mt-1.5">
+            <a href={`mailto:${siteConfig.email}`} class="text-sm text-white hover:underline">
+              {siteConfig.email || "—"}
+            </a>
+          </p>
+        </div>
+        <div>
+          <p class="text-eyebrow">Timezone</p>
+          <p class="mt-1.5 text-sm text-white">{siteConfig.timezone || "—"}</p>
         </div>
       </div>
     </div>

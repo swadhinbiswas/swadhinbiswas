@@ -59,7 +59,7 @@ const schema = {
 };
 
 const formatDate = (date: any) =>
-  new Date(date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+  new Date(date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 ---
 
 <BaseLayout
@@ -73,18 +73,15 @@ const formatDate = (date: any) =>
     <meta property="article:published_time" content={publishedIso} />
   </Fragment>
 
-  <article class="pb-24">
-    <header class="border-b border-[var(--color-border)]">
-      <div class="container-page max-w-3xl py-16 sm:py-20">
-        <a href="/posts" class="inline-flex items-center gap-2 text-sm text-[var(--color-fg-muted)] transition-colors hover:text-white">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
-          </svg>
-          All writing
+  <article>
+    <section class="screen-line-after">
+      <div class="container-narrow py-12 sm:py-16">
+        <a href="/posts" class="text-mono inline-flex items-center gap-1.5 text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-white reveal">
+          ← All writing
         </a>
 
-        <div class="mt-8 reveal">
-          <div class="flex flex-wrap items-center gap-3 text-sm text-[var(--color-fg-subtle)]">
+        <div class="mt-8 reveal reveal-delay-1">
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-mono text-xs text-[var(--color-fg-subtle)]">
             <time datetime={publishedIso}>{formatDate(post.publishedAt)}</time>
             {tags.length > 0 && (
               <>
@@ -98,22 +95,22 @@ const formatDate = (date: any) =>
             )}
           </div>
 
-          <h1 class="text-display mt-5 text-3xl text-white sm:text-4xl lg:text-5xl">
-            {post.title}
+          <h1 class="text-display mt-3 text-3xl text-white sm:text-4xl">
+            <span class="text-gradient">{post.title}</span>
           </h1>
 
           {post.description && (
-            <p class="mt-5 text-lg leading-relaxed text-[var(--color-fg-muted)]">
-              {post.description}
-            </p>
+            <p class="prose-mono mt-4 max-w-prose">{post.description}</p>
           )}
         </div>
       </div>
-    </header>
+    </section>
 
-    <div class="container-page max-w-3xl mt-12">
-      <div class="prose-content" set:html={contentHtml} />
-    </div>
+    <section class="screen-line-after">
+      <div class="container-narrow py-12 sm:py-16">
+        <div class="prose-content" set:html={contentHtml} />
+      </div>
+    </section>
   </article>
 </BaseLayout>
 
@@ -140,32 +137,33 @@ const formatDate = (date: any) =>
   .prose-content a {
     color: var(--color-fg);
     text-decoration: underline;
-    text-decoration-color: var(--color-border-strong);
+    text-decoration-color: var(--color-edge-strong);
     text-underline-offset: 4px;
     transition: text-decoration-color 0.2s;
   }
-  .prose-content a:hover { text-decoration-color: var(--color-accent); }
+  .prose-content a:hover { text-decoration-color: var(--color-fg); }
   .prose-content ul, .prose-content ol { padding-left: 1.5rem; margin: 1.25rem 0; }
   .prose-content li { margin: 0.5rem 0; }
   .prose-content code {
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
+    background-color: var(--color-card);
+    border: 1px solid var(--color-edge);
     padding: 0.1rem 0.35rem;
     border-radius: 0.3rem;
     font-size: 0.875em;
     color: var(--color-fg);
+    font-family: var(--font-mono);
   }
   .prose-content pre {
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 0.6rem;
+    background-color: var(--color-card);
+    border: 1px solid var(--color-edge);
+    border-radius: 0.5rem;
     padding: 1.25rem;
     overflow-x: auto;
     margin: 1.5rem 0;
   }
   .prose-content pre code { background: none; border: none; padding: 0; }
   .prose-content blockquote {
-    border-left: 2px solid var(--color-accent);
+    border-left: 2px solid var(--color-fg-subtle);
     padding-left: 1.25rem;
     margin: 1.5rem 0;
     color: var(--color-fg);
@@ -173,10 +171,10 @@ const formatDate = (date: any) =>
   }
   .prose-content table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
   .prose-content th, .prose-content td {
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-edge);
     padding: 0.75rem;
     text-align: left;
   }
   .prose-content th { color: var(--color-fg); font-weight: 600; }
-  .prose-content img { border-radius: 0.6rem; margin: 1.5rem 0; }
+  .prose-content img { border-radius: 0.5rem; margin: 1.5rem 0; }
 </style>

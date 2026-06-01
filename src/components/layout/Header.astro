@@ -54,12 +54,9 @@ const isActive = (href: string) =>
   href === "/" ? pathname === "/" : pathname.startsWith(href);
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50">
-  <div class="container-page">
-    <div
-      class="mt-4 flex items-center justify-between rounded-full border border-[var(--color-border)] bg-[var(--color-bg)]/80 px-4 py-2.5 backdrop-blur-xl sm:px-5"
-      style="background-color: rgba(10,10,10,0.7);"
-    >
+<header class="sticky-nav">
+  <div class="container-narrow">
+    <div class="flex h-14 items-center justify-between">
       <a href="/" class="flex items-center gap-2.5 font-medium tracking-tight">
         <span
           class="flex h-7 w-7 items-center justify-center rounded-full bg-white text-[11px] font-semibold text-black"
@@ -75,7 +72,7 @@ const isActive = (href: string) =>
           <a
             href={item.href}
             class:list={[
-              "rounded-full px-3.5 py-1.5 text-sm transition-colors",
+              "rounded-md px-2.5 py-1.5 text-sm transition-colors",
               isActive(item.href)
                 ? "text-white"
                 : "text-[var(--color-fg-muted)] hover:text-white",
@@ -88,20 +85,22 @@ const isActive = (href: string) =>
       </nav>
 
       <div class="flex items-center gap-2">
-        <a
-          href={siteConfig.cvUrl || "/cv"}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="hidden btn btn-secondary btn-sm sm:inline-flex"
-        >
-          Resume
-        </a>
-        <a href="/contact" class="btn btn-primary btn-sm">
-          Hire me
+        {siteConfig.cvUrl && (
+          <a
+            href={siteConfig.cvUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hidden btn btn-ghost sm:inline-flex"
+          >
+            Resume
+          </a>
+        )}
+        <a href="/contact" class="btn btn-ghost">
+          Contact
         </a>
         <button
           id="mobile-menu-btn"
-          class="ml-1 inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-border)] text-white md:hidden"
+          class="ml-1 inline-flex h-9 w-9 items-center justify-center rounded-md border border-[var(--color-edge)] text-white md:hidden"
           aria-label="Open menu"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -119,30 +118,30 @@ const isActive = (href: string) =>
     id="mobile-menu"
     class="fixed inset-0 z-40 hidden bg-[var(--color-bg)]/95 backdrop-blur-xl md:hidden"
   >
-    <div class="container-page flex h-full flex-col">
+    <div class="container-narrow flex h-full flex-col">
       <div class="mt-20 flex flex-col gap-1">
         {navItems.map((item) => (
           <a
             href={item.href}
-            class="border-b border-[var(--color-border)] py-5 text-2xl font-medium tracking-tight text-white"
+            class="border-b border-[var(--color-edge)] py-5 text-2xl font-medium tracking-tight text-white"
           >
             {item.label}
           </a>
         ))}
-        <a
-          href={siteConfig.cvUrl || "/cv"}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="mt-6 inline-flex w-fit btn btn-secondary"
-        >
-          Resume
-        </a>
+        {siteConfig.cvUrl && (
+          <a
+            href={siteConfig.cvUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-6 inline-flex w-fit btn btn-secondary"
+          >
+            Resume
+          </a>
+        )}
       </div>
     </div>
   </div>
 </header>
-
-<div class="h-20"></div>
 
 <script>
   const btn = document.getElementById("mobile-menu-btn");
