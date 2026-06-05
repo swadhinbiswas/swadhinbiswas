@@ -2,23 +2,39 @@
 import { getDynamicConfig } from "../../lib/config";
 
 const siteConfig = await getDynamicConfig();
-const longBio = siteConfig.bio?.long || "";
-const shortBio = siteConfig.bio?.short || "";
-const bio = longBio || shortBio;
+const summaryText = siteConfig.bio?.summary || "Currently focused on distributed data systems and MLOps infrastructure. Open to mid-level Data Engineer or Backend Engineer roles at EU-based tech companies — remote or relocation considered. Available for interviews within 2 weeks.";
+const highlights = [
+  "Production ML · MLOps",
+  "6+ years in production systems",
+  "Open to EU relocation · Visa sponsorship welcome",
+];
 ---
 
 <section class="screen-line-after">
   <div class="container-narrow py-10 sm:py-14">
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-12 md:gap-10">
-      <div class="md:col-span-3 reveal">
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-10">
+      <div class="lg:col-span-3 reveal">
         <p class="text-eyebrow">Summary</p>
+        <h2 class="mt-3 panel-title">What I build</h2>
       </div>
-      <div class="md:col-span-9 reveal reveal-delay-1">
-        {bio ? (
-          <p class="prose-mono">{bio}</p>
-        ) : (
-          <p class="prose-mono italic">Bio not set — edit it in the admin panel.</p>
-        )}
+      <div class="lg:col-span-9 reveal reveal-delay-1">
+        <div class="portfolio-card p-5 sm:p-6">
+          <p class="text-base leading-8 text-[var(--color-fg-muted)]">{summaryText}</p>
+
+          <div class="mt-6 grid gap-3 sm:grid-cols-3">
+            {highlights.map((item) => (
+              <div class="metric-card">
+                <p class="text-sm font-medium text-[var(--color-fg)]">{item}</p>
+              </div>
+            ))}
+          </div>
+
+          <div class="mt-4 pt-4 border-t border-[var(--color-edge)]">
+            <p class="text-xs text-[var(--color-fg-subtle)]">
+              <span class="font-semibold text-[var(--color-fg-muted)]">Languages:</span> English (professional) · Bengali (native)
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </div>

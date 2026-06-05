@@ -98,6 +98,9 @@ export const skills = sqliteTable('skills', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull(),
   category: text('category').default('general'), // 'language' | 'framework' | 'tool' | 'general'
+  description: text('description'), // Where this skill was used
+  usedIn: text('used_in'), // JSON array of project names where this skill was used
+  tier: text('tier').default('core'), // 'core' | 'working'
   order: integer('order').default(0),
   createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
   updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),

@@ -8,6 +8,13 @@
       "when": 1774672109131,
       "tag": "0000_purple_reptil",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1775300000000,
+      "tag": "0001_add_skill_fields",
+      "breakpoints": true
     }
   ]
 }

@@ -7,13 +7,13 @@ const isProd = import.meta.env.PROD;
   GA_ID && (isProd || true) && (
     <>
       <script
-        type="text/partytown"
+        async
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
       />
-      <script type="text/partytown" define:vars={{ GA_ID }}>
+      <script define:vars={{ GA_ID }}>
         window.dataLayer = window.dataLayer || [];
         function gtag() {
-          dataLayer.push(arguments);
+          window.dataLayer.push(arguments);
         }
         gtag("js", new Date());
         gtag("config", GA_ID);

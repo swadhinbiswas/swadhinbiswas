@@ -12,12 +12,7 @@ try {
   const dbItems = await db
     .select()
     .from(navigationItems)
-    .where(
-      or(
-        eq(navigationItems.location, "header"),
-        eq(navigationItems.location, "both"),
-      ),
-    )
+    .where(or(eq(navigationItems.location, "header"), eq(navigationItems.location, "both")))
     .orderBy(asc(navigationItems.order));
 
   if (dbItems.length > 0) {
@@ -27,135 +22,141 @@ try {
       external: item.external || false,
     }));
   }
-} catch (e) {
-  // silent
+} catch {
+  navItems = [];
 }
 
-// Static fallback nav — clean labels, no terminal aesthetic
 if (navItems.length === 0) {
   navItems = [
+    { label: "Home", href: "/" },
     { label: "Projects", href: "/projects" },
-    { label: "Writing", href: "/posts" },
+    { label: "Skills", href: "/skills" },
+    { label: "Blog", href: "/posts" },
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
   ];
 }
 
-const author = siteConfig.author || "Portfolio";
-const initials = author
-  .split(" ")
-  .map((p) => p[0])
-  .filter(Boolean)
-  .slice(0, 2)
-  .join("")
-  .toUpperCase();
-
+const author = siteConfig.author || "Swadhin Biswas";
 const isActive = (href: string) =>
   href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+const socials = [
+  siteConfig.links?.github ? { label: "GitHub", href: siteConfig.links.github } : null,
+  siteConfig.links?.linkedin ? { label: "LinkedIn", href: siteConfig.links.linkedin } : null,
+  siteConfig.links?.twitter ? { label: "Twitter", href: siteConfig.links.twitter } : null,
+].filter(Boolean);
 ---
 
-<header class="sticky-nav">
-  <div class="container-narrow">
-    <div class="flex h-14 items-center justify-between">
-      <a href="/" class="flex items-center gap-2.5 font-medium tracking-tight">
-        <span
-          class="flex h-7 w-7 items-center justify-center rounded-full bg-white text-[11px] font-semibold text-black"
-          aria-hidden="true"
-        >
-          {initials || "S"}
-        </span>
-        <span class="text-sm text-white">{author}</span>
+<aside class="delphi-sidebar">
+  <div class="sidebar-header">
+    <a href="/" class="brand-text" aria-label={`${author} home`}>
+      <strong>{author.toLowerCase().replace(/\s+/g, "")}</strong>
+      <span>portfolio</span>
+    </a>
+    <button class="mobile-menu-toggle" aria-label="Toggle menu" type="button">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="4" y1="7" x2="20" y2="7" />
+        <line x1="4" y1="12" x2="20" y2="12" />
+        <line x1="4" y1="17" x2="20" y2="17" />
+      </svg>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav" aria-label="Primary navigation">
+    {navItems.map((item) => (
+      <a
+        href={item.href}
+        target={item.external ? "_blank" : undefined}
+        rel={item.external ? "noopener noreferrer" : undefined}
+        class:list={["nav-item", isActive(item.href) && "active"]}
+        aria-current={isActive(item.href) ? "page" : undefined}
+      >
+        <span class="nav-icon" aria-hidden="true">▸</span>
+        {item.label}
       </a>
+    ))}
 
-      <nav class="hidden items-center gap-1 md:flex">
-        {navItems.map((item) => (
-          <a
-            href={item.href}
-            class:list={[
-              "rounded-md px-2.5 py-1.5 text-sm transition-colors",
-              isActive(item.href)
-                ? "text-white"
-                : "text-[var(--color-fg-muted)] hover:text-white",
-            ]}
-            aria-current={isActive(item.href) ? "page" : undefined}
-          >
-            {item.label}
+    {socials.length > 0 && (
+      <div class="nav-section">
+        <h4 class="nav-section-title">Social</h4>
+        {socials.map((social) => (
+          <a href={social!.href} target="_blank" rel="noopener noreferrer" class="nav-item">
+            <span class="nav-icon" aria-hidden="true">↗</span>
+            {social!.label}
           </a>
         ))}
-      </nav>
-
-      <div class="flex items-center gap-2">
-        {siteConfig.cvUrl && (
-          <a
-            href={siteConfig.cvUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="hidden btn btn-ghost sm:inline-flex"
-          >
-            Resume
-          </a>
-        )}
-        <a href="/contact" class="btn btn-ghost">
-          Contact
-        </a>
-        <button
-          id="mobile-menu-btn"
-          class="ml-1 inline-flex h-9 w-9 items-center justify-center rounded-md border border-[var(--color-edge)] text-white md:hidden"
-          aria-label="Open menu"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="3" y1="12" x2="21" y2="12"/>
-            <line x1="3" y1="18" x2="21" y2="18"/>
-          </svg>
-        </button>
       </div>
-    </div>
-  </div>
+    )}
+  </nav>
 
-  <!-- Mobile menu -->
-  <div
-    id="mobile-menu"
-    class="fixed inset-0 z-40 hidden bg-[var(--color-bg)]/95 backdrop-blur-xl md:hidden"
-  >
-    <div class="container-narrow flex h-full flex-col">
-      <div class="mt-20 flex flex-col gap-1">
-        {navItems.map((item) => (
-          <a
-            href={item.href}
-            class="border-b border-[var(--color-edge)] py-5 text-2xl font-medium tracking-tight text-white"
-          >
-            {item.label}
-          </a>
-        ))}
-        {siteConfig.cvUrl && (
-          <a
-            href={siteConfig.cvUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="mt-6 inline-flex w-fit btn btn-secondary"
-          >
-            Resume
-          </a>
-        )}
-      </div>
-    </div>
+  <div class="sidebar-footer">
+    Data engineering.<br />
+    Backend systems.<br />
+    Handmade web.
   </div>
-</header>
+</aside>
 
 <script>
-  const btn = document.getElementById("mobile-menu-btn");
-  const menu = document.getElementById("mobile-menu");
-  const close = () => {
-    menu?.classList.add("hidden");
-    document.body.style.overflow = "";
+  const bindMenu = () => {
+    const button = document.querySelector(".mobile-menu-toggle");
+    const nav = document.querySelector(".sidebar-nav");
+    const footer = document.querySelector(".sidebar-footer");
+    button?.addEventListener("click", () => {
+      nav?.classList.toggle("is-open");
+      footer?.classList.toggle("is-open");
+    });
   };
-  btn?.addEventListener("click", () => {
-    menu?.classList.toggle("hidden");
-    document.body.style.overflow = menu?.classList.contains("hidden") ? "" : "hidden";
-  });
-  menu?.querySelectorAll("a").forEach((a) => a.addEventListener("click", close));
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") close();
-  });
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bindMenu);
+  else bindMenu();
+  document.addEventListener("astro:page-load", bindMenu);
 </script>
+
+<style>
+  .brand-mark-animated {
+    display: inline-flex;
+    width: 2.4rem;
+    height: 2.4rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+  }
+
+  .brand-mark-animated:hover {
+    transform: rotate(-5deg) scale(1.05);
+  }
+
+  .logo-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .logo-bg {
+    animation: logoPulse 3s ease-in-out infinite alternate;
+  }
+
+  .logo-dot {
+    animation: dotBlink 2s ease-in-out infinite;
+  }
+
+  .logo-text {
+    animation: textGlow 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes logoPulse {
+    0% { opacity: 0.9; }
+    100% { opacity: 1; filter: brightness(1.1); }
+  }
+
+  @keyframes dotBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  @keyframes textGlow {
+    0% { filter: drop-shadow(0 0 2px rgba(255,255,255,0.3)); }
+    100% { filter: drop-shadow(0 0 6px rgba(255,255,255,0.6)); }
+  }
+</style>

@@ -42,6 +42,26 @@ function initials(name: string) {
     .slice(0, 3)
     .toUpperCase();
 }
+
+const aboutSkilliconsMap: Record<string, string> = {
+  "python": "python", "rust": "rust", "go": "go",
+  "typescript": "ts", "javascript": "js", "django": "django",
+  "fastapi": "fastapi", "react": "react", "next.js": "nextjs",
+  "nextjs": "nextjs", "docker": "docker", "kubernetes": "kubernetes",
+  "postgresql": "postgresql", "postgres": "postgresql",
+  "redis": "redis", "mongodb": "mongodb", "kafka": "kafka",
+  "node.js": "nodejs", "nodejs": "nodejs", "express": "express",
+  "aws": "aws", "gcp": "gcp", "linux": "linux", "git": "git",
+  "github": "github", "vscode": "vscode", "astro": "astro",
+  "tailwind": "tailwindcss", "tailwindcss": "tailwindcss",
+  "html": "html", "css": "css", "bash": "bash",
+  "nginx": "nginx", "firebase": "firebase", "vercel": "vercel",
+  "sqlite": "sqlite", "mysql": "mysql", "prisma": "prisma",
+  "drizzle": "drizzle", "vite": "vite", "jest": "jest",
+  "supabase": "supabase", "apache airflow": "airflow",
+  "airflow": "airflow", "apache spark": "spark", "spark": "spark",
+  "dbt": "dbt", "mojo": "mojo",
+};
 ---
 
 <BaseLayout title="About" description={`About ${author}.`}>
@@ -177,9 +197,17 @@ function initials(name: string) {
           Stack<span class="count-badge">{skillsList.length}</span>
         </h2>
         <div class="flex flex-wrap gap-2 reveal">
-          {(skillsList as any[]).map((s) => (
-            <span class="icon-chip" title={s.name}>{initials(s.name)}</span>
-          ))}
+          {(skillsList as any[]).map((s) => {
+            const key = s.name.toLowerCase();
+            const iconKey = aboutSkilliconsMap[key];
+            return iconKey ? (
+              <span class="icon-chip" title={s.name}>
+                <img src={`https://skillicons.dev/icons?i=${iconKey}&theme=dark`} alt={s.name} class="icon-chip-img" />
+              </span>
+            ) : (
+              <span class="icon-chip" title={s.name}>{initials(s.name)}</span>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -190,19 +218,19 @@ function initials(name: string) {
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-3 reveal">
         <div>
           <p class="text-eyebrow">Based in</p>
-          <p class="mt-1.5 text-sm text-white">{location || "—"}</p>
+          <p class="mt-1.5 text-sm text-[var(--color-fg)]">{location || "—"}</p>
         </div>
         <div>
           <p class="text-eyebrow">Email</p>
           <p class="mt-1.5">
-            <a href={`mailto:${siteConfig.email}`} class="text-sm text-white hover:underline">
+            <a href={`mailto:${siteConfig.email}`} class="text-sm text-[var(--color-accent)] hover:underline">
               {siteConfig.email || "—"}
             </a>
           </p>
         </div>
         <div>
           <p class="text-eyebrow">Timezone</p>
-          <p class="mt-1.5 text-sm text-white">{siteConfig.timezone || "—"}</p>
+          <p class="mt-1.5 text-sm text-[var(--color-fg)]">{siteConfig.timezone || "—"}</p>
         </div>
       </div>
     </div>

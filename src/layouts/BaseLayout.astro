@@ -41,7 +41,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url || env.siteUrl);
       <meta name="keywords" content={siteConfig.seo.keywords.join(", ")} />
     )}
     <meta name="robots" content={noindex ? "noindex,nofollow" : "index,follow"} />
-    <meta name="theme-color" content="#09090b" />
+    <meta name="theme-color" content="#0B0B0B" />
     <title>{fullTitle}</title>
 
     <meta property="og:title" content={fullTitle} />
@@ -69,17 +69,19 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url || env.siteUrl);
   <body>
     <a
       href="#main"
-      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-black"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-[var(--color-accent)] focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-white"
     >
       Skip to content
     </a>
 
-    <div class="column-frame min-h-screen">
+    <div class="delphi-container">
       <Header />
-      <main id="main" class="min-h-screen">
-        <slot />
-      </main>
-      <Footer />
+      <div class="delphi-main">
+        <main id="main" class="main-content">
+          <slot />
+        </main>
+        <Footer />
+      </div>
     </div>
 
     <script>

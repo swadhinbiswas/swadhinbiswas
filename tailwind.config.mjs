@@ -10,9 +10,9 @@ export default {
                         maxWidth: 'none',
                         color: theme('colors.text'),
                         a: {
-                            color: theme('colors.sky.300'),
+                            color: theme('colors.violet.400'),
                             '&:hover': {
-                                color: theme('colors.sky.400'),
+                                color: theme('colors.pink.300'),
                             },
                         },
                         'code::before': {
@@ -22,7 +22,7 @@ export default {
                             content: '""',
                         },
                         code: {
-                            color: theme('colors.pink.300'),
+                            color: theme('colors.violet.400'),
                             backgroundColor: theme('colors.surface0'),
                             padding: '0.2em 0.4em',
                             borderRadius: '0.25rem',
@@ -69,8 +69,8 @@ export default {
                             color: theme('colors.text'),
                         },
                         code: {
-                            color: theme('colors.pink.300'),
-                            backgroundColor: theme('colors.surface0'),
+                            color: theme('colors.violet.400'),
+                            backgroundColor: 'rgba(199, 146, 234, 0.1)',
                         },
                         pre: {
                             backgroundColor: theme('colors.surface0'),

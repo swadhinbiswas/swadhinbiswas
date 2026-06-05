@@ -24,6 +24,48 @@ function slug(name: string) {
     .replace(/^-+|-+$/g, "");
 }
 
+function getPixelArtIcon(name: string) {
+  const lowercase = name.toLowerCase();
+  if (lowercase.includes('covenant') || lowercase.includes('database') || lowercase.includes('storage') || lowercase.includes('ledger')) {
+    // Floppy disk icon
+    return `
+      <svg viewBox="0 0 16 16" class="w-5 h-5" style="image-rendering: pixelated;" fill="currentColor">
+        <path d="M2 1h9l3 3v11H2V1zm1 1v12h10V4.5L10.5 2H3zm1.5 1h5v3h-5V3zm1 1v1h3V4h-3zm-1 5h8v4h-8V9zm1 1v2h6v-2h-6z"/>
+      </svg>
+    `;
+  }
+  if (lowercase.includes('conduit') || lowercase.includes('lineage') || lowercase.includes('trace') || lowercase.includes('pipeline')) {
+    // Connected nodes/network pipeline icon
+    return `
+      <svg viewBox="0 0 16 16" class="w-5 h-5" style="image-rendering: pixelated;" fill="currentColor">
+        <path d="M2 1h4v4H2V1zm0 10h4v4H2v-4zm10-5h4v4h-4V6zM4 5v6H3V5h1zm2-2h4v1H6V3zm4 9H6v-1h4v1zm0-7v4H9V5h1zM8 7v2H7V7h1z"/>
+      </svg>
+    `;
+  }
+  if (lowercase.includes('flux') || lowercase.includes('engine') || lowercase.includes('compute') || lowercase.includes('performance')) {
+    // Lightning bolt / energy icon
+    return `
+      <svg viewBox="0 0 16 16" class="w-5 h-5" style="image-rendering: pixelated;" fill="currentColor">
+        <path d="M9 1H4l-2 7h5l-2 7 9-9H9l2-5z"/>
+      </svg>
+    `;
+  }
+  if (lowercase.includes('bot') || lowercase.includes('ai') || lowercase.includes('chat')) {
+    // Retro space invader / alien bot icon
+    return `
+      <svg viewBox="0 0 16 16" class="w-5 h-5" style="image-rendering: pixelated;" fill="currentColor">
+        <path d="M4 1h1v1H4V1zm7 0h1v1h-1V1zM2 3h2v1H2V3zm10 0h2v1h-2V3zM1 5h14v3H1V5zm2 1v1h2V6H3zm8 0v1h2V6h-2zm-9 3h2v2H2V9zm10 0h2v2h-2V9zm-8 2h8v2H4v-2z"/>
+      </svg>
+    `;
+  }
+  // Default CRT Monitor icon
+  return `
+    <svg viewBox="0 0 16 16" class="w-5 h-5" style="image-rendering: pixelated;" fill="currentColor">
+      <path d="M1 1h14v10H1V1zm1 1v8h12V2H2zm-1 10h14v1H1v-1zm2 2h10v1H3v-1zm2 1h6v1H5v-1z"/>
+    </svg>
+  `;
+}
+
 const schema = {
   "@context": "https://schema.org",
   "@type": "ItemList",
@@ -63,7 +105,7 @@ const schema = {
           {allProjects.map((p) => (
             <a href={`/projects/${slug(p.name)}`} class="row-card group">
               <div class="row-card-logo" aria-hidden="true">
-                {p.name.charAt(0).toUpperCase()}
+                <Fragment set:html={getPixelArtIcon(p.name)} />
               </div>
               <div class="min-w-0 flex-1">
                 <h3 class="row-card-title">

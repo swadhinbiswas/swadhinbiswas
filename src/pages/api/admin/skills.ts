@@ -4,7 +4,6 @@ import { eq } from 'drizzle-orm';
 
 export const prerender = false;
 
-// GET all skills
 export const GET: APIRoute = async () => {
   try {
     const skillsList = await db.select().from(skills).orderBy(skills.order);
@@ -21,22 +20,23 @@ export const GET: APIRoute = async () => {
   }
 };
 
-// POST to create new skill
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { name, category = 'general', order = 0 } = body;
-    
+    const { name, category = 'general', description = '', usedIn = '', order = 0 } = body;
+
     const now = new Date().toISOString();
-    
+
     const result = await db.insert(skills).values({
       name,
       category,
+      description: description || null,
+      usedIn: usedIn || null,
       order,
       createdAt: now,
       updatedAt: now,
     }).returning();
-    
+
     return new Response(JSON.stringify({ success: true, data: result[0] }), {
       status: 201,
       headers: { 'Content-Type': 'application/json' },
@@ -50,18 +50,24 @@ export const POST: APIRoute = async ({ request }) => {
   }
 };
 
-// PUT to update skill
 export const PUT: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { id, name, category, order } = body;
-    
+    const { id, name, category, description, usedIn, order } = body;
+
     const now = new Date().toISOString();
-    
+
     await db.update(skills)
-      .set({ name, category, order, updatedAt: now })
+      .set({
+        name,
+        category,
+        description: description || null,
+        usedIn: usedIn || null,
+        order,
+        updatedAt: now,
+      })
       .where(eq(skills.id, id));
-    
+
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
@@ -75,13 +81,12 @@ export const PUT: APIRoute = async ({ request }) => {
   }
 };
 
-// DELETE skill
 export const DELETE: APIRoute = async ({ request }) => {
   try {
     const { id } = await request.json();
-    
+
     await db.delete(skills).where(eq(skills.id, id));
-    
+
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },

@@ -5,47 +5,50 @@ const siteConfig = await getDynamicConfig();
 const email = siteConfig.email || "";
 ---
 
-<section class="screen-line-after">
+<section id="contact" class="screen-line-after">
   <div class="container-narrow py-12 sm:py-16">
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-12 md:gap-10">
-      <div class="md:col-span-3 reveal">
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-10">
+      <div class="lg:col-span-4 reveal">
         <p class="text-eyebrow">Contact</p>
+        <h2 class="mt-3 panel-title">Let's build something useful</h2>
       </div>
-      <div class="md:col-span-9 reveal reveal-delay-1">
-        <p class="prose-mono">
-          Best way to reach me is email.
-        </p>
-        {email ? (
-          <a
-            href={`mailto:${email}`}
-            class="text-mono mt-4 inline-block break-all text-base text-white transition-colors hover:text-[var(--color-fg-muted)]"
-          >
-            {email} →
-          </a>
-        ) : (
-          <p class="prose-mono mt-4 italic">No email configured yet.</p>
-        )}
-        <div class="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-mono text-xs text-[var(--color-fg-subtle)]">
-          {siteConfig.links?.github && (
-            <a href={siteConfig.links.github} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-white">
-              GitHub
+      <div class="lg:col-span-8 reveal reveal-delay-1">
+        <div class="portfolio-card p-5 sm:p-6">
+          <p class="text-base leading-8 text-[var(--color-fg-muted)]">
+            Best way to reach me is email. I'm interested in backend systems, AI product work, research tooling, and serious technical collaborations.
+          </p>
+          {email ? (
+            <a
+              href={`mailto:${email}`}
+              class="mt-5 inline-flex max-w-full break-all rounded-md border border-[var(--color-edge-strong)] px-4 py-3 text-base font-semibold text-[var(--color-accent)] transition-colors hover:border-[var(--color-accent)]"
+            >
+              {email} →
             </a>
+          ) : (
+            <p class="mt-4 text-sm italic text-[var(--color-fg-muted)]">No email configured yet.</p>
           )}
-          {siteConfig.links?.linkedin && (
-            <a href={siteConfig.links.linkedin} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-white">
-              LinkedIn
-            </a>
-          )}
-          {siteConfig.links?.twitter && (
-            <a href={siteConfig.links.twitter} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-white">
-              X
-            </a>
-          )}
-          {siteConfig.links?.youtube && (
-            <a href={siteConfig.links.youtube} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-white">
-              YouTube
-            </a>
-          )}
+          <div class="mt-6 flex flex-wrap gap-x-5 gap-y-2 border-t border-dashed border-[var(--color-edge)] pt-5 text-mono text-xs text-[var(--color-fg-subtle)]">
+            {siteConfig.links?.github && (
+              <a href={siteConfig.links.github} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-[var(--color-accent)]">
+                GitHub
+              </a>
+            )}
+            {siteConfig.links?.linkedin && (
+              <a href={siteConfig.links.linkedin} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-[var(--color-accent)]">
+                LinkedIn
+              </a>
+            )}
+            {siteConfig.links?.twitter && (
+              <a href={siteConfig.links.twitter} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-[var(--color-accent)]">
+                X
+              </a>
+            )}
+            {siteConfig.links?.youtube && (
+              <a href={siteConfig.links.youtube} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-[var(--color-accent)]">
+                YouTube
+              </a>
+            )}
+          </div>
         </div>
       </div>
     </div>

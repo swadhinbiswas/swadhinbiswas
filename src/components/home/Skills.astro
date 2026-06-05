@@ -1,19 +1,174 @@
 ---
-import { db, skills } from "../../db";
+import { db, skills, projects } from "../../db";
 import { asc } from "drizzle-orm";
 
 interface Skill {
   id: number;
   name: string;
   category?: string;
+  description?: string;
+  usedIn?: string;
+  tier?: string;
+}
+
+interface Project {
+  id: number;
+  name: string;
+  tags: string;
 }
 
 let all: Skill[] = [];
+let allProjects: Project[] = [];
+
 try {
   const rows = await db.select().from(skills).orderBy(asc(skills.order));
   all = rows as Skill[];
 } catch {
   all = [];
+}
+
+try {
+  const projRows = await db.select().from(projects);
+  allProjects = projRows as Project[];
+} catch {
+  allProjects = [];
+}
+
+function safeJSON(s: any): string[] {
+  try { return JSON.parse(s); } catch { return []; }
+}
+
+const projectTagsMap = new Map<string, string[]>();
+for (const proj of allProjects) {
+  const tags = safeJSON(proj.tags);
+  if (tags.length > 0) {
+    projectTagsMap.set(proj.name.toLowerCase(), tags);
+  }
+}
+
+const skillToProjects = new Map<string, string[]>();
+for (const [projName, tags] of projectTagsMap) {
+  for (const tag of tags) {
+    const normalized = tag.toLowerCase();
+    const existing = skillToProjects.get(normalized) || [];
+    if (!existing.includes(projName)) {
+      existing.push(projName);
+      skillToProjects.set(normalized, existing);
+    }
+  }
+}
+
+for (const skill of all) {
+  const key = skill.name.toLowerCase();
+  if (!skill.usedIn) {
+    const linkedProjects = skillToProjects.get(key) || [];
+    if (linkedProjects.length > 0) {
+      skill.usedIn = JSON.stringify(linkedProjects);
+    }
+  }
+}
+
+const skilliconsMap: Record<string, string> = {
+  "python": "python",
+  "rust": "rust",
+  "go": "go",
+  "typescript": "ts",
+  "javascript": "js",
+  "django": "django",
+  "fastapi": "fastapi",
+  "react": "react",
+  "next.js": "nextjs",
+  "nextjs": "nextjs",
+  "astro": "astro",
+  "vue.js": "vuejs",
+  "vuejs": "vuejs",
+  "node.js": "nodejs",
+  "nodejs": "nodejs",
+  "docker": "docker",
+  "kubernetes": "kubernetes",
+  "terraform": "terraform",
+  "ansible": "ansible",
+  "github actions": "githubactions",
+  "nginx": "nginx",
+  "prometheus": "prometheus",
+  "grafana": "grafana",
+  "postgresql": "postgresql",
+  "postgres": "postgresql",
+  "mysql": "mysql",
+  "sqlite": "sqlite",
+  "duckdb": "duckdb",
+  "redis": "redis",
+  "mongodb": "mongodb",
+  "pinecone": "pinecone",
+  "qdrant": "qdrant",
+  "weaviate": "weaviate",
+  "chroma": "chroma",
+  "clickhouse": "clickhouse",
+  "timescaledb": "timescaledb",
+  "kafka": "kafka",
+  "apache airflow": "airflow",
+  "airflow": "airflow",
+  "apache spark": "spark",
+  "spark": "spark",
+  "apache flink": "flink",
+  "flink": "flink",
+  "dbt": "dbt",
+  "mage": "mage",
+  "prefect": "prefect",
+  "machine learning": "tensorflow",
+  "deep learning": "pytorch",
+  "pytorch": "pytorch",
+  "tensorflow": "tensorflow",
+  "nlp": "huggingface",
+  "hugging face": "huggingface",
+  "computer vision": "opencv",
+  "langchain": "langchain",
+  "openai api": "openai",
+  "git": "git",
+  "linux": "linux",
+  "neovim": "neovim",
+  "mojo": "mojo",
+  "sql": "mysql",
+};
+
+const deviconsFallback: Record<string, string> = {
+  "python": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
+  "rust": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rust/rust-original.svg",
+  "go": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg",
+  "typescript": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
+  "javascript": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+  "django": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg",
+  "react": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+  "docker": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",
+  "kubernetes": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg",
+  "postgresql": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg",
+  "redis": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg",
+  "mongodb": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg",
+  "kafka": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apachekafka/apachekafka-original.svg",
+  "node.js": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+  "express": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg",
+  "vue.js": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg",
+  "astro": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/astro/astro-original.svg",
+  "terraform": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg",
+  "ansible": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ansible/ansible-original.svg",
+  "nginx": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nginx/nginx-original.svg",
+  "git": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",
+  "neovim": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/neovim/neovim-original.svg",
+  "mysql": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",
+  "sqlite": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg",
+  "pytorch": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg",
+  "tensorflow": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg",
+};
+
+function iconFor(name: string): { type: "skillicons" | "devicon"; src: string } | null {
+  const key = name.toLowerCase();
+  if (skilliconsMap[key]) {
+    return { type: "skillicons", src: `https://skillicons.dev/icons?i=${skilliconsMap[key]}&theme=dark` };
+  }
+  if (deviconsFallback[key]) {
+    return { type: "devicon", src: deviconsFallback[key] };
+  }
+  return null;
 }
 
 function initials(name: string) {
@@ -22,33 +177,196 @@ function initials(name: string) {
     .slice(0, 3)
     .toUpperCase();
 }
+
+const grouped = all.reduce<Record<string, Skill[]>>((acc, skill) => {
+  const category = skill.category || "general";
+  acc[category] = acc[category] || [];
+  acc[category].push(skill);
+  return acc;
+}, {});
+
+const categoryOrder: Record<string, number> = {
+  "language": 1,
+  "framework": 2,
+  "data engineering": 3,
+  "database": 4,
+  "devops": 5,
+  "ai": 6,
+  "general": 7,
+};
+
+const sortedCategories = Object.entries(grouped).sort(
+  ([a], [b]) => (categoryOrder[a] || 99) - (categoryOrder[b] || 99)
+);
+
+const categoryLabel = (category: string) =>
+  category
+    .split(/[-_\s]+/)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
 ---
 
-<section class="screen-line-after">
+<section id="skills" class="skills-section">
   <div class="container-narrow py-12 sm:py-16">
-    <div class="mb-6 flex items-baseline justify-between reveal">
-      <h2 class="panel-title">
-        Stack<span class="count-badge">{all.length || ""}</span>
-      </h2>
+    <div class="mb-8 flex items-baseline justify-between reveal">
+      <div>
+        <p class="text-eyebrow">Capabilities</p>
+        <h2 class="mt-2 panel-title">
+          Stack<span class="count-badge">{all.length || ""}</span>
+        </h2>
+      </div>
+      <a href="/skills" class="text-mono text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-[var(--color-accent)]">
+        View all →
+      </a>
     </div>
 
     {all.length === 0 ? (
-      <p class="text-sm text-[var(--color-fg-muted)] reveal">
+      <p class="portfolio-card p-6 text-sm text-[var(--color-fg-muted)] reveal">
         Skills will appear here once added from the admin panel.
       </p>
     ) : (
-      <div class="flex flex-wrap gap-2 reveal">
-        {all.map((s) => (
-          <a
-            href={`#${s.name.toLowerCase()}`}
-            class="icon-chip"
-            title={s.name}
-            aria-label={s.name}
-          >
-            {initials(s.name)}
-          </a>
-        ))}
+      <div class="space-y-6">
+        {sortedCategories.slice(0, 3).map(([category, skills]) => {
+          const coreSkills = skills.filter(s => s.tier === 'core');
+          const workingSkills = skills.filter(s => s.tier !== 'core');
+          return (
+            <div class="reveal">
+              <h3 class="text-sm font-semibold text-[var(--color-fg)] mb-3">{categoryLabel(category)}</h3>
+              {coreSkills.length > 0 && (
+                <div class="mb-2">
+                  <span class="text-[10px] font-mono uppercase tracking-wider text-[var(--color-accent)] mb-2 block">Core</span>
+                  <div class="skills-chip-grid">
+                    {coreSkills.map((s) => {
+                      const icon = iconFor(s.name);
+                      const linkedProjects = s.usedIn ? safeJSON(s.usedIn) : (skillToProjects.get(s.name.toLowerCase()) || []);
+                      return (
+                        <div class="skill-chip skill-chip-core group" title={s.description || s.name}>
+                          <div class="skill-chip-icon">
+                            {icon ? (
+                              <img src={icon.src} alt={s.name} loading="lazy" class="skill-chip-img" />
+                            ) : (
+                              <span class="skill-chip-initials">{initials(s.name)}</span>
+                            )}
+                          </div>
+                          <span class="skill-chip-name">{s.name}</span>
+                          {linkedProjects.length > 0 && (
+                            <span class="skill-chip-count">{linkedProjects.length}</span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+              {workingSkills.length > 0 && (
+                <div>
+                  <span class="text-[10px] font-mono uppercase tracking-wider text-[var(--color-fg-subtle)] mb-2 block">Working knowledge</span>
+                  <div class="skills-chip-grid">
+                    {workingSkills.map((s) => {
+                      const icon = iconFor(s.name);
+                      const linkedProjects = s.usedIn ? safeJSON(s.usedIn) : (skillToProjects.get(s.name.toLowerCase()) || []);
+                      return (
+                        <div class="skill-chip group" title={s.description || s.name}>
+                          <div class="skill-chip-icon">
+                            {icon ? (
+                              <img src={icon.src} alt={s.name} loading="lazy" class="skill-chip-img" />
+                            ) : (
+                              <span class="skill-chip-initials">{initials(s.name)}</span>
+                            )}
+                          </div>
+                          <span class="skill-chip-name">{s.name}</span>
+                          {linkedProjects.length > 0 && (
+                            <span class="skill-chip-count">{linkedProjects.length}</span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     )}
   </div>
 </section>
+
+<style>
+  .skills-section {
+    border-top: 1px solid var(--color-edge);
+  }
+
+  .skills-chip-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .skill-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 10px;
+    border: 1px solid var(--color-edge);
+    background: var(--color-card);
+    transition: all 0.2s ease;
+    cursor: default;
+  }
+
+  .skill-chip:hover {
+    border-color: var(--color-accent);
+    background: var(--color-card-strong);
+    transform: translateY(-1px);
+  }
+
+  .skill-chip-core {
+    border-color: var(--color-accent);
+    background: rgba(124, 58, 237, 0.08);
+  }
+
+  .skill-chip-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .skill-chip-img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+  }
+
+  .skill-chip-initials {
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+
+  .skill-chip-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--color-fg-muted);
+    transition: color 0.2s ease;
+  }
+
+  .skill-chip:hover .skill-chip-name {
+    color: var(--color-fg);
+  }
+
+  .skill-chip-count {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--color-fg-subtle);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 0.05rem 0.35rem;
+    border-radius: 4px;
+  }
+</style>

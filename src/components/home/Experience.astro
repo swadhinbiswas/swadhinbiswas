@@ -30,29 +30,31 @@ function formatDate(s?: string) {
 }
 ---
 
-<section class="screen-line-after">
+<section id="experience" class="screen-line-after">
   <div class="container-narrow py-12 sm:py-16">
-    <div class="mb-6 flex items-baseline justify-between reveal">
-      <h2 class="panel-title">
-        Experience<span class="count-badge">{experiencesList.length || ""}</span>
-      </h2>
-      <a href="/about" class="text-mono text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-white">
+    <div class="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between reveal">
+      <div>
+        <p class="text-eyebrow">Work history</p>
+        <h2 class="mt-2 panel-title">
+          Experience<span class="count-badge">{experiencesList.length || ""}</span>
+        </h2>
+      </div>
+      <a href="/about" class="text-mono text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-[var(--color-accent)]">
         View all →
       </a>
     </div>
 
     {experiencesList.length === 0 ? (
-      <div class="px-4 py-8 text-center reveal">
+      <div class="portfolio-card px-4 py-8 text-center reveal">
         <p class="text-sm text-[var(--color-fg-muted)]">
           No experience entries yet. Add them from the admin panel.
         </p>
       </div>
     ) : (
-      <div class="panel">
-        <div class="panel-top"></div>
+      <div class="portfolio-card overflow-hidden">
         {experiencesList.map((exp) => (
-          <div class="row-card group">
-            <div class="row-card-logo" aria-hidden="true">
+          <div class="row-card group md:grid-cols-[auto_1fr_12rem]">
+            <div class="row-card-logo mt-0.5" aria-hidden="true">
               {exp.logoUrl ? (
                 <img src={exp.logoUrl} alt={exp.company} class="h-5 w-5 object-contain" loading="lazy" />
               ) : (
@@ -61,20 +63,20 @@ function formatDate(s?: string) {
             </div>
 
             <div class="min-w-0 flex-1">
-              <h3 class="row-card-title">
+              <h3 class="text-base font-semibold leading-snug text-[var(--color-fg)]">
                 {exp.role}
                 {exp.company && (
-                  <span class="text-[var(--color-fg-muted)]"> · {exp.company}</span>
+                  <span class="text-[var(--color-fg-muted)]"> at {exp.company}</span>
                 )}
               </h3>
               {exp.details && (
-                <p class="prose-mono mt-1 line-clamp-2">{exp.details}</p>
+                <p class="mt-2 line-clamp-3 text-sm leading-6 text-[var(--color-fg-muted)]">{exp.details}</p>
               )}
             </div>
 
             <div class="row-card-actions flex flex-col items-end gap-1.5 text-right">
               <span class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)]">
-                {formatDate(exp.startDate)} — {formatDate(exp.endDate)}
+                {formatDate(exp.startDate)} - {formatDate(exp.endDate)}
               </span>
               {exp.url && (
                 <a href={exp.url} target="_blank" rel="noopener noreferrer" aria-label={`${exp.company} website`}>
@@ -88,7 +90,6 @@ function formatDate(s?: string) {
             </div>
           </div>
         ))}
-        <div class="panel-bottom"></div>
       </div>
     )}
   </div>

@@ -89,7 +89,7 @@ const schema = {
   <article>
     <section class="screen-line-after">
       <div class="container-narrow py-12 sm:py-16">
-        <a href="/projects" class="text-mono inline-flex items-center gap-1.5 text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-white reveal">
+        <a href="/projects" class="text-mono inline-flex items-center gap-1.5 text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-[var(--color-accent)] reveal">
           ← All projects
         </a>
 
@@ -100,7 +100,7 @@ const schema = {
             {project.status && <span>· {project.status}</span>}
           </div>
 
-          <h1 class="text-display mt-3 text-3xl text-white sm:text-4xl">
+          <h1 class="text-display mt-3 text-3xl text-[var(--color-fg)] sm:text-4xl">
             <span class="text-gradient">{project.name}</span>
           </h1>
 
@@ -159,7 +159,7 @@ const schema = {
   .prose-content h3,
   .prose-content h4 {
     color: var(--color-fg);
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: -0.02em;
     margin-top: 2.5rem;
     margin-bottom: 1rem;
@@ -170,33 +170,36 @@ const schema = {
   .prose-content h3 { font-size: 1.25rem; }
   .prose-content p { margin: 1.25rem 0; }
   .prose-content a {
-    color: var(--color-fg);
+    color: var(--color-accent);
     text-decoration: underline;
-    text-decoration-color: var(--color-edge-strong);
+    text-decoration-style: wavy;
+    text-decoration-color: var(--color-accent-2, var(--color-edge-strong));
     text-underline-offset: 4px;
-    transition: text-decoration-color 0.2s;
+    transition: all 0.2s ease;
   }
   .prose-content a:hover {
-    text-decoration-color: var(--color-fg);
+    color: var(--color-fg);
+    text-decoration-color: var(--color-accent);
   }
   .prose-content ul, .prose-content ol {
     padding-left: 1.5rem;
     margin: 1.25rem 0;
   }
   .prose-content li { margin: 0.5rem 0; }
+  .prose-content li::marker { color: var(--color-accent); }
   .prose-content code {
-    background-color: var(--color-card);
+    background-color: rgba(199, 146, 234, 0.1);
     border: 1px solid var(--color-edge);
-    padding: 0.1rem 0.35rem;
-    border-radius: 0.3rem;
+    padding: 0.15rem 0.4rem;
+    border-radius: 6px;
     font-size: 0.875em;
-    color: var(--color-fg);
+    color: var(--color-accent);
     font-family: var(--font-mono);
   }
   .prose-content pre {
     background-color: var(--color-card);
-    border: 1px solid var(--color-edge);
-    border-radius: 0.5rem;
+    border: 2px solid var(--color-edge);
+    border-radius: 12px;
     padding: 1.25rem;
     overflow-x: auto;
     margin: 1.5rem 0;
@@ -205,13 +208,16 @@ const schema = {
     background: none;
     border: none;
     padding: 0;
+    color: var(--color-fg-muted);
   }
   .prose-content blockquote {
-    border-left: 2px solid var(--color-fg-subtle);
-    padding-left: 1.25rem;
+    border-left: 3px solid var(--color-accent);
+    padding: 1rem 1.25rem;
     margin: 1.5rem 0;
     color: var(--color-fg);
     font-style: italic;
+    background: rgba(199, 146, 234, 0.04);
+    border-radius: 0 8px 8px 0;
   }
   .prose-content table {
     width: 100%;
@@ -223,6 +229,6 @@ const schema = {
     padding: 0.75rem;
     text-align: left;
   }
-  .prose-content th { color: var(--color-fg); font-weight: 600; }
-  .prose-content img { border-radius: 0.5rem; margin: 1.5rem 0; }
+  .prose-content th { color: var(--color-fg); font-weight: 700; }
+  .prose-content img { border-radius: 12px; margin: 1.5rem 0; border: 2px solid var(--color-edge); }
 </style>

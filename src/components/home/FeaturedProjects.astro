@@ -46,65 +46,120 @@ function slug(name: string) {
     .replace(/^-+|-+$/g, "");
 }
 
+function getPixelArtIcon(name: string) {
+  const lowercase = name.toLowerCase();
+  if (lowercase.includes('covenant') || lowercase.includes('database') || lowercase.includes('storage') || lowercase.includes('ledger')) {
+    // Floppy disk icon
+    return `
+      <svg viewBox="0 0 16 16" class="w-14 h-14 text-[var(--color-accent)] animate-pulse" style="image-rendering: pixelated;" fill="currentColor">
+        <path d="M2 1h9l3 3v11H2V1zm1 1v12h10V4.5L10.5 2H3zm1.5 1h5v3h-5V3zm1 1v1h3V4h-3zm-1 5h8v4h-8V9zm1 1v2h6v-2h-6z"/>
+      </svg>
+    `;
+  }
+  if (lowercase.includes('conduit') || lowercase.includes('lineage') || lowercase.includes('trace') || lowercase.includes('pipeline')) {
+    // Connected nodes/network pipeline icon
+    return `
+      <svg viewBox="0 0 16 16" class="w-14 h-14 text-[var(--color-accent-sky)]" style="image-rendering: pixelated;" fill="currentColor">
+        <path d="M2 1h4v4H2V1zm0 10h4v4H2v-4zm10-5h4v4h-4V6zM4 5v6H3V5h1zm2-2h4v1H6V3zm4 9H6v-1h4v1zm0-7v4H9V5h1zM8 7v2H7V7h1z"/>
+      </svg>
+    `;
+  }
+  if (lowercase.includes('flux') || lowercase.includes('engine') || lowercase.includes('compute') || lowercase.includes('performance')) {
+    // Lightning bolt / energy icon
+    return `
+      <svg viewBox="0 0 16 16" class="w-14 h-14 text-[var(--color-accent-2)]" style="image-rendering: pixelated;" fill="currentColor">
+        <path d="M9 1H4l-2 7h5l-2 7 9-9H9l2-5z"/>
+      </svg>
+    `;
+  }
+  if (lowercase.includes('bot') || lowercase.includes('ai') || lowercase.includes('chat')) {
+    // Retro space invader / alien bot icon
+    return `
+      <svg viewBox="0 0 16 16" class="w-14 h-14 text-[var(--color-accent-mint)]" style="image-rendering: pixelated;" fill="currentColor">
+        <path d="M4 1h1v1H4V1zm7 0h1v1h-1V1zM2 3h2v1H2V3zm10 0h2v1h-2V3zM1 5h14v3H1V5zm2 1v1h2V6H3zm8 0v1h2V6h-2zm-9 3h2v2H2V9zm10 0h2v2h-2V9zm-8 2h8v2H4v-2z"/>
+      </svg>
+    `;
+  }
+  // Default CRT Monitor icon
+  return `
+    <svg viewBox="0 0 16 16" class="w-14 h-14 text-[var(--color-accent-lemon)]" style="image-rendering: pixelated;" fill="currentColor">
+      <path d="M1 1h14v10H1V1zm1 1v8h12V2H2zm-1 10h14v1H1v-1zm2 2h10v1H3v-1zm2 1h6v1H5v-1z"/>
+    </svg>
+  `;
+}
+
 const visible = allProjects.slice(0, 6);
 ---
 
-<section class="screen-line-after">
+<section id="projects" class="screen-line-after">
   <div class="container-narrow py-12 sm:py-16">
-    <div class="mb-6 flex items-baseline justify-between reveal">
-      <h2 class="panel-title">
-        Projects<span class="count-badge">{allProjects.length || ""}</span>
-      </h2>
-      <a href="/projects" class="text-mono text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-white">
+    <div class="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between reveal">
+      <div>
+        <p class="text-eyebrow">Selected work</p>
+        <h2 class="mt-2 panel-title">
+          Projects<span class="count-badge">{allProjects.length || ""}</span>
+        </h2>
+      </div>
+      <a href="/projects" class="text-mono text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-[var(--color-accent)]">
         View all →
       </a>
     </div>
 
     {allProjects.length === 0 ? (
-      <p class="text-sm text-[var(--color-fg-muted)] reveal">
-        No projects yet. Add them from the admin panel.
-      </p>
+      <div class="portfolio-card p-6 text-sm text-[var(--color-fg-muted)] reveal">
+        No projects yet. Add two or three shipped projects from the admin panel with outcomes, links, and stack tags.
+      </div>
     ) : (
-      <div class="panel">
-        <div class="panel-top"></div>
+      <div class="grid gap-4 md:grid-cols-2">
         {visible.map((p) => (
-          <a href={`/projects/${slug(p.name)}`} class="row-card group">
-            <div class="row-card-logo" aria-hidden="true">
-              {p.name.charAt(0).toUpperCase()}
-            </div>
+          <article class="portfolio-card group overflow-hidden">
+            {p.image ? (
+              <a href={`/projects/${slug(p.name)}`} class="block aspect-[16/8] overflow-hidden border-b border-[var(--color-edge)] bg-[var(--color-card)]">
+                <img src={p.image} alt={p.name} class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" loading="lazy" />
+              </a>
+            ) : (
+              <a href={`/projects/${slug(p.name)}`} class="pattern-stripes flex aspect-[16/8] items-center justify-center border-b border-[var(--color-edge)]">
+                <Fragment set:html={getPixelArtIcon(p.name)} />
+              </a>
+            )}
 
-            <div class="min-w-0 flex-1">
-              <h3 class="row-card-title">
-                {p.name}
+            <div class="p-5">
+              <div class="flex items-start justify-between gap-4">
+                <h3 class="text-lg font-semibold leading-snug text-[var(--color-fg)]">
+                  <a href={`/projects/${slug(p.name)}`} class="hover:text-[var(--color-accent-2)]">{p.name}</a>
+                </h3>
                 {p.featured && (
-                  <span class="ml-1.5 text-[var(--color-fg-subtle)]">★</span>
+                  <span class="tag">Featured</span>
                 )}
-              </h3>
+              </div>
+
               {p.description && (
-                <p class="prose-mono mt-1 line-clamp-2">{p.description}</p>
+                <p class="mt-3 line-clamp-3 text-sm leading-6 text-[var(--color-fg-muted)]">{p.description}</p>
               )}
+
               {p.tags.length > 0 && (
-                <div class="mt-2 flex flex-wrap gap-1.5">
+                <div class="mt-4 flex flex-wrap gap-1.5">
                   {p.tags.slice(0, 5).map((t) => (
                     <span class="tag">{t}</span>
                   ))}
                 </div>
               )}
-            </div>
 
-            <div class="row-card-actions">
-              {p.stars != null && p.stars > 0 && (
-                <span class="text-mono text-[10px] text-[var(--color-fg-subtle)]">
-                  ★ {p.stars.toLocaleString()}
-                </span>
-              )}
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5">
-                <path d="M5 12h14M13 5l7 7-7 7"/>
-              </svg>
+              <div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-dashed border-[var(--color-edge)] pt-4 text-mono text-xs text-[var(--color-fg-subtle)]">
+                <a href={`/projects/${slug(p.name)}`} class="transition-colors hover:text-[var(--color-accent)]">Case study →</a>
+                {p.url && (
+                  <a href={p.url} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-[var(--color-accent)]">Live</a>
+                )}
+                {p.github && (
+                  <a href={p.github} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-[var(--color-accent)]">Code</a>
+                )}
+                {p.stars != null && p.stars > 0 && (
+                  <span>★ {p.stars.toLocaleString()}</span>
+                )}
+              </div>
             </div>
-          </a>
+          </article>
         ))}
-        <div class="panel-bottom"></div>
       </div>
     )}
   </div>

@@ -1,87 +1,79 @@
 ---
-import { db, posts } from "../../db";
-import { desc, eq } from "drizzle-orm";
-
-interface Post {
-  slug: string;
+interface BlogPost {
+  id: number;
   title: string;
-  description: string;
-  publishedAt: number | Date;
-  tags?: string;
+  slug: string;
+  excerpt: string;
+  cover_image: string;
+  published_at: string;
+  view_count: number;
+  featured: boolean;
+  categories: { id: number; name: string; slug: string }[];
 }
 
-let recent: Post[] = [];
+let recent: BlogPost[] = [];
 try {
-  const rows = await db
-    .select()
-    .from(posts)
-    .where(eq(posts.draft, false))
-    .orderBy(desc(posts.publishedAt))
-    .limit(5);
-  recent = rows as Post[];
+  const res = await fetch("https://blog.swadhin.cv/api/posts/recent?limit=5");
+  const json = await res.json();
+  recent = json.data || [];
 } catch {
   recent = [];
 }
 
-function formatDate(p: number | Date) {
-  const d = typeof p === "number" ? new Date(p * 1000) : new Date(p);
+function formatDate(dateStr: string) {
+  const d = new Date(dateStr);
   if (isNaN(d.getTime())) return "";
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-function safeJSON(s: any): string[] {
-  try { return JSON.parse(s); } catch { return []; }
-}
+const blogBase = "https://blog.swadhin.cv/blog";
 ---
 
-<section class="screen-line-after">
+<section id="writing" class="screen-line-after">
   <div class="container-narrow py-12 sm:py-16">
     <div class="mb-6 flex items-baseline justify-between reveal">
       <h2 class="panel-title">
-        Writing<span class="count-badge">{recent.length || ""}</span>
+        Blog<span class="count-badge">{recent.length || ""}</span>
       </h2>
-      <a href="/posts" class="text-mono text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-white">
-        All writing →
+      <a href="https://blog.swadhin.cv" target="_blank" rel="noopener noreferrer" class="text-mono text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-[var(--color-accent)]">
+        All posts →
       </a>
     </div>
 
     {recent.length === 0 ? (
       <p class="text-sm text-[var(--color-fg-muted)] reveal">
-        Articles will appear here once published from the admin panel.
+        Articles will appear here once published on the blog.
       </p>
     ) : (
       <div class="panel">
         <div class="panel-top"></div>
-        {recent.map((post) => {
-          const tags = safeJSON(post.tags);
-          return (
-            <a href={`/posts/${post.slug}`} class="row-card group">
-              <div class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)] w-20 flex-shrink-0 pt-1">
-                {formatDate(post.publishedAt)}
-              </div>
+        {recent.map((post) => (
+          <a href={`${blogBase}/${post.slug}/`} target="_blank" rel="noopener noreferrer" class="row-card group">
+            <div class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)] w-20 flex-shrink-0 pt-1">
+              {formatDate(post.published_at)}
+            </div>
 
-              <div class="min-w-0 flex-1 row-card-divider">
-                <h3 class="row-card-title">{post.title}</h3>
-                {post.description && (
-                  <p class="prose-mono mt-1 line-clamp-2">{post.description}</p>
-                )}
-                {tags.length > 0 && (
-                  <div class="mt-2 flex flex-wrap gap-1.5">
-                    {tags.slice(0, 3).map((t) => (
-                      <span class="tag">{t}</span>
-                    ))}
-                  </div>
-                )}
-              </div>
+            <div class="min-w-0 flex-1 row-card-divider">
+              <h3 class="row-card-title">{post.title}</h3>
+              {post.excerpt && (
+                <p class="prose-mono mt-1 line-clamp-2">{post.excerpt}</p>
+              )}
+              {post.categories.length > 0 && (
+                <div class="mt-2 flex flex-wrap gap-1.5">
+                  {post.categories.slice(0, 3).map((c) => (
+                    <span class="tag">{c.name}</span>
+                  ))}
+                </div>
+              )}
+            </div>
 
-              <div class="row-card-actions">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5">
-                  <path d="M5 12h14M13 5l7 7-7 7"/>
-                </svg>
-              </div>
-            </a>
-          );
-        })}
+            <div class="row-card-actions">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5">
+                <path d="M5 12h14M13 5l7 7-7 7"/>
+              </svg>
+            </div>
+          </a>
+        ))}
         <div class="panel-bottom"></div>
       </div>
     )}

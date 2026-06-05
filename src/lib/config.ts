@@ -67,7 +67,7 @@ export interface DynamicSiteConfig {
     stars?: number;
   }>;
   achievements: Array<{ name: string; icon: string; description: string }>;
-  skills: string[];
+  skills: Array<{ name: string; category?: string; description?: string }>;
 
   bio: {
     focusLabel: string;
@@ -77,6 +77,7 @@ export interface DynamicSiteConfig {
     funFact: string;
     researchStatement: string;
     roleInterests?: string;
+    summary?: string;
   };
 }
 
@@ -253,7 +254,7 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
             }))
           : [],
 
-      skills: skillsData.length > 0 ? skillsData.map((s) => s.name) : [],
+      skills: skillsData.length > 0 ? skillsData.map((s) => ({ name: s.name, category: s.category || undefined, description: s.description || undefined })) : [],
 
       bio: {
         focusLabel,
@@ -263,6 +264,7 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
         funFact: bio.funFact || "",
         researchStatement,
         roleInterests: cleanValue(bio.roleInterests),
+        summary: cleanValue(bio.summary),
       },
     };
 

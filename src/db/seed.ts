@@ -171,27 +171,32 @@ async function seed() {
       });
     }
     console.log(`  ✅ Inserted ${siteConfig.featuredProjects.length} projects`);
-// 7. Skills
+// 7. Skills - only seed from config, no hardcoded defaults
 console.log('🛠️ Seeding skills...');
     for (let i = 0; i < siteConfig.skills.length; i++) {
       const skill = siteConfig.skills[i];
+      const skillName = typeof skill === 'string' ? skill : skill.name;
+      const skillDesc = typeof skill === 'string' ? '' : (skill.description || '');
       // Determine category based on skill name
       let category = 'general';
-      if (['Python', 'JavaScript', 'TypeScript', 'Rust', 'Mojo'].includes(skill)) {
+      if (['Python', 'JavaScript', 'TypeScript', 'Rust', 'Mojo', 'Go'].includes(skillName)) {
         category = 'language';
-      } else if (['Django', 'FastAPI', 'React', 'Next.js'].includes(skill)) {
+      } else if (['Django', 'FastAPI', 'React', 'Next.js', 'Node.js', 'Express'].includes(skillName)) {
         category = 'framework';
-      } else if (['Docker', 'Kubernetes', 'DevOps'].includes(skill)) {
+      } else if (['Docker', 'Kubernetes', 'DevOps', 'Linux', 'AWS', 'GCP'].includes(skillName)) {
         category = 'devops';
-      } else if (['PostgreSQL', 'Redis', 'MongoDB'].includes(skill)) {
+      } else if (['PostgreSQL', 'Redis', 'MongoDB', 'SQLite', 'MySQL'].includes(skillName)) {
         category = 'database';
-      } else if (['Machine Learning', 'Deep Learning', 'Neural Networks', 'Data Analysis'].includes(skill)) {
+      } else if (['Machine Learning', 'Deep Learning', 'Neural Networks', 'Data Analysis'].includes(skillName)) {
         category = 'ai';
+      } else if (['Apache Airflow', 'Apache Spark', 'Kafka', 'dbt'].includes(skillName)) {
+        category = 'data engineering';
       }
 
       await db.insert(skills).values({
-        name: skill,
+        name: skillName,
         category,
+        description: skillDesc || null,
         order: i,
         createdAt: now,
         updatedAt: now,

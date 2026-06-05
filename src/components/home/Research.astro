@@ -26,14 +26,14 @@ function formatDate(s: string) {
 }
 ---
 
-<section class="screen-line-after">
+<section id="research" class="screen-line-after">
   <div class="container-narrow py-12 sm:py-16">
     <div class="mb-6 flex items-baseline justify-between reveal">
       <h2 class="panel-title">
         Research<span class="count-badge">{pubs.length || ""}</span>
       </h2>
       {pubs.length > 0 && (
-        <a href="/research" class="text-mono text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-white">
+        <a href="/research" class="text-mono text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-[var(--color-accent)]">
           All publications →
         </a>
       )}

@@ -20,13 +20,13 @@ const socials = (siteConfig.socials || []).filter((s) =>
         </p>
         {socials.length > 0 && (
           <div class="flex items-center gap-3">
-            {socials.slice(0, 3).map((s) => (
+            {socials.map((s) => (
               <a
                 href={s.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={s.name}
-                class="text-mono text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-white"
+                class="text-mono text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-[var(--color-accent)]"
               >
                 {s.icon === "github" && "GitHub"}
                 {s.icon === "linkedin" && "LinkedIn"}
