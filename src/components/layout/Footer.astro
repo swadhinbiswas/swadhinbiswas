@@ -7,7 +7,7 @@ const year = new Date().getFullYear();
 const author = siteConfig.author || env.siteName;
 
 const socials = (siteConfig.socials || []).filter((s) =>
-  ["github", "linkedin", "twitter", "youtube", "scholar", "email"].includes(s.icon)
+  ["github", "linkedin", "twitter", "scholar", "email"].includes(s.icon)
 );
 ---
 
@@ -31,7 +31,6 @@ const socials = (siteConfig.socials || []).filter((s) =>
                 {s.icon === "github" && "GitHub"}
                 {s.icon === "linkedin" && "LinkedIn"}
                 {s.icon === "twitter" && "X"}
-                {s.icon === "youtube" && "YouTube"}
                 {s.icon === "scholar" && "Scholar"}
                 {s.icon === "email" && "Email"}
               </a>

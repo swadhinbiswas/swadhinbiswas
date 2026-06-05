@@ -1,0 +1,58 @@
+---
+import { db, education } from "../../db";
+import { asc } from "drizzle-orm";
+
+interface Education {
+  id: number;
+  institution: string;
+  degree: string;
+  startDate: string;
+  endDate?: string;
+  details?: string;
+}
+
+let educationList: Education[] = [];
+try {
+  const rows = await db.select().from(education).orderBy(education.order);
+  educationList = rows as Education[];
+} catch {
+  educationList = [];
+}
+
+function formatDate(dateStr: string) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+}
+---
+
+{educationList.length > 0 && (
+  <section class="screen-line-after">
+    <div class="container-narrow py-12 sm:py-16">
+      <div class="mb-6 reveal">
+        <p class="text-eyebrow">Education</p>
+        <h2 class="mt-2 panel-title">Background</h2>
+      </div>
+
+      <div class="space-y-4">
+        {educationList.map((edu) => (
+          <div class="portfolio-card p-5 reveal">
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+              <div>
+                <h3 class="text-base font-semibold text-[var(--color-fg)]">{edu.degree}</h3>
+                <p class="text-sm text-[var(--color-accent)]">{edu.institution}</p>
+              </div>
+              <div class="text-mono text-xs text-[var(--color-fg-subtle)] whitespace-nowrap">
+                {formatDate(edu.startDate)} — {edu.endDate ? formatDate(edu.endDate) : "Present"}
+              </div>
+            </div>
+            {edu.details && (
+              <p class="mt-3 text-sm text-[var(--color-fg-muted)]">{edu.details}</p>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

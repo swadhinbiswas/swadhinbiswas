@@ -1,0 +1,40 @@
+---
+const testimonials = [
+  {
+    quote: "Swadhin's ability to architect scalable data systems was instrumental in scaling BoringRats to 1M+ users. His technical leadership and hands-on approach to infrastructure were key factors in our successful acquisition.",
+    name: "BoringRats Team",
+    role: "Co-founded & scaled together",
+  },
+];
+---
+
+{testimonials.length > 0 && (
+  <section class="screen-line-after">
+    <div class="container-narrow py-12 sm:py-16">
+      <div class="mb-6 reveal">
+        <p class="text-eyebrow">Testimonials</p>
+        <h2 class="mt-2 panel-title">What people say</h2>
+      </div>
+
+      <div class="space-y-4">
+        {testimonials.map((t) => (
+          <div class="portfolio-card p-5 sm:p-6 reveal">
+            <div class="flex gap-3">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="flex-shrink-0 text-[var(--color-accent)] opacity-50">
+                <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" fill="currentColor"/>
+                <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z" fill="currentColor"/>
+              </svg>
+              <div>
+                <p class="text-sm leading-relaxed text-[var(--color-fg-muted)] italic">"{t.quote}"</p>
+                <div class="mt-4">
+                  <p class="text-sm font-semibold text-[var(--color-fg)]">{t.name}</p>
+                  <p class="text-xs text-[var(--color-fg-subtle)]">{t.role}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
