@@ -1,5 +1,5 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getDynamicConfig } from "../lib/config";
@@ -8,7 +8,7 @@ import { env } from "../lib/env";
 const siteConfig = await getDynamicConfig();
 const email = siteConfig.email || env.email;
 const socials = (siteConfig.socials || []).filter((s) =>
-  ["github", "linkedin", "twitter", "youtube", "scholar"].includes(s.icon)
+  ["github", "linkedin", "twitter", "scholar"].includes(s.icon)
 );
 ---
 
