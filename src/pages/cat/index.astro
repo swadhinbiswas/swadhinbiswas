@@ -1,0 +1,55 @@
+---
+export const prerender = false;
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, skills, projects, experiences, bioContent } from "../../db";
+import { count } from "drizzle-orm";
+
+const [skillsCount, projectsCount, experiencesCount, bioCount] = await Promise.all([
+  db.select({ count: count() }).from(skills),
+  db.select({ count: count() }).from(projects),
+  db.select({ count: count() }).from(experiences),
+  db.select({ count: count() }).from(bioContent),
+]);
+---
+
+<AdminLayout title="Dashboard">
+  <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
+  
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <a href="/cat/skills" class="block p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+      <p class="text-gray-400 text-sm">Skills</p>
+      <p class="text-3xl font-bold text-neon-cyan mt-1">{skillsCount[0]?.count || 0}</p>
+    </a>
+    <a href="/cat/projects" class="block p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+      <p class="text-gray-400 text-sm">Projects</p>
+      <p class="text-3xl font-bold text-neon-cyan mt-1">{projectsCount[0]?.count || 0}</p>
+    </a>
+    <a href="/cat/experiences" class="block p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+      <p class="text-gray-400 text-sm">Experiences</p>
+      <p class="text-3xl font-bold text-neon-cyan mt-1">{experiencesCount[0]?.count || 0}</p>
+    </a>
+    <a href="/cat/bio" class="block p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+      <p class="text-gray-400 text-sm">Bio Entries</p>
+      <p class="text-3xl font-bold text-neon-cyan mt-1">{bioCount[0]?.count || 0}</p>
+    </a>
+  </div>
+
+  <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <a href="/cat/settings" class="block p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+      <p class="text-lg font-semibold">⚙️ Site Settings</p>
+      <p class="text-sm text-gray-400 mt-1">Author, email, CV URL, timezone, SEO</p>
+    </a>
+    <a href="/cat/navigation" class="block p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+      <p class="text-lg font-semibold">🧭 Navigation</p>
+      <p class="text-sm text-gray-400 mt-1">Manage menu items</p>
+    </a>
+    <a href="/cat/socials" class="block p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+      <p class="text-lg font-semibold">🔗 Social Links</p>
+      <p class="text-sm text-gray-400 mt-1">GitHub, LinkedIn, Twitter</p>
+    </a>
+    <a href="/cat/bio" class="block p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+      <p class="text-lg font-semibold">📝 Bio Content</p>
+      <p class="text-sm text-gray-400 mt-1">Short, long, story, summary</p>
+    </a>
+  </div>
+</AdminLayout>

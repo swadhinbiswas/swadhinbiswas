@@ -1,0 +1,45 @@
+---
+export const prerender = false;
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, siteSettings } from "../../db";
+
+const settingsRows = await db.select().from(siteSettings);
+const settings: Record<string, string> = {};
+settingsRows.forEach(s => { settings[s.key] = s.value; });
+---
+
+<AdminLayout title="Profile">
+  <h1 class="text-2xl font-bold mb-6">User Profile</h1>
+  
+  <div class="max-w-2xl space-y-6">
+    <div class="p-6 rounded-xl border border-white/10 bg-white/5">
+      <div class="flex items-center gap-4 mb-4">
+        <img src="/profile.jpg" alt="Profile" class="w-20 h-20 rounded-full object-cover border-2 border-cyan-400" />
+        <div>
+          <h2 class="text-xl font-bold">{settings.author || "Not set"}</h2>
+          <p class="text-gray-400 text-sm">{settings.email || "No email"}</p>
+          <p class="text-gray-500 text-xs">{settings.location || "No location"}</p>
+        </div>
+      </div>
+      <p class="text-gray-300 text-sm">{settings.site_description || "No description set"}</p>
+    </div>
+    
+    <div class="p-4 rounded-xl border border-white/10 bg-white/5">
+      <h3 class="font-semibold mb-2">Quick Stats</h3>
+      <div class="grid grid-cols-2 gap-4 text-sm">
+        <div>
+          <span class="text-gray-400">Site URL:</span>
+          <a href={settings.site_url} target="_blank" class="text-cyan-400 ml-2 hover:underline">{settings.site_url || "Not set"}</a>
+        </div>
+        <div>
+          <span class="text-gray-400">Timezone:</span>
+          <span class="text-white ml-2">{settings.timezone || "Not set"}</span>
+        </div>
+        <div>
+          <span class="text-gray-400">CV URL:</span>
+          <a href={settings.cv_url} target="_blank" class="text-cyan-400 ml-2 hover:underline">{settings.cv_url ? "Set" : "Not set"}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</AdminLayout>

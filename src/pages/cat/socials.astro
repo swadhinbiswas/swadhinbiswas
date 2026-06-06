@@ -1,0 +1,27 @@
+---
+export const prerender = false;
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, socialLinks } from "../../db";
+import { asc } from "drizzle-orm";
+
+const socialRows = await db.select().from(socialLinks).orderBy(asc(socialLinks.order));
+---
+
+<AdminLayout title="Social Links">
+  <h1 class="text-2xl font-bold mb-6">Social Links</h1>
+  
+  <div class="space-y-3 max-w-2xl">
+    {socialRows.map((s) => (
+      <div class="flex items-center gap-4 p-3 rounded-lg border border-white/10 bg-white/5">
+        <span class="text-lg">{s.icon === "github" ? "🐙" : s.icon === "linkedin" ? "💼" : s.icon === "twitter" ? "🐦" : "🔗"}</span>
+        <div class="flex-1">
+          <span class="font-medium">{s.name}</span>
+          <span class="text-gray-400 text-xs ml-2">({s.icon})</span>
+        </div>
+        <a href={s.url} target="_blank" rel="noopener noreferrer" class="text-cyan-400 text-sm hover:underline">Open →</a>
+      </div>
+    ))}
+  </div>
+  
+  <p class="mt-6 text-sm text-gray-500">Edit socials via the API at <code class="text-cyan-400">/api/admin/socials</code></p>
+</AdminLayout>

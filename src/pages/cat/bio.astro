@@ -1,0 +1,85 @@
+---
+export const prerender = false;
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, bioContent } from "../../db";
+
+const bioRows = await db.select().from(bioContent);
+const bio: Record<string, string> = {};
+bioRows.forEach(b => { bio[b.key] = b.value; });
+---
+
+<AdminLayout title="Bio Content">
+  <h1 class="text-2xl font-bold mb-6">Bio Content</h1>
+  
+  <form id="bio-form" class="space-y-6 max-w-2xl">
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">Short Bio</label>
+      <textarea name="short" rows="2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">{bio.short || ""}</textarea>
+    </div>
+    
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">Long Bio</label>
+      <textarea name="long" rows="3" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">{bio.long || ""}</textarea>
+    </div>
+    
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">Summary (homepage section)</label>
+      <textarea name="summary" rows="3" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">{bio.summary || ""}</textarea>
+    </div>
+    
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">Intro</label>
+      <textarea name="intro" rows="2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">{bio.intro || ""}</textarea>
+    </div>
+    
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">Story</label>
+      <textarea name="story" rows="4" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">{bio.story || ""}</textarea>
+    </div>
+    
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">Quote</label>
+      <input type="text" name="quote" value={bio.quote || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+    </div>
+    
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">Fun Fact</label>
+      <input type="text" name="funFact" value={bio.funFact || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button type="submit" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors">Save Bio</button>
+      <span id="status" class="text-sm"></span>
+    </div>
+  </form>
+</AdminLayout>
+
+<script>
+  const form = document.getElementById("bio-form") as HTMLFormElement;
+  const status = document.getElementById("status");
+  
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form).entries());
+    
+    try {
+      const res = await fetch("/api/admin/bio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      
+      if (res.ok) {
+        status!.textContent = "✓ Saved";
+        status!.className = "text-sm text-green-400";
+      } else {
+        throw new Error("Failed");
+      }
+    } catch {
+      status!.textContent = "✗ Error";
+      status!.className = "text-sm text-red-400";
+    }
+    
+    setTimeout(() => { status!.textContent = ""; }, 3000);
+  });
+</script>

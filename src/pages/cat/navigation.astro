@@ -1,0 +1,44 @@
+---
+export const prerender = false;
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, navigationItems } from "../../db";
+import { asc, eq } from "drizzle-orm";
+
+const navRows = await db.select().from(navigationItems).orderBy(asc(navigationItems.order));
+const headerNav = navRows.filter(n => n.location === "header" || n.location === "both");
+const menuNav = navRows.filter(n => n.location === "menu" || n.location === "both");
+---
+
+<AdminLayout title="Navigation">
+  <h1 class="text-2xl font-bold mb-6">Navigation</h1>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
+    <div>
+      <h2 class="text-lg font-semibold text-cyan-400 mb-3">Header Nav</h2>
+      <div class="space-y-2">
+        {headerNav.map((item) => (
+          <div class="flex items-center gap-3 p-3 rounded-lg border border-white/10 bg-white/5">
+            <span class="text-gray-500 text-xs w-4">{item.order}</span>
+            <span class="text-white">{item.label}</span>
+            <span class="text-gray-400 text-xs ml-auto">{item.href}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+    
+    <div>
+      <h2 class="text-lg font-semibold text-cyan-400 mb-3">Menu Nav</h2>
+      <div class="space-y-2">
+        {menuNav.map((item) => (
+          <div class="flex items-center gap-3 p-3 rounded-lg border border-white/10 bg-white/5">
+            <span class="text-gray-500 text-xs w-4">{item.order}</span>
+            <span class="text-white">{item.label}</span>
+            <span class="text-gray-400 text-xs ml-auto">{item.href}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+  
+  <p class="mt-6 text-sm text-gray-500">Edit navigation via the API at <code class="text-cyan-400">/api/admin/navigation</code></p>
+</AdminLayout>

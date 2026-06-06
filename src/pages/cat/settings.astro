@@ -1,0 +1,95 @@
+---
+export const prerender = false;
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, siteSettings } from "../../db";
+
+const settingsRows = await db.select().from(siteSettings);
+const settings: Record<string, string> = {};
+settingsRows.forEach(s => { settings[s.key] = s.value; });
+---
+
+<AdminLayout title="Site Settings">
+  <h1 class="text-2xl font-bold mb-6">Site Settings</h1>
+  
+  <form id="settings-form" class="space-y-6 max-w-2xl">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Author Name</label>
+        <input type="text" name="author" value={settings.author || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Email</label>
+        <input type="email" name="email" value={settings.email || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Site Name</label>
+        <input type="text" name="site_name" value={settings.site_name || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Site URL</label>
+        <input type="url" name="site_url" value={settings.site_url || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Location</label>
+        <input type="text" name="location" value={settings.location || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Timezone</label>
+        <input type="text" name="timezone" value={settings.timezone || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">CV / Resume URL</label>
+        <input type="url" name="cv_url" value={settings.cv_url || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="https://..." />
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">SEO Title</label>
+        <input type="text" name="seo_title" value={settings.seo_title || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+      </div>
+    </div>
+    
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">Site Description</label>
+      <textarea name="site_description" rows="2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">{settings.site_description || ""}</textarea>
+    </div>
+    
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">SEO Keywords (comma separated)</label>
+      <input type="text" name="seo_keywords" value={settings.seo_keywords || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button type="submit" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors">Save Settings</button>
+      <span id="status" class="text-sm"></span>
+    </div>
+  </form>
+</AdminLayout>
+
+<script>
+  const form = document.getElementById("settings-form") as HTMLFormElement;
+  const status = document.getElementById("status");
+  
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form).entries());
+    
+    try {
+      const res = await fetch("/api/admin/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ settings: data }),
+      });
+      
+      if (res.ok) {
+        status!.textContent = "✓ Saved";
+        status!.className = "text-sm text-green-400";
+      } else {
+        throw new Error("Failed");
+      }
+    } catch {
+      status!.textContent = "✗ Error";
+      status!.className = "text-sm text-red-400";
+    }
+    
+    setTimeout(() => { status!.textContent = ""; }, 3000);
+  });
+</script>

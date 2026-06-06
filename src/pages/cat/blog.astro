@@ -1,0 +1,15 @@
+---
+export const prerender = false;
+import AdminLayout from "../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Blog">
+  <h1 class="text-2xl font-bold mb-6">Blog</h1>
+  
+  <div class="max-w-2xl">
+    <div class="p-6 rounded-xl border border-white/10 bg-white/5">
+      <p class="text-gray-300 mb-4">Blog is managed externally at <a href="https://blog.swadhin.cv" target="_blank" class="text-cyan-400 hover:underline">blog.swadhin.cv</a></p>
+      <p class="text-gray-400 text-sm">Recent posts are automatically fetched and displayed on the homepage.</p>
+    </div>
+  </div>
+</AdminLayout>

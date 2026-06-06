@@ -1,0 +1,29 @@
+---
+export const prerender = false;
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, experiences } from "../../db";
+import { asc } from "drizzle-orm";
+
+const expRows = await db.select().from(experiences).orderBy(asc(experiences.order));
+---
+
+<AdminLayout title="Experience">
+  <h1 class="text-2xl font-bold mb-6">Experience</h1>
+  
+  <div class="space-y-4 max-w-3xl">
+    {expRows.map((exp) => (
+      <div class="p-4 rounded-xl border border-white/10 bg-white/5">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="font-semibold">{exp.role}</h3>
+            <p class="text-cyan-400 text-sm">{exp.company}</p>
+            <p class="text-gray-400 text-xs mt-1">{exp.startDate} — {exp.endDate || "Present"}</p>
+          </div>
+        </div>
+        {exp.details && <p class="text-gray-300 text-sm mt-3">{exp.details}</p>}
+      </div>
+    ))}
+  </div>
+  
+  <p class="mt-6 text-sm text-gray-500">Edit experiences via the API at <code class="text-cyan-400">/api/admin/experiences</code></p>
+</AdminLayout>
