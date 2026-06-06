@@ -14,23 +14,176 @@ skillRows.forEach(s => {
 ---
 
 <AdminLayout title="Skills">
-  <h1 class="text-2xl font-bold mb-6">Skills ({skillRows.length})</h1>
-  
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">Skills ({skillRows.length})</h1>
+    <button onclick="document.getElementById('add-form').classList.toggle('hidden')" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm">+ Add Skill</button>
+  </div>
+
+  <!-- Add Form -->
+  <div id="add-form" class="hidden mb-6 p-4 rounded-xl border border-cyan-400/30 bg-cyan-400/5">
+    <h2 class="text-lg font-semibold mb-4">New Skill</h2>
+    <form id="create-form" class="space-y-4">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Name</label>
+          <input type="text" name="name" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Category</label>
+          <select name="category" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
+            <option value="language">Language</option>
+            <option value="framework">Framework</option>
+            <option value="data engineering">Data Engineering</option>
+            <option value="database">Database</option>
+            <option value="devops">DevOps</option>
+            <option value="ai">AI</option>
+            <option value="general">General</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Tier</label>
+          <select name="tier" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
+            <option value="core">Core</option>
+            <option value="working">Working knowledge</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Description</label>
+        <input type="text" name="description" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+      </div>
+      <div class="flex gap-3">
+        <button type="submit" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm">Save</button>
+        <button type="button" onclick="document.getElementById('add-form').classList.add('hidden')" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors text-sm">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- List by Category -->
   <div class="space-y-6 max-w-3xl">
     {Object.entries(grouped).map(([cat, skills]) => (
       <div>
         <h2 class="text-lg font-semibold text-cyan-400 mb-3 capitalize">{cat}</h2>
-        <div class="flex flex-wrap gap-2">
+        <div class="space-y-2">
           {skills.map((s) => (
-            <div class:list={["px-3 py-1.5 rounded-lg text-sm border", s.tier === "core" ? "border-cyan-400/50 bg-cyan-400/10 text-cyan-300" : "border-white/10 bg-white/5 text-gray-300"]}>
-              {s.name}
-              {s.tier === "core" && <span class="ml-1 text-[10px] text-cyan-400">●</span>}
+            <div class="flex items-center gap-3 p-3 rounded-lg border border-white/10 bg-white/5 group">
+              <div class:list={["w-2 h-2 rounded-full", s.tier === "core" ? "bg-cyan-400" : "bg-gray-600"]}></div>
+              <div class="flex-1">
+                <span class="text-white">{s.name}</span>
+                {s.description && <span class="text-gray-500 text-xs ml-2">— {s.description}</span>}
+              </div>
+              <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onclick={`editSkill(${JSON.stringify({id:s.id,name:s.name,category:s.category,description:s.description||'',tier:s.tier||'core',order:s.order}).replace(/"/g, '&quot;')})`} class="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs hover:bg-yellow-500/30">Edit</button>
+                <button onclick={`deleteSkill(${s.id})`} class="px-3 py-1 bg-red-500/20 text-red-400 rounded text-xs hover:bg-red-500/30">Delete</button>
+              </div>
             </div>
           ))}
         </div>
       </div>
     ))}
   </div>
-  
-  <p class="mt-6 text-sm text-gray-500">Edit skills via the API at <code class="text-cyan-400">/api/admin/skills</code></p>
+
+  <!-- Edit Modal -->
+  <div id="edit-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+    <div class="bg-[#111] border border-white/10 rounded-xl p-6 w-full max-w-lg">
+      <h2 class="text-lg font-semibold mb-4">Edit Skill</h2>
+      <form id="edit-form" class="space-y-4">
+        <input type="hidden" name="id" />
+        <input type="hidden" name="order" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Name</label>
+            <input type="text" name="name" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Category</label>
+            <select name="category" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
+              <option value="language">Language</option>
+              <option value="framework">Framework</option>
+              <option value="data engineering">Data Engineering</option>
+              <option value="database">Database</option>
+              <option value="devops">DevOps</option>
+              <option value="ai">AI</option>
+              <option value="general">General</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Tier</label>
+            <select name="tier" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
+              <option value="core">Core</option>
+              <option value="working">Working knowledge</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Description</label>
+          <input type="text" name="description" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+        <div class="flex gap-3">
+          <button type="submit" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm">Update</button>
+          <button type="button" onclick="document.getElementById('edit-modal').classList.add('hidden')" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors text-sm">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </AdminLayout>
+
+<script>
+  function toast(msg: string, ok = true) {
+    const el = document.createElement("div");
+    el.className = `fixed top-4 right-4 px-4 py-2 rounded-lg text-sm z-50 ${ok ? "bg-green-500/20 text-green-400 border border-green-500/30" : "bg-red-500/20 text-red-400 border border-red-500/30"}`;
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+
+  document.getElementById("create-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const data = Object.fromEntries(new FormData(form).entries());
+    const res = await fetch("/api/admin/skills", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (res.ok) { toast("Created!"); setTimeout(() => location.reload(), 500); }
+    else { toast("Failed", false); }
+  });
+
+  (window as any).editSkill = function(skill: any) {
+    const form = document.getElementById("edit-form") as HTMLFormElement;
+    form.id.value = skill.id;
+    form.name.value = skill.name;
+    form.category.value = skill.category;
+    form.description.value = skill.description;
+    form.tier.value = skill.tier;
+    form.order.value = skill.order;
+    document.getElementById("edit-modal")!.classList.remove("hidden");
+  };
+
+  document.getElementById("edit-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const data = Object.fromEntries(new FormData(form).entries());
+    data.id = Number(data.id);
+    data.order = Number(data.order);
+    const res = await fetch("/api/admin/skills", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (res.ok) { toast("Updated!"); setTimeout(() => location.reload(), 500); }
+    else { toast("Failed", false); }
+  });
+
+  (window as any).deleteSkill = async function(id: number) {
+    if (!confirm("Delete this skill?")) return;
+    const res = await fetch("/api/admin/skills", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    if (res.ok) { toast("Deleted!"); setTimeout(() => location.reload(), 500); }
+    else { toast("Failed", false); }
+  };
+</script>

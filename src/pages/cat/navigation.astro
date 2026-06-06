@@ -2,7 +2,7 @@
 export const prerender = false;
 import AdminLayout from "../../layouts/AdminLayout.astro";
 import { db, navigationItems } from "../../db";
-import { asc, eq } from "drizzle-orm";
+import { asc } from "drizzle-orm";
 
 const navRows = await db.select().from(navigationItems).orderBy(asc(navigationItems.order));
 const headerNav = navRows.filter(n => n.location === "header" || n.location === "both");
@@ -10,35 +10,122 @@ const menuNav = navRows.filter(n => n.location === "menu" || n.location === "bot
 ---
 
 <AdminLayout title="Navigation">
-  <h1 class="text-2xl font-bold mb-6">Navigation</h1>
-  
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">Navigation</h1>
+    <button onclick="document.getElementById('add-form').classList.toggle('hidden')" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm">+ Add Item</button>
+  </div>
+
+  <!-- Add Form -->
+  <div id="add-form" class="hidden mb-6 p-4 rounded-xl border border-cyan-400/30 bg-cyan-400/5">
+    <h2 class="text-lg font-semibold mb-4">New Navigation Item</h2>
+    <form id="create-form" class="space-y-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Label</label>
+          <input type="text" name="label" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Href</label>
+          <input type="text" name="href" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Location</label>
+          <select name="location" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
+            <option value="header">Header</option>
+            <option value="menu">Menu</option>
+            <option value="both">Both</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Order</label>
+          <input type="number" name="order" value="0" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">External</label>
+          <select name="external" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex gap-3">
+        <button type="submit" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm">Save</button>
+        <button type="button" onclick="document.getElementById('add-form').classList.add('hidden')" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors text-sm">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Lists -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
     <div>
       <h2 class="text-lg font-semibold text-cyan-400 mb-3">Header Nav</h2>
       <div class="space-y-2">
         {headerNav.map((item) => (
-          <div class="flex items-center gap-3 p-3 rounded-lg border border-white/10 bg-white/5">
+          <div class="flex items-center gap-3 p-3 rounded-lg border border-white/10 bg-white/5 group">
             <span class="text-gray-500 text-xs w-4">{item.order}</span>
-            <span class="text-white">{item.label}</span>
-            <span class="text-gray-400 text-xs ml-auto">{item.href}</span>
+            <div class="flex-1">
+              <span class="text-white">{item.label}</span>
+              <span class="text-gray-400 text-xs ml-2">{item.href}</span>
+            </div>
+            <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button onclick={`deleteNav(${item.id})`} class="px-3 py-1 bg-red-500/20 text-red-400 rounded text-xs hover:bg-red-500/30">Delete</button>
+            </div>
           </div>
         ))}
       </div>
     </div>
-    
     <div>
       <h2 class="text-lg font-semibold text-cyan-400 mb-3">Menu Nav</h2>
       <div class="space-y-2">
         {menuNav.map((item) => (
-          <div class="flex items-center gap-3 p-3 rounded-lg border border-white/10 bg-white/5">
+          <div class="flex items-center gap-3 p-3 rounded-lg border border-white/10 bg-white/5 group">
             <span class="text-gray-500 text-xs w-4">{item.order}</span>
-            <span class="text-white">{item.label}</span>
-            <span class="text-gray-400 text-xs ml-auto">{item.href}</span>
+            <div class="flex-1">
+              <span class="text-white">{item.label}</span>
+              <span class="text-gray-400 text-xs ml-2">{item.href}</span>
+            </div>
+            <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button onclick={`deleteNav(${item.id})`} class="px-3 py-1 bg-red-500/20 text-red-400 rounded text-xs hover:bg-red-500/30">Delete</button>
+            </div>
           </div>
         ))}
       </div>
     </div>
   </div>
-  
-  <p class="mt-6 text-sm text-gray-500">Edit navigation via the API at <code class="text-cyan-400">/api/admin/navigation</code></p>
 </AdminLayout>
+
+<script>
+  function toast(msg: string, ok = true) {
+    const el = document.createElement("div");
+    el.className = `fixed top-4 right-4 px-4 py-2 rounded-lg text-sm z-50 ${ok ? "bg-green-500/20 text-green-400 border border-green-500/30" : "bg-red-500/20 text-red-400 border border-red-500/30"}`;
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+
+  document.getElementById("create-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const data = Object.fromEntries(new FormData(form).entries());
+    data.external = data.external === "true";
+    data.order = Number(data.order) || 0;
+    const res = await fetch("/api/admin/navigation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (res.ok) { toast("Created!"); setTimeout(() => location.reload(), 500); }
+    else { toast("Failed", false); }
+  });
+
+  (window as any).deleteNav = async function(id: number) {
+    if (!confirm("Delete this item?")) return;
+    const res = await fetch("/api/admin/navigation", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    if (res.ok) { toast("Deleted!"); setTimeout(() => location.reload(), 500); }
+    else { toast("Failed", false); }
+  };
+</script>

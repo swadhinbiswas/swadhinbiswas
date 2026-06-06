@@ -8,26 +8,218 @@ const projRows = await db.select().from(projects).orderBy(asc(projects.order));
 ---
 
 <AdminLayout title="Projects">
-  <h1 class="text-2xl font-bold mb-6">Projects</h1>
-  
-  <div class="space-y-4 max-w-3xl">
-    {projRows.map((proj) => (
-      <div class="p-4 rounded-xl border border-white/10 bg-white/5">
-        <div class="flex justify-between items-start">
-          <div>
-            <h3 class="font-semibold">{proj.name}</h3>
-            <p class="text-gray-300 text-sm mt-1">{proj.description}</p>
-            {proj.github && (
-              <a href={proj.github} target="_blank" rel="noopener noreferrer" class="text-cyan-400 text-xs mt-2 inline-block hover:underline">GitHub →</a>
-            )}
-          </div>
-          <div class="text-right">
-            {proj.stars ? <span class="text-yellow-400 text-sm">★ {proj.stars}</span> : null}
-          </div>
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">Projects ({projRows.length})</h1>
+    <button onclick="document.getElementById('add-form').classList.toggle('hidden')" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm">+ Add Project</button>
+  </div>
+
+  <!-- Add Form -->
+  <div id="add-form" class="hidden mb-6 p-4 rounded-xl border border-cyan-400/30 bg-cyan-400/5">
+    <h2 class="text-lg font-semibold mb-4">New Project</h2>
+    <form id="create-form" class="space-y-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Name</label>
+          <input type="text" name="name" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Status</label>
+          <select name="status" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
+            <option value="Active">Active</option>
+            <option value="Archived">Archived</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">URL</label>
+          <input type="url" name="url" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">GitHub</label>
+          <input type="url" name="github" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Stars</label>
+          <input type="number" name="stars" value="0" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Featured</label>
+          <select name="featured" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
         </div>
       </div>
-    ))}
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Description</label>
+        <textarea name="description" rows="2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400"></textarea>
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Tags (comma separated)</label>
+        <input type="text" name="tags" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="python, react, docker" />
+      </div>
+      <div class="flex gap-3">
+        <button type="submit" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm">Save</button>
+        <button type="button" onclick="document.getElementById('add-form').classList.add('hidden')" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors text-sm">Cancel</button>
+      </div>
+    </form>
   </div>
-  
-  <p class="mt-6 text-sm text-gray-500">Edit projects via the API at <code class="text-cyan-400">/api/admin/projects</code></p>
+
+  <!-- List -->
+  <div class="space-y-3 max-w-3xl">
+    {projRows.map((proj) => {
+      let tags: string[] = [];
+      try { tags = JSON.parse(proj.tags || "[]"); } catch {}
+      return (
+        <div class="p-4 rounded-xl border border-white/10 bg-white/5 group">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <h3 class="font-semibold">{proj.name}</h3>
+                {proj.stars ? <span class="text-yellow-400 text-xs">★ {proj.stars}</span> : null}
+                {proj.featured ? <span class="text-cyan-400 text-[10px] bg-cyan-400/10 px-1.5 py-0.5 rounded">Featured</span> : null}
+              </div>
+              <p class="text-gray-300 text-sm mt-1">{proj.description}</p>
+              {tags.length > 0 && (
+                <div class="flex flex-wrap gap-1 mt-2">
+                  {tags.map((t: string) => <span class="text-[10px] text-gray-400 bg-white/5 px-1.5 py-0.5 rounded">{t}</span>)}
+                </div>
+              )}
+            </div>
+            <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button onclick={`editProj(${JSON.stringify({id:proj.id,name:proj.name,description:proj.description||'',url:proj.url||'',github:proj.github||'',stars:proj.stars||0,featured:proj.featured||false,status:proj.status||'Active',tags:proj.tags||'[]',order:proj.order}).replace(/"/g, '&quot;')})`} class="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs hover:bg-yellow-500/30">Edit</button>
+              <button onclick={`deleteProj(${proj.id})`} class="px-3 py-1 bg-red-500/20 text-red-400 rounded text-xs hover:bg-red-500/30">Delete</button>
+            </div>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="edit-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+    <div class="bg-[#111] border border-white/10 rounded-xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <h2 class="text-lg font-semibold mb-4">Edit Project</h2>
+      <form id="edit-form" class="space-y-4">
+        <input type="hidden" name="id" />
+        <input type="hidden" name="order" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Name</label>
+            <input type="text" name="name" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Status</label>
+            <select name="status" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
+              <option value="Active">Active</option>
+              <option value="Archived">Archived</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">URL</label>
+            <input type="url" name="url" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">GitHub</label>
+            <input type="url" name="github" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Stars</label>
+            <input type="number" name="stars" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Featured</label>
+            <select name="featured" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Description</label>
+          <textarea name="description" rows="2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Tags (comma separated)</label>
+          <input type="text" name="tags" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+        <div class="flex gap-3">
+          <button type="submit" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm">Update</button>
+          <button type="button" onclick="document.getElementById('edit-modal').classList.add('hidden')" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors text-sm">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </AdminLayout>
+
+<script>
+  function toast(msg: string, ok = true) {
+    const el = document.createElement("div");
+    el.className = `fixed top-4 right-4 px-4 py-2 rounded-lg text-sm z-50 ${ok ? "bg-green-500/20 text-green-400 border border-green-500/30" : "bg-red-500/20 text-red-400 border border-red-500/30"}`;
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+
+  document.getElementById("create-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const data = Object.fromEntries(new FormData(form).entries());
+    data.tags = JSON.stringify(data.tags?.split(",").map((t: string) => t.trim()).filter(Boolean) || []);
+    data.featured = data.featured === "true";
+    data.stars = Number(data.stars) || 0;
+    const res = await fetch("/api/admin/projects", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (res.ok) { toast("Created!"); setTimeout(() => location.reload(), 500); }
+    else { toast("Failed", false); }
+  });
+
+  (window as any).editProj = function(proj: any) {
+    const form = document.getElementById("edit-form") as HTMLFormElement;
+    form.id.value = proj.id;
+    form.name.value = proj.name;
+    form.description.value = proj.description;
+    form.url.value = proj.url;
+    form.github.value = proj.github;
+    form.stars.value = proj.stars;
+    form.status.value = proj.status;
+    form.featured.value = proj.featured ? "true" : "false";
+    try {
+      const tags = JSON.parse(proj.tags);
+      form.tags.value = tags.join(", ");
+    } catch { form.tags.value = ""; }
+    form.order.value = proj.order;
+    document.getElementById("edit-modal")!.classList.remove("hidden");
+  };
+
+  document.getElementById("edit-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const data = Object.fromEntries(new FormData(form).entries());
+    data.id = Number(data.id);
+    data.order = Number(data.order);
+    data.tags = JSON.stringify(data.tags?.split(",").map((t: string) => t.trim()).filter(Boolean) || []);
+    data.featured = data.featured === "true";
+    data.stars = Number(data.stars) || 0;
+    const res = await fetch("/api/admin/projects", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (res.ok) { toast("Updated!"); setTimeout(() => location.reload(), 500); }
+    else { toast("Failed", false); }
+  });
+
+  (window as any).deleteProj = async function(id: number) {
+    if (!confirm("Delete this project?")) return;
+    const res = await fetch("/api/admin/projects", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    if (res.ok) { toast("Deleted!"); setTimeout(() => location.reload(), 500); }
+    else { toast("Failed", false); }
+  };
+</script>
