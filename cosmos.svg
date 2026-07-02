@@ -293,19 +293,19 @@
   <!-- ── LOC BREAKDOWN ───────────────────────────────── -->
   <text x="107" y="366" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="900" fill="#585b70" letter-spacing="3">LINES OF CODE</text>
 
-  <text id="loc_data" x="107" y="394" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="22" font-weight="900" fill="#cba6f7" filter="url(#glow)" style="animation:labelPop 1s .8s both;--ls:0px">8,368,311</text>
+  <text id="loc_data" x="107" y="394" text-anchor="middle" font-family="'Exo 2',sans-serif" font-size="22" font-weight="900" fill="#cba6f7" filter="url(#glow)" style="animation:labelPop 1s .8s both;--ls:0px">8,368,588</text>
   <text x="107" y="408" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" font-weight="800" fill="#585b70" letter-spacing="1">NET LINES WRITTEN</text>
 
   <!-- Added bar -->
   <text x="22" y="428" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#a6e3a1">++ ADDED</text>
-  <text id="loc_add" x="193" y="428" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#94e2d5">8,942,610</text>
+  <text id="loc_add" x="193" y="428" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#94e2d5">8,942,974</text>
   <rect x="22" y="432" width="171" height="6" rx="3" fill="#181825"/>
   <rect class="b6" x="22" y="432" width="155" height="6" rx="3" fill="url(#bP)" filter="url(#glow)"/>
   <circle cx="177" cy="435" r="3" fill="#a6e3a1" filter="url(#glow)" style="animation:dotPulse 2s 4s ease-in-out infinite"/>
 
   <!-- Deleted bar -->
   <text x="22" y="452" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="900" fill="#f38ba8">-- DELETED</text>
-  <text id="loc_del" x="193" y="452" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#eba0ac">574,299</text>
+  <text id="loc_del" x="193" y="452" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="800" fill="#eba0ac">574,386</text>
   <rect x="22" y="456" width="171" height="6" rx="3" fill="#181825"/>
   <rect class="b7" x="22" y="456" width="10" height="6" rx="3" fill="url(#bL)" filter="url(#glow)"/>
   <circle cx="32" cy="459" r="3" fill="#f38ba8" filter="url(#glow)" style="animation:dotPulse 2.2s 4.3s ease-in-out infinite"/>
