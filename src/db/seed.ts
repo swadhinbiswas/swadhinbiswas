@@ -18,6 +18,8 @@ import {
   interests,
   pageViews,
   supportOptions,
+  testimonials,
+  heroMetrics,
 } from './schema';
 
 // Import static config
@@ -56,6 +58,8 @@ async function seed() {
     await db.delete(siteSettings);
     await db.delete(bioContent);
     await db.delete(seoSettings);
+    await db.delete(testimonials);
+    await db.delete(heroMetrics);
     console.log('  ✅ Data cleared');
 
     // 1. Site Settings
@@ -152,6 +156,23 @@ async function seed() {
     }
     console.log(`  ✅ Inserted ${siteConfig.experience.length} experiences`);
 
+    // 4b. Ensure BoringRats experience exists (not in config on first seed)
+    const boringRatsExists = siteConfig.experience.some(e => e.company === 'BoringRats');
+    if (!boringRatsExists) {
+      await db.insert(experiences).values({
+        company: 'BoringRats',
+        role: 'DATA/ Backend Engineer & Co-founder',
+        url: '',
+        startDate: '2023-01-01',
+        endDate: '2025-11-01',
+        details: 'Data Engineer & Tech Lead (Boringrats, acquired Nov 2025 — acquirer name under NDA. Co-founder available as reference upon request). Scaled infrastructure to 1M+ active users. Currently building OPNCODEHUB, an open-source ecosystem democratizing developer tools. Architecting robust data pipelines and production ML systems.',
+        order: 100,
+        createdAt: now,
+        updatedAt: now,
+      });
+      console.log('  ✅ Inserted BoringRats experience (default)');
+    }
+
     // 5. Projects
     console.log('📁 Seeding projects...');
     for (let i = 0; i < siteConfig.featuredProjects.length; i++) {
@@ -204,13 +225,70 @@ console.log('🛠️ Seeding skills...');
     }
     console.log(`  ✅ Inserted ${siteConfig.skills.length} skills`);
 
-    // 8. Bio Content
+    // 7b. Testimonials
+    console.log('💬 Seeding testimonials...');
+    const testimonialsData = [
+      {
+        quote: "Swadhin's ability to architect scalable data systems was instrumental in scaling BoringRats to 1M+ users. His technical leadership and hands-on approach to infrastructure were key factors in our successful acquisition.",
+        name: "BoringRats Team",
+        role: "Co-founded & scaled together. Co-founder available as reference upon request.",
+        order: 0,
+      },
+    ];
+    for (const t of testimonialsData) {
+      await db.insert(testimonials).values({
+        ...t,
+        createdAt: now,
+        updatedAt: now,
+      });
+    }
+    console.log(`  ✅ Inserted ${testimonialsData.length} testimonials`);
+
+    // 7c. Hero Metrics
+    console.log('📊 Seeding hero metrics...');
+    const heroMetricsData = [
+      {
+        label: "Users Impacted",
+        value: "1M+",
+        sub: "Boringrats: built, scaled, acquired",
+        order: 0,
+      },
+      {
+        label: "Acquired '25",
+        value: "1×",
+        sub: "Acquired Nov 2025 — acquirer name under NDA. Co-founder available as reference upon request.",
+        order: 1,
+      },
+      {
+        label: "Production Systems",
+        value: "3+ yrs",
+        sub: "Data pipelines & ML infra",
+        order: 2,
+      },
+      {
+        label: "Open Source",
+        value: "12+ repos",
+        sub: "Active contributor",
+        order: 3,
+      },
+    ];
+    for (const m of heroMetricsData) {
+      await db.insert(heroMetrics).values({
+        ...m,
+        createdAt: now,
+        updatedAt: now,
+      });
+    }
+    console.log(`  ✅ Inserted ${heroMetricsData.length} hero metrics`);
+
+    // 9. Bio Content
     console.log('📝 Seeding bio content...');
     const bioData = [
       { key: 'short', value: siteConfig.bio.short },
       { key: 'long', value: siteConfig.bio.long },
       { key: 'quote', value: siteConfig.bio.quote },
       { key: 'funFact', value: siteConfig.bio.funFact },
+      { key: 'summary', value: siteConfig.bio.summary || '' },
       {
         key: 'intro',
         value: `I'm ${siteConfig.author} (স্বাধীন বিশ্বাস), which means "Freedom" in Bengali. I'm a passionate Backend Engineer and AI Systems Architect based in ${siteConfig.location}.`
@@ -230,7 +308,7 @@ console.log('🛠️ Seeding skills...');
     }
     console.log(`  ✅ Inserted ${bioData.length} bio entries`);
 
-    // 9. Education
+    // 10. Education
     console.log('🎓 Seeding education...');
     await db.insert(education).values({
       institution: "Daffodil International University",

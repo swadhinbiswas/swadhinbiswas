@@ -7,217 +7,391 @@ const siteConfig = await getDynamicConfig();
 const author = siteConfig.author || env.siteName;
 const [firstName, ...rest] = author.split(" ");
 const lastName = rest.join(" ");
+const initials = (firstName?.[0] || "") + (lastName?.[0] || "");
 const shortBio = siteConfig.bio?.short || "";
 const longBio = siteConfig.bio?.long || "";
-const initials = (firstName?.[0] || "") + (lastName?.[0] || "");
-
-const heroBlurb = (longBio || shortBio);
-const eyebrow = siteConfig.description
-  ? (siteConfig.description.length > 60
-      ? siteConfig.description.split(/(?<=[.!?])\s+/)[0]
-      : siteConfig.description)
-  : "";
-
+const heroBlurb = longBio || shortBio;
+const focusLabel = siteConfig.bio?.focusLabel || "Current directive";
 const locationLine = [siteConfig.location, siteConfig.timezone]
   .filter(Boolean)
   .join(" · ");
 
-const projectsCount = siteConfig.featuredProjects?.length || 0;
-const experienceCount = siteConfig.experience?.length || 0;
-const skillCount = siteConfig.skills?.length || 0;
-const focusLabel = siteConfig.bio?.focusLabel || "Portfolio";
-const profileImage = "/profile.jpg";
-
 const githubUrl = siteConfig.links?.github || "https://github.com/swadhinbiswas";
 const githubUsername = githubUrl.split("/").pop() || "swadhinbiswas";
-
-const meta = [
-  { label: "Users Impacted", value: "1M+", sub: "Boringrats: built, scaled, acquired" },
-  { label: "Acquired '25", value: "1×", sub: "Boringrats — acquired Nov 2025" },
-  { label: "Production Systems", value: "3+ yrs", sub: "Data pipelines & ML infra" },
-  { label: "Open Source", value: "12+ repos", sub: "Active contributor" }
-];
+const heroMetrics = siteConfig.heroMetrics || [];
+const availability = (siteConfig.bio as any)?.availability
+  || "Open to Mid-level Data/Backend Roles";
 ---
 
-<section class="hero-section">
-  <div class="container-narrow py-8 sm:py-10">
-    <div class="hero-blog-grid reveal">
-      <div class="hero-image">
-        <img
-          src={profileImage}
-          alt={author}
-          class="hero-avatar"
-          loading="eager"
-        />
-      </div>
-      <div>
-        <p class="section-kicker">{focusLabel}</p>
-        <h1 class="hero-name mt-3 max-w-3xl">
-          <span class="text-gradient">{author}</span>
-        </h1>
-        <div class="mt-3 flex items-center">
-          <span class="inline-flex items-center gap-2 rounded-full bg-emerald-500/15 px-3 py-1 text-[11px] font-bold tracking-wider text-emerald-400 border border-emerald-500/30 uppercase text-mono">
-            <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            Open to Mid-level Data/Backend Roles
-          </span>
-        </div>
-        <p class="hero-tagline mt-4 max-w-3xl">
-          Co-built a startup to 1M users, got acquired — now building OPNCODEHUB and engineering production data pipelines.
-        </p>
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-portrait reveal">
+      <div class="portrait-frame">
+        <img src="/profile.jpg" alt={author} class="portrait" loading="eager" decoding="async" fetchpriority="high" width="160" height="160" />
+        <span class="portrait-ring" aria-hidden="true"></span>
       </div>
     </div>
 
-    <div class="mt-8 max-w-3xl reveal reveal-delay-1">
-        <p class="hero-body text-[var(--color-fg-muted)]">
-          OPNCODEHUB builds open-source tools that make data engineering and ML accessible to developers everywhere. Looking for mid-level backend or data engineering roles in EU teams shipping production systems.
-        </p>
+    <div class="hero-content reveal reveal-delay-1">
+      <p class="hero-eyebrow">{focusLabel}</p>
+      <h1 class="hero-name">
+        <span class="hero-name-glow">{author}</span>
+      </h1>
+      <div class="hero-status">
+        <span class="status-pill" aria-label="Availability">
+          <span class="status-dot" aria-hidden="true"></span>
+          {availability}
+        </span>
+      </div>
+      <p class="hero-tagline">{heroBlurb}</p>
+    </div>
+  </div>
 
-        <div class="mt-7 flex flex-wrap gap-3">
-          <a href="/projects" class="btn btn-primary">View projects</a>
-          {siteConfig.cvUrl && (
-            <a href={siteConfig.cvUrl} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Download CV
-            </a>
-          )}
-          {siteConfig.email && (
-            <a href={`mailto:${siteConfig.email}`} class="btn btn-outline">Let's collaborate</a>
-          )}
-        </div>
+  <div class="hero-body reveal reveal-delay-2">
+    {heroBlurb && <p class="hero-blurb">{heroBlurb}</p>}
 
-        <div class="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-mono text-xs text-[var(--color-fg-subtle)]">
-          {locationLine && <span>{locationLine}</span>}
-          {siteConfig.links?.github && (
-            <a href={siteConfig.links.github} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-[var(--color-accent)]">GitHub</a>
-          )}
-          {siteConfig.links?.linkedin && (
-            <a href={siteConfig.links.linkedin} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-[var(--color-accent)]">LinkedIn</a>
-          )}
-          {siteConfig.links?.twitter && (
-            <a href={siteConfig.links.twitter} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-[var(--color-accent)]">X</a>
-          )}
-        </div>
+    <div class="hero-actions">
+      <a href="/projects" class="btn btn-primary">View projects</a>
+      {siteConfig.cvUrl && (
+        <a href={siteConfig.cvUrl} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Download CV
+        </a>
+      )}
+      {siteConfig.email && (
+        <a href={`mailto:${siteConfig.email}`} class="btn btn-outline">Let's collaborate</a>
+      )}
     </div>
 
-      <aside class="mt-10 reveal reveal-delay-2">
-        <p class="text-eyebrow mb-3">At a Glance</p>
-        <dl class="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {meta.map((m) => (
-            <div class="metric-card">
-              <dt class="text-mono text-xs text-[var(--color-fg-subtle)]">{m!.label}</dt>
-              <dd class="mt-2 text-2xl font-bold text-[var(--color-fg)] sm:text-3xl">{m!.value}</dd>
-              <dd class="mt-1 text-xs text-[var(--color-fg-muted)]">{m!.sub}</dd>
-            </div>
-          ))}
-        </dl>
+    <div class="hero-links">
+      {locationLine && <span class="hero-link-pill">{locationLine}</span>}
+      {siteConfig.links?.github && (
+        <a class="hero-link" href={siteConfig.links.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+      )}
+      {siteConfig.links?.linkedin && (
+        <a class="hero-link" href={siteConfig.links.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      )}
+      {siteConfig.links?.twitter && (
+        <a class="hero-link" href={siteConfig.links.twitter} target="_blank" rel="noopener noreferrer">X</a>
+      )}
+    </div>
+  </div>
 
-        <div class="terminal-card mt-5 overflow-hidden rounded-md border border-[var(--color-edge)] bg-[#070707] font-mono text-xs text-[var(--color-fg-muted)] shadow-lg">
-          <div class="flex items-center justify-between border-b border-[var(--color-edge)] bg-[#101010] px-4 py-2">
-            <div class="flex items-center gap-1.5">
-              <span class="h-2 w-2 rounded-full bg-[#EF4444]/80"></span>
-              <span class="h-2 w-2 rounded-full bg-[#F59E0B]/80"></span>
-              <span class="h-2 w-2 rounded-full bg-[#10B981]/80"></span>
-            </div>
-            <span class="text-[10px] text-[var(--color-fg-subtle)] text-mono">guest@swadhin-desktop:~</span>
-            <div class="w-9"></div>
+  {heroMetrics.length > 0 && (
+    <div class="hero-glance reveal reveal-delay-2">
+      <p class="section-eyebrow">At a Glance</p>
+      <dl class="glance-grid">
+        {heroMetrics.map((m) => (
+          <div class="glance-card">
+            <dt class="glance-label">{m.label}</dt>
+            <dd class="glance-value">{m.value}</dd>
+            <dd class="glance-sub">{m.sub}</dd>
           </div>
-          <div class="p-4 space-y-3.5">
-            <div>
-              <span class="text-emerald-400">$</span> <span class="text-[var(--color-fg)]">whoami</span>
-              <div class="mt-1 text-[var(--color-fg-muted)]">Backend Engineer · Co-founder · 6+ years building production systems</div>
-            </div>
-            <div>
-              <span class="text-emerald-400">$</span> <span class="text-[var(--color-fg)]">current_focus</span>
-              <div class="mt-1 text-[var(--color-fg-muted)]">Data Engineering · MLOps · AI Systems · Open Source</div>
-            </div>
-            <div>
-              <span class="text-emerald-400">$</span> <span class="text-[var(--color-fg)]">currently_building</span>
-              <div class="mt-1 text-[var(--color-fg-muted)]">OPNCODEHUB — Open-source developer tools and ecosystems</div>
-            </div>
-            <div>
-              <span class="text-emerald-400">$</span> <span class="text-[var(--color-fg)]">seeking</span>
-              <div class="mt-1 text-emerald-400">EU Relocation · Germany · Netherlands · Austria</div>
-            </div>
-          </div>
-        </div>
+        ))}
+      </dl>
+    </div>
+  )}
 
-        <div class="panel mt-5 p-4 reveal reveal-delay-3">
-          <div class="mb-3 flex items-center justify-between">
-            <span class="text-eyebrow">GitHub Activity</span>
-            <a href={githubUrl} target="_blank" rel="noopener noreferrer" class="text-xs text-mono text-[var(--color-fg-muted)] hover:text-[var(--color-accent)] transition-colors">
-              @{githubUsername}
-            </a>
-          </div>
-          <GithubGraph username={githubUsername} client:visible />
+  <div class="terminal reveal reveal-delay-3" aria-label="Terminal">
+    <div class="terminal-bar">
+      <span class="terminal-dot red" aria-hidden="true"></span>
+      <span class="terminal-dot yellow" aria-hidden="true"></span>
+      <span class="terminal-dot green" aria-hidden="true"></span>
+      <span class="terminal-title">guest@swadhin-desktop:~</span>
+      <span class="terminal-spacer"></span>
+    </div>
+    <div class="terminal-body">
+      {siteConfig.bio?.short && (
+        <div class="term-line">
+          <span class="term-prompt">$</span> <span class="term-cmd">whoami</span>
+          <div class="term-out">{siteConfig.bio.short}</div>
         </div>
-      </aside>
+      )}
+      {siteConfig.bio?.intro && (
+        <div class="term-line">
+          <span class="term-prompt">$</span> <span class="term-cmd">intro</span>
+          <div class="term-out">{siteConfig.bio.intro}</div>
+        </div>
+      )}
+      {siteConfig.bio?.story && (
+        <div class="term-line">
+          <span class="term-prompt">$</span> <span class="term-cmd">story</span>
+          <div class="term-out">{siteConfig.bio.story}</div>
+        </div>
+      )}
+      {siteConfig.bio?.quote && (
+        <div class="term-line">
+          <span class="term-prompt">$</span> <span class="term-cmd">quote</span>
+          <div class="term-out term-out-emerald">{siteConfig.bio.quote}</div>
+        </div>
+      )}
+      {siteConfig.bio?.funFact && (
+        <div class="term-line">
+          <span class="term-prompt">$</span> <span class="term-cmd">fun_fact</span>
+          <div class="term-out">{siteConfig.bio.funFact}</div>
+        </div>
+      )}
+    </div>
+  </div>
+
+  <div class="panel panel-github reveal reveal-delay-3">
+    <div class="panel-head">
+      <span class="section-eyebrow">GitHub Activity</span>
+      <a href={githubUrl} target="_blank" rel="noopener noreferrer" class="panel-link">@{githubUsername}</a>
+    </div>
+    <GithubGraph username={githubUsername} client:visible />
   </div>
 </section>
 
 <style>
-  .hero-section {
-    margin-bottom: 3rem;
-  }
+  .hero { padding: 0.5rem 0 1.5rem; }
 
-  .hero-blog-grid {
-    display: flex;
+  .hero-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
     align-items: center;
     gap: 2.5rem;
   }
-
-  .hero-image {
-    flex-shrink: 0;
+  @media (max-width: 720px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 1.25rem; }
   }
 
-  .hero-avatar {
+  /* Portrait */
+  .hero-portrait { display: flex; justify-content: center; }
+  .portrait-frame {
+    position: relative;
     width: 160px;
     height: 160px;
-    object-fit: cover;
+    flex-shrink: 0;
+  }
+  @media (max-width: 720px) {
+    .portrait-frame { width: 120px; height: 120px; }
+  }
+  .portrait {
+    width: 100%;
+    height: 100%;
     border-radius: 999px;
+    object-fit: cover;
     background: var(--color-card);
     border: 3px solid var(--color-edge);
-    box-shadow: 0 8px 32px rgba(199, 146, 234, 0.2);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.25), 0 12px 32px -8px rgba(139, 92, 246, 0.45);
+    position: relative;
+    z-index: 1;
   }
-
-  .hero-avatar:hover {
-    transform: scale(1.02);
-    box-shadow: 0 12px 40px rgba(199, 146, 234, 0.3);
+  .portrait-ring {
+    position: absolute;
+    inset: -6px;
+    border-radius: 999px;
+    background: conic-gradient(from 0deg, #8B5CF6, #34D399, #8B5CF6);
+    z-index: 0;
+    opacity: 0.55;
+    filter: blur(8px);
+    animation: ring-spin 8s linear infinite;
   }
+  @keyframes ring-spin { to { transform: rotate(360deg); } }
 
+  /* Hero text */
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
   .hero-name {
-    font-family: var(--font-sans);
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
+    margin-top: 0.5rem;
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 4.6vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+  }
+  .hero-name-glow {
+    background: linear-gradient(135deg, #A78BFA 0%, #C4B5FD 35%, #6EE7B7 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 18px rgba(139, 92, 246, 0.35)) drop-shadow(0 0 32px rgba(52, 211, 153, 0.18));
+  }
+
+  .hero-status { margin-top: 0.85rem; }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: #34D399;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .status-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: #34D399;
+    box-shadow: 0 0 8px rgba(52, 211, 153, 0.7);
+    animation: status-pulse 2s ease-in-out infinite;
+  }
+  @keyframes status-pulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(52, 211, 153, 0.7); }
+    50%      { box-shadow: 0 0 14px rgba(52, 211, 153, 1), 0 0 24px rgba(52, 211, 153, 0.4); }
   }
 
   .hero-tagline {
-    font-family: var(--font-sans);
-    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    margin-top: 1rem;
+    max-width: 60ch;
+    color: var(--color-fg);
+    font-size: clamp(1.05rem, 1.5vw, 1.2rem);
     font-weight: 600;
-    line-height: 1.6;
-    color: var(--color-fg-muted);
+    line-height: 1.55;
   }
 
-  .hero-body {
-    font-family: var(--font-sans);
+  /* Body block */
+  .hero-body { margin-top: 1.75rem; max-width: 60ch; }
+  .hero-blurb {
+    color: var(--color-fg-muted);
     font-size: 0.95rem;
-    font-weight: 400;
     line-height: 1.7;
   }
 
-  @media (max-width: 768px) {
-    .hero-blog-grid {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1.5rem;
-    }
-
-    .hero-avatar {
-      width: 120px;
-      height: 120px;
-    }
+  /* Buttons */
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
   }
+  .hero-actions .btn-primary {
+    box-shadow: 0 6px 24px -8px rgba(139, 92, 246, 0.55);
+  }
+
+  /* Small text row */
+  .hero-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.9rem;
+    margin-top: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-fg-subtle);
+  }
+  .hero-link-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1rem 0;
+  }
+  .hero-link {
+    color: var(--color-fg-subtle);
+    transition: color 0.18s ease;
+  }
+  .hero-link:hover { color: var(--color-accent-2); }
+
+  /* At a Glance */
+  .hero-glance { margin-top: 2.5rem; }
+  .glance-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+    margin-top: 0.85rem;
+  }
+  @media (min-width: 720px) { .glance-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .glance-card {
+    border: 1px solid var(--color-edge);
+    background: linear-gradient(180deg, var(--color-card) 0%, var(--color-card-strong) 100%);
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .glance-card:hover { border-color: var(--color-accent-mint); transform: translateY(-1px); }
+  .glance-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-fg-subtle);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .glance-value {
+    margin-top: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--color-fg);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .glance-sub {
+    margin-top: 0.35rem;
+    font-size: 0.72rem;
+    color: var(--color-fg-muted);
+    line-height: 1.45;
+  }
+
+  /* Terminal card */
+  .terminal {
+    margin-top: 1.25rem;
+    border: 1px solid var(--color-edge);
+    background: #07070D;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.6);
+  }
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.65rem 0.9rem;
+    background: #111118;
+    border-bottom: 1px solid var(--color-edge);
+  }
+  .terminal-dot { width: 0.7rem; height: 0.7rem; border-radius: 999px; }
+  .terminal-dot.red    { background: rgba(239, 68, 68, 0.85); }
+  .terminal-dot.yellow { background: rgba(245, 158, 11, 0.85); }
+  .terminal-dot.green  { background: rgba(16, 185, 129, 0.85); }
+  .terminal-title {
+    margin-left: 0.5rem;
+    flex: 1;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-fg-subtle);
+  }
+  .terminal-spacer { width: 2.6rem; flex-shrink: 0; }
+  .terminal-body {
+    padding: 1rem 1.1rem 1.1rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: var(--color-fg-muted);
+  }
+  .term-line + .term-line { margin-top: 0.5rem; }
+  .term-prompt { color: #34D399; }
+  .term-cmd { color: var(--color-fg); }
+  .term-out { padding-left: 1.1rem; color: var(--color-fg-muted); }
+  .term-out-emerald { color: #34D399; }
+
+  /* GitHub panel */
+  .panel-github { margin-top: 1.25rem; padding: 1.1rem 1.25rem 1.25rem; }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.6rem;
+  }
+  .panel-link {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-fg-muted);
+    transition: color 0.18s ease;
+  }
+  .panel-link:hover { color: var(--color-accent-2); }
 </style>

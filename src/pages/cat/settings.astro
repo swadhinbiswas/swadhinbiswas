@@ -57,6 +57,16 @@ settingsRows.forEach(s => { settings[s.key] = s.value; });
       <input type="text" name="seo_keywords" value={settings.seo_keywords || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
     </div>
 
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">Summary Highlights (comma separated)</label>
+      <input type="text" name="highlights" value={settings.highlights || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="Production ML · MLOps, 6+ years in production systems, Open to EU relocation" />
+    </div>
+
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">Languages</label>
+      <input type="text" name="languages" value={settings.languages || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="English (professional) · Bengali (native)" />
+    </div>
+
     <div class="flex items-center gap-3">
       <button type="submit" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors">Save Settings</button>
       <span id="status" class="text-sm"></span>

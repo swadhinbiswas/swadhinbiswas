@@ -9,6 +9,8 @@ import {
   achievements,
   skills,
   bioContent,
+  testimonials,
+  heroMetrics,
 } from "../db";
 import { env } from "./env";
 
@@ -68,11 +70,18 @@ export interface DynamicSiteConfig {
   }>;
   achievements: Array<{ name: string; icon: string; description: string }>;
   skills: Array<{ name: string; category?: string; description?: string }>;
+  testimonials: Array<{ quote: string; name: string; role: string }>;
+  heroMetrics: Array<{ label: string; value: string; sub: string }>;
+
+  highlights: string[];
+  languages: string;
 
   bio: {
     focusLabel: string;
     short: string;
     long: string;
+    intro: string;
+    story: string;
     quote: string;
     funFact: string;
     researchStatement: string;
@@ -107,8 +116,31 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
     return cachedConfig;
   }
 
+  /**
+   * Run a single DB query and silently fall back to an empty array on failure.
+   * A missing or renamed table should never break the whole config — we just
+   * lose that one slice and keep the rest. The outer try/catch is the
+   * last-resort fallback to .env defaults.
+   */
+  async function safeSelect<T>(label: string, q: Promise<T[]>): Promise<T[]> {
+    try {
+      return await q;
+    } catch (e) {
+      if (process.env.NODE_ENV !== "production") {
+        const msg = e instanceof Error ? e.message : String(e);
+        if (/no such table/i.test(msg)) {
+          console.warn(`[config] table missing for "${label}", using empty fallback`);
+        } else {
+          console.warn(`[config] "${label}" query failed:`, msg);
+        }
+      }
+      return [];
+    }
+  }
+
   try {
-    // Fetch all data from database in parallel
+    // Fetch all data from database in parallel. Each query is independently
+    // guarded so one missing table doesn't kill the whole batch.
     const [
       settingsData,
       socialsData,
@@ -118,26 +150,30 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
       achievementsData,
       skillsData,
       bioData,
+      testimonialsData,
+      heroMetricsData,
     ] = await Promise.all([
-      db.select().from(siteSettings),
-      db.select().from(socialLinks).orderBy(socialLinks.order),
-      db.select().from(navigationItems).orderBy(navigationItems.order),
-      db.select().from(experiences).orderBy(experiences.order),
-      db.select().from(projects).orderBy(projects.order),
-      db.select().from(achievements).orderBy(achievements.order),
-      db.select().from(skills).orderBy(skills.order),
-      db.select().from(bioContent),
+      safeSelect("siteSettings", db.select().from(siteSettings)),
+      safeSelect("socialLinks", db.select().from(socialLinks).orderBy(socialLinks.order)),
+      safeSelect("navigationItems", db.select().from(navigationItems).orderBy(navigationItems.order)),
+      safeSelect("experiences", db.select().from(experiences).orderBy(experiences.order)),
+      safeSelect("projects", db.select().from(projects).orderBy(projects.order)),
+      safeSelect("achievements", db.select().from(achievements).orderBy(achievements.order)),
+      safeSelect("skills", db.select().from(skills).orderBy(skills.order)),
+      safeSelect("bioContent", db.select().from(bioContent)),
+      safeSelect("testimonials", db.select().from(testimonials).orderBy(testimonials.order)),
+      safeSelect("heroMetrics", db.select().from(heroMetrics).orderBy(heroMetrics.order)),
     ]);
 
     // Convert settings to object
     const settings: Record<string, string> = {};
-    settingsData.forEach((s) => {
+    settingsData.forEach((s: any) => {
       settings[s.key] = s.value;
     });
 
     // Convert bio to object
     const bio: Record<string, string> = {};
-    bioData.forEach((b) => {
+    bioData.forEach((b: any) => {
       bio[b.key] = b.value;
     });
 
@@ -256,10 +292,24 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
 
       skills: skillsData.length > 0 ? skillsData.map((s) => ({ name: s.name, category: s.category || undefined, description: s.description || undefined })) : [],
 
+      testimonials: testimonialsData.length > 0
+        ? testimonialsData.map((t) => ({ quote: t.quote, name: t.name, role: t.role }))
+        : [],
+      heroMetrics: heroMetricsData.length > 0
+        ? heroMetricsData.map((m) => ({ label: m.label, value: m.value, sub: m.sub }))
+        : [],
+
+      highlights: settings.highlights
+        ? settings.highlights.split(",").map((h: string) => h.trim()).filter(Boolean)
+        : [],
+      languages: settings.languages || "",
+
       bio: {
         focusLabel,
         short: shortBio,
         long: bio.long || "",
+        intro: bio.intro || "",
+        story: bio.story || "",
         quote: bio.quote || "",
         funFact: bio.funFact || "",
         researchStatement,
@@ -310,10 +360,16 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
       featuredProjects: [],
       achievements: [],
       skills: [],
+      testimonials: [],
+      heroMetrics: [],
+      highlights: [],
+      languages: "",
       bio: {
         focusLabel: DEFAULT_FOCUS_LABEL,
         short: DEFAULT_SHORT_BIO,
         long: "",
+        intro: "",
+        story: "",
         quote: "",
         funFact: "",
         researchStatement: DEFAULT_RESEARCH_STATEMENT,

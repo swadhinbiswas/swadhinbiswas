@@ -2,40 +2,78 @@
 import { getDynamicConfig } from "../../lib/config";
 
 const siteConfig = await getDynamicConfig();
-const summaryText = siteConfig.bio?.summary || "Currently focused on distributed data systems and MLOps infrastructure. Open to mid-level Data Engineer or Backend Engineer roles at EU-based tech companies — remote or relocation considered. Available for interviews within 2 weeks.";
-const highlights = [
-  "Production ML · MLOps",
-  "6+ years in production systems",
-  "Open to EU relocation · Visa sponsorship welcome",
-];
+const summaryText = siteConfig.bio?.summary || "";
+const highlights = siteConfig.highlights || [];
+const languages = siteConfig.languages || "";
 ---
 
-<section class="screen-line-after">
-  <div class="container-narrow py-10 sm:py-14">
-    <div class="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-10">
-      <div class="lg:col-span-3 reveal">
+<section class="section">
+  <div class="container-narrow">
+    <div class="section-head reveal">
+      <div>
         <p class="text-eyebrow">Summary</p>
-        <h2 class="mt-3 panel-title">What I build</h2>
+        <h2 class="section-title">What I build</h2>
       </div>
-      <div class="lg:col-span-9 reveal reveal-delay-1">
-        <div class="portfolio-card p-5 sm:p-6">
-          <p class="text-base leading-8 text-[var(--color-fg-muted)]">{summaryText}</p>
+    </div>
 
-          <div class="mt-6 grid gap-3 sm:grid-cols-3">
-            {highlights.map((item) => (
-              <div class="metric-card">
-                <p class="text-sm font-medium text-[var(--color-fg)]">{item}</p>
-              </div>
-            ))}
-          </div>
+    <div class="panel p-6 sm:p-7 reveal reveal-delay-1">
+      {summaryText && <p class="summary-text">{summaryText}</p>}
 
-          <div class="mt-4 pt-4 border-t border-[var(--color-edge)]">
-            <p class="text-xs text-[var(--color-fg-subtle)]">
-              <span class="font-semibold text-[var(--color-fg-muted)]">Languages:</span> English (professional) · Bengali (native)
-            </p>
-          </div>
+      {highlights.length > 0 && (
+        <div class="highlights">
+          {highlights.map((item) => (
+            <div class="metric-card">
+              <p class="metric-label">{item}</p>
+            </div>
+          ))}
         </div>
-      </div>
+      )}
+
+      {languages && (
+        <div class="langs">
+          <span class="langs-label">Languages</span>
+          <span>{languages}</span>
+        </div>
+      )}
     </div>
   </div>
 </section>
+
+<style>
+  .summary-text {
+    color: var(--color-fg-muted);
+    font-size: 1.05rem;
+    line-height: 1.75;
+  }
+  .highlights {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+  }
+  @media (min-width: 640px) { .highlights { grid-template-columns: repeat(3, 1fr); } }
+  .metric-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-fg);
+  }
+  .langs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    align-items: center;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px dashed var(--color-edge);
+    font-size: 0.78rem;
+    color: var(--color-fg-subtle);
+  }
+  .langs-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent-2);
+    font-weight: 600;
+  }
+</style>
