@@ -1,4 +1,5 @@
 ---
+export const prerender = true;
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { db, projects } from "../../db";
 import { desc, asc } from "drizzle-orm";
@@ -24,46 +25,25 @@ function slug(name: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-function getPixelArtIcon(name: string) {
-  const lowercase = name.toLowerCase();
-  if (lowercase.includes('covenant') || lowercase.includes('database') || lowercase.includes('storage') || lowercase.includes('ledger')) {
-    // Floppy disk icon
-    return `
-      <svg viewBox="0 0 16 16" class="w-5 h-5" style="image-rendering: pixelated;" fill="currentColor">
-        <path d="M2 1h9l3 3v11H2V1zm1 1v12h10V4.5L10.5 2H3zm1.5 1h5v3h-5V3zm1 1v1h3V4h-3zm-1 5h8v4h-8V9zm1 1v2h6v-2h-6z"/>
-      </svg>
-    `;
+function getCardArt(name: string, id: number) {
+  const lc = name.toLowerCase();
+  let icon = `<path d="M14 18 L32 12 L50 18 L50 38 L32 44 L14 38 Z"/><path d="M14 18 L32 24 L50 18 M32 24 L32 44"/>`;
+  if (lc.match(/storage|database|ledger|sql/)) {
+    icon = `<path d="M32 12 L48 22 L48 42 L32 52 L16 42 L16 22 Z M16 22 L32 32 L48 22 M32 32 L32 52"/>`;
+  } else if (lc.match(/pipeline|flow|stream|lineage/)) {
+    icon = `<circle cx="16" cy="20" r="4"/><circle cx="48" cy="20" r="4"/><circle cx="16" cy="44" r="4"/><circle cx="48" cy="44" r="4"/><path d="M20 20 L44 20 M20 44 L44 44 M20 20 L20 44 M44 20 L44 44"/>`;
+  } else if (lc.match(/api|server|backend|engine/)) {
+    icon = `<rect x="14" y="18" width="36" height="8" rx="2"/><rect x="14" y="30" width="36" height="8" rx="2"/><rect x="14" y="42" width="36" height="8" rx="2"/><circle cx="20" cy="22" r="1.5" fill="currentColor"/><circle cx="20" cy="34" r="1.5" fill="currentColor"/><circle cx="20" cy="46" r="1.5" fill="currentColor"/>`;
+  } else if (lc.match(/bot|ai|chat/)) {
+    icon = `<path d="M4 1h1v1H4V1zm7 0h1v1h-1V1zM2 3h2v1H2V3zm10 0h2v1h-2V3zM1 5h14v3H1V5zm2 1v1h2V6H3zm8 0v1h2V6h-2zm-9 3h2v2H2V9zm10 0h2v2h-2V9zm-8 2h8v2H4v-2z"/>`;
+  } else if (lc.match(/flux|engine|compute|performance/)) {
+    icon = `<path d="M9 1H4l-2 7h5l-2 7 9-9H9l2-5z"/>`;
   }
-  if (lowercase.includes('conduit') || lowercase.includes('lineage') || lowercase.includes('trace') || lowercase.includes('pipeline')) {
-    // Connected nodes/network pipeline icon
-    return `
-      <svg viewBox="0 0 16 16" class="w-5 h-5" style="image-rendering: pixelated;" fill="currentColor">
-        <path d="M2 1h4v4H2V1zm0 10h4v4H2v-4zm10-5h4v4h-4V6zM4 5v6H3V5h1zm2-2h4v1H6V3zm4 9H6v-1h4v1zm0-7v4H9V5h1zM8 7v2H7V7h1z"/>
-      </svg>
-    `;
-  }
-  if (lowercase.includes('flux') || lowercase.includes('engine') || lowercase.includes('compute') || lowercase.includes('performance')) {
-    // Lightning bolt / energy icon
-    return `
-      <svg viewBox="0 0 16 16" class="w-5 h-5" style="image-rendering: pixelated;" fill="currentColor">
-        <path d="M9 1H4l-2 7h5l-2 7 9-9H9l2-5z"/>
-      </svg>
-    `;
-  }
-  if (lowercase.includes('bot') || lowercase.includes('ai') || lowercase.includes('chat')) {
-    // Retro space invader / alien bot icon
-    return `
-      <svg viewBox="0 0 16 16" class="w-5 h-5" style="image-rendering: pixelated;" fill="currentColor">
-        <path d="M4 1h1v1H4V1zm7 0h1v1h-1V1zM2 3h2v1H2V3zm10 0h2v1h-2V3zM1 5h14v3H1V5zm2 1v1h2V6H3zm8 0v1h2V6h-2zm-9 3h2v2H2V9zm10 0h2v2h-2V9zm-8 2h8v2H4v-2z"/>
-      </svg>
-    `;
-  }
-  // Default CRT Monitor icon
-  return `
-    <svg viewBox="0 0 16 16" class="w-5 h-5" style="image-rendering: pixelated;" fill="currentColor">
-      <path d="M1 1h14v10H1V1zm1 1v8h12V2H2zm-1 10h14v1H1v-1zm2 2h10v1H3v-1zm2 1h6v1H5v-1z"/>
-    </svg>
-  `;
+  return `<svg viewBox="0 0 64 64" width="56" height="56" fill="none">
+    <defs><linearGradient id="g-${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="60%" stop-color="#22D3EE"/><stop offset="100%" stop-color="#34D399"/></linearGradient></defs>
+    <rect width="64" height="64" rx="12" fill="#0F0F18" stroke="url(#g-${id})" stroke-width="1.25" opacity="0.95"/>
+    <g stroke="url(#g-${id})" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" fill="none">${icon}</g>
+  </svg>`;
 }
 
 const schema = {
@@ -87,7 +67,7 @@ const schema = {
     <div class="container-narrow py-12 sm:py-16">
       <div class="reveal">
         <p class="text-eyebrow">Projects</p>
-        <h1 class="text-display mt-3 text-3xl sm:text-4xl text-gradient">Selected work</h1>
+        <h1 class="text-display mt-3 text-3xl sm:text-4xl text-aurora">Selected work</h1>
         <p class="prose-mono mt-4 max-w-prose">
           Production platforms, open source tools, and research deployments. Case studies are available on each project page.
         </p>
@@ -100,44 +80,296 @@ const schema = {
       {allProjects.length === 0 ? (
         <p class="text-sm text-[var(--color-fg-muted)] reveal">No projects yet.</p>
       ) : (
-        <div class="panel">
-          <div class="panel-top"></div>
+        <div class="projects-grid">
           {allProjects.map((p) => (
-            <a href={`/projects/${slug(p.name)}`} class="row-card group">
-              <div class="row-card-logo" aria-hidden="true">
-                <Fragment set:html={getPixelArtIcon(p.name)} />
-              </div>
-              <div class="min-w-0 flex-1">
-                <h3 class="row-card-title">
-                  {p.name}
-                  {p.featured && <span class="ml-1.5 text-[var(--color-fg-subtle)]">★</span>}
-                </h3>
-                {p.description && (
-                  <p class="prose-mono mt-1 line-clamp-2">{p.description}</p>
-                )}
-                {p.tags.length > 0 && (
-                  <div class="mt-2 flex flex-wrap gap-1.5">
-                    {p.tags.slice(0, 5).map((t: string) => (
-                      <span class="tag">{t}</span>
-                    ))}
+            <div class="project-card reveal" data-project-id={p.id}>
+              <a href={`/projects/${slug(p.name)}`} class="project-card-link">
+                <div class="project-card-art" aria-hidden="true">
+                  <Fragment set:html={getCardArt(p.name, p.id)} />
+                  {p.featured && <span class="featured-badge">★ Featured</span>}
+                </div>
+                <div class="project-card-body">
+                  <div class="project-card-head">
+                    <h3 class="project-card-title">{p.name}</h3>
+                    <span class="project-card-arrow">→</span>
                   </div>
-                )}
+                  {p.description && (
+                    <p class="project-card-desc">{p.description}</p>
+                  )}
+                  {p.tags.length > 0 && (
+                    <div class="project-card-tags">
+                      {p.tags.slice(0, 4).map((t: string) => <span class="tag">{t}</span>)}
+                    </div>
+                  )}
+                  <div class="project-card-meta">
+                    {p.url && <span class="meta-badge">Live</span>}
+                    {p.github && <span class="meta-badge">Source</span>}
+                  </div>
+                </div>
+              </a>
+              <div class="project-card-footer">
+                <button class="star-btn" data-project-id={p.id} data-stars={p.stars || 0} type="button">
+                  <svg class="star-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
+                  <span class="star-count">{(p.stars || 0).toLocaleString()}</span>
+                </button>
+                <a href={`/projects/${slug(p.name)}`} class="read-more">
+                  Read case study
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                </a>
               </div>
-              <div class="row-card-actions">
-                {p.stars != null && p.stars > 0 && (
-                  <span class="text-mono text-[10px] text-[var(--color-fg-subtle)]">
-                    ★ {p.stars.toLocaleString()}
-                  </span>
-                )}
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5">
-                  <path d="M5 12h14M13 5l7 7-7 7"/>
-                </svg>
-              </div>
-            </a>
+            </div>
           ))}
-          <div class="panel-bottom"></div>
         </div>
       )}
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  @media (min-width: 700px) {
+    .projects-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1024px) {
+    .projects-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  }
+
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-edge);
+    background: linear-gradient(180deg, var(--color-card) 0%, var(--color-card-strong) 100%);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .project-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-3px);
+    box-shadow: 0 20px 48px -16px rgba(139, 92, 246, 0.3);
+  }
+
+  .project-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .project-card-art {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 16 / 8;
+    background:
+      repeating-linear-gradient(315deg, rgba(139, 92, 246, 0.04) 0, rgba(139, 92, 246, 0.04) 1px, transparent 1px, transparent 10px),
+      radial-gradient(ellipse at 30% 30%, rgba(139, 92, 246, 0.12), transparent 60%),
+      radial-gradient(ellipse at 70% 70%, rgba(52, 211, 153, 0.08), transparent 60%),
+      var(--color-bg-2);
+    border-bottom: 1px solid var(--color-edge);
+  }
+  .featured-badge {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    background: rgba(251, 191, 36, 0.12);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    color: #FBBF24;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+
+  .project-card-body {
+    padding: 1.1rem 1.25rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+  }
+  .project-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .project-card-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--color-fg);
+    transition: color 0.2s ease;
+  }
+  .project-card:hover .project-card-title {
+    color: var(--color-accent);
+  }
+  .project-card-arrow {
+    color: var(--color-fg-subtle);
+    font-size: 1rem;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+  .project-card:hover .project-card-arrow {
+    transform: translateX(3px);
+    color: var(--color-accent);
+  }
+  .project-card-desc {
+    color: var(--color-fg-muted);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .project-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.15rem;
+  }
+  .project-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.3rem;
+  }
+  .meta-badge {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--color-fg-subtle);
+    padding: 0.15rem 0.45rem;
+    border: 1px solid var(--color-edge);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .project-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 1.25rem;
+    border-top: 1px dashed var(--color-edge);
+  }
+
+  .star-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.65rem;
+    border: 1px solid var(--color-edge);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-fg-subtle);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    line-height: 1;
+  }
+  .star-btn:hover {
+    border-color: #FBBF24;
+    color: #FBBF24;
+    background: rgba(251, 191, 36, 0.08);
+  }
+  .star-btn.starred {
+    border-color: #FBBF24;
+    color: #FBBF24;
+    background: rgba(251, 191, 36, 0.12);
+  }
+  .star-btn.starred .star-icon {
+    fill: #FBBF24;
+  }
+  .star-icon {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .star-btn:active .star-icon {
+    transform: scale(1.3);
+  }
+  .star-count {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-accent-2);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .read-more:hover {
+    color: var(--color-accent);
+  }
+  .read-more svg {
+    transition: transform 0.2s ease;
+  }
+  .read-more:hover svg {
+    transform: translateX(2px);
+  }
+</style>
+
+<script>
+  document.querySelectorAll('.star-btn').forEach((btn) => {
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const el = btn as HTMLElement;
+      const id = Number(el.dataset.projectId);
+      if (!id) return;
+
+      const countEl = el.querySelector('.star-count');
+      if (!countEl) return;
+
+      const isStarred = el.classList.contains('starred');
+
+      if (!isStarred) {
+        try {
+          const res = await fetch('/api/projects/star', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id }),
+          });
+          const data = await res.json();
+          if (data.success) {
+            el.classList.add('starred');
+            countEl.textContent = data.stars?.toLocaleString() || String(Number(el.dataset.stars) + 1);
+            el.dataset.stars = String(data.stars || Number(el.dataset.stars) + 1);
+          }
+        } catch {}
+      } else {
+        el.classList.remove('starred');
+        const current = Number(el.dataset.stars) || 0;
+        countEl.textContent = Math.max(0, current - 1).toLocaleString();
+        el.dataset.stars = String(Math.max(0, current - 1));
+      }
+    });
+  });
+
+  document.querySelectorAll('.project-card-link').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      const card = (e.currentTarget as HTMLElement).closest('.project-card');
+      const btn = card?.querySelector('.star-btn');
+      if (btn && !(btn as HTMLElement).classList.contains('starred')) {
+        btn.click();
+      }
+    });
+  });
+</script>
