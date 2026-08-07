@@ -1,10 +1,14 @@
 import type { APIRoute } from 'astro';
 import { db, experiences } from '../../../db';
 import { eq } from 'drizzle-orm';
+import { purgeSiteCaches } from '../../../lib/config';
 
 export const prerender = false;
 
-// GET all experiences
+async function invalidateExpCache() {
+  await purgeSiteCaches();
+}
+
 export const GET: APIRoute = async () => {
   try {
     const exp = await db.select().from(experiences).orderBy(experiences.order);
@@ -21,27 +25,35 @@ export const GET: APIRoute = async () => {
   }
 };
 
-// POST to create new experience
+function parseJsonField(val: unknown): string | null {
+  if (!val) return null;
+  if (typeof val === 'string') return val;
+  return JSON.stringify(val);
+}
+
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { company, role, url, companyDescription, logoUrl, startDate, endDate, details, order = 0 } = body;
+    const { company, role, url, companyDescription, logoUrl, startDate, endDate, details, responsibilities, learnings, order = 0 } = body;
 
     const now = new Date().toISOString();
-
     const result = await db.insert(experiences).values({
       company,
       role,
-      url,
-      companyDescription,
-      logoUrl,
+      url: url || '',
+      companyDescription: companyDescription || null,
+      logoUrl: logoUrl || null,
       startDate,
-      endDate,
-      details,
+      endDate: endDate || null,
+      details: details || null,
+      responsibilities: parseJsonField(responsibilities),
+      learnings: parseJsonField(learnings),
       order,
       createdAt: now,
       updatedAt: now,
     }).returning();
+
+    await invalidateExpCache();
 
     return new Response(JSON.stringify({ success: true, data: result[0] }), {
       status: 201,
@@ -56,17 +68,31 @@ export const POST: APIRoute = async ({ request }) => {
   }
 };
 
-// PUT to update experience
 export const PUT: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { id, company, role, url, companyDescription, logoUrl, startDate, endDate, details, order } = body;
-
+    const { id } = body;
+    if (!id) {
+      return new Response(JSON.stringify({ success: false, error: 'ID is required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
     const now = new Date().toISOString();
+    const setData: Record<string, any> = { updatedAt: now };
+
+    const fields = ['company', 'role', 'url', 'companyDescription', 'logoUrl', 'startDate', 'endDate', 'details', 'order'];
+    for (const f of fields) {
+      if (body[f] !== undefined) setData[f] = body[f];
+    }
+    if (body.responsibilities !== undefined) setData.responsibilities = parseJsonField(body.responsibilities);
+    if (body.learnings !== undefined) setData.learnings = parseJsonField(body.learnings);
 
     await db.update(experiences)
-      .set({ company, role, url, companyDescription, logoUrl, startDate, endDate, details, order, updatedAt: now })
+      .set(setData)
       .where(eq(experiences.id, id));
+
+    await invalidateExpCache();
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
@@ -81,12 +107,12 @@ export const PUT: APIRoute = async ({ request }) => {
   }
 };
 
-// DELETE experience
 export const DELETE: APIRoute = async ({ request }) => {
   try {
     const { id } = await request.json();
-
     await db.delete(experiences).where(eq(experiences.id, id));
+
+    await invalidateExpCache();
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
@@ -100,3 +126,4 @@ export const DELETE: APIRoute = async ({ request }) => {
     });
   }
 };
+

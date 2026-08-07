@@ -1,6 +1,5 @@
 ---
-import { db, education } from "../../db";
-import { asc } from "drizzle-orm";
+import { getEducation } from "../../lib/loaders";
 
 interface Education {
   id: number;
@@ -11,13 +10,8 @@ interface Education {
   details?: string;
 }
 
-let educationList: Education[] = [];
-try {
-  const rows = await db.select().from(education).orderBy(education.order);
-  educationList = rows as Education[];
-} catch {
-  educationList = [];
-}
+const educationList = (await getEducation()) as Education[];
+
 
 function formatDate(dateStr: string) {
   if (!dateStr) return "";
@@ -28,31 +22,69 @@ function formatDate(dateStr: string) {
 ---
 
 {educationList.length > 0 && (
-  <section class="screen-line-after">
-    <div class="container-narrow py-12 sm:py-16">
-      <div class="mb-6 reveal">
-        <p class="text-eyebrow">Education</p>
-        <h2 class="mt-2 panel-title">Background</h2>
+  <section class="section">
+    <div class="container-narrow">
+      <div class="section-head reveal">
+        <div>
+          <p class="text-eyebrow">Education</p>
+          <h2 class="section-title">Background</h2>
+        </div>
       </div>
 
-      <div class="space-y-4">
+      <div class="edu-grid">
         {educationList.map((edu) => (
-          <div class="portfolio-card p-5 reveal">
-            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+          <article class="panel p-5 sm:p-6 reveal">
+            <div class="edu-head">
               <div>
-                <h3 class="text-base font-semibold text-[var(--color-fg)]">{edu.degree}</h3>
-                <p class="text-sm text-[var(--color-accent)]">{edu.institution}</p>
+                <h3 class="edu-degree">{edu.degree}</h3>
+                <p class="edu-school">{edu.institution}</p>
               </div>
-              <div class="text-mono text-xs text-[var(--color-fg-subtle)] whitespace-nowrap">
+              <time class="edu-dates">
                 {formatDate(edu.startDate)} — {edu.endDate ? formatDate(edu.endDate) : "Present"}
-              </div>
+              </time>
             </div>
-            {edu.details && (
-              <p class="mt-3 text-sm text-[var(--color-fg-muted)]">{edu.details}</p>
-            )}
-          </div>
+            {edu.details && <p class="edu-details">{edu.details}</p>}
+          </article>
         ))}
       </div>
     </div>
   </section>
 )}
+
+<style>
+  .edu-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  .edu-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+  }
+  .edu-degree {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-fg);
+  }
+  .edu-school {
+    margin-top: 0.15rem;
+    font-size: 0.875rem;
+    color: var(--color-fg-muted);
+  }
+  .edu-dates {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-fg-subtle);
+    white-space: nowrap;
+  }
+  .edu-details {
+    margin-top: 0.75rem;
+    color: var(--color-fg-muted);
+    font-size: 0.875rem;
+    line-height: 1.65;
+  }
+</style>

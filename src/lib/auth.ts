@@ -26,6 +26,17 @@ export async function createSession(): Promise<string> {
   return token;
 }
 
+export async function verifySession(token: string): Promise<boolean> {
+  try {
+    const sessions = await db.select().from(adminSessions).where(eq(adminSessions.sessionToken, token));
+    if (sessions.length === 0) return false;
+    const session = sessions[0];
+    return new Date(session.expiresAt) > new Date();
+  } catch {
+    return false;
+  }
+}
+
 export async function deleteSession(token: string): Promise<void> {
   await db.delete(adminSessions).where(eq(adminSessions.sessionToken, token));
 }
@@ -38,6 +49,8 @@ export async function cleanExpiredSessions(): Promise<void> {
 export function verifyCredentials(username: string, password: string): boolean {
   const adminUsername = import.meta.env.ADMIN_USERNAME || process.env.ADMIN_USERNAME;
   const adminPassword = import.meta.env.ADMIN_PASSWORD || process.env.ADMIN_PASSWORD;
+  
+  if (!adminUsername || !adminPassword) return false;
   
   return username === adminUsername && password === adminPassword;
 }

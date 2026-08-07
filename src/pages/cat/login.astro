@@ -10,6 +10,10 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       
       <form id="login-form" class="space-y-4">
         <div>
+          <label class="block text-sm text-gray-400 mb-1">Username</label>
+          <input type="text" id="username" name="username" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="admin" />
+        </div>
+        <div>
           <label class="block text-sm text-gray-400 mb-1">Password</label>
           <input type="password" id="password" name="password" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="Enter admin password" />
         </div>
@@ -26,13 +30,14 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    const username = (document.getElementById("username") as HTMLInputElement).value;
     const password = (document.getElementById("password") as HTMLInputElement).value;
     
     try {
       const res = await fetch("/api/cat/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ username, password }),
       });
       
       const data = await res.json();
@@ -40,7 +45,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       if (res.ok && data.success) {
         window.location.href = "/cat";
       } else {
-        error!.textContent = data.error || "Invalid password";
+        error!.textContent = data.error || "Invalid credentials";
         error!.classList.remove("hidden");
       }
     } catch {

@@ -1,74 +1,82 @@
-import { createClient } from 'redis';
+import { Redis } from '@upstash/redis';
 
-// Initialize Redis client
-let redis: any = null;
+let redis: Redis | null = null;
 
-async function getRedisClient() {
-    if (redis) return redis;
-
-    // Use REDIS_URL or KV_URL (Standard TCP connection strings)
-    // NOTE: KV_REST_API_URL is HTTP-only and fails with node-redis
-    const url = process.env.REDIS_URL || process.env.KV_REDIS_URL;
-
-    if (!url) {
-        if (import.meta.env.PROD) {
-            console.warn('REDIS_URL/KV_URL missing. Caching disabled. (KV_REST_API_URL cannot be used with node-redis)');
-        }
-        return null;
-    }
-
-    // Ensure protocol is valid for node-redis (redis:// or rediss://)
-    if (url.startsWith('https://') || url.startsWith('http://')) {
-        console.error('Redis URL starts with http/https, which is incompatible with node-redis. Please use REDIS_URL or KV_URL.');
-        return null;
-    }
-    try {
-        console.log('Initializing Redis connection...');
-        const client = createClient({ url });
-
-        client.on('error', (err) => console.error('Redis Client Error', err));
-
-        await client.connect();
-        redis = client;
-        return redis;
-    }
-    catch (e) {
-        console.error('Failed to connect to Redis:', e);
-        return null;
-    }
+function getRedis() {
+  if (redis) return redis;
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) return null;
+  redis = new Redis({ url, token });
+  return redis;
 }
 
+// In-memory L1 cache (instant, per-server-process)
+const mem = new Map<string, { data: any; exp: number }>();
+const MEM_TTL = 30_000; // 30s in-memory, then Upstash
+
+function memGet(key: string) {
+  const e = mem.get(key);
+  if (!e) return undefined;
+  if (Date.now() > e.exp) { mem.delete(key); return undefined; }
+  return e.data;
+}
+
+function memSet(key: string, data: any) {
+  mem.set(key, { data, exp: Date.now() + MEM_TTL });
+}
 
 export async function getCachedData(key: string) {
-    const client = await getRedisClient();
-    if (!client) return null;
-    try {
-        const data = await client.get(key);
-        // 'redis' package returns string or null
-        return data ? JSON.parse(data) : null;
-    } catch (e) {
-        console.error('Redis get error:', e);
+  // L1: memory
+  const m = memGet(key);
+  if (m !== undefined) return m;
+  // L2: Upstash
+  const r = getRedis();
+  if (!r) return null;
+  try {
+    const raw = await r.get(key);
+    if (raw) {
+      try {
+        const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        memSet(key, data);
+        return data;
+      } catch {
+        // Corrupted cached value — drop it so callers fall back to the DB
+        await r.del(key).catch(() => {});
         return null;
+      }
     }
+    return null;
+  } catch {
+    return null;
+  }
 }
 
-export async function setCachedData(key: string, data: any, ttlSeconds: number) {
-    const client = await getRedisClient();
-    if (!client) return;
-    try {
-        await client.set(key, JSON.stringify(data), { EX: ttlSeconds });
-    } catch (e) {
-        console.error('Redis set error:', e);
-    }
+export async function setCachedData(key: string, data: any, ttlSeconds: number = 300) {
+  memSet(key, data);
+  const r = getRedis();
+  if (!r) return;
+  try {
+    await r.set(key, JSON.stringify(data), { ex: ttlSeconds });
+  } catch {}
 }
 
-export async function incrementKey(key: string, amount: number = 1) {
-    const client = await getRedisClient();
-    if (!client) return 0;
-    try {
-        return await client.incrBy(key, amount);
-    } catch (e) {
-        console.error('Redis incr error:', e);
-        return 0;
-    }
+export async function deleteKey(key: string) {
+  mem.delete(key);
+  const r = getRedis();
+  if (!r) return;
+  try { await r.del(key); } catch {}
+}
+
+export async function deletePattern(pattern: string) {
+  // Clear matching memory keys
+  for (const k of mem.keys()) {
+    if (k.includes(pattern.replace('*', ''))) mem.delete(k);
+  }
+  const r = getRedis();
+  if (!r) return;
+  try {
+    const keys = await r.keys(pattern);
+    if (keys.length) await r.del(...keys);
+  } catch {}
 }

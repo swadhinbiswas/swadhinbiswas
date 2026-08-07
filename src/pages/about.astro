@@ -3,22 +3,40 @@ export const prerender = true;
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getDynamicConfig } from "../lib/config";
-import { db, experiences, education, publications, skills, bioContent, siteSettings } from "../db";
+import { db, experiences, education, publications, skills, achievements, interests, certifications, projects, bioContent, siteSettings } from "../db";
+import { thesvgIconUrl, skillInitials, strokeIcon } from "../lib/icons";
+import { getLanguages } from "../lib/loaders";
+import JsonLd from "../components/seo/JsonLd.astro";
+import { env } from "../lib/env";
 
 const siteConfig = await getDynamicConfig();
+const siteUrl = (siteConfig.url || env.siteUrl || "https://swadhin.cv").replace(/\/$/, "");
 
 async function safe<T>(q: Promise<T>, fallback: T): Promise<T> {
   try { return await q; } catch { return fallback; }
 }
 
-const [experiencesList, educationList, publicationsList, skillsList, bioData, settingsData] = await Promise.all([
+const [experiencesList, educationList, publicationsList, skillsList, achievementsList, interestsList, certificationsList, projectsRows, bioData, settingsData] = await Promise.all([
   safe(db.select().from(experiences).orderBy(experiences.startDate), [] as any[]),
   safe(db.select().from(education).orderBy(education.order), [] as any[]),
   safe(db.select().from(publications).orderBy(publications.order), [] as any[]),
   safe(db.select().from(skills).orderBy(skills.order), [] as any[]),
+  safe(db.select().from(achievements).orderBy(achievements.order), [] as any[]),
+  safe(db.select().from(interests).orderBy(interests.order), [] as any[]),
+  safe(db.select().from(certifications).orderBy(certifications.order), [] as any[]),
+  safe(db.select().from(projects).orderBy(projects.order), [] as any[]),
   safe(db.select().from(bioContent), [] as any[]),
   safe(db.select().from(siteSettings), [] as any[]),
 ]);
+const projectsCount = projectsRows.length;
+const languagesList = await getLanguages();
+
+const levelMeta: Record<string, { label: string; pct: number }> = {
+  native: { label: "Native", pct: 100 },
+  fluent: { label: "Fluent", pct: 88 },
+  working: { label: "Working", pct: 70 },
+  learning: { label: "Learning", pct: 45 },
+};
 
 const bio: Record<string, string> = {};
 for (const b of bioData as any[]) bio[b.key] = b.value;
@@ -28,6 +46,10 @@ for (const s of settingsData as any[]) settings[s.key] = s.value;
 const author = settings.author || siteConfig.author;
 const location = settings.location || siteConfig.location;
 const bioLong = bio.long || siteConfig.bio?.long || "";
+const bioStory = bio.story || siteConfig.bio?.story || "";
+const bioQuote = bio.quote || siteConfig.bio?.quote || "";
+const bioFunFact = bio.funFact || siteConfig.bio?.funFact || "";
+const languages = settings.languages || siteConfig.languages || "";
 
 function formatDate(s?: string) {
   if (!s) return "Present";
@@ -36,82 +58,266 @@ function formatDate(s?: string) {
   return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
 }
 
-function initials(name: string) {
-  return name
-    .replace(/[^a-zA-Z0-9+#.]/g, "")
-    .slice(0, 3)
-    .toUpperCase();
+// ── About stats (computed from DB — distinct from the hero glance cards) ──
+function tenureYears(start?: string, end?: string): number {
+  if (!start) return 0;
+  const s = new Date(start).getTime();
+  if (isNaN(s)) return 0;
+  const e = end ? new Date(end).getTime() : Date.now();
+  return Math.max(0, (e - s) / (365.25 * 24 * 3600 * 1000));
 }
+const combinedYears = experiencesList.reduce((acc, e) => acc + tenureYears(e.startDate, e.endDate), 0);
+const companyCount = [...new Set((experiencesList as any[]).map((e) => e.company).filter(Boolean))].length;
+const hasAcquisition = (experiencesList as any[]).some((e) => /acquired/i.test(String(e.details || "") + String(e.companyDescription || "") + String(e.learnings || "") + String(e.company || "")));
+const aboutStats = [
+  combinedYears >= 1 ? { label: "Years combined", value: `${Math.round(combinedYears * 10) / 10}` } : null,
+  { label: "Companies", value: String(companyCount) },
+  hasAcquisition ? { label: "Acquisition", value: "1" } : null,
+  { label: "Skills", value: String(skillsList.length) },
+  { label: "Projects", value: String(projectsCount) },
+  { label: "Publications", value: String(publicationsList.length) },
+].filter(Boolean) as { label: string; value: string }[];
 
-const aboutSkilliconsMap: Record<string, string> = {
-  "python": "python", "rust": "rust", "go": "go",
-  "typescript": "ts", "javascript": "js", "django": "django",
-  "fastapi": "fastapi", "react": "react", "next.js": "nextjs",
-  "nextjs": "nextjs", "docker": "docker", "kubernetes": "kubernetes",
-  "postgresql": "postgresql", "postgres": "postgresql",
-  "redis": "redis", "mongodb": "mongodb", "kafka": "kafka",
-  "node.js": "nodejs", "nodejs": "nodejs", "express": "express",
-  "aws": "aws", "gcp": "gcp", "linux": "linux", "git": "git",
-  "github": "github", "vscode": "vscode", "astro": "astro",
-  "tailwind": "tailwindcss", "tailwindcss": "tailwindcss",
-  "html": "html", "css": "css", "bash": "bash",
-  "nginx": "nginx", "firebase": "firebase", "vercel": "vercel",
-  "sqlite": "sqlite", "mysql": "mysql", "prisma": "prisma",
-  "drizzle": "drizzle", "vite": "vite", "jest": "jest",
-  "supabase": "supabase", "apache airflow": "airflow",
-  "airflow": "airflow", "apache spark": "spark", "spark": "spark",
-  "dbt": "dbt", "mojo": "mojo",
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": `${siteUrl}/` },
+        { "@type": "ListItem", "position": 2, "name": "About", "item": `${siteUrl}/about` }
+      ]
+    },
+    {
+      "@type": "AboutPage",
+      "@id": `${siteUrl}/about/#webpage`,
+      "url": `${siteUrl}/about`,
+      "name": `About ${author}`,
+      "description": `Background, experience, education, and skills of ${author}.`,
+      "isPartOf": { "@id": `${siteUrl}/#website` },
+      "mainEntity": { "@id": `${siteUrl}/#person` }
+    }
+  ]
 };
 ---
 
-<BaseLayout title="About" description={`About ${author}.`}>
+<BaseLayout title="About" description={`About ${author} — Background, Experience, Education & Research.`}>
+  <JsonLd slot="head" schema={schema} />
+
   <section class="screen-line-after">
     <div class="container-narrow py-12 sm:py-16">
-      <div class="reveal">
-        <p class="text-eyebrow">About</p>
-        <h1 class="text-display mt-3 text-3xl sm:text-4xl">
-          <span class="text-gradient">{author.split(" ")[0]}</span>
-        </h1>
-        {bioLong && (
-          <p class="prose-mono mt-6 max-w-prose">{bioLong}</p>
-        )}
-        {bio.quote && (
-          <blockquote class="mt-6 border-l-2 border-[var(--color-fg-subtle)] pl-4 text-base italic text-[var(--color-fg-muted)]">
-            "{bio.quote}"
-          </blockquote>
-        )}
+      <div class="about-grid reveal">
+        <div class="about-portrait">
+          <div class="portrait-frame">
+            <img src="/profile.jpg" alt={author} class="portrait" width="160" height="160" loading="eager" decoding="async" fetchpriority="high" />
+            <span class="portrait-ring" aria-hidden="true"></span>
+          </div>
+        </div>
+        <div>
+          <p class="text-eyebrow">About</p>
+          <h1 class="text-display mt-3 text-3xl sm:text-4xl">
+            <span class="text-aurora">{author}</span>
+          </h1>
+          <p class="mt-3 text-mono text-xs text-[var(--color-fg-subtle)]">
+            {[location, settings.timezone || siteConfig.timezone, languages].filter(Boolean).join(" · ")}
+          </p>
+          {bioLong && <p class="about-bio mt-5 max-w-prose">{bioLong}</p>}
+        </div>
       </div>
+
+      {bioQuote && (
+        <blockquote class="mt-8 border-l-2 border-[var(--color-fg-subtle)] pl-4 text-base italic text-[var(--color-fg-muted)] reveal reveal-delay-1">
+          "{bioQuote}"
+        </blockquote>
+      )}
+
+      {aboutStats.length > 0 && (
+        <dl class="about-stats reveal reveal-delay-2">
+          {aboutStats.map((st) => (
+            <div class="about-stat">
+              <dt class="about-stat-label">{st.label}</dt>
+              <dd class="about-stat-value">{st.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
     </div>
   </section>
+
+  {achievementsList.length > 0 && (
+    <section class="screen-line-after">
+      <div class="container-narrow py-12 sm:py-16">
+        <div class="section-head reveal">
+          <div>
+            <p class="text-eyebrow">Milestones</p>
+            <h2 class="panel-title mt-1">Achievements<span class="count-badge">{achievementsList.length}</span></h2>
+          </div>
+          <a href="/achievements" class="section-link">All achievements →</a>
+        </div>
+        <div class="ach-grid">
+          {(achievementsList as any[]).map((a) => (
+            <a
+              href={`/achievements/${a.slug || "index"}/`}
+              class="panel p-5 ach-card reveal"
+            >
+              <span class="ach-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" set:html={strokeIcon(a.icon)} />
+              </span>
+              <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-baseline justify-between gap-2">
+                  <h3 class="ach-name">{a.name}</h3>
+                  {a.year && <span class="ach-year">{a.year}</span>}
+                </div>
+                {a.description && <p class="ach-desc">{a.description}</p>}
+                <div class="mt-2 flex flex-wrap items-center gap-3">
+                  <span class="ach-cta">
+                    How it happened
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                  </span>
+                  {a.url && (
+                    <span class="ach-proof" aria-hidden="true">Proof ↗</span>
+                  )}
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {certificationsList.length > 0 && (
+    <section class="screen-line-after">
+      <div class="container-narrow py-12 sm:py-16">
+        <h2 class="panel-title mb-6 reveal">Certifications<span class="count-badge">{certificationsList.length}</span></h2>
+        <div class="panel">
+          {(certificationsList as any[]).map((cert) => (
+            <div class="row-card group">
+              <div class="row-card-logo" aria-hidden="true">{cert.issuer.charAt(0).toUpperCase()}</div>
+              <div class="min-w-0 flex-1">
+                <h3 class="row-card-title">{cert.name}</h3>
+                <p class="row-card-meta">
+                  {cert.issuer}
+                  {cert.year && ` · ${cert.year}`}
+                  {cert.credentialId && ` · ID: ${cert.credentialId}`}
+                </p>
+              </div>
+              <div class="row-card-actions">
+                {cert.url && (
+                  <a href={cert.url} target="_blank" rel="noopener noreferrer" class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)] transition-colors hover:text-[var(--color-fg)]">
+                    Verify ↗
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {bioStory && (
+    <section class="screen-line-after">
+      <div class="container-narrow py-12 sm:py-16">
+        <p class="text-eyebrow reveal">Story</p>
+        <div class="mt-4 prose-mono max-w-prose reveal reveal-delay-1">
+          <p>{bioStory}</p>
+        </div>
+        {bioFunFact && (
+          <p class="mt-6 text-mono text-xs text-[var(--color-fg-subtle)] reveal reveal-delay-2">Fun fact: {bioFunFact}</p>
+        )}
+      </div>
+    </section>
+  )}
 
   {experiencesList.length > 0 && (
     <section class="screen-line-after">
       <div class="container-narrow py-12 sm:py-16">
-        <h2 class="panel-title mb-6 reveal">
-          Experience<span class="count-badge">{experiencesList.length}</span>
-        </h2>
+        <div class="section-head reveal">
+          <div>
+            <p class="text-eyebrow">Work history</p>
+            <h2 class="panel-title mt-1">Experience<span class="count-badge">{experiencesList.length}</span></h2>
+          </div>
+          <a href="/experience" class="section-link">Full timeline →</a>
+        </div>
         <div class="panel">
-          <div class="panel-top"></div>
-          {([...experiencesList] as any[]).reverse().map((exp) => (
-            <div class="row-card group">
-              <div class="row-card-logo" aria-hidden="true">
-                {exp.company.charAt(0).toUpperCase()}
-              </div>
-              <div class="min-w-0 flex-1">
-                <h3 class="row-card-title">
-                  {exp.role}
-                  <span class="text-[var(--color-fg-muted)]"> · {exp.company}</span>
-                </h3>
+          {([...experiencesList] as any[]).reverse().map((exp) => {
+            const responsibilities = (() => { try { return JSON.parse(exp.responsibilities || "[]"); } catch { return []; } })();
+            const learnings = (() => { try { return JSON.parse(exp.learnings || "[]"); } catch { return []; } })();
+            return (
+            <div class="exp-card">
+              <button class="exp-card-trigger group" onclick={`this.closest('.exp-card').classList.toggle('expanded')`} type="button" aria-expanded="false">
+                <div class="exp-card-header">
+                  <div class="exp-card-logo" aria-hidden="true">
+                    {exp.logoUrl ? (
+                      <img src={exp.logoUrl} alt="" class="w-full h-full object-contain rounded" />
+                    ) : (
+                      exp.company?.charAt(0)?.toUpperCase() || "?"
+                    )}
+                  </div>
+                  <div class="min-w-0 flex-1 text-left">
+                    <h3 class="row-card-title">
+                      {exp.role}
+                      <span class="text-[var(--color-fg-muted)]"> · {exp.company}</span>
+                    </h3>
+                    <div class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)] mt-0.5">
+                      {formatDate(exp.startDate)} — {formatDate(exp.endDate)}
+                      {(() => { const t = tenureYears(exp.startDate, exp.endDate); return t >= 1 ? ` · ${Math.round(t * 10) / 10} yrs` : ""; })()}
+                    </div>
+                  </div>
+                  <div class="exp-card-chevron">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                  </div>
+                </div>
+              </button>
+              <div class="exp-card-body">
+                {exp.companyDescription && (
+                  <p class="exp-card-company-desc">{exp.companyDescription}</p>
+                )}
                 {exp.details && (
-                  <p class="prose-mono mt-1 line-clamp-3">{exp.details}</p>
+                  <p class="exp-card-details">{exp.details}</p>
+                )}
+                {responsibilities.length > 0 && (
+                  <div class="exp-card-section">
+                    <span class="exp-card-section-icon">▹</span>
+                    <div>
+                      <p class="exp-card-section-label">Key Responsibilities</p>
+                      <ul class="exp-card-list">
+                        {responsibilities.map((r: string) => (
+                          <li class="exp-card-list-item">
+                            <span class="exp-card-bullet" aria-hidden="true">▹</span>
+                            <span>{r}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+                {learnings.length > 0 && (
+                  <div class="exp-card-section">
+                    <span class="exp-card-section-icon learn">✦</span>
+                    <div>
+                      <p class="exp-card-section-label">Key Learnings</p>
+                      <ul class="exp-card-list learn-list">
+                        {learnings.map((l: string) => (
+                          <li class="exp-card-list-item">
+                            <span class="exp-card-bullet learn-bullet" aria-hidden="true">✦</span>
+                            <span>{l}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+                {exp.url && (
+                  <a href={exp.url} target="_blank" rel="noopener noreferrer" class="exp-card-link">
+                    {(() => { try { return new URL(exp.url).hostname; } catch { return exp.url; } })()} ↗
+                  </a>
                 )}
               </div>
-              <div class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)]">
-                {formatDate(exp.startDate)} — {formatDate(exp.endDate)}
-              </div>
             </div>
-          ))}
-          <div class="panel-bottom"></div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -120,11 +326,8 @@ const aboutSkilliconsMap: Record<string, string> = {
   {educationList.length > 0 && (
     <section class="screen-line-after">
       <div class="container-narrow py-12 sm:py-16">
-        <h2 class="panel-title mb-6 reveal">
-          Education<span class="count-badge">{educationList.length}</span>
-        </h2>
+        <h2 class="panel-title mb-6 reveal">Education<span class="count-badge">{educationList.length}</span></h2>
         <div class="panel">
-          <div class="panel-top"></div>
           {(educationList as any[]).map((edu) => (
             <div class="row-card group">
               <div class="row-card-logo" aria-hidden="true">
@@ -142,7 +345,6 @@ const aboutSkilliconsMap: Record<string, string> = {
               </div>
             </div>
           ))}
-          <div class="panel-bottom"></div>
         </div>
       </div>
     </section>
@@ -151,11 +353,14 @@ const aboutSkilliconsMap: Record<string, string> = {
   {publicationsList.length > 0 && (
     <section class="screen-line-after">
       <div class="container-narrow py-12 sm:py-16">
-        <h2 class="panel-title mb-6 reveal">
-          Publications<span class="count-badge">{publicationsList.length}</span>
-        </h2>
+        <div class="section-head reveal">
+          <div>
+            <p class="text-eyebrow">Research</p>
+            <h2 class="panel-title mt-1">Publications<span class="count-badge">{publicationsList.length}</span></h2>
+          </div>
+          <a href="/research" class="section-link">All publications →</a>
+        </div>
         <div class="panel">
-          <div class="panel-top"></div>
           {(publicationsList as any[]).map((pub) => (
             <a
               href={pub.url || "#"}
@@ -166,7 +371,7 @@ const aboutSkilliconsMap: Record<string, string> = {
               <div class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)] w-14 flex-shrink-0 pt-1">
                 {formatDate(pub.date)}
               </div>
-              <div class="min-w-0 flex-1 row-card-divider">
+              <div class="min-w-0 flex-1">
                 <h3 class="row-card-title">{pub.title}</h3>
                 {pub.venue && <p class="row-card-meta">{pub.venue}</p>}
                 {pub.description && (
@@ -184,7 +389,6 @@ const aboutSkilliconsMap: Record<string, string> = {
               </div>
             </a>
           ))}
-          <div class="panel-bottom"></div>
         </div>
       </div>
     </section>
@@ -193,19 +397,70 @@ const aboutSkilliconsMap: Record<string, string> = {
   {skillsList.length > 0 && (
     <section class="screen-line-after">
       <div class="container-narrow py-12 sm:py-16">
-        <h2 class="panel-title mb-6 reveal">
-          Stack<span class="count-badge">{skillsList.length}</span>
-        </h2>
+        <div class="section-head reveal">
+          <div>
+            <p class="text-eyebrow">Capabilities</p>
+            <h2 class="panel-title mt-1">Stack<span class="count-badge">{skillsList.length}</span></h2>
+          </div>
+          <a href="/skills" class="section-link">Full stack →</a>
+        </div>
         <div class="flex flex-wrap gap-2 reveal">
           {(skillsList as any[]).map((s) => {
-            const key = s.name.toLowerCase();
-            const iconKey = aboutSkilliconsMap[key];
-            return iconKey ? (
+            const iconUrl = thesvgIconUrl(s.name);
+            return iconUrl ? (
               <span class="icon-chip" title={s.name}>
-                <img src={`https://skillicons.dev/icons?i=${iconKey}&theme=dark`} alt={s.name} class="icon-chip-img" />
+                <img src={iconUrl} alt={s.name} class="icon-chip-img" loading="lazy" />
               </span>
             ) : (
-              <span class="icon-chip" title={s.name}>{initials(s.name)}</span>
+              <span class="icon-chip" title={s.name}>{skillInitials(s.name)}</span>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {interestsList.length > 0 && (
+    <section class="screen-line-after">
+      <div class="container-narrow py-12 sm:py-16">
+        <h2 class="panel-title mb-6 reveal">Interests<span class="count-badge">{interestsList.length}</span></h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {(interestsList as any[]).map((it) => (
+            <div class="panel p-4 interest-card reveal">
+              <span class="interest-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" set:html={strokeIcon(it.icon)} />
+              </span>
+              <div>
+                <h3 class="interest-name">{it.name}</h3>
+                {it.description && <p class="interest-desc">{it.description}</p>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {languagesList.length > 0 && (
+    <section class="screen-line-after">
+      <div class="container-narrow py-12 sm:py-16">
+        <h2 class="panel-title mb-6 reveal">Languages<span class="count-badge">{languagesList.length}</span></h2>
+        <div class="panel">
+          {(languagesList as any[]).map((l) => {
+            const meta = levelMeta[l.level] || levelMeta.learning!;
+            return (
+              <div class="row-card group">
+                <div class="lang-name-col" aria-hidden="true">
+                  <span class="lang-initials">{l.name.charAt(0).toUpperCase()}</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <h3 class="row-card-title">{l.name}</h3>
+                    <span class="lang-level">{meta.label}</span>
+                  </div>
+                  {l.note && <p class="row-card-meta">{l.note}</p>}
+                </div>
+              </div>
             );
           })}
         </div>
@@ -215,24 +470,429 @@ const aboutSkilliconsMap: Record<string, string> = {
 
   <section class="screen-line-after">
     <div class="container-narrow py-12 sm:py-16">
-      <div class="grid grid-cols-1 gap-6 sm:grid-cols-3 reveal">
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 reveal">
         <div>
           <p class="text-eyebrow">Based in</p>
           <p class="mt-1.5 text-sm text-[var(--color-fg)]">{location || "—"}</p>
         </div>
         <div>
+          <p class="text-eyebrow">Relocation</p>
+          <p class="mt-1.5 text-sm text-[var(--color-fg)]">{siteConfig.relocationTargets || "—"}</p>
+        </div>
+        <div>
+          <p class="text-eyebrow">English</p>
+          <p class="mt-1.5 text-sm text-[var(--color-fg)]">{siteConfig.englishLevel || "—"}</p>
+        </div>
+        <div>
           <p class="text-eyebrow">Email</p>
           <p class="mt-1.5">
-            <a href={`mailto:${siteConfig.email}`} class="text-sm text-[var(--color-accent)] hover:underline">
+            <a href={`mailto:${siteConfig.email}`} class="text-sm text-[var(--color-fg-subtle)] hover:underline">
               {siteConfig.email || "—"}
             </a>
           </p>
         </div>
-        <div>
-          <p class="text-eyebrow">Timezone</p>
-          <p class="mt-1.5 text-sm text-[var(--color-fg)]">{siteConfig.timezone || "—"}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen-line-after">
+    <div class="container-narrow pb-12 sm:pb-16">
+      <div class="panel p-6 sm:p-8 text-center reveal">
+        <h2 class="panel-title">Let's build something useful</h2>
+        <p class="mt-3 mx-auto max-w-prose text-sm text-[var(--color-fg-muted)] leading-relaxed">
+          {siteConfig.contactBlurb || "Open to senior data and backend engineering opportunities."}
+        </p>
+        <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <a href="/contact" class="btn btn-primary">Get in touch →</a>
+          {siteConfig.cvUrl && (
+            <a href={siteConfig.cvUrl} target="_blank" rel="noopener noreferrer" class="btn btn-outline">Download CV</a>
+          )}
         </div>
       </div>
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .lang-name-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 10px;
+    background: var(--color-card);
+    border: 1px solid var(--color-edge);
+    flex-shrink: 0;
+  }
+  .lang-initials {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-fg-subtle);
+  }
+  .lang-level {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent-2);
+    border: 1px solid var(--color-edge);
+    border-radius: 999px;
+    padding: 0.1rem 0.55rem;
+    white-space: nowrap;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 2rem;
+  }
+  @media (max-width: 720px) {
+    .about-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+  }
+  .about-portrait { display: flex; justify-content: center; }
+  .portrait-frame {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    flex-shrink: 0;
+  }
+  @media (max-width: 720px) { .portrait-frame { width: 120px; height: 120px; } }
+  .portrait {
+    width: 100%;
+    height: 100%;
+    border-radius: 999px;
+    object-fit: cover;
+    background: var(--color-card);
+    border: 3px solid var(--color-edge);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 12px 32px -8px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 1;
+  }
+  .portrait-ring {
+    position: absolute;
+    inset: -6px;
+    border-radius: 999px;
+    background: conic-gradient(from 0deg, #FFFFFF, #71717A, #FFFFFF);
+    z-index: 0;
+    opacity: 0.55;
+    filter: blur(8px);
+    animation: ring-spin 8s linear infinite;
+  }
+  @keyframes ring-spin { to { transform: rotate(360deg); } }
+
+  .about-bio {
+    color: var(--color-fg-muted);
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem;
+    margin-top: 2rem;
+  }
+  @media (min-width: 640px) { .about-stats { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+  .about-stat {
+    border: 1px solid var(--color-edge);
+    background: var(--color-card);
+    border-radius: 12px;
+    padding: 0.8rem 0.9rem;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .about-stat:hover { border-color: var(--color-edge-strong); transform: translateY(-1px); }
+  .about-stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+  }
+  .about-stat-value {
+    margin-top: 0.3rem;
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--color-fg);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .ach-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  @media (min-width: 700px) { .ach-grid { grid-template-columns: repeat(2, 1fr); } }
+  .ach-card {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    text-decoration: none;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .ach-card:hover { border-color: var(--color-edge-strong); transform: translateY(-2px); }
+  .ach-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 12px;
+    background: var(--color-bg-2);
+    border: 1px solid var(--color-edge);
+    font-size: 1.15rem;
+    flex-shrink: 0;
+    color: var(--color-accent-2);
+  }
+  .ach-name {
+    font-family: var(--font-display);
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--color-fg);
+  }
+  .ach-year {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--color-fg-subtle);
+  }
+  .ach-desc {
+    margin-top: 0.3rem;
+    font-size: 0.85rem;
+    color: var(--color-fg-muted);
+    line-height: 1.55;
+  }
+  .ach-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-accent-2);
+  }
+  .ach-card:hover .ach-cta svg { transform: translateX(2px); }
+  .ach-proof {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--color-fg-subtle);
+    border: 1px solid var(--color-edge);
+    border-radius: 999px;
+    padding: 0.15rem 0.55rem;
+  }
+
+  .interest-card {
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+  }
+  .interest-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 12px;
+    background: var(--color-bg-2);
+    border: 1px solid var(--color-edge);
+    color: var(--color-accent-2);
+    flex-shrink: 0;
+  }
+  .interest-name {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-fg);
+  }
+  .interest-desc {
+    margin-top: 0.25rem;
+    font-size: 0.82rem;
+    color: var(--color-fg-muted);
+    line-height: 1.55;
+  }
+
+  .icon-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 8px;
+    background: var(--color-card);
+    border: 1px solid var(--color-edge);
+    overflow: hidden;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--color-fg-subtle);
+    letter-spacing: 0.05em;
+  }
+  .icon-chip:hover {
+    border-color: var(--color-edge-strong);
+    transform: scale(1.05);
+  }
+  .icon-chip-img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+  }
+
+  /* --- Expandable Experience Cards --- */
+  .exp-card {
+    border-bottom: 1px solid var(--color-edge);
+  }
+  .exp-card:last-child { border-bottom: none; }
+
+  .exp-card-trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 1rem 1.25rem;
+    text-align: left;
+    transition: background 0.2s ease;
+  }
+  .exp-card-trigger:hover {
+    background: rgba(255, 255, 255, 0.02);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .exp-card-trigger:hover { background: rgba(0, 0, 0, 0.02); }
+  }
+  html[data-theme="light"] .exp-card-trigger:hover { background: rgba(0, 0, 0, 0.02); }
+
+  .exp-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .exp-card-logo {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 8px;
+    background: var(--color-card);
+    border: 1px solid var(--color-edge);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-fg-subtle);
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .exp-card-chevron {
+    color: var(--color-fg-subtle);
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+  }
+  .expanded .exp-card-chevron {
+    transform: rotate(180deg);
+  }
+
+  .exp-card-body {
+    display: none;
+    padding: 0 1.25rem 1.25rem;
+    animation: exp-slide-down 0.25s ease;
+  }
+  .expanded .exp-card-body {
+    display: block;
+  }
+
+  @keyframes exp-slide-down {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .exp-card-company-desc {
+    font-size: 0.88rem;
+    color: var(--color-fg-subtle);
+    font-style: italic;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+  }
+
+  .exp-card-details {
+    font-size: 0.9rem;
+    color: var(--color-fg-muted);
+    line-height: 1.65;
+    margin-bottom: 0.75rem;
+  }
+
+  .exp-card-section {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    margin-top: 0.75rem;
+  }
+  .exp-card-section-icon {
+    font-size: 0.85rem;
+    color: var(--color-accent);
+    line-height: 1.5;
+    flex-shrink: 0;
+  }
+  .exp-card-section-icon.learn { color: #f9e2af; }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .exp-card-section-icon.learn { color: #8a6d1f; }
+  }
+  html[data-theme="light"] .exp-card-section-icon.learn { color: #8a6d1f; }
+
+  .exp-card-section-label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+    margin-bottom: 0.3rem;
+  }
+
+  .exp-card-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .exp-card-list-item {
+    display: flex;
+    gap: 0.55rem;
+    font-size: 0.85rem;
+    color: var(--color-fg-muted);
+    line-height: 1.55;
+  }
+  .exp-card-list.learn-list .exp-card-list-item {
+    color: var(--color-fg-subtle);
+  }
+  .exp-card-bullet {
+    color: var(--color-accent);
+    font-size: 0.7rem;
+    line-height: 1.7;
+    flex-shrink: 0;
+  }
+  .exp-card-bullet.learn-bullet { color: #f9e2af; }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .exp-card-bullet.learn-bullet { color: #8a6d1f; }
+  }
+  html[data-theme="light"] .exp-card-bullet.learn-bullet { color: #8a6d1f; }
+
+  .exp-card-link {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-fg-subtle);
+    transition: color 0.2s ease;
+  }
+  .exp-card-link:hover { color: var(--color-fg); }
+</style>

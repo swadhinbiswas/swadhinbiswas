@@ -1,7 +1,7 @@
 import { GitHubCalendar } from 'react-github-calendar';
 
 export default function GithubGraph({ username }: { username: string }) {
-  // Theme using the site's Emerald accent for contributions
+  // Theme following the site's monochrome system (dark default, light variant)
   const emeraldTheme = {
     light: ['#ebedf0', '#9be9a8', '#40c463', '#30a14e', '#216e39'],
     dark: ['#1e1e1e', '#064e3b', '#047857', '#10b981', '#34d399'],

@@ -33,7 +33,7 @@ export async function GET(context) {
       title: project.name,
       pubDate: new Date(project.projectDate || project.createdAt || new Date()),
       description: project.description,
-      link: `/projects/${slugify(project.name)}/`,
+      link: `/projects/${project.slug}/`,
       content: project.description,
     })),
   ];

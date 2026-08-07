@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { db, publications } from '../../../db';
 import { eq } from 'drizzle-orm';
+import { purgeSiteCaches } from '../../../lib/config';
 
 export const prerender = false;
 
@@ -40,6 +41,8 @@ export const POST: APIRoute = async ({ request }) => {
             updatedAt: now,
         }).returning();
 
+        await purgeSiteCaches();
+
         return new Response(JSON.stringify({ success: true, data: result[0] }), {
             status: 201,
             headers: { 'Content-Type': 'application/json' },
@@ -57,13 +60,26 @@ export const POST: APIRoute = async ({ request }) => {
 export const PUT: APIRoute = async ({ request }) => {
     try {
         const body = await request.json();
-        const { id, title, url, venue, date, description, order } = body;
-
+        const { id } = body;
+        if (!id) {
+            return new Response(JSON.stringify({ success: false, error: 'ID is required' }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
         const now = new Date().toISOString();
-
+        const setData: Record<string, any> = { updatedAt: now };
+        
+        const fields = ['title', 'url', 'venue', 'date', 'description', 'order'];
+        for (const f of fields) {
+            if (body[f] !== undefined) setData[f] = body[f];
+        }
+        
         await db.update(publications)
-            .set({ title, url, venue, date, description, order, updatedAt: now })
+            .set(setData)
             .where(eq(publications.id, id));
+        
+        await purgeSiteCaches();
 
         return new Response(JSON.stringify({ success: true }), {
             status: 200,
@@ -85,6 +101,8 @@ export const DELETE: APIRoute = async ({ request }) => {
 
         await db.delete(publications).where(eq(publications.id, id));
 
+        await purgeSiteCaches();
+
         return new Response(JSON.stringify({ success: true }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },
@@ -97,3 +115,4 @@ export const DELETE: APIRoute = async ({ request }) => {
         });
     }
 };
+

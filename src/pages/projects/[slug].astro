@@ -2,60 +2,59 @@
 export const prerender = false;
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { db, projects } from "../../db";
-import { unified } from "unified";
-import remarkParse from "remark-parse";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
-import remarkRehype from "remark-rehype";
-import rehypeKatex from "rehype-katex";
-import rehypeHighlight from "rehype-highlight";
-import rehypeStringify from "rehype-stringify";
+import { eq } from "drizzle-orm";
+import { renderMarkdown } from "../../lib/markdown";
 import "katex/dist/katex.min.css";
 import "highlight.js/styles/github-dark.css";
 import { getDynamicConfig } from "../../lib/config";
+import { getCachedData, setCachedData } from "../../lib/redis";
+import { getProjectCategories, categoryLabel } from "../../lib/projects";
+import { getProjects } from "../../lib/loaders";
+import { opt } from "../../lib/image";
 
 const { slug } = Astro.params;
+if (!slug) return Astro.redirect("/404");
+
+// Try cache first
+const cacheKey = `project:${slug}`;
 let project: any = null;
+let contentHtml = "";
+let features: any = {};
 
-try {
-  const allProjects = await db.select().from(projects);
-  project = allProjects.find((p) => {
-    const pSlug = p.name
-      .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, "")
-      .replace(/[\s_-]+/g, "-")
-      .replace(/^-+|-+$/g, "");
-    return pSlug === slug;
-  });
-} catch (e) {
-  console.warn("[projects/[slug]] DB query failed");
+const cached = await getCachedData(cacheKey);
+if (cached?.project) {
+  project = cached.project;
+  contentHtml = cached.contentHtml;
+  features = cached.features;
+} else {
+  // Query by slug directly instead of fetching all projects
+  const results = await db.select().from(projects).where(eq(projects.slug, slug)).limit(1);
+  project = results[0] || null;
+  if (!project) return Astro.redirect("/404");
+
+  const result = await renderMarkdown(project.content || project.description || "");
+  contentHtml = result.html;
+  features = result.features;
+
+  // Cache for 5 minutes
+  await setCachedData(cacheKey, { project, contentHtml, features }, 300);
 }
 
-if (!project) {
-  return Astro.redirect("/404");
-}
-
-const processor = unified()
-  .use(remarkParse)
-  .use(remarkGfm)
-  .use(remarkMath)
-  .use(remarkRehype, { allowDangerousHtml: true })
-  .use(rehypeKatex)
-  .use(rehypeHighlight)
-  .use(rehypeStringify, { allowDangerousHtml: true });
-
-const rawContent = project.content || project.description || "";
-const processedContent = await processor.process(rawContent);
-const contentHtml = processedContent.toString();
+const categories = await getProjectCategories();
+const category = categories.find((c) => c.slug === (project.category || "data-engineering"));
 
 const tags = (() => { try { return JSON.parse(project.tags || "[]"); } catch { return []; } })();
+const techStack = (() => { try { return JSON.parse(project.techStack || "[]"); } catch { return []; } })();
+const metrics = (() => { try { return JSON.parse(project.metrics || "{}"); } catch { return {}; } })();
+const gallery = (() => { try { return JSON.parse(project.gallery || "[]"); } catch { return []; } })();
 const projectDate = project.projectDate || project.createdAt || new Date().toISOString();
 
 const siteConfig = await getDynamicConfig();
 const siteUrl = (siteConfig.url || "https://swadhin.cv").replace(/\/$/, "");
 const canonicalUrl = `${siteUrl}/projects/${slug}/`;
-const ogImage = project.image || `${siteUrl}/og-image.png`;
+// Per-project branded OG image (SVG route); falls back to the site default
+const ogImage = `${siteUrl}/api/og/${slug}.svg`;
+const twitterImage = project.image || `${siteUrl}/og-image.png`;
 const publishedIso = new Date(projectDate).toISOString();
 const tagKeywords = (Array.isArray(tags) ? tags : [])
   .map((t: unknown) => String(t).trim())
@@ -64,15 +63,61 @@ const tagKeywords = (Array.isArray(tags) ? tags : [])
 
 const schema = {
   "@context": "https://schema.org",
-  "@type": "TechArticle",
-  mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
-  headline: project.name,
-  description: project.description,
-  keywords: tagKeywords,
-  image: [ogImage],
-  datePublished: publishedIso,
-  author: { "@type": "Person", name: siteConfig.author || "Swadhin Biswas" },
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": `${siteUrl}/` },
+        { "@type": "ListItem", "position": 2, "name": "Projects", "item": `${siteUrl}/projects` },
+        ...(category ? [{ "@type": "ListItem", "position": 3, "name": category.label, "item": `${siteUrl}/projects#cat-${category.slug}` }] : []),
+        { "@type": "ListItem", "position": 4, "name": project.name, "item": canonicalUrl },
+      ],
+    },
+    {
+      "@type": "TechArticle",
+      "@id": `${canonicalUrl}#article`,
+      mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
+      headline: project.name,
+      description: project.description,
+      keywords: tagKeywords,
+      image: [ogImage],
+      datePublished: publishedIso,
+      author: { "@id": `${siteUrl}/#person` },
+      publisher: { "@id": `${siteUrl}/#person` },
+    },
+    {
+      "@type": "SoftwareApplication",
+      name: project.name,
+      applicationCategory: category?.label || "DeveloperApplication",
+      operatingSystem: "Web",
+      url: project.url || canonicalUrl,
+      description: project.description,
+      datePublished: publishedIso,
+      author: { "@id": `${siteUrl}/#person` },
+      ...(project.github ? { codeRepository: project.github } : {}),
+    },
+  ],
 };
+
+const stars = project.stars || 0;
+
+// Reading time — ~200 words/min on the rendered content
+const wordCount = ((project.content || "") + " " + (project.challenges || "") + " " + (project.outcomes || "") + " " + (project.lessonsLearned || ""))
+  .replace(/[#>*\-\[\]()!`]/g, " ")
+  .split(/\s+/)
+  .filter(Boolean).length;
+const readingMinutes = Math.max(1, Math.round(wordCount / 200));
+
+// Prev/next navigation by project order
+const ordered = await getProjects();
+const idx = ordered.findIndex((p) => p.slug === slug);
+const prev = idx > 0 ? ordered[idx - 1] : null;
+const next = idx >= 0 && idx < ordered.length - 1 ? ordered[idx + 1] : null;
+
+// Related projects in the same category (excludes current)
+const relatedProjects = (await getProjects())
+  .filter((p) => p.slug !== slug && (p.category || "data-engineering") === (project.category || "data-engineering"))
+  .slice(0, 2);
 ---
 
 <BaseLayout
@@ -82,8 +127,15 @@ const schema = {
   ogType="article"
 >
   <Fragment slot="head">
+    <meta name="twitter:image" content={twitterImage} />
     <script type="application/ld+json" set:html={JSON.stringify(schema)} />
     <meta property="article:published_time" content={publishedIso} />
+    {features.hasMermaid && <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js" />}
+    {features.hasPlotly && <script src="https://cdn.jsdelivr.net/npm/plotly.js@3.3.1/dist/plotly.min.js" />}
+    {features.hasCharts && <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js" />}
+    <script is:inline>
+      {features.hasMermaid && `document.addEventListener("DOMContentLoaded", () => { mermaid.initialize({ startOnLoad: true, theme: "dark", themeVariables: { primaryColor: "#FFFFFF", primaryTextColor: "#F4F4F5", primaryBorderColor: "#27272A", lineColor: "#A1A1AA", secondaryColor: "#141414", tertiaryColor: "#1A1A1A" } }); mermaid.run({ querySelector: ".mermaid" }); });`}
+    </script>
   </Fragment>
 
   <article>
@@ -95,27 +147,49 @@ const schema = {
 
         <div class="mt-8 reveal reveal-delay-1">
           <div class="flex flex-wrap items-center gap-3 text-mono text-xs text-[var(--color-fg-subtle)]">
-            {project.featured && <span>★ Featured</span>}
+            {category && (
+              <a
+                href={`/projects#cat-${category.slug}`}
+                class="px-2 py-0.5 rounded-full border border-[var(--color-edge-strong)] bg-[var(--color-card)] text-[var(--color-accent-2)] transition-colors hover:border-[var(--color-fg-subtle)]"
+              >
+                {category.label}
+              </a>
+            )}
+            {project.featured && <span class="px-2 py-0.5 rounded-full bg-[rgba(251,191,36,0.1)] text-yellow-400 border border-yellow-400/30">★ Featured</span>}
             <span>{new Date(projectDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}</span>
             {project.status && <span>· {project.status}</span>}
+            <span>· {readingMinutes} min read</span>
           </div>
 
           <h1 class="text-display mt-3 text-3xl text-[var(--color-fg)] sm:text-4xl">
-            <span class="text-gradient">{project.name}</span>
+            <span class="text-aurora">{project.name}</span>
           </h1>
 
           <p class="prose-mono mt-4 max-w-prose">{project.description}</p>
 
-          <div class="mt-6 flex flex-wrap items-center gap-2">
+          <div class="mt-6 flex flex-wrap items-center gap-3">
             {project.url && (
               <a href={project.url} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-                Live demo →
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></polyline></svg>
+                Live demo
               </a>
             )}
             {project.github && (
               <a href={project.github} target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                 Source
               </a>
+            )}
+            {project.documentation && (
+              <a href={project.documentation} target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                Docs
+              </a>
+            )}
+            {stars > 0 && (
+              <span class="btn btn-ghost text-yellow-400 cursor-default">
+                ★ {stars.toLocaleString()} stars
+              </span>
             )}
           </div>
 
@@ -133,8 +207,87 @@ const schema = {
     {project.image && (
       <section class="screen-line-after">
         <div class="container-narrow py-8 sm:py-12">
-          <div class="overflow-hidden rounded-md border border-[var(--color-edge)]">
-            <img src={project.image} alt={project.name} class="w-full h-auto" loading="lazy" />
+          <div class="overflow-hidden rounded-xl border border-[var(--color-edge)] shadow-lg">
+            <img src={opt(project.image, 1200)} alt={project.name} class="w-full h-auto" loading="lazy" decoding="async" width="1200" />
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Project Meta Section -->
+    {(project.role || project.duration || project.teamSize || Object.keys(metrics).length > 0 || techStack.length > 0) && (
+      <section class="screen-line-after">
+        <div class="container-narrow py-8 sm:py-12">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Project Info -->
+            {(project.role || project.duration || project.teamSize) && (
+              <div class="panel p-6">
+                <h3 class="text-sm font-semibold text-[var(--color-fg-subtle)] uppercase tracking-wider mb-4">Project Info</h3>
+                <dl class="space-y-3">
+                  {project.role && (
+                    <div class="flex justify-between">
+                      <dt class="text-[var(--color-fg-muted)]">Role</dt>
+                      <dd class="text-[var(--color-fg)] font-medium">{project.role}</dd>
+                    </div>
+                  )}
+                  {project.duration && (
+                    <div class="flex justify-between">
+                      <dt class="text-[var(--color-fg-muted)]">Duration</dt>
+                      <dd class="text-[var(--color-fg)] font-medium">{project.duration}</dd>
+                    </div>
+                  )}
+                  {project.teamSize && (
+                    <div class="flex justify-between">
+                      <dt class="text-[var(--color-fg-muted)]">Team Size</dt>
+                      <dd class="text-[var(--color-fg)] font-medium">{project.teamSize}</dd>
+                    </div>
+                  )}
+                </dl>
+              </div>
+            )}
+
+            <!-- Metrics -->
+            {Object.keys(metrics).length > 0 && (
+              <div class="panel p-6">
+                <h3 class="text-sm font-semibold text-[var(--color-fg-subtle)] uppercase tracking-wider mb-4">Key Metrics</h3>
+                <dl class="grid grid-cols-2 gap-4">
+                  {Object.entries(metrics).map(([key, value]) => (
+                    <div class="text-center">
+                      <dt class="text-2xl font-bold text-[var(--color-fg)]">{String(value)}</dt>
+                      <dd class="text-xs text-[var(--color-fg-muted)] mt-1 capitalize">{key.replace(/_/g, ' ')}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            )}
+          </div>
+
+          <!-- Tech Stack -->
+          {techStack.length > 0 && (
+            <div class="mt-6">
+              <h3 class="text-sm font-semibold text-[var(--color-fg-subtle)] uppercase tracking-wider mb-3">Tech Stack</h3>
+              <div class="flex flex-wrap gap-2">
+                {techStack.map((tech: string) => (
+                  <span class="px-3 py-1.5 bg-[var(--color-card)] border border-[var(--color-edge)] rounded-lg text-sm text-[var(--color-fg)]">{tech}</span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+    )}
+
+    <!-- Gallery -->
+    {gallery.length > 0 && (
+      <section class="screen-line-after">
+        <div class="container-narrow py-8 sm:py-12">
+          <h3 class="text-sm font-semibold text-[var(--color-fg-subtle)] uppercase tracking-wider mb-4">Gallery</h3>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {gallery.map((img: string) => (
+              <div class="overflow-hidden rounded-lg border border-[var(--color-edge)]">
+                <img src={opt(img, 720)} alt={`${project.name} screenshot`} class="w-full h-48 object-cover hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" width="720" height="288" />
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -142,93 +295,175 @@ const schema = {
 
     <section class="screen-line-after">
       <div class="container-narrow py-12 sm:py-16">
-        <div class="prose-content" set:html={contentHtml} />
+        {contentHtml ? (
+          <div class="prose-content" set:html={contentHtml} />
+        ) : (
+          <div class="panel p-8 text-center">
+            <p class="text-[var(--color-fg-muted)]">No detailed content yet for this project.</p>
+            {project.description && (
+              <p class="text-[var(--color-fg-subtle)] text-sm mt-2">{project.description}</p>
+            )}
+          </div>
+        )}
       </div>
     </section>
+
+    <!-- Challenges & Outcomes -->
+    {(project.challenges || project.outcomes || project.lessonsLearned) && (
+      <section class="screen-line-after">
+        <div class="container-narrow py-12 sm:py-16">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {project.challenges && (
+              <div>
+                <h2 class="text-xl font-bold text-[var(--color-fg)] mb-4">Challenges</h2>
+                <div class="prose-content text-sm" set:html={await renderMarkdown(project.challenges).then(r => r.html)} />
+              </div>
+            )}
+            {project.outcomes && (
+              <div>
+                <h2 class="text-xl font-bold text-[var(--color-fg)] mb-4">Outcomes</h2>
+                <div class="prose-content text-sm" set:html={await renderMarkdown(project.outcomes).then(r => r.html)} />
+              </div>
+            )}
+          </div>
+          {project.lessonsLearned && (
+            <div class="mt-8">
+              <h2 class="text-xl font-bold text-[var(--color-fg)] mb-4">Lessons Learned</h2>
+              <div class="prose-content text-sm" set:html={await renderMarkdown(project.lessonsLearned).then(r => r.html)} />
+            </div>
+          )}
+        </div>
+      </section>
+    )}
+    <!-- Prev / Next navigation -->
+    {(prev || next) && (
+      <section class="screen-line-after">
+        <div class="container-narrow py-10 sm:py-14">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {prev && (
+              <a href={`/projects/${prev.slug}/`} class="panel p-5 pager-card reveal">
+                <p class="text-eyebrow">← Previous</p>
+                <h3 class="pager-title">{prev.name}</h3>
+              </a>
+            )}
+            {next && (
+              <a href={`/projects/${next.slug}/`} class="panel p-5 pager-card pager-next reveal">
+                <p class="text-eyebrow">Next →</p>
+                <h3 class="pager-title">{next.name}</h3>
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Related projects -->
+    {relatedProjects.length > 0 && (
+      <section class="screen-line-after">
+        <div class="container-narrow py-10 sm:py-14">
+          <p class="text-eyebrow reveal">More in {category?.label || "this category"}</p>
+          <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedProjects.map((rp) => (
+              <a
+                href={`/projects/${rp.slug}`}
+                class="panel p-5 reveal transition-all duration-200 hover:border-[var(--color-edge-strong)] hover:translate-y-[-2px]"
+              >
+                <div class="flex items-baseline justify-between gap-3">
+                  <h3 class="font-display font-bold text-[1.02rem] text-[var(--color-fg)]">{rp.name}</h3>
+                  <span class="text-mono text-[var(--color-fg-subtle)]" aria-hidden="true">→</span>
+                </div>
+                {rp.description && (
+                  <p class="mt-2 text-sm text-[var(--color-fg-muted)] line-clamp-2 leading-relaxed">{rp.description}</p>
+                )}
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
   </article>
 </BaseLayout>
 
-<style is:global>
-  .prose-content {
-    color: var(--color-fg-muted);
-    line-height: 1.75;
-    font-size: 1.0625rem;
+<script>
+  (function initProjectCharts() {
+    function initAll() {
+      initPlotly();
+      initCharts();
+      initEmbeds();
+    }
+
+    function initPlotly() {
+      if (typeof Plotly === "undefined") return;
+      document.querySelectorAll(".plotly-container").forEach((el) => {
+        try {
+          const config = JSON.parse(decodeURIComponent(el.dataset.config));
+          Plotly.newPlot(el, config.data || [], config.layout || {}, {
+            responsive: true,
+            displayModeBar: false,
+            paper_bgcolor: "transparent",
+            plot_bgcolor: "transparent",
+            font: { color: "#A1A1AA" },
+          });
+        } catch (e) { console.error("Plotly error", e); }
+      });
+    }
+
+    function initCharts() {
+      if (typeof Chart === "undefined") return;
+      document.querySelectorAll(".chart-container").forEach((el) => {
+        try {
+          const config = JSON.parse(decodeURIComponent(el.dataset.config));
+          const canvas = document.createElement("canvas");
+          el.innerHTML = "";
+          el.appendChild(canvas);
+          new Chart(canvas, config);
+        } catch (e) { console.error("Chart error", e); }
+      });
+    }
+
+    function initEmbeds() {
+      document.querySelectorAll(".embed-link").forEach((el) => {
+        if (el.dataset.embedLoaded) return;
+        el.dataset.embedLoaded = "true";
+        const slug = el.dataset.embedSlug;
+        const container = document.createElement("div");
+        container.className = "embedded-post loading";
+        container.innerHTML = '<p class="text-sm text-[var(--color-fg-subtle)]">Loading embedded post…</p>';
+        el.parentNode?.replaceChild(container, el);
+        fetch(`/api/embed/${slug}`)
+          .then((r) => r.text())
+          .then((html) => {
+            container.className = "embedded-post";
+            container.innerHTML = html;
+          })
+          .catch(() => {
+            container.innerHTML = `<a href="/posts/${slug}" class="text-[var(--color-accent)] underline">View post: ${slug.replace(/-/g, " ")}</a>`;
+          });
+      });
+    }
+
+    document.addEventListener("astro:page-load", initAll);
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initAll);
+    } else {
+      initAll();
+    }
+  })();
+</script>
+
+<style>
+  .pager-card {
+    text-decoration: none;
+    display: block;
+    transition: border-color 0.2s ease, transform 0.2s ease;
   }
-  .prose-content h1,
-  .prose-content h2,
-  .prose-content h3,
-  .prose-content h4 {
-    color: var(--color-fg);
+  .pager-card:hover { border-color: var(--color-edge-strong); transform: translateY(-2px); }
+  .pager-next { text-align: right; }
+  .pager-title {
+    margin-top: 0.35rem;
+    font-family: var(--font-display);
+    font-size: 1.02rem;
     font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
-    line-height: 1.25;
-  }
-  .prose-content h1 { font-size: 2rem; }
-  .prose-content h2 { font-size: 1.5rem; }
-  .prose-content h3 { font-size: 1.25rem; }
-  .prose-content p { margin: 1.25rem 0; }
-  .prose-content a {
-    color: var(--color-accent);
-    text-decoration: underline;
-    text-decoration-style: wavy;
-    text-decoration-color: var(--color-accent-2, var(--color-edge-strong));
-    text-underline-offset: 4px;
-    transition: all 0.2s ease;
-  }
-  .prose-content a:hover {
     color: var(--color-fg);
-    text-decoration-color: var(--color-accent);
   }
-  .prose-content ul, .prose-content ol {
-    padding-left: 1.5rem;
-    margin: 1.25rem 0;
-  }
-  .prose-content li { margin: 0.5rem 0; }
-  .prose-content li::marker { color: var(--color-accent); }
-  .prose-content code {
-    background-color: rgba(199, 146, 234, 0.1);
-    border: 1px solid var(--color-edge);
-    padding: 0.15rem 0.4rem;
-    border-radius: 6px;
-    font-size: 0.875em;
-    color: var(--color-accent);
-    font-family: var(--font-mono);
-  }
-  .prose-content pre {
-    background-color: var(--color-card);
-    border: 2px solid var(--color-edge);
-    border-radius: 12px;
-    padding: 1.25rem;
-    overflow-x: auto;
-    margin: 1.5rem 0;
-  }
-  .prose-content pre code {
-    background: none;
-    border: none;
-    padding: 0;
-    color: var(--color-fg-muted);
-  }
-  .prose-content blockquote {
-    border-left: 3px solid var(--color-accent);
-    padding: 1rem 1.25rem;
-    margin: 1.5rem 0;
-    color: var(--color-fg);
-    font-style: italic;
-    background: rgba(199, 146, 234, 0.04);
-    border-radius: 0 8px 8px 0;
-  }
-  .prose-content table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1.5rem 0;
-  }
-  .prose-content th, .prose-content td {
-    border-bottom: 1px solid var(--color-edge);
-    padding: 0.75rem;
-    text-align: left;
-  }
-  .prose-content th { color: var(--color-fg); font-weight: 700; }
-  .prose-content img { border-radius: 12px; margin: 1.5rem 0; border: 2px solid var(--color-edge); }
 </style>

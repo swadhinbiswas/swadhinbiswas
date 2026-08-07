@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { db, skills } from '../../../db';
 import { eq } from 'drizzle-orm';
+import { purgeSiteCaches } from '../../../lib/config';
 
 export const prerender = false;
 
@@ -23,7 +24,7 @@ export const GET: APIRoute = async () => {
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { name, category = 'general', description = '', usedIn = '', order = 0 } = body;
+    const { name, category = 'general', description = '', usedIn = '', tier = 'core', order = 0 } = body;
 
     const now = new Date().toISOString();
 
@@ -32,10 +33,13 @@ export const POST: APIRoute = async ({ request }) => {
       category,
       description: description || null,
       usedIn: usedIn || null,
+      tier,
       order,
       createdAt: now,
       updatedAt: now,
     }).returning();
+
+    await purgeSiteCaches();
 
     return new Response(JSON.stringify({ success: true, data: result[0] }), {
       status: 201,
@@ -53,20 +57,26 @@ export const POST: APIRoute = async ({ request }) => {
 export const PUT: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { id, name, category, description, usedIn, order } = body;
-
+    const { id } = body;
+    if (!id) {
+      return new Response(JSON.stringify({ success: false, error: 'ID is required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
     const now = new Date().toISOString();
-
+    const setData: Record<string, any> = { updatedAt: now };
+    
+    const fields = ['name', 'category', 'description', 'usedIn', 'tier', 'order'];
+    for (const f of fields) {
+      if (body[f] !== undefined) setData[f] = body[f];
+    }
+    
     await db.update(skills)
-      .set({
-        name,
-        category,
-        description: description || null,
-        usedIn: usedIn || null,
-        order,
-        updatedAt: now,
-      })
+      .set(setData)
       .where(eq(skills.id, id));
+
+    await purgeSiteCaches();
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
@@ -87,6 +97,8 @@ export const DELETE: APIRoute = async ({ request }) => {
 
     await db.delete(skills).where(eq(skills.id, id));
 
+    await purgeSiteCaches();
+
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
@@ -99,3 +111,4 @@ export const DELETE: APIRoute = async ({ request }) => {
     });
   }
 };
+

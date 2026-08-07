@@ -1,18 +1,21 @@
 ---
-export const prerender = false;
+export const prerender = true;
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getDynamicConfig } from "../lib/config";
 import { env } from "../lib/env";
+import { db, faqs } from "../db";
+import { asc } from "drizzle-orm";
 import JsonLd from "../components/seo/JsonLd.astro";
 
 import Hero from "../components/home/Hero.astro";
+import FeaturedProjects from "../components/home/FeaturedProjects.astro";
+import Skills from "../components/home/Skills.astro";
 import Summary from "../components/home/Summary.astro";
 import Experience from "../components/home/Experience.astro";
-import Education from "../components/home/Education.astro";
-import Skills from "../components/home/Skills.astro";
-import FeaturedProjects from "../components/home/FeaturedProjects.astro";
-import Research from "../components/home/Research.astro";
+import Recruiters from "../components/home/Recruiters.astro";
+import Faq from "../components/home/Faq.astro";
+import Testimonials from "../components/home/Testimonials.astro";
 import Writing from "../components/home/Writing.astro";
 import Contact from "../components/home/Contact.astro";
 
@@ -20,58 +23,39 @@ const siteConfig = await getDynamicConfig();
 const siteUrl = (siteConfig.url || env.siteUrl || Astro.url.origin).replace(/\/$/, "");
 const author = siteConfig.author || env.siteName;
 const siteDescription = siteConfig.description || env.siteDescription;
-const shortBio = siteConfig.bio?.short?.trim() || "";
 
-const locationText = siteConfig.location || "";
-const [cityPart, ...countryParts] = locationText
-  .split(",")
-  .map((p) => p.trim())
-  .filter(Boolean);
+// FAQ entities — powers FAQPage rich results (visible in the FAQ section below)
+let faqRows: any[] = [];
+try { faqRows = await db.select().from(faqs).orderBy(asc(faqs.order)); } catch {}
 
-const sameAs = [
-  siteConfig.links?.github,
-  siteConfig.links?.linkedin,
-  siteConfig.links?.twitter,
-  siteConfig.links?.youtube,
-  ...(siteConfig.socials || []).map((s) => s.url),
-].filter((u, i, arr): u is string => Boolean(u) && arr.indexOf(u) === i);
+const graph: Record<string, unknown>[] = [
+  {
+    "@type": "ProfilePage",
+    "@id": `${siteUrl}/#profilepage`,
+    url: `${siteUrl}/`,
+    name: `${author} — Portfolio & Knowledge Panel`,
+    description: siteDescription,
+    inLanguage: "en-US",
+    mainEntity: { "@id": `${siteUrl}/#person` },
+    isPartOf: { "@id": `${siteUrl}/#website` },
+  },
+];
 
-const personSchema: Record<string, unknown> = {
-  "@type": "Person",
-  "@id": `${siteUrl}/#person`,
-  name: author,
-  url: `${siteUrl}/`,
-  image: `${siteUrl}/og-image.png`,
-  description: siteDescription,
-  sameAs,
-  address: cityPart
-    ? { "@type": "PostalAddress", addressLocality: cityPart, addressCountry: countryParts.join(", ") || "" }
-    : undefined,
-  email: siteConfig.email,
-  knowsAbout: siteConfig.skills || [],
-};
-if (shortBio) personSchema.jobTitle = shortBio;
-if (siteConfig.seo?.worksFor?.name) {
-  personSchema.worksFor = {
-    "@type": "Organization",
-    name: siteConfig.seo.worksFor.name,
-    url: siteConfig.seo.worksFor.url || undefined,
-  };
+if (faqRows.length > 0) {
+  graph.push({
+    "@type": "FAQPage",
+    "@id": `${siteUrl}/#faq`,
+    mainEntity: faqRows.map((f) => ({
+      "@type": "Question",
+      name: f.question,
+      acceptedAnswer: { "@type": "Answer", text: f.answer },
+    })),
+  });
 }
 
 const schema = {
   "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebSite",
-      "@id": `${siteUrl}/#website`,
-      url: `${siteUrl}/`,
-      name: author,
-      description: siteDescription,
-      inLanguage: "en-US",
-    },
-    personSchema,
-  ],
+  "@graph": graph,
 };
 ---
 
@@ -87,8 +71,9 @@ const schema = {
   <Skills />
   <Summary />
   <Experience />
-  <Education />
-  <Research />
+  <Recruiters />
+  <Faq />
+  <Testimonials />
   <Writing />
   <Contact />
 </BaseLayout>

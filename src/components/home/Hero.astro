@@ -1,7 +1,6 @@
 ---
 import { getDynamicConfig } from "../../lib/config";
 import { env } from "../../lib/env";
-import GithubGraph from "./GithubGraph";
 
 const siteConfig = await getDynamicConfig();
 const author = siteConfig.author || env.siteName;
@@ -10,17 +9,28 @@ const lastName = rest.join(" ");
 const initials = (firstName?.[0] || "") + (lastName?.[0] || "");
 const shortBio = siteConfig.bio?.short || "";
 const longBio = siteConfig.bio?.long || "";
-const heroBlurb = longBio || shortBio;
+// Tagline is the short bio; the blurb is the long bio (only when it differs)
+const heroTagline = shortBio;
+const heroBlurb = longBio && longBio !== shortBio ? longBio : "";
 const focusLabel = siteConfig.bio?.focusLabel || "Current directive";
 const locationLine = [siteConfig.location, siteConfig.timezone]
   .filter(Boolean)
   .join(" · ");
 
-const githubUrl = siteConfig.links?.github || "https://github.com/swadhinbiswas";
-const githubUsername = githubUrl.split("/").pop() || "swadhinbiswas";
 const heroMetrics = siteConfig.heroMetrics || [];
-const availability = (siteConfig.bio as any)?.availability
-  || "Open to Mid-level Data/Backend Roles";
+const availability = siteConfig.bio?.availability || "";
+
+// Terminal chrome is derived from the site URL — never hardcoded
+const hostPart = (() => {
+  try { return new URL(siteConfig.url).hostname.split(".")[0] || "swadhin"; }
+  catch { return "swadhin"; }
+})();
+const terminalTitle = `guest@${hostPart}-desktop:~`;
+const termLines = [
+  siteConfig.bio?.currentFocus && { cmd: "current_focus", out: siteConfig.bio.currentFocus, emerald: false },
+  siteConfig.bio?.currentlyBuilding && { cmd: "currently_building", out: siteConfig.bio.currentlyBuilding, emerald: false },
+  siteConfig.bio?.seeking && { cmd: "seeking", out: siteConfig.bio.seeking, emerald: true },
+].filter(Boolean) as { cmd: string; out: string; emerald: boolean }[];
 ---
 
 <section class="hero">
@@ -38,18 +48,19 @@ const availability = (siteConfig.bio as any)?.availability
         <span class="hero-name-glow">{author}</span>
       </h1>
       <div class="hero-status">
-        <span class="status-pill" aria-label="Availability">
-          <span class="status-dot" aria-hidden="true"></span>
-          {availability}
-        </span>
+        {availability && (
+          <span class="status-pill" aria-label="Availability">
+            <span class="status-dot" aria-hidden="true"></span>
+            {availability}
+          </span>
+        )}
       </div>
-      <p class="hero-tagline">{heroBlurb}</p>
+      <p class="hero-tagline">{heroTagline}</p>
     </div>
   </div>
 
   <div class="hero-body reveal reveal-delay-2">
     {heroBlurb && <p class="hero-blurb">{heroBlurb}</p>}
-
     <div class="hero-actions">
       <a href="/projects" class="btn btn-primary">View projects</a>
       {siteConfig.cvUrl && (
@@ -62,6 +73,9 @@ const availability = (siteConfig.bio as any)?.availability
       )}
       {siteConfig.email && (
         <a href={`mailto:${siteConfig.email}`} class="btn btn-outline">Let's collaborate</a>
+      )}
+      {siteConfig.meetingUrl && (
+        <a href={siteConfig.meetingUrl} target="_blank" rel="noopener noreferrer" class="btn btn-outline">Book a call</a>
       )}
     </div>
 
@@ -99,49 +113,26 @@ const availability = (siteConfig.bio as any)?.availability
       <span class="terminal-dot red" aria-hidden="true"></span>
       <span class="terminal-dot yellow" aria-hidden="true"></span>
       <span class="terminal-dot green" aria-hidden="true"></span>
-      <span class="terminal-title">guest@swadhin-desktop:~</span>
+      <span class="terminal-title">{terminalTitle}</span>
       <span class="terminal-spacer"></span>
     </div>
     <div class="terminal-body">
-      {siteConfig.bio?.short && (
+      {termLines.length > 0 ? (
+        termLines.map((line) => (
+          <div class="term-line">
+            <span class="term-prompt">$</span> <span class="term-cmd">{line.cmd}</span>
+            <div class:list={["term-out", line.emerald && "term-out-emerald"]}>{line.out}</div>
+          </div>
+        ))
+      ) : (
         <div class="term-line">
-          <span class="term-prompt">$</span> <span class="term-cmd">whoami</span>
-          <div class="term-out">{siteConfig.bio.short}</div>
+          <span class="term-prompt">$</span>
         </div>
       )}
-      {siteConfig.bio?.intro && (
-        <div class="term-line">
-          <span class="term-prompt">$</span> <span class="term-cmd">intro</span>
-          <div class="term-out">{siteConfig.bio.intro}</div>
-        </div>
-      )}
-      {siteConfig.bio?.story && (
-        <div class="term-line">
-          <span class="term-prompt">$</span> <span class="term-cmd">story</span>
-          <div class="term-out">{siteConfig.bio.story}</div>
-        </div>
-      )}
-      {siteConfig.bio?.quote && (
-        <div class="term-line">
-          <span class="term-prompt">$</span> <span class="term-cmd">quote</span>
-          <div class="term-out term-out-emerald">{siteConfig.bio.quote}</div>
-        </div>
-      )}
-      {siteConfig.bio?.funFact && (
-        <div class="term-line">
-          <span class="term-prompt">$</span> <span class="term-cmd">fun_fact</span>
-          <div class="term-out">{siteConfig.bio.funFact}</div>
-        </div>
-      )}
+      <div class="term-line term-line-cursor" aria-hidden="true">
+        <span class="term-prompt">$</span> <span class="term-cursor"></span>
+      </div>
     </div>
-  </div>
-
-  <div class="panel panel-github reveal reveal-delay-3">
-    <div class="panel-head">
-      <span class="section-eyebrow">GitHub Activity</span>
-      <a href={githubUrl} target="_blank" rel="noopener noreferrer" class="panel-link">@{githubUsername}</a>
-    </div>
-    <GithubGraph username={githubUsername} client:visible />
   </div>
 </section>
 
@@ -176,7 +167,7 @@ const availability = (siteConfig.bio as any)?.availability
     object-fit: cover;
     background: var(--color-card);
     border: 3px solid var(--color-edge);
-    box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.25), 0 12px 32px -8px rgba(139, 92, 246, 0.45);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 12px 32px -8px rgba(0, 0, 0, 0.5);
     position: relative;
     z-index: 1;
   }
@@ -184,7 +175,7 @@ const availability = (siteConfig.bio as any)?.availability
     position: absolute;
     inset: -6px;
     border-radius: 999px;
-    background: conic-gradient(from 0deg, #8B5CF6, #34D399, #8B5CF6);
+    background: conic-gradient(from 0deg, #FFFFFF, #71717A, #FFFFFF);
     z-index: 0;
     opacity: 0.55;
     filter: blur(8px);
@@ -210,11 +201,10 @@ const availability = (siteConfig.bio as any)?.availability
     letter-spacing: -0.025em;
   }
   .hero-name-glow {
-    background: linear-gradient(135deg, #A78BFA 0%, #C4B5FD 35%, #6EE7B7 100%);
+    background: linear-gradient(135deg, #FFFFFF 0%, #D4D4D8 50%, #A1A1AA 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 18px rgba(139, 92, 246, 0.35)) drop-shadow(0 0 32px rgba(52, 211, 153, 0.18));
   }
 
   .hero-status { margin-top: 0.85rem; }
@@ -224,9 +214,9 @@ const availability = (siteConfig.bio as any)?.availability
     gap: 0.5rem;
     padding: 0.35rem 0.85rem;
     border-radius: 999px;
-    background: rgba(16, 185, 129, 0.12);
-    border: 1px solid rgba(16, 185, 129, 0.35);
-    color: #34D399;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--color-edge);
+    color: var(--color-fg-muted);
     font-family: var(--font-mono);
     font-size: 0.7rem;
     font-weight: 600;
@@ -237,13 +227,12 @@ const availability = (siteConfig.bio as any)?.availability
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 999px;
-    background: #34D399;
-    box-shadow: 0 0 8px rgba(52, 211, 153, 0.7);
+    background: var(--color-fg);
     animation: status-pulse 2s ease-in-out infinite;
   }
   @keyframes status-pulse {
-    0%, 100% { box-shadow: 0 0 8px rgba(52, 211, 153, 0.7); }
-    50%      { box-shadow: 0 0 14px rgba(52, 211, 153, 1), 0 0 24px rgba(52, 211, 153, 0.4); }
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.4; }
   }
 
   .hero-tagline {
@@ -271,7 +260,7 @@ const availability = (siteConfig.bio as any)?.availability
     margin-top: 1.5rem;
   }
   .hero-actions .btn-primary {
-    box-shadow: 0 6px 24px -8px rgba(139, 92, 246, 0.55);
+    box-shadow: 0 6px 24px -8px rgba(0, 0, 0, 0.4);
   }
 
   /* Small text row */
@@ -312,7 +301,7 @@ const availability = (siteConfig.bio as any)?.availability
     padding: 1rem 1.1rem;
     transition: border-color 0.2s ease, transform 0.2s ease;
   }
-  .glance-card:hover { border-color: var(--color-accent-mint); transform: translateY(-1px); }
+  .glance-card:hover { border-color: var(--color-edge-strong); transform: translateY(-1px); }
   .glance-label {
     font-family: var(--font-mono);
     font-size: 0.7rem;
@@ -373,20 +362,29 @@ const availability = (siteConfig.bio as any)?.availability
     line-height: 1.55;
     color: var(--color-fg-muted);
   }
-  .term-line + .term-line { margin-top: 0.5rem; }
-  .term-prompt { color: #34D399; }
-  .term-cmd { color: var(--color-fg); }
-  .term-out { padding-left: 1.1rem; color: var(--color-fg-muted); }
-  .term-out-emerald { color: #34D399; }
-
-  /* GitHub panel */
-  .panel-github { margin-top: 1.25rem; padding: 1.1rem 1.25rem 1.25rem; }
-  .panel-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.6rem;
+  .term-line + .term-line { margin-top: 1.1rem; }
+  .term-line-cursor { margin-top: 1.1rem; }
+  .term-prompt { color: #10B981; font-weight: 600; margin-right: 0.35rem; }
+  .term-cmd { color: var(--color-fg); font-weight: 500; }
+  .term-out { margin-top: 0.25rem; color: var(--color-fg-muted); padding-left: 0; }
+  .term-out-emerald { margin-top: 0.25rem; color: #10B981; font-weight: 500; padding-left: 0; }
+  .term-cursor {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.05em;
+    background: var(--color-fg-muted);
+    vertical-align: text-bottom;
+    margin-left: 0.1rem;
+    animation: term-blink 1.1s steps(1) infinite;
   }
+  @keyframes term-blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .term-cursor { animation: none; opacity: 1; }
+  }
+
   .panel-link {
     font-family: var(--font-mono);
     font-size: 0.7rem;

@@ -44,6 +44,8 @@ export const experiences = sqliteTable('experiences', {
   startDate: text('start_date').notNull(),
   endDate: text('end_date'),
   details: text('details'),
+  responsibilities: text('responsibilities'),
+  learnings: text('learnings'),
   order: integer('order').default(0),
   createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
   updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
@@ -53,17 +55,31 @@ export const experiences = sqliteTable('experiences', {
 export const projects = sqliteTable('projects', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull(),
+  slug: text('slug').notNull().unique(), // URL-friendly slug
   description: text('description').notNull(),
   content: text('content'), // Detailed Markdown content
   url: text('url').notNull(),
   github: text('github'),
   image: text('image'),
   tags: text('tags').notNull().default('[]'), // JSON array stored as text
+  category: text('category').default('data-engineering'), // 'data-engineering' | 'web' | 'cli-tools' | 'ai-ml' | 'devops' | 'open-source' | 'research'
   featured: integer('featured', { mode: 'boolean' }).default(false),
-  status: text('status').default('Active'), // Active, Archived, etc.
+  status: text('status').default('Active'), // Active, Archived, Planning, In Development
   projectDate: text('project_date'), // Manual date override
   stars: integer('stars').default(0),
   order: integer('order').default(0),
+  // Enhanced fields for professional project pages
+  techStack: text('tech_stack').default('[]'), // JSON array of technologies
+  demoUrl: text('demo_url'), // Live demo URL (separate from main url)
+  documentation: text('documentation'), // Documentation URL
+  metrics: text('metrics').default('{}'), // JSON object for stats { users: "10K+", uptime: "99.9%" }
+  gallery: text('gallery').default('[]'), // JSON array of image URLs
+  teamSize: integer('team_size'),
+  duration: text('duration'), // e.g., "6 months"
+  role: text('role'), // e.g., "Full Stack Developer"
+  challenges: text('challenges'), // Markdown: key challenges faced
+  outcomes: text('outcomes'), // Markdown: project outcomes/results
+  lessonsLearned: text('lessons_learned'), // Markdown: lessons learned
   createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
   updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
 });
@@ -73,7 +89,8 @@ export const posts = sqliteTable('posts', {
   slug: text('slug').primaryKey(),
   title: text('title').notNull(),
   description: text('description').notNull(),
-  content: text('content').notNull(), // Markdown content
+  content: text('content').notNull(), // Markdown content (used when no external_url)
+  externalUrl: text('external_url'), // Optional link to the article (blog.swadhin.cv, Medium, etc.)
   publishedAt: integer('published_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }),
   tags: text('tags').default('[]'), // JSON array
@@ -84,10 +101,14 @@ export const posts = sqliteTable('posts', {
 export const achievements = sqliteTable('achievements', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull(),
-  icon: text('icon').notNull(),
+  slug: text('slug').notNull().default('').unique(), // URL-friendly slug
+  icon: text('icon').notNull(), // Icon name (strokeIcon map) — not emoji
   description: text('description').notNull(),
   url: text('url'), // Optional link to certificate/proof
   image: text('image'), // Optional preview image
+  story: text('story'), // Markdown: how it was achieved
+  outcome: text('outcome'), // Markdown: measurable results
+  year: text('year'), // e.g., "2025"
   order: integer('order').default(0),
   createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
   updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
@@ -233,6 +254,62 @@ export const supportOptions = sqliteTable('support_options', {
 export type SupportOption = typeof supportOptions.$inferSelect;
 export type NewSupportOption = typeof supportOptions.$inferInsert;
 
+// Testimonials
+export const testimonials = sqliteTable('testimonials', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  quote: text('quote').notNull(),
+  name: text('name').notNull(),
+  role: text('role').notNull(),
+  order: integer('order').default(0),
+  createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
+  updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
+});
+
+// Certifications (recruiter-friendly proof of expertise)
+export const certifications = sqliteTable('certifications', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  issuer: text('issuer').notNull(),
+  year: text('year'),
+  url: text('url'), // Credential / verification link
+  credentialId: text('credential_id'),
+  order: integer('order').default(0),
+  createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
+  updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
+});
+
+// FAQs (recruiter questions — powers FAQPage rich results)
+export const faqs = sqliteTable('faqs', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  question: text('question').notNull(),
+  answer: text('answer').notNull(),
+  order: integer('order').default(0),
+  createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
+  updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
+});
+
+// Languages (spoken + learning — multilingual profile for EU recruiters)
+export const languages = sqliteTable('languages', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  level: text('level').notNull().default('learning'), // 'native' | 'fluent' | 'working' | 'learning'
+  note: text('note'),
+  order: integer('order').default(0),
+  createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
+  updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
+});
+
+// Hero Metrics
+export const heroMetrics = sqliteTable('hero_metrics', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  label: text('label').notNull(),
+  value: text('value').notNull(),
+  sub: text('sub').notNull(),
+  order: integer('order').default(0),
+  createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
+  updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
+});
+
 // API Cache (for rate limiting external APIs)
 export const apiCache = sqliteTable('api_cache', {
   key: text('key').primaryKey(), // e.g., 'latest_commit'
@@ -252,5 +329,38 @@ export type NewInterest = typeof interests.$inferInsert;
 export type PageView = typeof pageViews.$inferSelect;
 export type NewPageView = typeof pageViews.$inferInsert;
 
+export type Testimonial = typeof testimonials.$inferSelect;
+export type NewTestimonial = typeof testimonials.$inferInsert;
+
+export type HeroMetric = typeof heroMetrics.$inferSelect;
+export type NewHeroMetric = typeof heroMetrics.$inferInsert;
+
 export type ApiCache = typeof apiCache.$inferSelect;
 export type NewApiCache = typeof apiCache.$inferInsert;
+
+// Project Categories (taxonomy driven from DB — no hardcoded lists)
+export const projectCategories = sqliteTable('project_categories', {
+  slug: text('slug').primaryKey(),
+  label: text('label').notNull(),
+  short: text('short').notNull().default(''),
+  description: text('description').notNull().default(''),
+  order: integer('order').default(0),
+  createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
+  updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
+});
+
+export type ProjectCategory = typeof projectCategories.$inferSelect;
+export type NewProjectCategory = typeof projectCategories.$inferInsert;
+
+// Uses / toolbox (driven from DB)
+export const uses = sqliteTable('uses', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  category: text('category').notNull().default('General'),
+  item: text('item').notNull(),
+  order: integer('order').default(0),
+  createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
+  updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
+});
+
+export type Use = typeof uses.$inferSelect;
+export type NewUse = typeof uses.$inferInsert;

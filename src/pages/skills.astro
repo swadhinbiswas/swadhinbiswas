@@ -1,13 +1,29 @@
 ---
-export const prerender = false;
+export const prerender = true;
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getDynamicConfig } from "../lib/config";
-import { db, skills, projects } from "../db";
-import { asc } from "drizzle-orm";
+import { getSkills, getProjects } from "../lib/loaders";
+import { thesvgIconUrl, skillInitials } from "../lib/icons";
+import JsonLd from "../components/seo/JsonLd.astro";
+import { env } from "../lib/env";
 
 const siteConfig = await getDynamicConfig();
+const siteUrl = (siteConfig.url || env.siteUrl || "https://swadhin.cv").replace(/\/$/, "");
 const author = siteConfig.author || "Swadhin Biswas";
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": `${siteUrl}/` },
+        { "@type": "ListItem", "position": 2, "name": "Skills", "item": `${siteUrl}/skills` }
+      ]
+    }
+  ]
+};
 
 interface Skill {
   id: number;
@@ -24,22 +40,10 @@ interface Project {
   tags: string;
 }
 
-let all: Skill[] = [];
-let allProjects: Project[] = [];
-
-try {
-  const rows = await db.select().from(skills).orderBy(asc(skills.order));
-  all = rows as Skill[];
-} catch {
-  all = [];
-}
-
-try {
-  const projRows = await db.select().from(projects);
-  allProjects = projRows as Project[];
-} catch {
-  allProjects = [];
-}
+const [all, allProjects] = await Promise.all([
+  getSkills() as Promise<Skill[]>,
+  getProjects() as Promise<Project[]>,
+]);
 
 function safeJSON(s: any): string[] {
   try { return JSON.parse(s); } catch { return []; }
@@ -75,116 +79,6 @@ for (const skill of all) {
   }
 }
 
-const skilliconsMap: Record<string, string> = {
-  "python": "python",
-  "rust": "rust",
-  "go": "go",
-  "typescript": "ts",
-  "javascript": "js",
-  "django": "django",
-  "fastapi": "fastapi",
-  "react": "react",
-  "next.js": "nextjs",
-  "nextjs": "nextjs",
-  "astro": "astro",
-  "vue.js": "vuejs",
-  "vuejs": "vuejs",
-  "node.js": "nodejs",
-  "nodejs": "nodejs",
-  "docker": "docker",
-  "kubernetes": "kubernetes",
-  "terraform": "terraform",
-  "ansible": "ansible",
-  "github actions": "githubactions",
-  "nginx": "nginx",
-  "prometheus": "prometheus",
-  "grafana": "grafana",
-  "postgresql": "postgresql",
-  "postgres": "postgresql",
-  "mysql": "mysql",
-  "sqlite": "sqlite",
-  "duckdb": "duckdb",
-  "redis": "redis",
-  "mongodb": "mongodb",
-  "pinecone": "pinecone",
-  "qdrant": "qdrant",
-  "weaviate": "weaviate",
-  "chroma": "chroma",
-  "clickhouse": "clickhouse",
-  "timescaledb": "timescaledb",
-  "kafka": "kafka",
-  "apache airflow": "airflow",
-  "airflow": "airflow",
-  "apache spark": "spark",
-  "spark": "spark",
-  "apache flink": "flink",
-  "flink": "flink",
-  "dbt": "dbt",
-  "mage": "mage",
-  "prefect": "prefect",
-  "machine learning": "tensorflow",
-  "deep learning": "pytorch",
-  "pytorch": "pytorch",
-  "tensorflow": "tensorflow",
-  "nlp": "huggingface",
-  "hugging face": "huggingface",
-  "computer vision": "opencv",
-  "langchain": "langchain",
-  "openai api": "openai",
-  "git": "git",
-  "linux": "linux",
-  "neovim": "neovim",
-  "mojo": "mojo",
-  "sql": "mysql",
-};
-
-const deviconsFallback: Record<string, string> = {
-  "python": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
-  "rust": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rust/rust-original.svg",
-  "go": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg",
-  "typescript": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
-  "javascript": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
-  "django": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg",
-  "react": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
-  "docker": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",
-  "kubernetes": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg",
-  "postgresql": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg",
-  "redis": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg",
-  "mongodb": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg",
-  "kafka": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apachekafka/apachekafka-original.svg",
-  "node.js": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
-  "express": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg",
-  "vue.js": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg",
-  "astro": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/astro/astro-original.svg",
-  "terraform": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg",
-  "ansible": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ansible/ansible-original.svg",
-  "nginx": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nginx/nginx-original.svg",
-  "git": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",
-  "neovim": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/neovim/neovim-original.svg",
-  "mysql": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",
-  "sqlite": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg",
-  "pytorch": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg",
-  "tensorflow": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg",
-};
-
-function iconFor(name: string): { type: "skillicons" | "devicon"; src: string } | null {
-  const key = name.toLowerCase();
-  if (skilliconsMap[key]) {
-    return { type: "skillicons", src: `https://skillicons.dev/icons?i=${skilliconsMap[key]}&theme=dark` };
-  }
-  if (deviconsFallback[key]) {
-    return { type: "devicon", src: deviconsFallback[key] };
-  }
-  return null;
-}
-
-function initials(name: string) {
-  return name
-    .replace(/[^a-zA-Z0-9+#.]/g, "")
-    .slice(0, 3)
-    .toUpperCase();
-}
-
 const grouped = all.reduce<Record<string, Skill[]>>((acc, skill) => {
   const category = skill.category || "general";
   acc[category] = acc[category] || [];
@@ -212,15 +106,6 @@ const categoryLabel = (category: string) =>
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
 
-const categoryIcons: Record<string, string> = {
-  "language": "code",
-  "framework": "layers",
-  "data engineering": "database",
-  "database": "server",
-  "devops": "settings",
-  "ai": "cpu",
-  "general": "tool",
-};
 ---
 
 <BaseLayout title="Skills" description={`Technologies and tools ${author} uses to build production systems.`}>
@@ -229,7 +114,7 @@ const categoryIcons: Record<string, string> = {
       <div class="reveal">
         <p class="text-eyebrow">Skills & Stack</p>
         <h1 class="text-display mt-3 text-3xl sm:text-4xl">
-          <span class="text-gradient">Technologies I Use</span>
+          <span class="text-aurora">Technologies I Use</span>
         </h1>
         <p class="mt-4 text-base text-[var(--color-fg-muted)] max-w-2xl leading-relaxed">
           Every skill here is linked to real projects. When I add a project with tags, those skills automatically appear with context on where they were used.
@@ -262,23 +147,23 @@ const categoryIcons: Record<string, string> = {
 
               <div class="skills-grid">
                 {skills.map((s) => {
-                  const icon = iconFor(s.name);
+                  const iconUrl = thesvgIconUrl(s.name);
                   const linkedProjects = s.usedIn ? safeJSON(s.usedIn) : (skillToProjects.get(s.name.toLowerCase()) || []);
                   const isCore = s.tier === 'core';
                   return (
                     <div class:list={["skill-card group", isCore && "skill-card-core"]}>
                       <div class="skill-card-header">
                         <div class="skill-icon-wrap">
-                          {icon ? (
-                            <img src={icon.src} alt={s.name} loading="lazy" class="skill-icon" />
+                          {iconUrl ? (
+                            <img src={iconUrl} alt={s.name} loading="lazy" class="skill-icon" />
                           ) : (
-                            <span class="skill-initials">{initials(s.name)}</span>
+                            <span class="skill-initials">{skillInitials(s.name)}</span>
                           )}
                         </div>
                         <div class="skill-card-info">
                           <div class="flex items-center gap-2">
                             <h3 class="skill-name">{s.name}</h3>
-                            {isCore && <span class="text-[9px] font-mono uppercase tracking-wider text-[var(--color-accent)] bg-[rgba(124,58,237,0.15)] px-1.5 py-0.5 rounded">Core</span>}
+                            {isCore && <span class="skill-tier-badge">Core</span>}
                           </div>
                           {s.description && (
                             <p class="skill-desc">{s.description}</p>
@@ -319,8 +204,8 @@ const categoryIcons: Record<string, string> = {
     width: 2rem;
     height: 2rem;
     border-radius: 8px;
-    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
-    color: #fff;
+    background: var(--color-edge-strong);
+    color: var(--color-fg);
     flex-shrink: 0;
   }
 
@@ -343,13 +228,13 @@ const categoryIcons: Record<string, string> = {
 
   .skill-card:hover {
     border-color: var(--color-accent);
-    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     transform: translateY(-1px);
   }
 
   .skill-card-core {
-    border-color: rgba(124, 58, 237, 0.3);
-    background: rgba(124, 58, 237, 0.05);
+    border-color: var(--color-edge-strong);
+    background: rgba(255, 255, 255, 0.02);
   }
 
   .skill-card-header {
@@ -403,6 +288,18 @@ const categoryIcons: Record<string, string> = {
     line-height: 1.3;
   }
 
+  .skill-tier-badge {
+    font-size: 9px;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-fg);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.1rem 0.45rem;
+    border-radius: 4px;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
   .skill-desc {
     margin-top: 0.2rem;
     font-size: 0.75rem;
@@ -443,7 +340,7 @@ const categoryIcons: Record<string, string> = {
     font-size: 0.6rem;
     font-weight: 500;
     color: var(--color-fg-subtle);
-    background: rgba(124, 58, 237, 0.08);
+    background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--color-edge);
     border-radius: 6px;
     white-space: nowrap;
@@ -451,9 +348,9 @@ const categoryIcons: Record<string, string> = {
   }
 
   .skill-project-tag:hover {
-    color: var(--color-accent);
-    border-color: var(--color-accent);
-    background: rgba(124, 58, 237, 0.15);
+    color: var(--color-fg);
+    border-color: var(--color-edge-strong);
+    background: rgba(255, 255, 255, 0.05);
   }
 
   @media (max-width: 640px) {

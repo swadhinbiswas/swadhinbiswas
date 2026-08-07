@@ -1,40 +1,62 @@
 ---
-const testimonials = [
-  {
-    quote: "Swadhin's ability to architect scalable data systems was instrumental in scaling BoringRats to 1M+ users. His technical leadership and hands-on approach to infrastructure were key factors in our successful acquisition.",
-    name: "BoringRats Team",
-    role: "Co-founded & scaled together",
-  },
-];
+import { getDynamicConfig } from "../../lib/config";
+
+const siteConfig = await getDynamicConfig();
+const testimonials = siteConfig.testimonials || [];
 ---
 
 {testimonials.length > 0 && (
-  <section class="screen-line-after">
-    <div class="container-narrow py-12 sm:py-16">
-      <div class="mb-6 reveal">
-        <p class="text-eyebrow">Testimonials</p>
-        <h2 class="mt-2 panel-title">What people say</h2>
+  <section class="section">
+    <div class="container-narrow">
+      <div class="section-head reveal">
+        <div>
+          <p class="text-eyebrow">Testimonials</p>
+          <h2 class="section-title">What people say</h2>
+        </div>
       </div>
 
-      <div class="space-y-4">
+      <div class="testimonial-grid">
         {testimonials.map((t) => (
-          <div class="portfolio-card p-5 sm:p-6 reveal">
-            <div class="flex gap-3">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="flex-shrink-0 text-[var(--color-accent)] opacity-50">
-                <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" fill="currentColor"/>
-                <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z" fill="currentColor"/>
-              </svg>
-              <div>
-                <p class="text-sm leading-relaxed text-[var(--color-fg-muted)] italic">"{t.quote}"</p>
-                <div class="mt-4">
-                  <p class="text-sm font-semibold text-[var(--color-fg)]">{t.name}</p>
-                  <p class="text-xs text-[var(--color-fg-subtle)]">{t.role}</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <figure class="panel p-5 sm:p-6 reveal">
+            <svg class="quote-mark" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M7.17 6C4.32 6 2 8.32 2 11.17v6.66h6.66v-6.66H5.5c0-1.97 1.6-3.5 3.5-3.5V6H7.17zm9.16 0c-2.85 0-5.17 2.32-5.17 5.17v6.66h6.66v-6.66h-3.16c0-1.97 1.6-3.5 3.5-3.5V6h-1.83z"/>
+            </svg>
+            <blockquote class="testimonial-quote">"{t.quote}"</blockquote>
+            <figcaption class="testimonial-meta">
+              <strong>{t.name}</strong>
+              <span>{t.role}</span>
+            </figcaption>
+          </figure>
         ))}
       </div>
     </div>
   </section>
 )}
+
+<style>
+  .testimonial-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  @media (min-width: 700px) { .testimonial-grid { grid-template-columns: 1fr 1fr; } }
+  .quote-mark { color: var(--color-fg-subtle); opacity: 0.4; margin-bottom: 0.6rem; }
+  .testimonial-quote {
+    color: var(--color-fg-muted);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    font-style: italic;
+  }
+  .testimonial-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 1px dashed var(--color-edge);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+  .testimonial-meta strong { color: var(--color-fg); font-weight: 600; }
+  .testimonial-meta span { color: var(--color-fg-subtle); }
+</style>

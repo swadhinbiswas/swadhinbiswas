@@ -1,106 +1,93 @@
 ---
-export const prerender = true;
+export const prerender = false;
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { db, posts } from "../../db";
-import { unified } from "unified";
-import remarkParse from "remark-parse";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
-import remarkRehype from "remark-rehype";
-import rehypeKatex from "rehype-katex";
-import rehypeHighlight from "rehype-highlight";
-import rehypeStringify from "rehype-stringify";
+import { eq } from "drizzle-orm";
+import { renderMarkdown } from "../../lib/markdown";
 import "katex/dist/katex.min.css";
 import "highlight.js/styles/github-dark.css";
 import { getDynamicConfig } from "../../lib/config";
 
-export async function getStaticPaths() {
-  try {
-    const allPosts = await db.query.posts.findMany();
-    return allPosts.map((post) => ({
-      params: { slug: post.slug },
-      props: { post },
-    }));
-  } catch {
-    return [];
-  }
-}
+const { slug } = Astro.params;
+if (!slug) return Astro.redirect("/404");
 
-const { post } = Astro.props;
-if (!post) return Astro.redirect("/404");
-
-const processor = unified()
-  .use(remarkParse)
-  .use(remarkGfm)
-  .use(remarkMath)
-  .use(remarkRehype, { allowDangerousHtml: true })
-  .use(rehypeKatex)
-  .use(rehypeHighlight)
-  .use(rehypeStringify, { allowDangerousHtml: true });
-
-const processedContent = await processor.process(post.content);
-const contentHtml = processedContent.toString();
-
-const tags = (() => { try { return JSON.parse(post.tags || "[]"); } catch { return []; } })();
 const siteConfig = await getDynamicConfig();
+const blogOrigin = (siteConfig.blogUrl || "https://blog.swadhin.cv").replace(/\/$/, "");
 const siteUrl = (siteConfig.url || "https://swadhin.cv").replace(/\/$/, "");
-const canonicalUrl = `${siteUrl}/posts/${post.slug}/`;
-const publishedIso = new Date(post.publishedAt).toISOString();
+
+// 1. Local post from the admin dashboard?
+let post: any = null;
+try {
+  const rows = await db.select().from(posts).where(eq(posts.slug, slug)).limit(1);
+  post = rows[0] || null;
+} catch {}
+
+// 2. External link → 301 to the article
+if (post?.externalUrl) return Astro.redirect(post.externalUrl, 301);
+
+// 3. Not a local post → maybe it's a blog.swadhin.cv post
+if (!post) return Astro.redirect(`${blogOrigin}/blog/${slug}/`, 301);
+
+// 4. Local post with content → render it here
+const { html: contentHtml, features } = await renderMarkdown(post.content || "");
+const tags = (() => { try { return JSON.parse(post.tags || "[]"); } catch { return []; } })();
+const canonicalUrl = `${siteUrl}/posts/${slug}/`;
+const publishedIso = post.publishedAt instanceof Date ? post.publishedAt.toISOString() : new Date(post.publishedAt).toISOString();
 
 const schema = {
   "@context": "https://schema.org",
-  "@type": "Article",
-  mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
-  headline: post.title,
-  description: post.description,
-  datePublished: publishedIso,
-  author: { "@type": "Person", name: siteConfig.author || "Swadhin Biswas" },
-  keywords: tags,
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": `${siteUrl}/` },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": `${siteUrl}/posts` },
+        { "@type": "ListItem", "position": 3, "name": post.title, "item": canonicalUrl },
+      ],
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": `${canonicalUrl}#article`,
+      mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
+      headline: post.title,
+      description: post.description,
+      datePublished: publishedIso,
+      author: { "@id": `${siteUrl}/#person` },
+      publisher: { "@id": `${siteUrl}/#person` },
+      keywords: tags,
+    },
+  ],
 };
 
 const formatDate = (date: any) =>
   new Date(date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 ---
 
-<BaseLayout
-  title={post.title}
-  description={post.description}
-  image={`${siteUrl}/og-image.png`}
-  ogType="article"
->
+<BaseLayout title={post.title} description={post.description} image={`${siteUrl}/api/og/posts/${slug}.svg`} ogType="article" canonical={`/posts/${slug}/`}>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(schema)} />
     <meta property="article:published_time" content={publishedIso} />
+    {features.hasMermaid && <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js" />}
+    {features.hasPlotly && <script src="https://cdn.jsdelivr.net/npm/plotly.js@3.3.1/dist/plotly.min.js" />}
+    {features.hasCharts && <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js" />}
   </Fragment>
 
   <article>
     <section class="screen-line-after">
       <div class="container-narrow py-12 sm:py-16">
         <a href="/posts" class="text-mono inline-flex items-center gap-1.5 text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-[var(--color-accent)] reveal">
-          ← All writing
+          ← All posts
         </a>
-
         <div class="mt-8 reveal reveal-delay-1">
-          <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-mono text-xs text-[var(--color-fg-subtle)]">
-            <time datetime={publishedIso}>{formatDate(post.publishedAt)}</time>
-            {tags.length > 0 && (
-              <>
-                <span>·</span>
-                <div class="flex flex-wrap gap-1.5">
-                  {tags.slice(0, 3).map((t: string) => (
-                    <span class="tag">{t}</span>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-
-          <h1 class="text-display mt-3 text-3xl text-[var(--color-fg)] sm:text-4xl">
-            <span class="text-gradient">{post.title}</span>
+          <p class="text-mono text-xs text-[var(--color-fg-subtle)]">{formatDate(post.publishedAt)}</p>
+          <h1 class="text-display mt-3 text-3xl sm:text-4xl">
+            <span class="text-aurora">{post.title}</span>
           </h1>
-
-          {post.description && (
-            <p class="prose-mono mt-4 max-w-prose">{post.description}</p>
+          {post.description && <p class="prose-mono mt-4 max-w-prose">{post.description}</p>}
+          {tags.length > 0 && (
+            <div class="mt-6 flex flex-wrap gap-1.5">
+              {tags.map((t: string) => <span class="tag">{t}</span>)}
+            </div>
           )}
         </div>
       </div>
@@ -113,76 +100,3 @@ const formatDate = (date: any) =>
     </section>
   </article>
 </BaseLayout>
-
-<style is:global>
-  .prose-content {
-    color: var(--color-fg-muted);
-    line-height: 1.75;
-    font-size: 1.0625rem;
-  }
-  .prose-content h1,
-  .prose-content h2,
-  .prose-content h3,
-  .prose-content h4 {
-    color: var(--color-fg);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
-    line-height: 1.25;
-  }
-  .prose-content h2 { font-size: 1.5rem; }
-  .prose-content h3 { font-size: 1.25rem; }
-  .prose-content p { margin: 1.25rem 0; }
-  .prose-content a {
-    color: var(--color-accent);
-    text-decoration: underline;
-    text-decoration-style: wavy;
-    text-decoration-color: var(--color-accent-2, var(--color-edge-strong));
-    text-underline-offset: 4px;
-    transition: all 0.2s ease;
-  }
-  .prose-content a:hover {
-    color: var(--color-fg);
-    text-decoration-color: var(--color-accent);
-  }
-  .prose-content ul, .prose-content ol { padding-left: 1.5rem; margin: 1.25rem 0; }
-  .prose-content li { margin: 0.5rem 0; }
-  .prose-content li::marker { color: var(--color-accent); }
-  .prose-content code {
-    background-color: rgba(199, 146, 234, 0.1);
-    border: 1px solid var(--color-edge);
-    padding: 0.15rem 0.4rem;
-    border-radius: 6px;
-    font-size: 0.875em;
-    color: var(--color-accent);
-    font-family: var(--font-mono);
-  }
-  .prose-content pre {
-    background-color: var(--color-card);
-    border: 2px solid var(--color-edge);
-    border-radius: 12px;
-    padding: 1.25rem;
-    overflow-x: auto;
-    margin: 1.5rem 0;
-  }
-  .prose-content pre code { background: none; border: none; padding: 0; color: var(--color-fg-muted); }
-  .prose-content blockquote {
-    border-left: 3px solid var(--color-accent);
-    padding-left: 1.25rem;
-    margin: 1.5rem 0;
-    color: var(--color-fg);
-    font-style: italic;
-    background: rgba(199, 146, 234, 0.04);
-    border-radius: 0 8px 8px 0;
-    padding: 1rem 1.25rem;
-  }
-  .prose-content table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
-  .prose-content th, .prose-content td {
-    border-bottom: 1px solid var(--color-edge);
-    padding: 0.75rem;
-    text-align: left;
-  }
-  .prose-content th { color: var(--color-fg); font-weight: 700; }
-  .prose-content img { border-radius: 12px; margin: 1.5rem 0; border: 2px solid var(--color-edge); }
-</style>

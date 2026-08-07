@@ -1,9 +1,14 @@
 import type { APIRoute } from "astro";
 import { db, projects } from "../../../db";
 import { eq } from "drizzle-orm";
-import { clearConfigCache } from "../../../lib/config";
+import { purgeSiteCaches } from "../../../lib/config";
 
 export const prerender = false;
+
+// Clear projects cache
+async function clearProjectsCache() {
+  await purgeSiteCaches();
+}
 
 // GET all projects
 export const GET: APIRoute = async () => {
@@ -47,10 +52,24 @@ export const POST: APIRoute = async ({ request }) => {
       github,
       image,
       tags = [],
+      category = "data-engineering",
       featured = false,
       stars = 0,
       order = 0,
       status = "Active",
+      // New fields
+      techStack = [],
+      demoUrl,
+      documentation,
+      metrics = {},
+      gallery = [],
+      teamSize,
+      duration,
+      role,
+      challenges,
+      outcomes,
+      lessonsLearned,
+      projectDate,
     } = body;
 
     if (!name || !description || !url) {
@@ -68,20 +87,43 @@ export const POST: APIRoute = async ({ request }) => {
 
     const now = new Date().toISOString();
 
+    // Auto-generate slug from name
+    const slug = name
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
     const result = await db
       .insert(projects)
       .values({
         name,
+        slug,
         description,
         content: content || "",
         url,
         github: github || null,
         image: image || null,
         tags: JSON.stringify(tags),
+        category,
         featured,
         stars,
         order,
         status,
+        projectDate: projectDate || null,
+        // New fields
+        techStack: JSON.stringify(techStack),
+        demoUrl: demoUrl || null,
+        documentation: documentation || null,
+        metrics: JSON.stringify(metrics),
+        gallery: JSON.stringify(gallery),
+        teamSize: teamSize || null,
+        duration: duration || null,
+        role: role || null,
+        challenges: challenges || null,
+        outcomes: outcomes || null,
+        lessonsLearned: lessonsLearned || null,
         createdAt: now,
         updatedAt: now,
       })
@@ -89,6 +131,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Clear config cache to force refresh of featured projects
     clearConfigCache();
+    await clearProjectsCache();
 
     return new Response(
       JSON.stringify({ success: true, data: { ...result[0], tags } }),
@@ -113,20 +156,7 @@ export const POST: APIRoute = async ({ request }) => {
 export const PUT: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const {
-      id,
-      name,
-      description,
-      content,
-      url,
-      github,
-      image,
-      tags = [],
-      featured,
-      stars,
-      order,
-      status,
-    } = body;
+    const { id } = body;
 
     if (!id) {
       return new Response(
@@ -139,23 +169,25 @@ export const PUT: APIRoute = async ({ request }) => {
     }
 
     const now = new Date().toISOString();
+    const setData: Record<string, any> = { updatedAt: now };
+
+    const fields = [
+      'name', 'description', 'content', 'url', 'github', 'image', 'tags', 'category',
+      'featured', 'stars', 'order', 'status', 'projectDate',
+      // New fields
+      'techStack', 'demoUrl', 'documentation', 'metrics', 'gallery',
+      'teamSize', 'duration', 'role', 'challenges', 'outcomes', 'lessonsLearned'
+    ];
+    const jsonFields = ['tags', 'techStack', 'metrics', 'gallery'];
+    for (const f of fields) {
+      if (body[f] !== undefined) {
+        setData[f] = jsonFields.includes(f) ? JSON.stringify(body[f]) : body[f];
+      }
+    }
 
     const result = await db
       .update(projects)
-      .set({
-        name,
-        description,
-        content: content || "",
-        url,
-        github: github || null,
-        image: image || null,
-        tags: JSON.stringify(tags),
-        featured,
-        stars,
-        order,
-        status: status || "Active",
-        updatedAt: now,
-      })
+      .set(setData)
       .where(eq(projects.id, id))
       .returning();
 
@@ -171,9 +203,10 @@ export const PUT: APIRoute = async ({ request }) => {
 
     // Clear config cache to force refresh of featured projects
     clearConfigCache();
+    await clearProjectsCache();
 
     return new Response(
-      JSON.stringify({ success: true, data: { ...result[0], tags } }),
+      JSON.stringify({ success: true, data: { ...result[0], tags: JSON.parse(result[0].tags || "[]") } }),
       {
         status: 200,
         headers: { "Content-Type": "application/json" },
@@ -200,6 +233,7 @@ export const DELETE: APIRoute = async ({ request }) => {
 
     // Clear config cache to force refresh of featured projects
     clearConfigCache();
+    await clearProjectsCache();
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,

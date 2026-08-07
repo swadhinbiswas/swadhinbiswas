@@ -1,4 +1,8 @@
 ---
+import { getDynamicConfig } from "../../lib/config";
+import { db, posts as postsTable } from "../../db";
+import { desc, eq } from "drizzle-orm";
+
 interface BlogPost {
   id: number;
   title: string;
@@ -11,71 +15,183 @@ interface BlogPost {
   categories: { id: number; name: string; slug: string }[];
 }
 
-let recent: BlogPost[] = [];
-try {
-  const res = await fetch("https://blog.swadhin.cv/api/posts/recent?limit=5");
-  const json = await res.json();
-  recent = json.data || [];
-} catch {
-  recent = [];
+const siteConfig = await getDynamicConfig();
+const blogOrigin = (siteConfig.blogUrl || "https://blog.swadhin.cv").replace(/\/$/, "");
+const blogBase = `${blogOrigin}/blog`;
+
+let cachedPostsMem: BlogPost[] | null = null;
+let postsMemTimestamp = 0;
+const POSTS_MEM_TTL = 300 * 1000; // 5 minutes
+
+async function getRecentPosts(): Promise<BlogPost[]> {
+  if (cachedPostsMem && Date.now() - postsMemTimestamp < POSTS_MEM_TTL) {
+    return cachedPostsMem;
+  }
+  try {
+    const res = await fetch(`${blogOrigin}/api/posts/recent?limit=5`, {
+      signal: AbortSignal.timeout(1500),
+    });
+    if (res.ok) {
+      const json = await res.json();
+      const posts = json.data || [];
+      cachedPostsMem = posts;
+      postsMemTimestamp = Date.now();
+      return posts;
+    }
+  } catch {}
+  return cachedPostsMem || [];
 }
+
+const recent = await getRecentPosts();
+
+// Merge admin-managed posts (draft=false) with blog API posts
+let localPosts: any[] = [];
+try {
+  const rows = await db.select().from(postsTable).where(eq(postsTable.draft, false)).orderBy(desc(postsTable.publishedAt));
+  localPosts = rows;
+} catch {}
+
+const merged = [
+  ...localPosts.map((lp) => ({
+    slug: lp.slug,
+    title: lp.title,
+    excerpt: lp.description || "",
+    cover_image: "",
+    published_at: new Date(lp.publishedAt).toISOString(),
+    external: Boolean(lp.externalUrl),
+    href: lp.externalUrl || `/posts/${lp.slug}/`,
+    categories: (() => { try { return JSON.parse(lp.tags || "[]").map((t: string) => ({ name: t })); } catch { return []; } })(),
+  })),
+  ...recent.map((bp) => ({
+    ...bp,
+    external: true,
+    href: `${blogBase}/${bp.slug}/`,
+  })),
+]
+  .sort((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime())
+  .slice(0, 5);
 
 function formatDate(dateStr: string) {
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return "";
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
-
-const blogBase = "https://blog.swadhin.cv/blog";
 ---
 
-<section id="writing" class="screen-line-after">
-  <div class="container-narrow py-12 sm:py-16">
-    <div class="mb-6 flex items-baseline justify-between reveal">
-      <h2 class="panel-title">
-        Blog<span class="count-badge">{recent.length || ""}</span>
-      </h2>
-      <a href="https://blog.swadhin.cv" target="_blank" rel="noopener noreferrer" class="text-mono text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-[var(--color-accent)]">
-        All posts →
-      </a>
+<section id="writing" class="section">
+  <div class="container-narrow">
+    <div class="section-head reveal">
+      <div>
+        <p class="text-eyebrow">Blog</p>
+        <h2 class="section-title">
+          Recent writing
+          {merged.length > 0 && <span class="count-badge">{merged.length}</span>}
+        </h2>
+      </div>
+      <a href={blogOrigin} target="_blank" rel="noopener noreferrer" class="section-link">All posts →</a>
     </div>
 
-    {recent.length === 0 ? (
-      <p class="text-sm text-[var(--color-fg-muted)] reveal">
+    {merged.length === 0 ? (
+      <p class="panel p-6 text-sm text-[var(--color-fg-muted)] reveal">
         Articles will appear here once published on the blog.
       </p>
     ) : (
-      <div class="panel">
-        <div class="panel-top"></div>
-        {recent.map((post) => (
-          <a href={`${blogBase}/${post.slug}/`} target="_blank" rel="noopener noreferrer" class="row-card group">
-            <div class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)] w-20 flex-shrink-0 pt-1">
-              {formatDate(post.published_at)}
-            </div>
-
-            <div class="min-w-0 flex-1 row-card-divider">
-              <h3 class="row-card-title">{post.title}</h3>
-              {post.excerpt && (
-                <p class="prose-mono mt-1 line-clamp-2">{post.excerpt}</p>
-              )}
-              {post.categories.length > 0 && (
-                <div class="mt-2 flex flex-wrap gap-1.5">
-                  {post.categories.slice(0, 3).map((c) => (
-                    <span class="tag">{c.name}</span>
-                  ))}
+      <div class="panel panel-accent">
+      <ul class="post-list reveal reveal-delay-1">
+        {merged.map((post) => (
+          <li>
+            <a
+              class="post-row"
+              href={post.href}
+              target={post.external ? "_blank" : undefined}
+              rel={post.external ? "noopener noreferrer" : undefined}
+            >
+              <time class="post-date">{formatDate(post.published_at)}</time>
+              {post.cover_image && (
+                <div class="post-cover-wrap">
+                  <img src={post.cover_image} alt="" class="post-cover" loading="lazy" width="48" height="48" />
                 </div>
               )}
-            </div>
-
-            <div class="row-card-actions">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5">
-                <path d="M5 12h14M13 5l7 7-7 7"/>
-              </svg>
-            </div>
-          </a>
+              <div class="post-body">
+                <h3 class="post-title">{post.title}</h3>
+                {post.excerpt && <p class="post-excerpt">{post.excerpt}</p>}
+                {post.categories.length > 0 && (
+                  <div class="post-cats">
+                    {post.categories.slice(0, 3).map((c) => <span class="tag">{c.name}</span>)}
+                  </div>
+                )}
+              </div>
+              <span class="post-arrow" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14M13 5l7 7-7 7"/>
+                </svg>
+              </span>
+            </a>
+          </li>
         ))}
-        <div class="panel-bottom"></div>
+      </ul>
       </div>
     )}
   </div>
 </section>
+
+<style>
+  .post-list { list-style: none; margin: 0; padding: 0.5rem 0; display: flex; flex-direction: column; }
+  .post-list > li + li { border-top: 1px dashed var(--color-edge); }
+  .post-row {
+    display: grid;
+    grid-template-columns: 5.5rem auto 1fr auto;
+    gap: 0.75rem;
+    align-items: start;
+    padding: 0.9rem 1.1rem;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.2s ease;
+  }
+  .post-row:hover { background: rgba(255, 255, 255, 0.02); }
+  .post-cover-wrap {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid var(--color-edge);
+    background: var(--color-card);
+  }
+  .post-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .post-date {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-fg-subtle);
+    padding-top: 0.2rem;
+    white-space: nowrap;
+  }
+  .post-title {
+    font-family: var(--font-display);
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--color-fg);
+    line-height: 1.4;
+  }
+  .post-excerpt {
+    margin-top: 0.35rem;
+    color: var(--color-fg-muted);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .post-cats { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.5rem; }
+  .post-arrow {
+    color: var(--color-fg-subtle);
+    align-self: center;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+  .post-row:hover .post-arrow { color: var(--color-accent-2); transform: translateX(2px); }
+</style>

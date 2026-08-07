@@ -1,0 +1,221 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getDynamicConfig } from "../lib/config";
+import { getExperiences, getSkills, getEducation, getProjects, getUses } from "../lib/loaders";
+import { env } from "../lib/env";
+import { db, certifications } from "../db";
+import { asc } from "drizzle-orm";
+
+const siteConfig = await getDynamicConfig();
+const author = siteConfig.author || "Swadhin Biswas";
+const title = siteConfig.bio?.intro || "Data / Backend Engineer";
+
+const [experiencesList, skillsList, educationList, projectsList] = await Promise.all([
+  getExperiences(),
+  getSkills(),
+  getEducation(),
+  getProjects(),
+]);
+
+const certs = await (async () => {
+  try { return await db.select().from(certifications).orderBy(asc(certifications.order)); } catch { return []; }
+})();
+
+function formatDate(s?: string) {
+  if (!s) return "Present";
+  const d = new Date(s);
+  if (isNaN(d.getTime())) return s;
+  return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+}
+
+function parseList(val: unknown): string[] {
+  if (!val) return [];
+  if (Array.isArray(val)) return val;
+  try { return JSON.parse(val as string); } catch { return []; }
+}
+---
+
+<BaseLayout
+  title="CV — Printable"
+  description={`Printable CV of ${author} — ${title}.`}
+  noindex
+>
+  <section class="screen-line-after">
+    <div class="container-narrow py-10">
+      <div class="flex flex-wrap items-center justify-between gap-3 print-hidden">
+        <p class="text-eyebrow">CV</p>
+        <button onclick="window.print()" class="btn btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+          </svg>
+          Save as PDF
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen-line-after">
+    <div class="container-narrow pb-16">
+      <article class="cv-sheet panel p-8 sm:p-10">
+        <header class="cv-header">
+          <h1 class="cv-name">{author}</h1>
+          <p class="cv-title">{title}</p>
+          <p class="cv-contact">
+            {siteConfig.location && <span>{siteConfig.location.split(",")[0]}</span>}
+            {siteConfig.email && <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>}
+            {siteConfig.links?.github && <span>{siteConfig.links.github.replace("https://", "")}</span>}
+            {siteConfig.links?.linkedin && <span>{siteConfig.links.linkedin.replace("https://", "")}</span>}
+          </p>
+        </header>
+
+        {siteConfig.bio?.short && (
+          <section class="cv-section">
+            <h2 class="cv-h">Profile</h2>
+            <p class="cv-p">{siteConfig.bio.short}</p>
+          </section>
+        )}
+
+        {experiencesList.length > 0 && (
+          <section class="cv-section">
+            <h2 class="cv-h">Experience</h2>
+            {experiencesList.map((exp: any) => (
+              <div class="cv-entry">
+                <div class="cv-entry-head">
+                  <h3 class="cv-entry-title">{exp.role} · {exp.company}</h3>
+                  <span class="cv-entry-date">{formatDate(exp.startDate)} — {formatDate(exp.endDate)}</span>
+                </div>
+                {exp.details && <p class="cv-entry-desc">{exp.details}</p>}
+                {parseList(exp.responsibilities).length > 0 && (
+                  <ul class="cv-bullets">
+                    {parseList(exp.responsibilities).slice(0, 4).map((r: string) => <li>{r}</li>)}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </section>
+        )}
+
+        {skillsList.length > 0 && (
+          <section class="cv-section">
+            <h2 class="cv-h">Technical Skills</h2>
+            <p class="cv-p">{(skillsList as any[]).map((s) => s.name).join(" · ")}</p>
+          </section>
+        )}
+
+        {projectsList.length > 0 && (
+          <section class="cv-section">
+            <h2 class="cv-h">Selected Projects</h2>
+            {projectsList.slice(0, 4).map((p: any) => (
+              <div class="cv-entry">
+                <div class="cv-entry-head">
+                  <h3 class="cv-entry-title">{p.name}</h3>
+                  {p.stars > 0 && <span class="cv-entry-date">★ {p.stars.toLocaleString()}</span>}
+                </div>
+                {p.description && <p class="cv-entry-desc">{p.description}</p>}
+              </div>
+            ))}
+          </section>
+        )}
+
+        {educationList.length > 0 && (
+          <section class="cv-section">
+            <h2 class="cv-h">Education</h2>
+            {(educationList as any[]).map((edu) => (
+              <div class="cv-entry">
+                <div class="cv-entry-head">
+                  <h3 class="cv-entry-title">{edu.degree} · {edu.institution}</h3>
+                  <span class="cv-entry-date">{formatDate(edu.startDate)} — {formatDate(edu.endDate)}</span>
+                </div>
+              </div>
+            ))}
+          </section>
+        )}
+
+        {certs.length > 0 && (
+          <section class="cv-section">
+            <h2 class="cv-h">Certifications</h2>
+            <ul class="cv-bullets">
+              {certs.map((c: any) => (
+                <li>{c.name} — {c.issuer}{c.year ? ` (${c.year})` : ""}</li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </article>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .cv-sheet { max-width: 52rem; }
+  .cv-header { border-bottom: 2px solid var(--color-edge-strong); padding-bottom: 1.25rem; }
+  .cv-name {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--color-fg);
+  }
+  .cv-title { margin-top: 0.3rem; font-size: 1rem; color: var(--color-fg-muted); font-weight: 500; }
+  .cv-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.4rem;
+    margin-top: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-fg-subtle);
+  }
+  .cv-contact a { color: inherit; transition: color 0.2s ease; }
+  .cv-contact a:hover { color: var(--color-fg); }
+
+  .cv-section { margin-top: 1.5rem; }
+  .cv-h {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent-2);
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--color-edge);
+    margin-bottom: 0.9rem;
+  }
+  .cv-p { color: var(--color-fg-muted); font-size: 0.9rem; line-height: 1.7; }
+
+  .cv-entry { margin-bottom: 1rem; }
+  .cv-entry-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1rem; }
+  .cv-entry-title { font-family: var(--font-display); font-size: 0.98rem; font-weight: 700; color: var(--color-fg); }
+  .cv-entry-date { font-family: var(--font-mono); font-size: 0.7rem; color: var(--color-fg-subtle); }
+  .cv-entry-desc { margin-top: 0.3rem; font-size: 0.85rem; color: var(--color-fg-muted); line-height: 1.6; }
+  .cv-bullets { list-style: none; margin: 0.4rem 0 0; padding: 0; }
+  .cv-bullets li {
+    position: relative;
+    padding-left: 1rem;
+    font-size: 0.85rem;
+    color: var(--color-fg-muted);
+    line-height: 1.6;
+  }
+  .cv-bullets li::before { content: "▹"; position: absolute; left: 0; color: var(--color-fg-subtle); }
+
+  /* Print: hide chrome, flatten to black on white */
+  .print-hidden { }
+  @media print {
+    .print-hidden { display: none !important; }
+    .shell-sidebar, .site-footer, .screen-line-after:first-of-type { display: none !important; }
+    .shell { display: block !important; }
+    .shell-main, .shell-content { all: unset !important; padding: 0 !important; max-width: none !important; }
+    .cv-sheet { border: 0 !important; box-shadow: none !important; padding: 0 !important; max-width: none !important; }
+    body { background: #fff !important; }
+    .cv-name { color: #000 !important; }
+    .cv-title { color: #333 !important; }
+    .cv-h { color: #000 !important; border-bottom-color: #999 !important; }
+    .cv-p, .cv-entry-desc, .cv-bullets li, .cv-contact { color: #222 !important; }
+    .cv-entry-title { color: #000 !important; }
+    .cv-entry-date { color: #555 !important; }
+    a { color: inherit !important; text-decoration: none !important; }
+    @page { margin: 1.5cm; }
+  }
+</style>

@@ -13,6 +13,7 @@ import {
   heroMetrics,
 } from "../db";
 import { env } from "./env";
+import { getCachedData, setCachedData, deleteKey, deletePattern } from "./redis";
 
 export interface DynamicSiteConfig {
   name: string;
@@ -23,6 +24,19 @@ export interface DynamicSiteConfig {
   email: string;
   location: string;
   timezone: string;
+
+  sidebarTagline: string;
+  footerTagline: string;
+  contactBlurb: string;
+  usesPhilosophy: string;
+  blogUrl: string;
+
+  noticePeriod: string;
+  workAuthorization: string;
+  relocationTargets: string;
+  englishLevel: string;
+  meetingUrl: string;
+  availabilityHours: string;
 
   seo: {
     author: string;
@@ -87,15 +101,20 @@ export interface DynamicSiteConfig {
     researchStatement: string;
     roleInterests?: string;
     summary?: string;
+    currentFocus?: string;
+    currentlyBuilding?: string;
+    seeking?: string;
+    availability?: string;
   };
 }
 
 // Cache for config
 let cachedConfig: DynamicSiteConfig | null = null;
 let cacheTimestamp: number = 0;
-const CACHE_TTL = 60 * 1000; // 1 minute cache
+let inFlightPromise: Promise<DynamicSiteConfig> | null = null;
+const CACHE_TTL = 300 * 1000; // 5 minute in-memory cache
 const DEFAULT_SHORT_BIO = "";
-const DEFAULT_FOCUS_LABEL = "FOCUS";
+const DEFAULT_FOCUS_LABEL = "";
 const DEFAULT_RESEARCH_STATEMENT = "";
 
 /**
@@ -111,8 +130,39 @@ function parseLocation(raw: string): { city: string; country: string } {
 }
 
 export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
-  // Return cached config if still valid
+  // L1: In-memory cache (instant)
   if (cachedConfig && Date.now() - cacheTimestamp < CACHE_TTL) {
+    return cachedConfig;
+  }
+
+  // Deduplicate concurrent calls during cache miss (thundering herd prevention)
+  if (inFlightPromise) {
+    return inFlightPromise;
+  }
+
+  inFlightPromise = (async () => {
+    try {
+      return await fetchDynamicConfig();
+    } finally {
+      inFlightPromise = null;
+    }
+  })();
+
+  return inFlightPromise;
+}
+
+async function fetchDynamicConfig(): Promise<DynamicSiteConfig> {
+  // Double-check L1 in case another promise set it
+  if (cachedConfig && Date.now() - cacheTimestamp < CACHE_TTL) {
+    return cachedConfig;
+  }
+
+  // L2: Upstash cache (fast)
+  const upstashKey = "site:config";
+  const upstashData = await getCachedData(upstashKey);
+  if (upstashData) {
+    cachedConfig = upstashData as DynamicSiteConfig;
+    cacheTimestamp = Date.now();
     return cachedConfig;
   }
 
@@ -171,6 +221,12 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
       settings[s.key] = s.value;
     });
 
+    // Safe JSON parse — one malformed row must never break the site config
+    const safeParse = (raw: string | null | undefined, fallback: unknown) => {
+      if (!raw) return fallback;
+      try { return JSON.parse(raw); } catch { return fallback; }
+    };
+
     // Convert bio to object
     const bio: Record<string, string> = {};
     bioData.forEach((b: any) => {
@@ -200,6 +256,17 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
       email: settings.email || env.email,
       location: settings.location || env.location,
       timezone: settings.timezone || env.timezone,
+      sidebarTagline: cleanValue(settings.sidebar_tagline),
+      footerTagline: cleanValue(settings.footer_tagline),
+      contactBlurb: cleanValue(settings.contact_blurb),
+      usesPhilosophy: cleanValue(settings.uses_philosophy),
+      blogUrl: cleanValue(settings.blog_url),
+      noticePeriod: cleanValue(settings.notice_period),
+      workAuthorization: cleanValue(settings.work_authorization),
+      relocationTargets: cleanValue(settings.relocation_targets),
+      englishLevel: cleanValue(settings.english_level),
+      meetingUrl: cleanValue(settings.meeting_url),
+      availabilityHours: cleanValue(settings.availability_hours),
 
       seo: {
         author: settings.author || env.siteName,
@@ -275,7 +342,7 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
                 url: p.url,
                 github: p.github || undefined,
                 image: p.image || undefined,
-                tags: JSON.parse(p.tags || "[]"),
+                tags: safeParse(p.tags, []),
                 featured: p.featured || false,
                 stars: p.stars || 0,
               }))
@@ -315,12 +382,19 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
         researchStatement,
         roleInterests: cleanValue(bio.roleInterests),
         summary: cleanValue(bio.summary),
+        currentFocus: cleanValue(bio.currentFocus),
+        currentlyBuilding: cleanValue(bio.currentlyBuilding),
+        seeking: cleanValue(bio.seeking),
+        availability: cleanValue(bio.availability),
       },
     };
 
     // Update cache
     cachedConfig = config;
     cacheTimestamp = Date.now();
+
+    // Persist to Upstash (survives restarts, shared across instances)
+    setCachedData(upstashKey, config, 600).catch(() => {});
 
     return config;
   } catch (error) {
@@ -339,6 +413,17 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
       email: env.email,
       location: env.location,
       timezone: env.timezone,
+      sidebarTagline: "",
+      footerTagline: "",
+      contactBlurb: "",
+      usesPhilosophy: "",
+      blogUrl: "",
+      noticePeriod: "",
+      workAuthorization: "",
+      relocationTargets: "",
+      englishLevel: "",
+      meetingUrl: "",
+      availabilityHours: "",
       seo: {
         author: env.siteName,
         title: "",
@@ -374,6 +459,11 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
         funFact: "",
         researchStatement: DEFAULT_RESEARCH_STATEMENT,
         roleInterests: "",
+        summary: "",
+        currentFocus: "",
+        currentlyBuilding: "",
+        seeking: "",
+        availability: "",
       },
     };
   }
@@ -383,4 +473,21 @@ export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
 export function clearConfigCache() {
   cachedConfig = null;
   cacheTimestamp = 0;
+  inFlightPromise = null;
 }
+
+export async function purgeSiteCaches() {
+  clearConfigCache();
+  try {
+    await deleteKey("site:config");
+    await deletePattern("home:*");
+    await deleteKey("projects:all");
+    await deletePattern("project:*");
+    // versioned loader keys
+    await deletePattern("v2:*");
+  } catch (e) {
+    console.error("Error purging site caches:", e);
+  }
+}
+
+

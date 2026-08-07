@@ -1,0 +1,407 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getDynamicConfig } from "../lib/config";
+import { db, education } from "../db";
+import { asc } from "drizzle-orm";
+import { getExperiences } from "../lib/loaders";
+import JsonLd from "../components/seo/JsonLd.astro";
+import { env } from "../lib/env";
+
+const siteConfig = await getDynamicConfig();
+const siteUrl = (siteConfig.url || env.siteUrl || "https://swadhin.cv").replace(/\/$/, "");
+const author = siteConfig.author || "Swadhin Biswas";
+
+const experiencesList = await getExperiences();
+const educationList = await (async () => {
+  try { return await db.select().from(education).orderBy(asc(education.order)); } catch { return []; }
+})();
+
+function formatDate(s?: string) {
+  if (!s) return "Present";
+  const d = new Date(s);
+  if (isNaN(d.getTime())) return s;
+  return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+}
+
+function parseList(val: unknown): string[] {
+  if (!val) return [];
+  if (Array.isArray(val)) return val;
+  try { return JSON.parse(val as string); } catch { return []; }
+}
+
+function yearsOf(start: string, end?: string) {
+  const s = new Date(start).getTime();
+  if (isNaN(s)) return "";
+  const e = end ? new Date(end).getTime() : Date.now();
+  const y = Math.max(0, (e - s) / (365.25 * 24 * 3600 * 1000));
+  return y >= 1 ? `${y.toFixed(1)} yrs` : `${Math.round(y * 12)} mo`;
+}
+
+const totalYears = experiencesList.reduce((acc, e) => acc + (parseFloat(yearsOf(e.startDate, e.endDate)?.replace(/[^0-9.]/g, "")) || 0), 0);
+const companies = [...new Set(experiencesList.map((e) => e.company).filter(Boolean))];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": `${siteUrl}/` },
+        { "@type": "ListItem", "position": 2, "name": "Experience", "item": `${siteUrl}/experience` }
+      ]
+    },
+    {
+      "@type": "ItemList",
+      "name": `Work Experience — ${author}`,
+      "itemListElement": experiencesList.map((e, i) => ({
+        "@type": "ListItem",
+        "position": i + 1,
+        "item": {
+          "@type": "OrganizationRole",
+          "roleName": e.role,
+          "startDate": e.startDate,
+          "endDate": e.endDate || undefined,
+          "organization": { "@type": "Organization", "name": e.company, "url": e.url || undefined },
+        },
+      })),
+    },
+  ]
+};
+---
+
+<BaseLayout title="Experience" description={`Work history, roles, and responsibilities of ${author} — data engineering, backend systems, and MLOps.`}>
+  <JsonLd slot="head" schema={schema} />
+
+  <section class="screen-line-after">
+    <div class="container-narrow py-12 sm:py-16">
+      <div class="reveal">
+        <p class="text-eyebrow">Experience</p>
+        <h1 class="text-display mt-3 text-3xl sm:text-4xl text-aurora">Work history</h1>
+        <p class="prose-mono mt-4 max-w-prose">
+          Production systems, teams, and outcomes. Each role below includes responsibilities and what I learned.
+        </p>
+
+        {experiencesList.length > 0 && (
+          <div class="mt-6 flex flex-wrap gap-2">
+            <span class="status-pill">{experiencesList.length} roles</span>
+            {totalYears > 0 && <span class="status-pill">{Math.round(totalYears)} yrs combined</span>}
+            {siteConfig.cvUrl && (
+              <a href={siteConfig.cvUrl} target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Download CV
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <section class="screen-line-after">
+    <div class="container-narrow py-12 sm:py-16">
+      {experiencesList.length === 0 ? (
+        <p class="text-sm text-[var(--color-fg-muted)] reveal">No experience entries yet.</p>
+      ) : (
+        <div class="panel panel-accent">
+          <ol class="timeline reveal reveal-delay-1">
+            {experiencesList.map((exp) => {
+              const responsibilities = parseList(exp.responsibilities);
+              const learnings = parseList(exp.learnings);
+              return (
+                <li class="timeline-item">
+                  <div class="timeline-dot" aria-hidden="true">
+                    {exp.logoUrl ? (
+                      <img src={exp.logoUrl} alt="" class="timeline-logo" loading="lazy" width="20" height="20" />
+                    ) : (
+                      <span class="timeline-dot-inner"></span>
+                    )}
+                  </div>
+                  <div class="timeline-content">
+                    <div class="timeline-head">
+                      <h2 class="timeline-title">
+                        {exp.role}
+                        {exp.company && <span class="timeline-company"> · {exp.company}</span>}
+                      </h2>
+                      <time class="timeline-date">
+                        {formatDate(exp.startDate)} — {formatDate(exp.endDate)}
+                        {(() => { const y = yearsOf(exp.startDate, exp.endDate); return y ? ` · ${y}` : ""; })()}
+                      </time>
+                    </div>
+
+                    {exp.companyDescription && (
+                      <p class="timeline-company-desc">{exp.companyDescription}</p>
+                    )}
+
+                    {exp.details && <p class="timeline-details">{exp.details}</p>}
+
+                    {responsibilities.length > 0 && (
+                      <div class="timeline-section">
+                        <span class="timeline-section-icon">▹</span>
+                        <div>
+                          <p class="timeline-section-label">Key Responsibilities</p>
+                          <ul class="timeline-list">
+                            {responsibilities.map((r: string) => (
+                              <li class="timeline-list-item">
+                                <span class="timeline-bullet" aria-hidden="true">▹</span>
+                                <span>{r}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    )}
+
+                    {learnings.length > 0 && (
+                      <div class="timeline-section">
+                        <span class="timeline-section-icon learn">✦</span>
+                        <div>
+                          <p class="timeline-section-label">Key Learnings</p>
+                          <ul class="timeline-list learn-list">
+                            {learnings.map((l: string) => (
+                              <li class="timeline-list-item">
+                                <span class="timeline-bullet learn-bullet" aria-hidden="true">✦</span>
+                                <span>{l}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    )}
+
+                    {exp.url && (
+                      <a class="timeline-link" href={exp.url} target="_blank" rel="noopener noreferrer">
+                        {(() => { try { return new URL(exp.url).hostname; } catch { return exp.url; } })()} ↗
+                      </a>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      )}
+    </div>
+  </section>
+
+  {educationList.length > 0 && (
+    <section class="screen-line-after">
+      <div class="container-narrow py-12 sm:py-16">
+        <p class="text-eyebrow reveal">Education</p>
+        <h2 class="panel-title mt-2 mb-6 reveal">Background</h2>
+        <div class="edu-grid">
+          {educationList.map((edu) => (
+            <article class="panel p-5 sm:p-6 reveal">
+              <div class="edu-head">
+                <div>
+                  <h3 class="edu-degree">{edu.degree}</h3>
+                  <p class="edu-school">{edu.institution}</p>
+                </div>
+                <time class="edu-dates">
+                  {formatDate(edu.startDate)} — {edu.endDate ? formatDate(edu.endDate) : "Present"}
+                </time>
+              </div>
+              {edu.details && <p class="edu-details">{edu.details}</p>}
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="screen-line-after">
+    <div class="container-narrow py-12 sm:py-16">
+      <div class="panel p-6 sm:p-7 reveal">
+        <p class="text-eyebrow">Currently</p>
+        <p class="mt-3 text-[var(--color-fg-muted)] leading-relaxed">
+          {siteConfig.bio?.seeking || "Open to senior data/backend engineering opportunities."}
+        </p>
+        <div class="mt-5">
+          <a href="/contact" class="btn btn-primary">Get in touch →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .timeline {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 0;
+  }
+  .panel-accent { padding: 0.5rem 1.25rem 0.5rem 1.5rem; }
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 0.7rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--color-edge) 0%, var(--color-edge-strong) 50%, var(--color-edge) 100%);
+    opacity: 0.6;
+  }
+  .timeline-item {
+    position: relative;
+    padding-left: 2.25rem;
+    padding-bottom: 1.75rem;
+  }
+  .timeline-item:last-child { padding-bottom: 0; }
+  .timeline-dot {
+    position: absolute;
+    left: 0;
+    top: 0.45rem;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 999px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-edge);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .timeline-dot-inner {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--color-fg);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+  }
+  .timeline-logo {
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 4px;
+    object-fit: contain;
+    background: var(--color-bg);
+    padding: 2px;
+  }
+  .timeline-content { padding: 0.1rem 0 0.5rem 0.9rem; }
+  .timeline-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+  }
+  .timeline-title {
+    font-family: var(--font-display);
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--color-fg);
+    letter-spacing: -0.01em;
+  }
+  .timeline-company { color: var(--color-fg-muted); font-weight: 500; }
+  .timeline-date {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-fg-subtle);
+    white-space: nowrap;
+  }
+  .timeline-company-desc {
+    margin-top: 0.35rem;
+    font-size: 0.83rem;
+    color: var(--color-fg-subtle);
+    font-style: italic;
+    line-height: 1.5;
+  }
+  .timeline-details {
+    margin-top: 0.45rem;
+    color: var(--color-fg-muted);
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+  .timeline-section {
+    margin-top: 0.6rem;
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+  }
+  .timeline-section-icon {
+    font-size: 0.85rem;
+    color: var(--color-accent);
+    line-height: 1.5;
+    flex-shrink: 0;
+  }
+  .timeline-section-icon.learn { color: #f9e2af; }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .timeline-section-icon.learn { color: #8a6d1f; }
+  }
+  html[data-theme="light"] .timeline-section-icon.learn { color: #8a6d1f; }
+  .timeline-section-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+    margin-bottom: 0.25rem;
+  }
+  .timeline-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .timeline-list-item {
+    display: flex;
+    gap: 0.55rem;
+    font-size: 0.85rem;
+    color: var(--color-fg-muted);
+    line-height: 1.55;
+  }
+  .timeline-list.learn-list .timeline-list-item { color: var(--color-fg-subtle); }
+  .timeline-bullet {
+    color: var(--color-accent);
+    font-size: 0.7rem;
+    line-height: 1.7;
+    flex-shrink: 0;
+  }
+  .learn-bullet { color: #f9e2af; }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .learn-bullet { color: #8a6d1f; }
+  }
+  html[data-theme="light"] .learn-bullet { color: #8a6d1f; }
+  .timeline-link {
+    display: inline-block;
+    margin-top: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-fg-subtle);
+    transition: color 0.2s ease;
+  }
+  .timeline-link:hover { color: var(--color-fg); }
+
+  .edu-grid { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
+  .edu-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+  }
+  .edu-degree {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-fg);
+  }
+  .edu-school { margin-top: 0.15rem; font-size: 0.875rem; color: var(--color-fg-muted); }
+  .edu-dates {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-fg-subtle);
+    white-space: nowrap;
+  }
+  .edu-details {
+    margin-top: 0.75rem;
+    color: var(--color-fg-muted);
+    font-size: 0.875rem;
+    line-height: 1.65;
+  }
+</style>

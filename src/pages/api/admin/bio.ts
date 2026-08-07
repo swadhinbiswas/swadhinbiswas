@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { db, bioContent } from '../../../db';
 import { eq } from 'drizzle-orm';
-import { clearConfigCache } from '../../../lib/config';
+import { purgeSiteCaches } from '../../../lib/config';
 
 export const prerender = false;
 
@@ -54,7 +54,7 @@ export const POST: APIRoute = async ({ request }) => {
       }
     }
 
-    clearConfigCache();
+    await purgeSiteCaches();
     
     return new Response(JSON.stringify({ success: true }), {
       status: 200,

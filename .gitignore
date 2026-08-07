@@ -61,3 +61,14 @@ hydrate*.mjs
 
 # Local tooling state
 .antigravitycli/
+
+# Personal data / exports
+swadhin.json
+
+# Debug/utility scripts
+speed_test.py
+*_test.py
+
+# Temporary docs
+BUGFIXES.md
+QUICKSTART.md

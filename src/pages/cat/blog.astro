@@ -1,15 +1,229 @@
 ---
 export const prerender = false;
 import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, posts } from "../../db";
+import { desc } from "drizzle-orm";
+
+const rows = await db.select().from(posts).orderBy(desc(posts.publishedAt));
 ---
 
-<AdminLayout title="Blog">
-  <h1 class="text-2xl font-bold mb-6">Blog</h1>
-  
-  <div class="max-w-2xl">
-    <div class="p-6 rounded-xl border border-white/10 bg-white/5">
-      <p class="text-gray-300 mb-4">Blog is managed externally at <a href="https://blog.swadhin.cv" target="_blank" class="text-cyan-400 hover:underline">blog.swadhin.cv</a></p>
-      <p class="text-gray-400 text-sm">Recent posts are automatically fetched and displayed on the homepage.</p>
+<AdminLayout title="Writing">
+  <div class="flex items-center justify-between mb-2">
+    <h1 class="text-2xl font-bold">Writing ({rows.length})</h1>
+    <button onclick="document.getElementById('add-form').classList.toggle('hidden')" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm">+ Add Post</button>
+  </div>
+  <p class="text-sm text-gray-400 mb-4">
+    Add a post that links to your article (e.g. blog.swadhin.cv, Medium, Dev.to) — or write it here with markdown. Drafts stay hidden. Posts from blog.swadhin.cv are also fetched automatically.
+  </p>
+
+  <div id="add-form" class="hidden mb-6 p-4 rounded-xl border border-cyan-400/30 bg-cyan-400/5">
+    <h2 class="text-lg font-semibold mb-4">New Post</h2>
+    <form id="create-form" class="space-y-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Title *</label>
+          <input type="text" name="title" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Slug (optional — auto from title)</label>
+          <input type="text" name="slug" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="my-article" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Article Link (external URL)</label>
+          <input type="url" name="externalUrl" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="https://blog.swadhin.cv/blog/my-article/" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Published Date</label>
+          <input type="date" name="publishedAt" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Description / Excerpt</label>
+        <textarea name="description" rows="2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400"></textarea>
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Tags (comma separated)</label>
+        <input type="text" name="tags" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="data-engineering, python" />
+      </div>
+      <div class="flex items-center gap-6">
+        <label class="flex items-center gap-2 text-sm text-gray-400">
+          <input type="checkbox" name="draft" value="true" class="w-4 h-4" />
+          Draft (hidden from the site)
+        </label>
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Content (Markdown — used when no external link)</label>
+        <textarea name="content" rows="8" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 font-mono text-sm" placeholder="# My article&#10;&#10;Write the full post here if it's not hosted elsewhere..."></textarea>
+      </div>
+      <div class="flex gap-3">
+        <button type="submit" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm">Save</button>
+        <button type="button" onclick="document.getElementById('add-form').classList.add('hidden')" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors text-sm">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="space-y-3 max-w-3xl">
+    {rows.map((p) => {
+      let tags: string[] = [];
+      try { tags = JSON.parse(p.tags || "[]"); } catch {}
+      return (
+        <div class="p-4 rounded-xl border border-white/10 bg-white/5 group">
+          <div class="flex justify-between items-start gap-4">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="font-semibold">{p.title}</h3>
+                {p.draft && <span class="text-[10px] text-yellow-400 bg-yellow-400/10 px-1.5 py-0.5 rounded">Draft</span>}
+                {p.externalUrl && <span class="text-[10px] text-cyan-400 bg-cyan-400/10 px-1.5 py-0.5 rounded">External link</span>}
+              </div>
+              <p class="text-gray-400 text-xs mt-0.5">{new Date(p.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })} · /posts/{p.slug}/</p>
+              {p.description && <p class="text-gray-300 text-sm mt-1 line-clamp-1">{p.description}</p>}
+              {tags.length > 0 && (
+                <div class="flex flex-wrap gap-1 mt-1.5">
+                  {tags.map((t: string) => <span class="text-[10px] text-gray-400 bg-white/5 px-1.5 py-0.5 rounded">{t}</span>)}
+                </div>
+              )}
+            </div>
+            <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+              {p.externalUrl && <a href={p.externalUrl} target="_blank" class="px-3 py-1 bg-white/10 text-gray-300 rounded text-xs hover:bg-white/20">Open ↗</a>}
+              <button data-edit={JSON.stringify(p)} class="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs hover:bg-yellow-500/30">Edit</button>
+              <button data-delete={p.slug} class="px-3 py-1 bg-red-500/20 text-red-400 rounded text-xs hover:bg-red-500/30">Delete</button>
+            </div>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+
+  <div id="edit-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+    <div class="bg-[#111] border border-white/10 rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <h2 class="text-lg font-semibold mb-4">Edit Post</h2>
+      <form id="edit-form" class="space-y-4">
+        <input type="hidden" name="slug" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Title *</label>
+            <input type="text" name="title" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Slug</label>
+            <input type="text" name="newSlug" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Article Link (external URL)</label>
+            <input type="url" name="externalUrl" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Published Date</label>
+            <input type="date" name="publishedAt" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Description / Excerpt</label>
+          <textarea name="description" rows="2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Tags (comma separated)</label>
+          <input type="text" name="tags" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+        <div class="flex items-center gap-6">
+          <label class="flex items-center gap-2 text-sm text-gray-400">
+            <input type="checkbox" name="draft" value="true" class="w-4 h-4" />
+            Draft (hidden from the site)
+          </label>
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Content (Markdown)</label>
+          <textarea name="content" rows="10" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 font-mono text-sm"></textarea>
+        </div>
+        <div class="flex gap-3">
+          <button type="submit" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm">Update</button>
+          <button type="button" onclick="document.getElementById('edit-modal').classList.add('hidden')" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors text-sm">Cancel</button>
+        </div>
+      </form>
     </div>
   </div>
 </AdminLayout>
+
+<script>
+  function toast(msg: string, ok = true) {
+    const el = document.createElement("div");
+    el.className = `fixed top-4 right-4 px-4 py-2 rounded-lg text-sm z-50 ${ok ? "bg-green-500/20 text-green-400 border border-green-500/30" : "bg-red-500/20 text-red-400 border border-red-500/30"}`;
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+
+  function collectForm(form: HTMLFormElement, isEdit = false) {
+    const data: Record<string, any> = {};
+    for (const el of form.elements as any) {
+      if (!el.name) continue;
+      if (el.type === "checkbox") data[el.name] = el.checked;
+      else if (el.type === "date" && el.value) data[el.name] = new Date(el.value).toISOString();
+      else data[el.name] = el.value;
+    }
+    data.tags = String(data.tags || "").split(",").map((t: string) => t.trim()).filter(Boolean);
+    if (data.draft === undefined) data.draft = false;
+    if (isEdit) data.slug = (form.querySelector("[name='slug']") as HTMLInputElement).value;
+    return data;
+  }
+
+  document.getElementById("create-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = collectForm(e.target as HTMLFormElement);
+    const res = await fetch("/api/admin/posts", {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data),
+    });
+    if (res.ok) { toast("Created!"); setTimeout(() => location.reload(), 500); }
+    else { const d = await res.json().catch(() => ({})); toast(d.error || "Failed", false); }
+  });
+
+  document.addEventListener("click", async (e) => {
+    const target = e.target as HTMLElement;
+    const editBtn = target.closest("[data-edit]") as HTMLElement;
+    if (editBtn) {
+      try {
+        const item = JSON.parse(editBtn.dataset.edit || "{}");
+        const modal = document.getElementById("edit-modal")!;
+        const form = document.getElementById("edit-form") as HTMLFormElement;
+        (form.querySelector("[name='slug']") as HTMLInputElement).value = item.slug || "";
+        (form.querySelector("[name='newSlug']") as HTMLInputElement).value = item.slug || "";
+        (form.querySelector("[name='title']") as HTMLInputElement).value = item.title || "";
+        (form.querySelector("[name='externalUrl']") as HTMLInputElement).value = item.externalUrl || "";
+        (form.querySelector("[name='description']") as HTMLTextAreaElement).value = item.description || "";
+        (form.querySelector("[name='content']") as HTMLTextAreaElement).value = item.content || "";
+        try {
+          const tags = typeof item.tags === "string" ? JSON.parse(item.tags) : (item.tags || []);
+          (form.querySelector("[name='tags']") as HTMLInputElement).value = Array.isArray(tags) ? tags.join(", ") : "";
+        } catch { (form.querySelector("[name='tags']") as HTMLInputElement).value = ""; }
+        const date = item.publishedAt ? new Date(item.publishedAt).toISOString().slice(0, 10) : "";
+        (form.querySelector("[name='publishedAt']") as HTMLInputElement).value = date;
+        (form.querySelector("[name='draft']") as HTMLInputElement).checked = Boolean(item.draft);
+        modal.classList.remove("hidden");
+      } catch (err) { console.error(err); }
+      return;
+    }
+
+    const deleteBtn = target.closest("[data-delete]") as HTMLElement;
+    if (deleteBtn) {
+      const slug = deleteBtn.dataset.delete;
+      if (!slug) return;
+      if (!confirm("Delete this post?")) return;
+      const res = await fetch("/api/admin/posts", {
+        method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ slug }),
+      });
+      if (res.ok) { toast("Deleted!"); setTimeout(() => location.reload(), 500); }
+      else { toast("Failed", false); }
+    }
+  });
+
+  document.getElementById("edit-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const data = collectForm(form, true);
+    const res = await fetch("/api/admin/posts", {
+      method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data),
+    });
+    if (res.ok) { toast("Updated!"); setTimeout(() => location.reload(), 500); }
+    else { const d = await res.json().catch(() => ({})); toast(d.error || "Failed", false); }
+  });
+</script>

@@ -54,7 +54,7 @@ export async function GET() {
     const tags = parseTagList(project.tags);
 
     return {
-      loc: `${siteUrl}/projects/${slugify(project.name)}/`,
+      loc: `${siteUrl}/projects/${project.slug}/`,
       publishedDate,
       title: project.name,
       keywords: tags,
@@ -163,13 +163,4 @@ function escapeXml(value: string) {
         return char;
     }
   });
-}
-
-function slugify(text: string) {
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/[\s_-]+/g, "-")
-    .replace(/^-+|-+$/g, "");
 }

@@ -1,0 +1,100 @@
+---
+import { db, faqs } from "../../db";
+import { asc } from "drizzle-orm";
+import { getCachedData, setCachedData } from "../../lib/redis";
+
+let cached: any[] | null = null;
+let ts = 0;
+
+async function getFaqs(): Promise<any[]> {
+  if (cached && Date.now() - ts < 300_000) return cached;
+  const redis = await getCachedData("v2:faqs");
+  if (redis && Array.isArray(redis) && redis.length > 0) {
+    cached = redis;
+    ts = Date.now();
+    return redis;
+  }
+  try {
+    const rows = await db.select().from(faqs).orderBy(asc(faqs.order));
+    if (rows.length > 0) {
+      cached = rows;
+      ts = Date.now();
+      setCachedData("v2:faqs", rows, 600).catch(() => {});
+    }
+    return rows;
+  } catch {
+    return cached || [];
+  }
+}
+
+const list = await getFaqs();
+---
+
+{list.length > 0 && (
+  <section id="faq" class="section">
+    <div class="container-narrow">
+      <div class="section-head reveal">
+        <div>
+          <p class="text-eyebrow">FAQ</p>
+          <h2 class="section-title">Common questions</h2>
+        </div>
+      </div>
+
+      <div class="panel panel-accent">
+        <ul class="faq-list reveal reveal-delay-1">
+          {list.map((f) => (
+            <li class="faq-item">
+              <details class="faq-details">
+                <summary class="faq-question">
+                  <span>{f.question}</span>
+                  <svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </summary>
+                <div class="faq-answer">{f.answer}</div>
+              </details>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .faq-list { list-style: none; margin: 0; padding: 0.25rem 0; }
+  .faq-item { border-top: 1px solid var(--color-edge); }
+  .faq-item:first-child { border-top: 0; }
+
+  .faq-question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-display);
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--color-fg);
+    transition: color 0.2s ease;
+  }
+  .faq-question::-webkit-details-marker { display: none; }
+  .faq-question:hover { color: var(--color-accent-2); }
+
+  .faq-chevron {
+    flex-shrink: 0;
+    color: var(--color-fg-subtle);
+    transition: transform 0.25s ease;
+  }
+  .faq-details[open] .faq-chevron { transform: rotate(180deg); }
+
+  .faq-answer {
+    padding: 0 1.25rem 1.1rem;
+    color: var(--color-fg-muted);
+    font-size: 0.9rem;
+    line-height: 1.65;
+    max-width: 60ch;
+  }
+</style>

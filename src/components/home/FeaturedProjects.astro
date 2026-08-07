@@ -1,166 +1,232 @@
 ---
-import { db, projects } from "../../db";
-import { desc, eq, asc } from "drizzle-orm";
+import { getProjects } from "../../lib/loaders";
+import { getProjectCategories, categoryBySlug } from "../../lib/projects";
+import { opt } from "../../lib/image";
 
-interface Project {
-  id: number | string;
-  name: string;
-  description: string;
-  url: string;
-  github?: string | null;
-  tags: string[];
-  featured?: boolean;
-  stars?: number;
-  order?: number;
-}
+const allProjects = await getProjects();
+const categories = await getProjectCategories();
 
-let allProjects: Project[] = [];
-try {
-  const rows = await db
-    .select()
-    .from(projects)
-    .orderBy(asc(projects.order), desc(projects.stars));
-
-  allProjects = rows.map((r) => ({
-    ...r,
-    tags: safeJSON(r.tags) as string[],
-  })) as Project[];
-} catch {
-  allProjects = [];
-}
-
-function safeJSON(s: any): string[] {
-  try {
-    return JSON.parse(s);
-  } catch {
-    return [];
+function categoryIcon(cat?: string | null): string {
+  switch (cat) {
+    case "data-engineering":
+      return `<path d="M32 12 L48 22 L48 42 L32 52 L16 42 L16 22 Z M16 22 L32 32 L48 22 M32 32 L32 52"/>`;
+    case "web":
+      return `<rect x="14" y="18" width="36" height="8" rx="2"/><rect x="14" y="30" width="36" height="8" rx="2"/><rect x="14" y="42" width="36" height="8" rx="2"/><circle cx="20" cy="22" r="1.5"/><circle cx="20" cy="34" r="1.5"/><circle cx="20" cy="46" r="1.5"/>`;
+    case "cli-tools":
+      return `<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/><polyline points="20 21 14 15 20 9"/>`;
+    case "ai-ml":
+      return `<circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>`;
+    case "devops":
+      return `<rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>`;
+    case "research":
+      return `<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>`;
+    default:
+      return `<path d="M14 18 L32 12 L50 18 L50 38 L32 44 L14 38 Z"/><path d="M14 18 L32 24 L50 18 M32 24 L32 44"/>`;
   }
-}
-
-function slug(name: string) {
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/[\s_-]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
-function getPixelArtIcon(name: string) {
-  const lowercase = name.toLowerCase();
-  if (lowercase.includes('covenant') || lowercase.includes('database') || lowercase.includes('storage') || lowercase.includes('ledger')) {
-    // Floppy disk icon
-    return `
-      <svg viewBox="0 0 16 16" class="w-14 h-14 text-[var(--color-accent)] animate-pulse" style="image-rendering: pixelated;" fill="currentColor">
-        <path d="M2 1h9l3 3v11H2V1zm1 1v12h10V4.5L10.5 2H3zm1.5 1h5v3h-5V3zm1 1v1h3V4h-3zm-1 5h8v4h-8V9zm1 1v2h6v-2h-6z"/>
-      </svg>
-    `;
-  }
-  if (lowercase.includes('conduit') || lowercase.includes('lineage') || lowercase.includes('trace') || lowercase.includes('pipeline')) {
-    // Connected nodes/network pipeline icon
-    return `
-      <svg viewBox="0 0 16 16" class="w-14 h-14 text-[var(--color-accent-sky)]" style="image-rendering: pixelated;" fill="currentColor">
-        <path d="M2 1h4v4H2V1zm0 10h4v4H2v-4zm10-5h4v4h-4V6zM4 5v6H3V5h1zm2-2h4v1H6V3zm4 9H6v-1h4v1zm0-7v4H9V5h1zM8 7v2H7V7h1z"/>
-      </svg>
-    `;
-  }
-  if (lowercase.includes('flux') || lowercase.includes('engine') || lowercase.includes('compute') || lowercase.includes('performance')) {
-    // Lightning bolt / energy icon
-    return `
-      <svg viewBox="0 0 16 16" class="w-14 h-14 text-[var(--color-accent-2)]" style="image-rendering: pixelated;" fill="currentColor">
-        <path d="M9 1H4l-2 7h5l-2 7 9-9H9l2-5z"/>
-      </svg>
-    `;
-  }
-  if (lowercase.includes('bot') || lowercase.includes('ai') || lowercase.includes('chat')) {
-    // Retro space invader / alien bot icon
-    return `
-      <svg viewBox="0 0 16 16" class="w-14 h-14 text-[var(--color-accent-mint)]" style="image-rendering: pixelated;" fill="currentColor">
-        <path d="M4 1h1v1H4V1zm7 0h1v1h-1V1zM2 3h2v1H2V3zm10 0h2v1h-2V3zM1 5h14v3H1V5zm2 1v1h2V6H3zm8 0v1h2V6h-2zm-9 3h2v2H2V9zm10 0h2v2h-2V9zm-8 2h8v2H4v-2z"/>
-      </svg>
-    `;
-  }
-  // Default CRT Monitor icon
-  return `
-    <svg viewBox="0 0 16 16" class="w-14 h-14 text-[var(--color-accent-lemon)]" style="image-rendering: pixelated;" fill="currentColor">
-      <path d="M1 1h14v10H1V1zm1 1v8h12V2H2zm-1 10h14v1H1v-1zm2 2h10v1H3v-1zm2 1h6v1H5v-1z"/>
-    </svg>
-  `;
 }
 
 const visible = allProjects.slice(0, 6);
 ---
 
-<section id="projects" class="screen-line-after">
-  <div class="container-narrow py-12 sm:py-16">
-    <div class="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between reveal">
+<section id="projects" class="section">
+  <div class="container-narrow">
+    <div class="section-head reveal">
       <div>
         <p class="text-eyebrow">Selected work</p>
-        <h2 class="mt-2 panel-title">
-          Projects<span class="count-badge">{allProjects.length || ""}</span>
+        <h2 class="section-title">
+          Projects
+          {allProjects.length > 0 && <span class="count-badge">{allProjects.length}</span>}
         </h2>
       </div>
-      <a href="/projects" class="text-mono text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-[var(--color-accent)]">
-        View all →
-      </a>
+      {allProjects.length > 0 && (
+        <a href="/projects" class="section-link">All projects →</a>
+      )}
     </div>
 
     {allProjects.length === 0 ? (
-      <div class="portfolio-card p-6 text-sm text-[var(--color-fg-muted)] reveal">
-        No projects yet. Add two or three shipped projects from the admin panel with outcomes, links, and stack tags.
+      <div class="panel p-8 text-center reveal">
+        <p class="text-sm text-[var(--color-fg-muted)]">Projects are being published — check back soon.</p>
+        <a href="/contact" class="btn btn-outline mt-4">Get in touch</a>
       </div>
     ) : (
-      <div class="grid gap-4 md:grid-cols-2">
-        {visible.map((p) => (
-          <article class="portfolio-card group overflow-hidden">
-            {p.image ? (
-              <a href={`/projects/${slug(p.name)}`} class="block aspect-[16/8] overflow-hidden border-b border-[var(--color-edge)] bg-[var(--color-card)]">
-                <img src={p.image} alt={p.name} class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" loading="lazy" />
-              </a>
-            ) : (
-              <a href={`/projects/${slug(p.name)}`} class="pattern-stripes flex aspect-[16/8] items-center justify-center border-b border-[var(--color-edge)]">
-                <Fragment set:html={getPixelArtIcon(p.name)} />
-              </a>
-            )}
-
-            <div class="p-5">
-              <div class="flex items-start justify-between gap-4">
-                <h3 class="text-lg font-semibold leading-snug text-[var(--color-fg)]">
-                  <a href={`/projects/${slug(p.name)}`} class="hover:text-[var(--color-accent-2)]">{p.name}</a>
-                </h3>
-                {p.featured && (
-                  <span class="tag">Featured</span>
+      <div class="projects-grid">
+        {visible.map((p) => {
+          const cat = categoryBySlug(categories, p.category);
+          return (
+            <a href={`/projects/${p.slug}/`} class="project-card reveal">
+              <div class="project-card-art" aria-hidden="true">
+                {p.image ? (
+                  <img src={opt(p.image, 720)} alt={p.name} class="project-card-img" loading="lazy" decoding="async" width="720" height="360" />
+                ) : (
+                  <svg viewBox="0 0 64 64" width="56" height="56" fill="none" class="project-card-glyph">
+                    <defs>
+                      <linearGradient id={`g-${p.id}`} x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#FFFFFF"/>
+                        <stop offset="60%" stop-color="#A1A1AA"/>
+                        <stop offset="100%" stop-color="#52525B"/>
+                      </linearGradient>
+                    </defs>
+                    <rect width="64" height="64" rx="12" fill="#0F0F18" stroke={`url(#g-${p.id})`} stroke-width="1.25" opacity="0.95"/>
+                    <g stroke={`url(#g-${p.id})`} stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" fill="none" set:html={categoryIcon(p.category)}>
+                    </g>
+                  </svg>
                 )}
+                <span class="project-card-cat">{cat?.label || "Project"}</span>
+                {p.featured && <span class="project-card-star" title="Featured">★</span>}
               </div>
-
-              {p.description && (
-                <p class="mt-3 line-clamp-3 text-sm leading-6 text-[var(--color-fg-muted)]">{p.description}</p>
-              )}
-
-              {p.tags.length > 0 && (
-                <div class="mt-4 flex flex-wrap gap-1.5">
-                  {p.tags.slice(0, 5).map((t) => (
-                    <span class="tag">{t}</span>
-                  ))}
+              <div class="project-card-body">
+                <h3 class="project-card-title">{p.name}</h3>
+                {p.description && <p class="project-card-desc">{p.description}</p>}
+                {p.tags.length > 0 && (
+                  <div class="project-card-tags">
+                    {p.tags.slice(0, 4).map((t) => <span class="tag">{t}</span>)}
+                  </div>
+                )}
+                <div class="project-card-meta">
+                  {p.url && <span class="meta-badge">Live</span>}
+                  {p.github && <span class="meta-badge">Source</span>}
+                  {p.stars != null && p.stars > 0 && <span class="meta-badge meta-badge-stars">★ {p.stars.toLocaleString()}</span>}
+                  <span class="project-card-arrow">Read case study →</span>
                 </div>
-              )}
-
-              <div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-dashed border-[var(--color-edge)] pt-4 text-mono text-xs text-[var(--color-fg-subtle)]">
-                <a href={`/projects/${slug(p.name)}`} class="transition-colors hover:text-[var(--color-accent)]">Case study →</a>
-                {p.url && (
-                  <a href={p.url} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-[var(--color-accent)]">Live</a>
-                )}
-                {p.github && (
-                  <a href={p.github} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-[var(--color-accent)]">Code</a>
-                )}
-                {p.stars != null && p.stars > 0 && (
-                  <span>★ {p.stars.toLocaleString()}</span>
-                )}
               </div>
-            </div>
-          </article>
-        ))}
+            </a>
+          );
+        })}
       </div>
     )}
   </div>
 </section>
+
+<style>
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  @media (min-width: 700px) { .projects-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-edge);
+    background: linear-gradient(180deg, var(--color-card) 0%, var(--color-card-strong) 100%);
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .project-card:hover {
+    border-color: var(--color-edge-strong);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 40px -16px rgba(0, 0, 0, 0.4);
+  }
+
+  .project-card-art {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 16 / 8;
+    background:
+      repeating-linear-gradient(
+        315deg,
+        rgba(255, 255, 255, 0.02) 0,
+        rgba(255, 255, 255, 0.02) 1px,
+        transparent 1px,
+        transparent 10px
+      ),
+      var(--color-bg-2);
+    border-bottom: 1px solid var(--color-edge);
+    overflow: hidden;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .project-card-art {
+      background:
+        repeating-linear-gradient(315deg, rgba(0, 0, 0, 0.02) 0, rgba(0, 0, 0, 0.02) 1px, transparent 1px, transparent 10px),
+        var(--color-bg-2);
+    }
+  }
+  html[data-theme="light"] .project-card-art {
+    background:
+      repeating-linear-gradient(315deg, rgba(0, 0, 0, 0.02) 0, rgba(0, 0, 0, 0.02) 1px, transparent 1px, transparent 10px),
+      var(--color-bg-2);
+  }
+  .project-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .project-card-cat {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    background: rgba(10, 10, 10, 0.6);
+    border: 1px solid var(--color-edge-strong);
+    color: var(--color-fg);
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    backdrop-filter: blur(4px);
+  }
+  .project-card-star {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    color: var(--color-fg);
+    font-size: 0.9rem;
+  }
+  .project-card-glyph { opacity: 0.9; }
+
+  .project-card-body { padding: 1.1rem 1.25rem 1.25rem; display: flex; flex-direction: column; gap: 0.6rem; }
+  .project-card-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--color-fg);
+    line-height: 1.3;
+  }
+  .project-card-desc {
+    color: var(--color-fg-muted);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .project-card-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .project-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.3rem;
+    padding-top: 0.8rem;
+    border-top: 1px dashed var(--color-edge);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-fg-subtle);
+  }
+  .meta-badge {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--color-fg-subtle);
+    padding: 0.15rem 0.45rem;
+    border: 1px solid var(--color-edge);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .meta-badge-stars { color: var(--color-accent-2); }
+  .project-card-arrow {
+    margin-left: auto;
+    color: var(--color-fg-subtle);
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+  .project-card:hover .project-card-arrow { transform: translateX(2px); color: var(--color-fg); }
+</style>

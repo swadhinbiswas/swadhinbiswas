@@ -1,0 +1,184 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getDynamicConfig } from "../../lib/config";
+import { db, achievements } from "../../db";
+import { asc } from "drizzle-orm";
+import { getCachedData, setCachedData } from "../../lib/redis";
+import { strokeIcon } from "../../lib/icons";
+import JsonLd from "../../components/seo/JsonLd.astro";
+import { env } from "../../lib/env";
+
+const siteConfig = await getDynamicConfig();
+const siteUrl = (siteConfig.url || env.siteUrl || "https://swadhin.cv").replace(/\/$/, "");
+
+let cachedRows: any[] | null = null;
+let rowsTs = 0;
+
+async function getAchievements(): Promise<any[]> {
+  if (cachedRows && Date.now() - rowsTs < 300_000) return cachedRows;
+  const cached = await getCachedData("v2:achievements");
+  if (cached && Array.isArray(cached) && cached.length > 0) {
+    cachedRows = cached;
+    rowsTs = Date.now();
+    return cached;
+  }
+  try {
+    const rows = await db.select().from(achievements).orderBy(asc(achievements.order));
+    if (rows.length > 0) {
+      cachedRows = rows;
+      rowsTs = Date.now();
+      setCachedData("v2:achievements", rows, 600).catch(() => {});
+    }
+    return rows;
+  } catch {
+    return cachedRows || [];
+  }
+}
+
+const list = await getAchievements();
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": `${siteUrl}/` },
+        { "@type": "ListItem", "position": 2, "name": "Achievements", "item": `${siteUrl}/achievements` }
+      ]
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": `${siteUrl}/achievements/#webpage`,
+      url: `${siteUrl}/achievements`,
+      name: `Achievements — ${siteConfig.author}`,
+      description: "Milestones and results, with the story of how each one was achieved.",
+      isPartOf: { "@id": `${siteUrl}/#website` },
+      mainEntity: { "@id": `${siteUrl}/#person` },
+    },
+  ]
+};
+---
+
+<BaseLayout title="Achievements" description={`Milestones and results achieved by ${siteConfig.author} — with the story behind each one.`}>
+  <JsonLd slot="head" schema={schema} />
+
+  <section class="screen-line-after">
+    <div class="container-narrow py-12 sm:py-16">
+      <div class="reveal">
+        <p class="text-eyebrow">Achievements</p>
+        <h1 class="text-display mt-3 text-3xl sm:text-4xl text-aurora">Milestones & results</h1>
+        <p class="prose-mono mt-4 max-w-prose">
+          Not just badges — each achievement links to the story of how it was done: the work, the trade-offs, and the measurable outcome.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen-line-after">
+    <div class="container-narrow py-12 sm:py-16">
+      {list.length === 0 ? (
+        <p class="text-sm text-[var(--color-fg-muted)] reveal">No achievements yet.</p>
+      ) : (
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {list.map((a, i) => (
+            <article class="panel p-5 ach-card reveal" style={`transition-delay:${i * 40}ms`}>
+              <div class="flex items-start gap-4">
+                <span class="ach-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" set:html={strokeIcon(a.icon)} />
+                </span>
+                <div class="min-w-0 flex-1">
+                  <div class="flex flex-wrap items-baseline justify-between gap-2">
+                    <h2 class="ach-name">{a.name}</h2>
+                    {a.year && <span class="ach-year">{a.year}</span>}
+                  </div>
+                  {a.description && <p class="ach-desc">{a.description}</p>}
+                  <div class="mt-3 flex flex-wrap items-center gap-3">
+                    <a href={`/achievements/${a.slug}/`} class="ach-cta">
+                      How it happened
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                    </a>
+                    {a.url && (
+                      <a href={a.url} target="_blank" rel="noopener noreferrer" class="ach-proof">
+                        Learn more ↗
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .ach-card {
+    display: block;
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .ach-card:hover {
+    border-color: var(--color-edge-strong);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 36px -18px rgba(0, 0, 0, 0.5);
+  }
+  .ach-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 12px;
+    background: var(--color-bg-2);
+    border: 1px solid var(--color-edge);
+    color: var(--color-accent-2);
+    flex-shrink: 0;
+  }
+  .ach-name {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-fg);
+    letter-spacing: -0.01em;
+  }
+  .ach-year {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-fg-subtle);
+  }
+  .ach-desc {
+    margin-top: 0.35rem;
+    font-size: 0.87rem;
+    color: var(--color-fg-muted);
+    line-height: 1.6;
+  }
+  .ach-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-accent-2);
+    transition: transform 0.2s ease;
+  }
+  .ach-card:hover .ach-cta svg { transform: translateX(2px); }
+  .ach-proof {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-fg-subtle);
+    border: 1px solid var(--color-edge);
+    border-radius: 999px;
+    padding: 0.2rem 0.6rem;
+    transition: all 0.2s ease;
+  }
+  .ach-proof:hover {
+    border-color: var(--color-edge-strong);
+    color: var(--color-fg);
+  }
+</style>

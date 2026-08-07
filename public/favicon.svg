@@ -1,11 +1,33 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Swadhin Biswas">
+  <title>Swadhin Biswas</title>
   <defs>
-    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#c792ea"/>
-      <stop offset="50%" stop-color="#ffb3ba"/>
-      <stop offset="100%" stop-color="#b5ead7"/>
+    <linearGradient id="aurora" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="45%" stop-color="#22D3EE"/>
+      <stop offset="100%" stop-color="#34D399"/>
+    </linearGradient>
+    <linearGradient id="aurora-soft" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#22D3EE" stop-opacity="0.95"/>
     </linearGradient>
   </defs>
-  <rect width="32" height="32" rx="8" fill="url(#g)"/>
-  <text x="16" y="22" text-anchor="middle" font-family="monospace" font-weight="700" font-size="16" fill="#fff">SB</text>
+
+  <!-- Rounded square base, dark warm-ink -->
+  <rect width="64" height="64" rx="14" fill="#0A0A12"/>
+
+  <!-- Aurora ring (subtle) -->
+  <rect x="2" y="2" width="60" height="60" rx="12" fill="none" stroke="url(#aurora)" stroke-width="1.25" opacity="0.5"/>
+
+  <!-- Mark: two interlocking arcs forming an "S" with a data-pipeline feel.
+       Top arc: violet→cyan. Bottom arc: cyan→mint. They meet at the center node. -->
+  <g fill="none" stroke="url(#aurora)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Upper hook -->
+    <path d="M48 21 C 48 14, 39 12, 32 12 C 23 12, 16 17, 16 24 C 16 31, 24 33, 32 35"/>
+    <!-- Lower hook -->
+    <path d="M32 35 C 40 37, 48 39, 48 46 C 48 53, 39 56, 32 56 C 23 56, 16 53, 16 47"/>
+  </g>
+
+  <!-- Center node (data-pipeline hint) -->
+  <circle cx="32" cy="35" r="2.5" fill="#22D3EE"/>
+  <circle cx="32" cy="35" r="5" fill="none" stroke="#22D3EE" stroke-width="0.75" opacity="0.45"/>
 </svg>

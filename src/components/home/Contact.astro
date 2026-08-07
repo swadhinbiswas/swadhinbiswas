@@ -5,47 +5,101 @@ const siteConfig = await getDynamicConfig();
 const email = siteConfig.email || "";
 ---
 
-<section id="contact" class="screen-line-after">
-  <div class="container-narrow py-12 sm:py-16">
-    <div class="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-10">
-      <div class="lg:col-span-4 reveal">
+<section id="contact" class="section">
+  <div class="container-narrow">
+    <div class="section-head reveal">
+      <div>
         <p class="text-eyebrow">Contact</p>
-        <h2 class="mt-3 panel-title">Let's build something useful</h2>
+        <h2 class="section-title">Let's build something useful</h2>
       </div>
-      <div class="lg:col-span-8 reveal reveal-delay-1">
-        <div class="portfolio-card p-5 sm:p-6">
-          <p class="text-base leading-8 text-[var(--color-fg-muted)]">
-            Best way to reach me is email. I'm interested in backend systems, AI product work, research tooling, and serious technical collaborations.
-          </p>
-          {email ? (
-            <a
-              href={`mailto:${email}`}
-              class="mt-5 inline-flex max-w-full break-all rounded-md border border-[var(--color-edge-strong)] px-4 py-3 text-base font-semibold text-[var(--color-accent)] transition-colors hover:border-[var(--color-accent)]"
-            >
-              {email} →
-            </a>
-          ) : (
-            <p class="mt-4 text-sm italic text-[var(--color-fg-muted)]">No email configured yet.</p>
-          )}
-          <div class="mt-6 flex flex-wrap gap-x-5 gap-y-2 border-t border-dashed border-[var(--color-edge)] pt-5 text-mono text-xs text-[var(--color-fg-subtle)]">
-            {siteConfig.links?.github && (
-              <a href={siteConfig.links.github} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-[var(--color-accent)]">
-                GitHub
-              </a>
-            )}
-            {siteConfig.links?.linkedin && (
-              <a href={siteConfig.links.linkedin} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-[var(--color-accent)]">
-                LinkedIn
-              </a>
-            )}
-            {siteConfig.links?.twitter && (
-              <a href={siteConfig.links.twitter} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-[var(--color-accent)]">
-                X
-              </a>
-            )}
-          </div>
-        </div>
+    </div>
+
+    <div class="panel p-6 sm:p-7 reveal reveal-delay-1">
+      {siteConfig.contactBlurb && <p class="contact-blurb">{siteConfig.contactBlurb}</p>}
+
+      {email ? (
+        <a class="contact-mail" href={`mailto:${email}`}>
+          <span class="contact-mail-label">Email</span>
+          <span class="contact-mail-value">{email}</span>
+          <span class="contact-mail-arrow" aria-hidden="true">→</span>
+        </a>
+      ) : (
+        <p class="italic text-sm text-[var(--color-fg-muted)]">No email configured yet.</p>
+      )}
+
+      {siteConfig.meetingUrl && (
+        <a href={siteConfig.meetingUrl} target="_blank" rel="noopener noreferrer" class="contact-book btn btn-outline mt-5">
+          Book a call
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+      )}
+
+      <div class="contact-links">
+        {siteConfig.links?.github && (
+          <a href={siteConfig.links.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+        )}
+        {siteConfig.links?.linkedin && (
+          <a href={siteConfig.links.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        )}
+        {siteConfig.links?.twitter && (
+          <a href={siteConfig.links.twitter} target="_blank" rel="noopener noreferrer">X</a>
+        )}
       </div>
     </div>
   </div>
 </section>
+
+<style>
+  .contact-blurb {
+    color: var(--color-fg-muted);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+  .contact-mail {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.25rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--color-edge);
+    background: var(--color-bg-2);
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s ease;
+  }
+  .contact-mail:hover { border-color: var(--color-edge-strong); }
+  .contact-mail-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-fg-subtle);
+    flex-shrink: 0;
+  }
+  .contact-mail-value {
+    font-family: var(--font-mono);
+    font-size: 0.92rem;
+    color: var(--color-fg);
+    word-break: break-all;
+  }
+  .contact-mail-arrow {
+    margin-left: auto;
+    color: var(--color-fg-subtle);
+    font-size: 1.1rem;
+  }
+  .contact-book { text-decoration: none; }
+  .contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.1rem;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px dashed var(--color-edge);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-fg-subtle);
+  }
+  .contact-links a { transition: color 0.2s ease; }
+  .contact-links a:hover { color: var(--color-fg); }
+</style>

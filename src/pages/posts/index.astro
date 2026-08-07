@@ -1,40 +1,180 @@
 ---
 export const prerender = true;
 
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { db, posts as postsTable } from '../../db';
-import { desc, eq } from 'drizzle-orm';
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getDynamicConfig } from "../../lib/config";
+import JsonLd from "../../components/seo/JsonLd.astro";
+import { env } from "../../lib/env";
+import { getCachedData, setCachedData } from "../../lib/redis";
+import { db, posts as postsTable } from "../../db";
+import { opt } from "../../lib/image";
+import { desc, eq } from "drizzle-orm";
 
-let posts: any[] = [];
+interface LocalPost {
+  slug: string;
+  title: string;
+  description: string;
+  content: string;
+  externalUrl: string | null;
+  publishedAt: Date;
+  tags: string;
+  draft: boolean;
+}
+
+interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  cover_image: string;
+  author_name: string;
+  published_at: string;
+  view_count: number;
+  featured: boolean;
+  url?: string;
+  categories: { id: number; name: string; slug: string }[];
+}
+
+const siteConfig = await getDynamicConfig();
+const siteUrl = (siteConfig.url || env.siteUrl || "https://swadhin.cv").replace(/\/$/, "");
+const blogOrigin = (siteConfig.blogUrl || "https://blog.swadhin.cv").replace(/\/$/, "");
+
+let cachedPosts: BlogPost[] | null = null;
+let postsTs = 0;
+
+async function getPosts(): Promise<BlogPost[]> {
+  if (cachedPosts && Date.now() - postsTs < 300_000) return cachedPosts;
+  const redis = await getCachedData("v2:posts");
+  if (redis && Array.isArray(redis) && redis.length > 0) {
+    cachedPosts = redis;
+    postsTs = Date.now();
+    return redis;
+  }
+  try {
+    const res = await fetch(`${blogOrigin}/api/posts`, { signal: AbortSignal.timeout(4000) });
+    if (res.ok) {
+      const json = await res.json();
+      const posts = (json.data || json) as BlogPost[];
+      if (Array.isArray(posts) && posts.length > 0) {
+        cachedPosts = posts;
+        postsTs = Date.now();
+        setCachedData("v2:posts", posts, 600).catch(() => {});
+      }
+      return posts;
+    }
+  } catch {}
+  return cachedPosts || [];
+}
+
+const blogPosts = await getPosts();
+
+// Local posts managed from the admin dashboard (draft=false only)
+let localPosts: LocalPost[] = [];
 try {
-  const rows = await db
-    .select()
-    .from(postsTable)
-    .where(eq(postsTable.draft, false))
-    .orderBy(desc(postsTable.publishedAt));
-  posts = rows.map((p) => ({
-    slug: p.slug,
-    title: p.title,
-    description: p.description || "",
-    publishedAt: p.publishedAt,
-    tags: (() => { try { return JSON.parse(p.tags || "[]"); } catch { return []; } })(),
-  }));
-} catch {
-  posts = [];
+  const rows = await db.select().from(postsTable).where(eq(postsTable.draft, false));
+  localPosts = rows as LocalPost[];
+} catch {}
+
+function postUrl(post: BlogPost): string {
+  if (post.url && /^https?:\/\//.test(post.url)) return post.url;
+  return `${blogOrigin}${post.url || `/blog/${post.slug}/`}`;
 }
 
-function formatDate(date: any) {
-  const d = date instanceof Date ? date : new Date(date);
-  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+interface MergedPost {
+  key: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  cover: string | null;
+  featured: boolean;
+  views: number | null;
+  categories: { name: string }[];
+  href: string;
+  external: boolean;
 }
+
+const merged: MergedPost[] = [
+  ...localPosts.map((lp) => ({
+    key: `local-${lp.slug}`,
+    title: lp.title,
+    excerpt: lp.description || "",
+    date: new Date(lp.publishedAt).toISOString(),
+    cover: null,
+    featured: false,
+    views: null,
+    categories: (() => { try { return JSON.parse(lp.tags || "[]").map((t: string) => ({ name: t })); } catch { return []; } })(),
+    href: lp.externalUrl || `/posts/${lp.slug}/`,
+    external: Boolean(lp.externalUrl),
+  })),
+  ...blogPosts.map((bp) => ({
+    key: `blog-${bp.slug}`,
+    title: bp.title,
+    excerpt: bp.excerpt || "",
+    date: bp.published_at,
+    cover: bp.cover_image || null,
+    featured: bp.featured,
+    views: bp.view_count ?? null,
+    categories: bp.categories || [],
+    href: postUrl(bp),
+    external: true,
+  })),
+].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+const posts = merged;
+
+function formatDate(dateStr: string) {
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": `${siteUrl}/` },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": `${siteUrl}/posts` }
+      ]
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": `${siteUrl}/posts/#webpage`,
+      url: `${siteUrl}/posts`,
+      name: `Blog — ${siteConfig.author}`,
+      description: "Essays on systems, ML infrastructure, and engineering practice.",
+      isPartOf: { "@id": `${siteUrl}/#website` },
+      mainEntity: { "@id": `${siteUrl}/#person` },
+    },
+    {
+      "@type": "ItemList",
+      name: "Latest posts",
+      itemListElement: merged.map((p, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: p.href,
+        item: {
+          "@type": "BlogPosting",
+          headline: p.title,
+          description: p.excerpt,
+          datePublished: p.date,
+          author: { "@id": `${siteUrl}/#person` },
+        },
+      })),
+    },
+  ],
+};
 ---
 
-<BaseLayout title="Blog" description="Essays on systems, ML infrastructure, and engineering practice.">
+<BaseLayout title="Blog" description="Essays on systems, ML infrastructure, and engineering practice by Swadhin Biswas.">
+  <JsonLd slot="head" schema={schema} />
+
   <section class="screen-line-after">
     <div class="container-narrow py-12 sm:py-16">
       <div class="reveal">
         <p class="text-eyebrow">Blog</p>
-        <h1 class="text-display mt-3 text-3xl sm:text-4xl text-gradient">Essays & notes</h1>
+        <h1 class="text-display mt-3 text-3xl sm:text-4xl text-aurora">Essays & notes</h1>
         <p class="prose-mono mt-4 max-w-prose">
           Thoughts on systems, ML infrastructure, and engineering practice.
         </p>
@@ -45,38 +185,158 @@ function formatDate(date: any) {
   <section class="screen-line-after">
     <div class="container-narrow py-12 sm:py-16">
       {posts.length === 0 ? (
-        <p class="text-sm text-[var(--color-fg-muted)] reveal">No articles yet.</p>
+        <div class="panel p-8 text-center reveal">
+          <p class="text-sm text-[var(--color-fg-muted)]">Articles will appear here once published on the blog.</p>
+          <a href={blogOrigin} target="_blank" rel="noopener noreferrer" class="btn btn-outline mt-4">Visit the blog</a>
+        </div>
       ) : (
-        <div class="panel">
-          <div class="panel-top"></div>
-          {posts.map((post) => (
-            <a href={`/posts/${post.slug}`} class="row-card group">
-              <div class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)] w-24 flex-shrink-0 pt-1">
-                {formatDate(post.publishedAt)}
-              </div>
-              <div class="min-w-0 flex-1 row-card-divider">
-                <h3 class="row-card-title">{post.title}</h3>
-                {post.description && (
-                  <p class="prose-mono mt-1 line-clamp-2">{post.description}</p>
+        <div class="posts-grid">
+          {posts.map((post, i) => (
+            <a
+              href={post.href}
+              target={post.external ? "_blank" : undefined}
+              rel={post.external ? "noopener noreferrer" : undefined}
+              class="post-card reveal"
+              style={`transition-delay:${(i % 2) * 60}ms`}
+            >
+              <div class="post-card-cover" aria-hidden="true">
+                {post.cover ? (
+                  <img src={opt(post.cover, 720)} alt="" class="post-card-img" loading="lazy" decoding="async" width="720" height="360" />
+                ) : (
+                  <svg viewBox="0 0 64 64" width="56" height="56" fill="none">
+                    <defs>
+                      <linearGradient id={`pg-${i}`} x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#FFFFFF"/>
+                        <stop offset="60%" stop-color="#A1A1AA"/>
+                        <stop offset="100%" stop-color="#52525B"/>
+                      </linearGradient>
+                    </defs>
+                    <rect width="64" height="64" rx="12" fill="#0F0F18" stroke={`url(#pg-${i})`} stroke-width="1.25" opacity="0.95"/>
+                    <g stroke={`url(#pg-${post.id})`} stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                    </g>
+                  </svg>
                 )}
-                {post.tags.length > 0 && (
-                  <div class="mt-2 flex flex-wrap gap-1.5">
-                    {post.tags.slice(0, 3).map((t: string) => (
-                      <span class="tag">{t}</span>
-                    ))}
-                  </div>
-                )}
+                {post.featured && <span class="post-card-featured">★ Featured</span>}
               </div>
-              <div class="row-card-actions">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5">
-                  <path d="M5 12h14M13 5l7 7-7 7"/>
-                </svg>
+              <div class="post-card-body">
+                <div class="post-card-meta">
+                  <time>{formatDate(post.date)}</time>
+                  {post.views != null && <span>· {post.views.toLocaleString()} reads</span>}
+                </div>
+                <h2 class="post-card-title">{post.title}</h2>
+                {post.excerpt && <p class="post-card-desc">{post.excerpt}</p>}
+                <div class="post-card-footer">
+                  {post.categories?.length > 0 && (
+                    <div class="post-card-tags">
+                      {post.categories.slice(0, 3).map((c) => <span class="tag">{c.name}</span>)}
+                    </div>
+                  )}
+                  <span class="post-card-arrow" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                  </span>
+                </div>
               </div>
             </a>
           ))}
-          <div class="panel-bottom"></div>
         </div>
       )}
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .posts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  @media (min-width: 700px) { .posts-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .post-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-edge);
+    background: linear-gradient(180deg, var(--color-card) 0%, var(--color-card-strong) 100%);
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .post-card:hover {
+    border-color: var(--color-edge-strong);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 40px -16px rgba(0, 0, 0, 0.4);
+  }
+
+  .post-card-cover {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 16 / 8;
+    background:
+      repeating-linear-gradient(315deg, rgba(255, 255, 255, 0.02) 0, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 10px),
+      var(--color-bg-2);
+    border-bottom: 1px solid var(--color-edge);
+    overflow: hidden;
+  }
+  .post-card-img { width: 100%; height: 100%; object-fit: cover; }
+  .post-card-featured {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    background: rgba(10, 10, 10, 0.6);
+    border: 1px solid var(--color-edge-strong);
+    color: var(--color-fg);
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    backdrop-filter: blur(4px);
+  }
+
+  .post-card-body { padding: 1.1rem 1.25rem 1.2rem; display: flex; flex-direction: column; gap: 0.55rem; flex: 1; }
+  .post-card-meta {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--color-fg-subtle);
+  }
+  .post-card-title {
+    font-family: var(--font-display);
+    font-size: 1.08rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--color-fg);
+    line-height: 1.35;
+  }
+  .post-card:hover .post-card-title { color: var(--color-accent-2); }
+  .post-card-desc {
+    color: var(--color-fg-muted);
+    font-size: 0.86rem;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .post-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: auto;
+    padding-top: 0.8rem;
+    border-top: 1px dashed var(--color-edge);
+  }
+  .post-card-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .post-card-arrow {
+    color: var(--color-fg-subtle);
+    flex-shrink: 0;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+  .post-card:hover .post-card-arrow { transform: translateX(2px); color: var(--color-fg); }
+</style>

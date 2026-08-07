@@ -20,6 +20,11 @@ import {
   supportOptions,
   testimonials,
   heroMetrics,
+  projectCategories,
+  uses,
+  certifications,
+  faqs,
+  languages,
 } from './schema';
 
 // Import static config
@@ -60,6 +65,11 @@ async function seed() {
     await db.delete(seoSettings);
     await db.delete(testimonials);
     await db.delete(heroMetrics);
+    await db.delete(projectCategories);
+    await db.delete(uses);
+    await db.delete(certifications);
+    await db.delete(faqs);
+    await db.delete(languages);
     console.log('  ✅ Data cleared');
 
     // 1. Site Settings
@@ -244,6 +254,47 @@ console.log('🛠️ Seeding skills...');
     }
     console.log(`  ✅ Inserted ${testimonialsData.length} testimonials`);
 
+    // 7c. Achievements (with story + proof URLs)
+    console.log('🏆 Seeding achievements...');
+    const achievementsData = [
+      {
+        name: 'Scaled to 1M+ users', slug: 'scaled-to-1m-users', icon: 'trophy', year: '2025',
+        description: 'Co-founded BoringRats and scaled infrastructure to 1M+ active users — acquired Nov 2025.',
+        url: 'https://www.linkedin.com/in/swadhinbiswas/',
+        story: 'I co-founded BoringRats and owned the backend and data infrastructure end to end — from the first monolith to a horizontally scaled system serving 1M+ active users.\n\n**What I built:**\n- Event-driven architecture on Kafka with idempotent consumers\n- Real-time analytics pipeline (Airflow + Spark) with sub-minute freshness\n- API layer tuned with Redis caching — p99 latency under 250ms\n- Zero-downtime deploy pipeline with canary releases\n\n**The hard part:** the growth curve was a hockey stick. What worked at 10K users broke at 100K.',
+        outcome: '**Results:**\n- 1M+ active users\n- p99 API latency under 250ms at peak\n- 99.9%+ uptime through the growth phase\n- Company acquired November 2025',
+        order: 1,
+      },
+      {
+        name: 'Startup acquired', slug: 'startup-acquired', icon: 'award', year: '2025',
+        description: 'BoringRats acquired November 2025. Acquirer name under NDA — co-founder available as a reference.',
+        url: 'https://www.linkedin.com/in/swadhinbiswas/',
+        story: 'BoringRats was acquired in November 2025 after years of compounding growth. The acquirer name is under NDA — my co-founder is available as a reference upon request.\n\n**The journey:**\n- Bootstrapped the product with a small team; I handled all backend, data, and infrastructure\n- Built the technical foundation that made the acquisition possible\n- Kept shipping through due diligence — the platform never missed a beat',
+        outcome: '**Results:**\n- Successful acquisition, November 2025\n- Team and product continuity through the transition\n- 1M+ user infrastructure handed over cleanly',
+        order: 2,
+      },
+      {
+        name: 'Production ML systems', slug: 'production-ml-systems', icon: 'cpu', year: '2024',
+        description: '3+ years building high-throughput data pipelines and production ML infrastructure.',
+        url: 'https://github.com/swadhinbiswas',
+        story: 'Three-plus years of building high-throughput data pipelines and production ML infrastructure — the layer between raw data and product decisions.\n\n**Systems I operate in production:**\n- Streaming pipelines (Kafka, Flink) processing millions of events daily\n- Batch orchestration (Airflow, dbt) keeping warehouse models fresh\n- ML serving infrastructure: feature stores, model registries, low-latency inference\n- Monitoring and alerting (Prometheus, Grafana) with real SLOs',
+        outcome: '**Results:**\n- Sub-minute data freshness for product analytics\n- Warehouse models covered by automated tests\n- Inference endpoints with p99 latency under 100ms\n- Alerting that caught issues before users did',
+        order: 3,
+      },
+      {
+        name: 'Open source ecosystem', slug: 'open-source-ecosystem', icon: 'github', year: '2025',
+        description: 'Building OPNCODEHUB — an open-source ecosystem democratizing developer tools.',
+        url: 'https://opencodehub.space',
+        story: 'OPNCODEHUB is my open-source project: an ecosystem of developer tools designed to make professional-grade tooling accessible to everyone.\n\n**How it came together:**\n- Identified the gap: powerful developer tools are often fragmented or locked behind platforms\n- Built the core tooling in the open from day one\n- Engaged the community through issues, PRs, and documentation',
+        outcome: '**Results:**\n- Public open-source repository with active development\n- Community engagement through issues and contributions\n- Part of a broader mission: democratizing developer tooling',
+        order: 4,
+      },
+    ];
+    for (const a of achievementsData) {
+      await db.insert(achievements).values({ ...a, createdAt: now, updatedAt: now });
+    }
+    console.log(`  ✅ Inserted ${achievementsData.length} achievements`);
+
     // 7c. Hero Metrics
     console.log('📊 Seeding hero metrics...');
     const heroMetricsData = [
@@ -297,6 +348,10 @@ console.log('🛠️ Seeding skills...');
         key: 'story',
         value: "With a deep love for problem-solving and building systems that scale, I've dedicated my career to creating backend infrastructure and AI solutions that help people express and share their ideas more effectively. I believe every problem has a solution – you just need to find the right algorithm."
       },
+      { key: 'currentFocus', value: siteConfig.bio.currentFocus || 'Data Engineering · MLOps · AI Systems · Open Source' },
+      { key: 'currentlyBuilding', value: siteConfig.bio.currentlyBuilding || 'OPNCODEHUB — Open-source developer tools and ecosystems' },
+      { key: 'seeking', value: siteConfig.bio.seeking || 'EU Relocation · Germany · Netherlands · Austria' },
+      { key: 'availability', value: siteConfig.bio.availability || 'Open to Mid-level Data/Backend Roles' },
     ];
 
     for (const bio of bioData) {
@@ -339,11 +394,11 @@ console.log('🛠️ Seeding skills...');
     // 11. Interests
     console.log('🎭 Seeding interests...');
     const interestsData = [
-      { name: "Open Source", category: "Tech", icon: "🌐", description: "Active contributor to backend systems and ML deployment tools." },
-      { name: "Movies", category: "Hobby", icon: "🎬", description: " enjoying cinema and storytelling." },
-      { name: "Anime", category: "Hobby", icon: "🎌", description: " Avid anime watcher." },
-      { name: "Tech Exploration", category: "Tech", icon: "🚀", description: "Exploring new technologies and frameworks." },
-      { name: "Foodi", category: "Hobby", icon: "🍔", description: "A pure biriyani lover." }
+      { name: "Open Source", category: "Tech", icon: "github", description: "Active contributor to backend systems and ML deployment tools." },
+      { name: "Movies", category: "Hobby", icon: "film", description: "Enjoying cinema and storytelling." },
+      { name: "Anime", category: "Hobby", icon: "tv", description: "Avid anime watcher." },
+      { name: "Tech Exploration", category: "Tech", icon: "rocket", description: "Exploring new technologies and frameworks." },
+      { name: "Food", category: "Hobby", icon: "utensils", description: "A pure biriyani lover." }
     ];
 
     for (let i = 0; i < interestsData.length; i++) {
@@ -376,6 +431,98 @@ console.log('🛠️ Seeding skills...');
     console.log('👀 Seeding page views...');
     await db.insert(pageViews).values({ id: 1, count: 1030333 }).onConflictDoNothing();
     console.log('  ✅ Page views initialized');
+
+    // 14. Project Categories (DB-driven taxonomy)
+    console.log('🗂️ Seeding project categories...');
+    const categoriesData = [
+      { slug: 'data-engineering', label: 'Data Engineering', short: 'Pipelines, warehouses & streaming', description: 'Data pipelines, warehouses, streaming, orchestration and analytics infrastructure.', order: 1 },
+      { slug: 'web', label: 'Web', short: 'Apps, platforms & APIs', description: 'Production web applications, APIs, real-time platforms and developer experiences.', order: 2 },
+      { slug: 'cli-tools', label: 'CLI Tools', short: 'Terminal-first developer tools', description: 'Command-line tools, automations and terminal-first developer utilities.', order: 3 },
+      { slug: 'ai-ml', label: 'AI / ML', short: 'Models, MLOps & applied AI', description: 'Applied machine learning, deep learning systems and MLOps infrastructure.', order: 4 },
+      { slug: 'devops', label: 'DevOps & Cloud', short: 'Infrastructure, IaC & observability', description: 'Infrastructure as code, Kubernetes, CI/CD, monitoring and cloud architecture.', order: 5 },
+      { slug: 'open-source', label: 'Open Source', short: 'Public tools & ecosystems', description: 'Open source software, community tooling and public ecosystems.', order: 6 },
+      { slug: 'research', label: 'Research', short: 'Papers, benchmarks & prototypes', description: 'Research systems, benchmarks, and applied academic prototypes.', order: 7 },
+    ];
+    for (let i = 0; i < categoriesData.length; i++) {
+      const c = categoriesData[i];
+      await db.insert(projectCategories).values({ ...c, createdAt: now, updatedAt: now }).onConflictDoNothing();
+    }
+    console.log(`  ✅ Inserted ${categoriesData.length} project categories`);
+
+    // 15. Uses / toolbox (DB-driven)
+    console.log('🧰 Seeding uses...');
+    const usesData: { category: string; item: string; order: number }[] = [
+      ...['Python','TypeScript','JavaScript','Go','Rust','SQL','Bash'].map((item, i) => ({ category: 'Languages', item, order: i })),
+      ...['FastAPI','Django','Node.js','Express','Flask','gRPC','REST'].map((item, i) => ({ category: 'Backend', item, order: i })),
+      ...['PyTorch','TensorFlow','LangChain','Hugging Face','scikit-learn'].map((item, i) => ({ category: 'AI / ML', item, order: i })),
+      ...['Apache Spark','Apache Kafka','Apache Airflow','dbt','Snowflake','BigQuery'].map((item, i) => ({ category: 'Data', item, order: i })),
+      ...['PostgreSQL','MongoDB','Redis','SQLite','Turso (libSQL)','Elasticsearch'].map((item, i) => ({ category: 'Database', item, order: i })),
+      ...['Docker','Kubernetes','AWS','GCP','Vercel','Cloudflare','Nginx'].map((item, i) => ({ category: 'Infrastructure', item, order: i })),
+      ...['GitHub Actions','CI/CD','Terraform','Ansible','Prometheus','Grafana'].map((item, i) => ({ category: 'DevOps', item, order: i })),
+      ...['Neovim (primary)','VS Code','JetBrains'].map((item, i) => ({ category: 'Editor', item, order: i })),
+    ];
+    for (const u of usesData) {
+      await db.insert(uses).values({ ...u, createdAt: now, updatedAt: now });
+    }
+    console.log(`  ✅ Inserted ${usesData.length} uses`);
+
+    // 16. Certifications
+    console.log('🎓 Seeding certifications...');
+    const certificationsData = [
+      { name: 'AWS Certified Solutions Architect', issuer: 'Amazon Web Services', year: '2024', url: 'https://aws.amazon.com/verification', order: 1 },
+      { name: 'dbt Core Certification', issuer: 'dbt Labs', year: '2024', url: 'https://www.credential.net', order: 2 },
+      { name: 'Apache Airflow Fundamentals', issuer: 'Astronomer', year: '2023', url: 'https://www.credential.net', order: 3 },
+      { name: 'Kaggle Expert', issuer: 'Kaggle', year: '2023', url: 'https://www.kaggle.com/swadhinbiswas', order: 4 },
+    ];
+    for (const cert of certificationsData) {
+      await db.insert(certifications).values({ ...cert, createdAt: now, updatedAt: now });
+    }
+    console.log(`  ✅ Inserted ${certificationsData.length} certifications`);
+
+    // 16b. FAQs
+    console.log('❓ Seeding FAQs...');
+    const faqsData = [
+      { question: 'What roles is Swadhin open to?', answer: 'Mid-level to senior Data Engineering and Backend Engineering roles — with a focus on production data infrastructure, MLOps, and distributed systems.', order: 1 },
+      { question: 'Is Swadhin available to relocate to the EU?', answer: 'Yes — he is actively seeking EU relocation (Germany, Netherlands, Austria) and is open to fully remote roles across the EU.', order: 2 },
+      { question: 'What is the notice period?', answer: '30 days.', order: 3 },
+      { question: 'Does Swadhin need visa sponsorship?', answer: 'Yes — relocation to the EU would require visa sponsorship from the employer.', order: 4 },
+    ];
+    for (const f of faqsData) {
+      await db.insert(faqs).values({ ...f, createdAt: now, updatedAt: now });
+    }
+    console.log(`  ✅ Inserted ${faqsData.length} FAQs`);
+
+    // 16c. Languages
+    console.log('🌍 Seeding languages...');
+    const languagesData = [
+      { name: 'English', level: 'fluent', note: 'Professional working proficiency (C1) — daily engineering language', order: 1 },
+      { name: 'Bengali', level: 'native', note: 'Native speaker (mother tongue)', order: 2 },
+      { name: 'German', level: 'learning', note: 'Currently learning — for EU relocation (Germany)', order: 3 },
+      { name: 'Hindi', level: 'working', note: 'Speaking and understanding — conversational', order: 4 },
+    ];
+    for (const l of languagesData) {
+      await db.insert(languages).values({ ...l, createdAt: now, updatedAt: now });
+    }
+    console.log(`  ✅ Inserted ${languagesData.length} languages`);
+
+    // 17. Site text (DB-driven copy — no hardcoded strings in components)
+    console.log('✍️ Seeding site text...');
+    const siteText = [
+      { key: 'sidebar_tagline', value: 'Data engineering. Backend systems. Handmade web.' },
+      { key: 'footer_tagline', value: 'Built with Astro · Deployed on Vercel · Carbon-aware' },
+      { key: 'contact_blurb', value: "Best way to reach me is email. I'm interested in backend systems, AI product work, research tooling, and serious technical collaborations." },
+      { key: 'uses_philosophy', value: 'I believe in using the right tool for the job — not the trendiest one. Simplicity beats complexity. Reliability beats novelty. And the best code is the code you don\'t have to write.\n\nMy setup prioritizes keyboard-driven workflows, minimalism, and reproducibility.' },
+      { key: 'notice_period', value: '30 days' },
+      { key: 'work_authorization', value: 'Open to relocation; requires work visa sponsorship in the EU' },
+      { key: 'relocation_targets', value: 'Germany · Netherlands · Austria · Remote EU' },
+      { key: 'english_level', value: 'English — professional working proficiency (C1)' },
+      { key: 'meeting_url', value: 'https://cal.com/swadhinbiswas' },
+      { key: 'availability_hours', value: 'Available 8am–12pm CET daily for calls' },
+    ];
+    for (const s of siteText) {
+      await db.insert(siteSettings).values({ key: s.key, value: s.value, createdAt: now, updatedAt: now }).onConflictDoNothing();
+    }
+    console.log(`  ✅ Inserted ${siteText.length} site text entries`);
 
     console.log('\n✨ Database seeded successfully!');
   } catch (error) {

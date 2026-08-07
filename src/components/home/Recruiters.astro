@@ -1,0 +1,116 @@
+---
+import { getDynamicConfig } from "../../lib/config";
+import { getLanguages } from "../../lib/loaders";
+
+const siteConfig = await getDynamicConfig();
+
+// Languages from the `languages` table — with level badges
+const languageRows = await getLanguages();
+const levelLabels: Record<string, string> = {
+  native: "Native",
+  fluent: "Fluent",
+  working: "Working",
+  learning: "Learning",
+};
+const languagesText = languageRows.length > 0
+  ? (languageRows as any[]).map((l) => `${l.name} (${levelLabels[l.level] || l.level})`).join(" · ")
+  : siteConfig.englishLevel;
+
+const facts = [
+  siteConfig.workAuthorization && { label: "Work authorization", value: siteConfig.workAuthorization },
+  siteConfig.relocationTargets && { label: "Relocation", value: siteConfig.relocationTargets },
+  siteConfig.noticePeriod && { label: "Notice period", value: siteConfig.noticePeriod },
+  languagesText && { label: "Languages", value: languagesText },
+].filter(Boolean) as { label: string; value: string }[];
+
+const hasContent = facts.length > 0 || siteConfig.cvUrl || siteConfig.email;
+---
+
+{hasContent && (
+  <section id="recruiters" class="section">
+    <div class="container-narrow">
+      <div class="section-head reveal">
+        <div>
+          <p class="text-eyebrow">Hiring me</p>
+          <h2 class="section-title">For recruiters</h2>
+        </div>
+        {siteConfig.cvUrl && (
+          <a href={siteConfig.cvUrl} target="_blank" rel="noopener noreferrer" class="section-link">Download CV →</a>
+        )}
+      </div>
+
+      <div class="panel p-6 sm:p-7 reveal reveal-delay-1">
+        <dl class="recruiter-grid">
+          {facts.map((f) => (
+            <div class="recruiter-fact">
+              <dt class="recruiter-label">{f.label}</dt>
+              <dd class="recruiter-value">{f.value}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <div class="recruiter-actions">
+          {siteConfig.cvUrl && (
+            <a href={siteConfig.cvUrl} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Download CV
+            </a>
+          )}
+          {siteConfig.meetingUrl && (
+            <a href={siteConfig.meetingUrl} target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              Book a call
+            </a>
+          )}
+          {siteConfig.email && (
+            <a href={`mailto:${siteConfig.email}`} class="btn btn-outline">Email me</a>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .recruiter-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
+  @media (min-width: 640px) { .recruiter-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .recruiter-fact {
+    border: 1px solid var(--color-edge);
+    background: var(--color-bg-2);
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+  }
+  .recruiter-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+  }
+  .recruiter-value {
+    margin-top: 0.35rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-fg);
+    line-height: 1.5;
+  }
+
+  .recruiter-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px dashed var(--color-edge);
+  }
+</style>

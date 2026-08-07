@@ -56,14 +56,25 @@ export const POST: APIRoute = async ({ request }) => {
 export const PUT: APIRoute = async ({ request }) => {
     try {
         const body = await request.json();
-        const { id, name, category, description, icon, order } = body;
-
+        const { id } = body;
+        if (!id) {
+            return new Response(JSON.stringify({ success: false, error: 'ID is required' }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
         const now = new Date().toISOString();
-
+        const setData: Record<string, any> = { updatedAt: now };
+        
+        const fields = ['name', 'category', 'description', 'icon', 'order'];
+        for (const f of fields) {
+            if (body[f] !== undefined) setData[f] = body[f];
+        }
+        
         await db.update(interests)
-            .set({ name, category, description, icon, order, updatedAt: now })
+            .set(setData)
             .where(eq(interests.id, id));
-
+        
         return new Response(JSON.stringify({ success: true }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },

@@ -1,14 +1,180 @@
 ---
 export const prerender = false;
 import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, supportOptions } from "../../db";
+import { asc } from "drizzle-orm";
+
+const rows = await db.select().from(supportOptions).orderBy(asc(supportOptions.order));
 ---
 
 <AdminLayout title="Support">
-  <h1 class="text-2xl font-bold mb-6">Support</h1>
-  
-  <div class="max-w-2xl">
-    <div class="p-6 rounded-xl border border-white/10 bg-white/5">
-      <p class="text-gray-300">Manage support options via the API at <code class="text-cyan-400">/api/admin/support</code></p>
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">Support Options ({rows.length})</h1>
+    <button onclick="document.getElementById('add-form').classList.toggle('hidden')" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm">+ Add Option</button>
+  </div>
+
+  <div id="add-form" class="hidden mb-6 p-4 rounded-xl border border-cyan-400/30 bg-cyan-400/5">
+    <h2 class="text-lg font-semibold mb-4">New Support Option</h2>
+    <form id="create-form" class="space-y-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Name</label>
+          <input type="text" name="name" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="Buy Me a Coffee" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Icon (emoji)</label>
+          <input type="text" name="icon" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="☕" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Type</label>
+          <select name="type" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
+            <option value="link">Link</option>
+            <option value="copy">Copy (e.g. UPI)</option>
+            <option value="qr">QR Code</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Order</label>
+          <input type="number" name="order" value="0" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+        <div class="sm:col-span-2">
+          <label class="block text-sm text-gray-400 mb-1">Value (URL or Wallet Address)</label>
+          <input type="text" name="value" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+      </div>
+      <div class="flex gap-3">
+        <button type="submit" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm">Save</button>
+        <button type="button" onclick="document.getElementById('add-form').classList.add('hidden')" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors text-sm">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="space-y-3 max-w-3xl">
+    {rows.map((opt) => (
+      <div class="p-4 rounded-xl border border-white/10 bg-white/5 group">
+        <div class="flex justify-between items-start">
+          <div class="flex items-center gap-3 flex-1">
+            <span class="text-2xl">{opt.icon}</span>
+            <div>
+              <h3 class="font-semibold">{opt.name}</h3>
+              <span class="text-gray-400 text-xs">{opt.type}</span>
+              <p class="text-gray-500 text-xs mt-0.5 truncate max-w-md">{opt.value}</p>
+            </div>
+          </div>
+          <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button data-edit={JSON.stringify(opt)} class="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs hover:bg-yellow-500/30">Edit</button>
+            <button data-delete={opt.id} class="px-3 py-1 bg-red-500/20 text-red-400 rounded text-xs hover:bg-red-500/30">Delete</button>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div id="edit-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+    <div class="bg-[#111] border border-white/10 rounded-xl p-6 w-full max-w-lg">
+      <h2 class="text-lg font-semibold mb-4">Edit Support Option</h2>
+      <form id="edit-form" class="space-y-4">
+        <input type="hidden" name="id" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Name</label>
+            <input type="text" name="name" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Icon</label>
+            <input type="text" name="icon" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Type</label>
+          <select name="type" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
+            <option value="link">Link</option>
+            <option value="copy">Copy</option>
+            <option value="qr">QR Code</option>
+          </select>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Order</label>
+          <input type="number" name="order" value="0" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+        <div class="sm:col-span-2">
+          <label class="block text-sm text-gray-400 mb-1">Value</label>
+          <input type="text" name="value" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <button type="submit" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm">Update</button>
+          <button type="button" onclick="document.getElementById('edit-modal').classList.add('hidden')" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors text-sm">Cancel</button>
+        </div>
+      </form>
     </div>
   </div>
 </AdminLayout>
+
+<script>
+  function toast(msg: string, ok = true) {
+    const el = document.createElement("div");
+    el.className = `fixed top-4 right-4 px-4 py-2 rounded-lg text-sm z-50 ${ok ? "bg-green-500/20 text-green-400 border border-green-500/30" : "bg-red-500/20 text-red-400 border border-red-500/30"}`;
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+
+  document.getElementById("create-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const data: Record<string, any> = Object.fromEntries(new FormData(form).entries());
+    data.order = Number(data.order) || 0;
+    const res = await fetch("/api/admin/support", {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data),
+    });
+    if (res.ok) { toast("Created!"); setTimeout(() => location.reload(), 500); }
+    else { toast("Failed", false); }
+  });
+
+  document.addEventListener("click", async (e) => {
+    const target = e.target as HTMLElement;
+    const editBtn = target.closest("[data-edit]") as HTMLElement;
+    if (editBtn) {
+      try {
+        const item = JSON.parse(editBtn.dataset.edit || "{}");
+        const modal = document.getElementById("edit-modal")!;
+        const form = document.getElementById("edit-form") as HTMLFormElement;
+        (form.querySelector("[name='id']") as HTMLInputElement).value = String(item.id);
+        (form.querySelector("[name='name']") as HTMLInputElement).value = item.name || "";
+        (form.querySelector("[name='icon']") as HTMLInputElement).value = item.icon || "";
+        (form.querySelector("[name='type']") as HTMLSelectElement).value = item.type || "link";
+        (form.querySelector("[name='value']") as HTMLInputElement).value = item.value || "";
+        (form.querySelector("[name='order']") as HTMLInputElement).value = String(item.order ?? 0);
+        modal.classList.remove("hidden");
+      } catch (err) {
+        console.error("Parse edit data error:", err);
+      }
+      return;
+    }
+
+    const deleteBtn = target.closest("[data-delete]") as HTMLElement;
+    if (deleteBtn) {
+      const id = Number(deleteBtn.dataset.delete);
+      if (!id || isNaN(id)) return;
+      if (!confirm("Delete this option?")) return;
+      const res = await fetch("/api/admin/support?id=" + id, {
+        method: "DELETE",
+      });
+      if (res.ok) { toast("Deleted!"); setTimeout(() => location.reload(), 500); }
+      else { toast("Failed", false); }
+    }
+  });
+
+  document.getElementById("edit-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const data: Record<string, any> = Object.fromEntries(new FormData(form).entries());
+    data.id = Number(data.id);
+    data.order = Number(data.order) || 0;
+    const res = await fetch("/api/admin/support", {
+      method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data),
+    });
+    if (res.ok) { toast("Updated!"); setTimeout(() => location.reload(), 500); }
+    else { toast("Failed", false); }
+  });
+</script>

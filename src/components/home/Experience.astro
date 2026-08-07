@@ -1,26 +1,20 @@
 ---
-import { db, experiences } from "../../db";
-import { desc } from "drizzle-orm";
+import { getExperiences } from "../../lib/loaders";
 
 interface Experience {
   id: number;
   company: string;
   role: string;
   url?: string;
-  logoUrl?: string;
+  companyDescription?: string;
   startDate: string;
   endDate?: string;
   details?: string;
-  companyDescription?: string;
 }
 
-let experiencesList: Experience[] = [];
-try {
-  const rows = await db.select().from(experiences).orderBy(desc(experiences.startDate));
-  experiencesList = rows as Experience[];
-} catch {
-  experiencesList = [];
-}
+const experiencesList = (await getExperiences()) as Experience[];
+const highlights = experiencesList.slice(0, 3);
+
 
 function formatDate(s?: string) {
   if (!s) return "Present";
@@ -28,69 +22,140 @@ function formatDate(s?: string) {
   if (isNaN(d.getTime())) return s;
   return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
 }
+
+function hostname(url?: string) {
+  if (!url) return "";
+  try { return new URL(url).hostname; } catch { return url; }
+}
 ---
 
-<section id="experience" class="screen-line-after">
-  <div class="container-narrow py-12 sm:py-16">
-    <div class="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between reveal">
+<section id="experience" class="section">
+  <div class="container-narrow">
+    <div class="section-head reveal">
       <div>
         <p class="text-eyebrow">Work history</p>
-        <h2 class="mt-2 panel-title">
-          Experience<span class="count-badge">{experiencesList.length || ""}</span>
+        <h2 class="section-title">
+          Experience
+          {experiencesList.length > 0 && <span class="count-badge">{experiencesList.length}</span>}
         </h2>
       </div>
-      <a href="/about" class="text-mono text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-[var(--color-accent)]">
-        View all →
-      </a>
+      <a href="/experience" class="section-link">Full timeline →</a>
     </div>
 
-    {experiencesList.length === 0 ? (
-      <div class="portfolio-card px-4 py-8 text-center reveal">
-        <p class="text-sm text-[var(--color-fg-muted)]">
-          No experience entries yet. Add them from the admin panel.
-        </p>
+    {highlights.length === 0 ? (
+      <div class="panel p-6 text-sm text-[var(--color-fg-muted)] reveal">
+        Experience will appear here once added from the admin panel.
       </div>
     ) : (
-      <div class="portfolio-card overflow-hidden">
-        {experiencesList.map((exp) => (
-          <div class="row-card group md:grid-cols-[auto_1fr_12rem]">
-            <div class="row-card-logo mt-0.5" aria-hidden="true">
-              {exp.logoUrl ? (
-                <img src={exp.logoUrl} alt={exp.company} class="h-5 w-5 object-contain" loading="lazy" />
-              ) : (
-                exp.company.charAt(0).toUpperCase()
-              )}
-            </div>
-
-            <div class="min-w-0 flex-1">
-              <h3 class="text-base font-semibold leading-snug text-[var(--color-fg)]">
-                {exp.role}
-                {exp.company && (
-                  <span class="text-[var(--color-fg-muted)]"> at {exp.company}</span>
+      <div class="panel panel-accent">
+        <ol class="exp-list reveal reveal-delay-1">
+          {highlights.map((exp) => (
+            <li class="exp-row">
+              <div class="exp-dot" aria-hidden="true"></div>
+              <div class="exp-body">
+                <div class="exp-head">
+                  <h3 class="exp-title">
+                    {exp.role}
+                    {exp.company && <span class="exp-company"> · {exp.company}</span>}
+                  </h3>
+                  <time class="exp-dates">{formatDate(exp.startDate)} — {formatDate(exp.endDate)}</time>
+                </div>
+                {exp.details && <p class="exp-details">{exp.details}</p>}
+                {(exp.companyDescription || exp.url) && (
+                  <div class="exp-meta">
+                    {exp.companyDescription && <span class="exp-about">{exp.companyDescription}</span>}
+                    {exp.url && (
+                      <a class="exp-link" href={exp.url} target="_blank" rel="noopener noreferrer">
+                        {hostname(exp.url)} ↗
+                      </a>
+                    )}
+                  </div>
                 )}
-              </h3>
-              {exp.details && (
-                <p class="mt-2 line-clamp-3 text-sm leading-6 text-[var(--color-fg-muted)]">{exp.details}</p>
-              )}
-            </div>
-
-            <div class="row-card-actions flex flex-col items-end gap-1.5 text-right">
-              <span class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)]">
-                {formatDate(exp.startDate)} - {formatDate(exp.endDate)}
-              </span>
-              {exp.url && (
-                <a href={exp.url} target="_blank" rel="noopener noreferrer" aria-label={`${exp.company} website`}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                    <polyline points="15 3 21 3 21 9"/>
-                    <line x1="10" y1="14" x2="21" y2="3"/>
-                  </svg>
-                </a>
-              )}
-            </div>
-          </div>
-        ))}
+              </div>
+            </li>
+          ))}
+        </ol>
       </div>
     )}
   </div>
 </section>
+
+<style>
+  .exp-list { list-style: none; margin: 0; padding: 0.4rem 0; }
+  .exp-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    padding: 1.05rem 1.25rem;
+    border-top: 1px solid var(--color-edge);
+    transition: background-color 0.2s ease;
+  }
+  .exp-row:hover { background: rgba(255, 255, 255, 0.02); }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .exp-row:hover { background: rgba(0, 0, 0, 0.02); }
+  }
+  html[data-theme="light"] .exp-row:hover { background: rgba(0, 0, 0, 0.02); }
+  .exp-row:first-child { border-top: 0; }
+
+  .exp-dot {
+    margin-top: 0.45rem;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 999px;
+    background: var(--color-fg);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+    flex-shrink: 0;
+  }
+
+  .exp-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+  }
+  .exp-title {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-fg);
+    letter-spacing: -0.01em;
+    line-height: 1.4;
+  }
+  .exp-company { color: var(--color-fg-muted); font-weight: 500; }
+  .exp-dates {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-fg-subtle);
+    white-space: nowrap;
+  }
+  .exp-details {
+    margin-top: 0.4rem;
+    color: var(--color-fg-muted);
+    font-size: 0.87rem;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .exp-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    margin-top: 0.5rem;
+  }
+  .exp-about {
+    font-size: 0.78rem;
+    color: var(--color-fg-subtle);
+    font-style: italic;
+  }
+  .exp-link {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-fg-subtle);
+    transition: color 0.2s ease;
+  }
+  .exp-link:hover { color: var(--color-fg); }
+</style>

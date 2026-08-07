@@ -67,6 +67,66 @@ settingsRows.forEach(s => { settings[s.key] = s.value; });
       <input type="text" name="languages" value={settings.languages || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="English (professional) · Bengali (native)" />
     </div>
 
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">Sidebar Tagline</label>
+      <input type="text" name="sidebar_tagline" value={settings.sidebar_tagline || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="Data engineering. Backend systems. Handmade web." />
+    </div>
+
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">Footer Tagline</label>
+      <input type="text" name="footer_tagline" value={settings.footer_tagline || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="Built with Astro · Deployed on Vercel" />
+    </div>
+
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">Contact Blurb</label>
+      <textarea name="contact_blurb" rows="2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">{settings.contact_blurb || ""}</textarea>
+    </div>
+
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">Uses Philosophy (separate paragraphs with a blank line)</label>
+      <textarea name="uses_philosophy" rows="3" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 font-mono text-sm">{settings.uses_philosophy || ""}</textarea>
+    </div>
+
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">Works For (Company)</label>
+      <input type="text" name="works_for_name" value={settings.works_for_name || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+    </div>
+
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">Works For URL</label>
+      <input type="url" name="works_for_url" value={settings.works_for_url || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+    </div>
+
+    <div class="border-t border-white/10 pt-4 mt-4">
+      <h3 class="text-sm font-semibold text-cyan-400 mb-3">For Recruiters</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Work Authorization</label>
+          <input type="text" name="work_authorization" value={settings.work_authorization || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="Open to relocation; requires visa sponsorship" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Relocation Targets</label>
+          <input type="text" name="relocation_targets" value={settings.relocation_targets || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="Germany · Netherlands · Austria · Remote EU" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Notice Period</label>
+          <input type="text" name="notice_period" value={settings.notice_period || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="30 days" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">English Level</label>
+          <input type="text" name="english_level" value={settings.english_level || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="English — professional working proficiency (C1)" />
+        </div>
+      </div>
+      <div class="mt-4">
+        <label class="block text-sm text-gray-400 mb-1">Meeting / Calendar Link (Book a call)</label>
+        <input type="url" name="meeting_url" value={settings.meeting_url || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="https://cal.com/you or https://calendly.com/you" />
+      </div>
+      <div class="mt-4">
+        <label class="block text-sm text-gray-400 mb-1">Availability Hours (contact page)</label>
+        <input type="text" name="availability_hours" value={settings.availability_hours || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="Available 8am–12pm CET daily for calls" />
+      </div>
+    </div>
+
     <div class="flex items-center gap-3">
       <button type="submit" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors">Save Settings</button>
       <span id="status" class="text-sm"></span>

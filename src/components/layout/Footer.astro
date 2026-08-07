@@ -5,39 +5,79 @@ import { env } from "../../lib/env";
 const siteConfig = await getDynamicConfig();
 const year = new Date().getFullYear();
 const author = siteConfig.author || env.siteName;
-
 const socials = (siteConfig.socials || []).filter((s) =>
-  ["github", "linkedin", "twitter", "scholar", "email"].includes(s.icon)
+  ["github", "linkedin", "twitter", "scholar", "email", "youtube"].includes(s.icon)
 );
 ---
 
-<footer class="screen-line-before">
-  <div class="pattern-stripes">
-    <div class="container-narrow py-8">
-      <div class="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
-        <p class="text-mono text-xs text-[var(--color-fg-subtle)]">
-          © {year} {author}
-        </p>
-        {socials.length > 0 && (
-          <div class="flex items-center gap-3">
-            {socials.map((s) => (
-              <a
-                href={s.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={s.name}
-                class="text-mono text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-[var(--color-accent)]"
-              >
-                {s.icon === "github" && "GitHub"}
-                {s.icon === "linkedin" && "LinkedIn"}
-                {s.icon === "twitter" && "X"}
-                {s.icon === "scholar" && "Scholar"}
-                {s.icon === "email" && "Email"}
-              </a>
-            ))}
-          </div>
-        )}
-      </div>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-meta">
+      <p class="footer-copyright">© {year} {author}</p>
+      {siteConfig.footerTagline && <p class="footer-tagline">{siteConfig.footerTagline}</p>}
     </div>
+    {socials.length > 0 && (
+      <nav class="footer-nav" aria-label="Footer">
+        {socials.map((s) => (
+          <a
+            href={s.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={s.name}
+            class="footer-link"
+          >
+            {s.icon === "github" && "GitHub"}
+            {s.icon === "linkedin" && "LinkedIn"}
+            {s.icon === "twitter" && "X"}
+            {s.icon === "scholar" && "Scholar"}
+            {s.icon === "email" && "Email"}
+            {s.icon === "youtube" && "YouTube"}
+          </a>
+        ))}
+      </nav>
+    )}
   </div>
 </footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--color-edge);
+    padding: 2rem 1.5rem;
+    margin-top: 4rem;
+  }
+  .footer-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .footer-copyright {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-fg-subtle);
+    letter-spacing: 0.04em;
+  }
+  .footer-tagline {
+    margin-top: 0.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--color-fg-subtle);
+    opacity: 0.7;
+  }
+  .footer-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+  }
+  .footer-link {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-fg-subtle);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .footer-link:hover { color: var(--color-fg); }
+</style>

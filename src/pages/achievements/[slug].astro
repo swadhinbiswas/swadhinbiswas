@@ -1,0 +1,159 @@
+---
+export const prerender = false;
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { db, achievements } from "../../db";
+import { eq, asc } from "drizzle-orm";
+import { renderMarkdown } from "../../lib/markdown";
+import { getCachedData, setCachedData } from "../../lib/redis";
+import { strokeIcon } from "../../lib/icons";
+import { getDynamicConfig } from "../../lib/config";
+import { env } from "../../lib/env";
+
+const { slug } = Astro.params;
+if (!slug) return Astro.redirect("/404");
+
+const cacheKey = `achievement:${slug}`;
+let achievement: any = null;
+let storyHtml = "";
+let outcomeHtml = "";
+
+const cached = await getCachedData(cacheKey);
+if (cached?.achievement) {
+  achievement = cached.achievement;
+  storyHtml = cached.storyHtml || "";
+  outcomeHtml = cached.outcomeHtml || "";
+} else {
+  const results = await db.select().from(achievements).where(eq(achievements.slug, slug)).limit(1);
+  achievement = results[0] || null;
+  if (!achievement) return Astro.redirect("/404");
+
+  storyHtml = achievement.story ? (await renderMarkdown(achievement.story)).html : "";
+  outcomeHtml = achievement.outcome ? (await renderMarkdown(achievement.outcome)).html : "";
+  setCachedData(cacheKey, { achievement, storyHtml, outcomeHtml }, 300).catch(() => {});
+}
+
+const all = await (async () => {
+  try { return await db.select().from(achievements).orderBy(asc(achievements.order)); }
+  catch { return []; }
+})();
+const related = all.filter((a) => a.slug !== slug).slice(0, 2);
+
+const siteConfig = await getDynamicConfig();
+const siteUrl = (siteConfig.url || env.siteUrl || "https://swadhin.cv").replace(/\/$/, "");
+const canonicalUrl = `${siteUrl}/achievements/${slug}/`;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": `${siteUrl}/` },
+        { "@type": "ListItem", "position": 2, "name": "Achievements", "item": `${siteUrl}/achievements` },
+        { "@type": "ListItem", "position": 3, "name": achievement.name, "item": canonicalUrl },
+      ],
+    },
+    {
+      "@type": "Article",
+      "@id": `${canonicalUrl}#article`,
+      mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
+      headline: achievement.name,
+      description: achievement.description,
+      datePublished: achievement.year ? `${achievement.year}-01-01` : undefined,
+      author: { "@id": `${siteUrl}/#person` },
+      publisher: { "@id": `${siteUrl}/#person` },
+      ...(achievement.url ? { url: achievement.url } : {}),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={`${achievement.name} — Achievement`}
+  description={achievement.description}
+  image={`${siteUrl}/api/og/achievements/${slug}.svg`}
+  ogType="article"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    {achievement.year && <meta property="article:published_time" content={`${achievement.year}-01-01T00:00:00Z`} />}
+  </Fragment>
+
+  <article>
+    <section class="screen-line-after">
+      <div class="container-narrow py-12 sm:py-16">
+        <a href="/achievements" class="text-mono inline-flex items-center gap-1.5 text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-[var(--color-accent)] reveal">
+          ← All achievements
+        </a>
+
+        <div class="mt-8 reveal reveal-delay-1">
+          <div class="flex flex-wrap items-center gap-3 text-mono text-xs text-[var(--color-fg-subtle)]">
+            <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-[var(--color-bg-2)] border border-[var(--color-edge)] text-[var(--color-accent-2)]" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" set:html={strokeIcon(achievement.icon)} />
+            </span>
+            {achievement.year && <span>{achievement.year}</span>}
+          </div>
+
+          <h1 class="text-display mt-4 text-3xl sm:text-4xl">
+            <span class="text-aurora">{achievement.name}</span>
+          </h1>
+          <p class="prose-mono mt-4 max-w-prose">{achievement.description}</p>
+
+          <div class="mt-6 flex flex-wrap items-center gap-3">
+            {achievement.url && (
+              <a href={achievement.url} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                Learn more — full story
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            )}
+            <a href="/contact" class="btn btn-outline">Ask me about it</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {storyHtml && (
+      <section class="screen-line-after">
+        <div class="container-narrow py-10 sm:py-14">
+          <p class="text-eyebrow reveal">The story</p>
+          <h2 class="panel-title mt-2 mb-6 reveal">How it was achieved</h2>
+          <div class="prose-content reveal reveal-delay-1" set:html={storyHtml} />
+        </div>
+      </section>
+    )}
+
+    {outcomeHtml && (
+      <section class="screen-line-after">
+        <div class="container-narrow py-10 sm:py-14">
+          <div class="panel p-6 sm:p-8 reveal">
+            <p class="text-eyebrow">Outcome</p>
+            <h2 class="panel-title mt-2 mb-5">Measurable results</h2>
+            <div class="prose-content" set:html={outcomeHtml} />
+          </div>
+        </div>
+      </section>
+    )}
+
+    {related.length > 0 && (
+      <section class="screen-line-after">
+        <div class="container-narrow py-10 sm:py-14">
+          <p class="text-eyebrow reveal">More milestones</p>
+          <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {related.map((r) => (
+              <a
+                href={`/achievements/${r.slug}/`}
+                class="panel p-5 reveal transition-all duration-200 hover:border-[var(--color-edge-strong)] hover:translate-y-[-2px]"
+              >
+                <div class="flex items-baseline justify-between gap-3">
+                  <h3 class="font-display font-bold text-[1.02rem] text-[var(--color-fg)]">{r.name}</h3>
+                  <span class="text-mono text-[var(--color-fg-subtle)]" aria-hidden="true">→</span>
+                </div>
+                {r.description && <p class="mt-2 text-sm text-[var(--color-fg-muted)] line-clamp-2 leading-relaxed">{r.description}</p>}
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+  </article>
+</BaseLayout>

@@ -1,20 +1,14 @@
 ---
 export const prerender = true;
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { db, projects } from "../../db";
-import { desc, asc } from "drizzle-orm";
+import { getProjects } from "../../lib/loaders";
+import { getProjectCategories, categoryLabel } from "../../lib/projects";
+import { opt } from "../../lib/image";
+import { getDynamicConfig } from "../../lib/config";
+import { env } from "../../lib/env";
 
-let dbProjects: any[] = [];
-try {
-  dbProjects = await db.select().from(projects).orderBy(asc(projects.order), desc(projects.stars));
-} catch {
-  dbProjects = [];
-}
-
-const allProjects = dbProjects.map((p) => ({
-  ...p,
-  tags: (() => { try { return JSON.parse(p.tags || "[]"); } catch { return []; } })(),
-}));
+const allProjects = await getProjects();
+const categories = await getProjectCategories();
 
 function slug(name: string) {
   return name
@@ -40,27 +34,68 @@ function getCardArt(name: string, id: number) {
     icon = `<path d="M9 1H4l-2 7h5l-2 7 9-9H9l2-5z"/>`;
   }
   return `<svg viewBox="0 0 64 64" width="56" height="56" fill="none">
-    <defs><linearGradient id="g-${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="60%" stop-color="#22D3EE"/><stop offset="100%" stop-color="#34D399"/></linearGradient></defs>
+    <defs><linearGradient id="g-${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="60%" stop-color="#A1A1AA"/><stop offset="100%" stop-color="#52525B"/></linearGradient></defs>
     <rect width="64" height="64" rx="12" fill="#0F0F18" stroke="url(#g-${id})" stroke-width="1.25" opacity="0.95"/>
     <g stroke="url(#g-${id})" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" fill="none">${icon}</g>
   </svg>`;
 }
 
+const siteConfig = await getDynamicConfig();
+const siteUrl = (siteConfig.url || env.siteUrl || "https://swadhin.cv").replace(/\/$/, "");
+
+// Projects grouped by category (only categories that have projects, in DB order)
+const projectsByCategory = categories
+  .map((cat) => ({
+    ...cat,
+    items: allProjects.filter((p) => (p.category || "data-engineering") === cat.slug),
+  }))
+  .filter((c) => c.items.length > 0);
+
+// Projects without a matching category land under a generic bucket
+const uncategorized = allProjects.filter((p) => !categories.some((c) => c.slug === (p.category || "data-engineering")));
+
 const schema = {
   "@context": "https://schema.org",
-  "@type": "ItemList",
-  itemListElement: allProjects.map((p, i) => ({
-    "@type": "ListItem",
-    position: i + 1,
-    name: p.name,
-    description: p.description,
-  })),
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": `${siteUrl}/` },
+        { "@type": "ListItem", "position": 2, "name": "Projects", "item": `${siteUrl}/projects` }
+      ]
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": `${siteUrl}/projects/#webpage`,
+      url: `${siteUrl}/projects`,
+      name: "Projects by Swadhin Biswas",
+      description: "Production platforms, open source tools, and research deployments.",
+      isPartOf: { "@id": `${siteUrl}/#website` },
+      mainEntity: { "@id": `${siteUrl}/#person` },
+    },
+    {
+      "@type": "ItemList",
+      "name": "Projects by Swadhin Biswas",
+      "itemListElement": allProjects.map((p, i) => ({
+        "@type": "ListItem",
+        "position": i + 1,
+        "url": `${siteUrl}/projects/${p.slug}`,
+        "item": {
+          "@type": "CreativeWork",
+          "name": p.name,
+          "description": p.description,
+          "url": `${siteUrl}/projects/${p.slug}`,
+          "author": { "@id": `${siteUrl}/#person` },
+        },
+      })),
+    },
+  ]
 };
 ---
 
-<BaseLayout title="Projects" description="Production platforms, open source tools, and research deployments.">
+<BaseLayout title="Projects" description="Selected projects, production platforms, open source tools, and research deployments by Swadhin Biswas.">
   <Fragment slot="head">
-    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(schema, null, 2)} />
   </Fragment>
 
   <section class="screen-line-after">
@@ -75,59 +110,164 @@ const schema = {
     </div>
   </section>
 
-  <section class="screen-line-after">
-    <div class="container-narrow py-12 sm:py-16">
-      {allProjects.length === 0 ? (
+  {projectsByCategory.length > 0 && (
+    <nav class="category-tabs" aria-label="Project categories">
+      {projectsByCategory.map((cat, i) => (
+        <a href={`#cat-${cat.slug}`} class="category-tab reveal" style={`transition-delay:${i * 40}ms`}>
+          <span class="category-tab-label">{cat.label}</span>
+          <span class="category-tab-count">{cat.items.length}</span>
+        </a>
+      ))}
+    </nav>
+  )}
+
+  {allProjects.length === 0 ? (
+    <section class="screen-line-after">
+      <div class="container-narrow py-12">
         <p class="text-sm text-[var(--color-fg-muted)] reveal">No projects yet.</p>
-      ) : (
-        <div class="projects-grid">
-          {allProjects.map((p) => (
-            <div class="project-card reveal" data-project-id={p.id}>
-              <a href={`/projects/${slug(p.name)}`} class="project-card-link">
-                <div class="project-card-art" aria-hidden="true">
-                  <Fragment set:html={getCardArt(p.name, p.id)} />
-                  {p.featured && <span class="featured-badge">★ Featured</span>}
-                </div>
-                <div class="project-card-body">
-                  <div class="project-card-head">
-                    <h3 class="project-card-title">{p.name}</h3>
-                    <span class="project-card-arrow">→</span>
+      </div>
+    </section>
+  ) : (
+    <>
+    {projectsByCategory.map((cat) => (
+      <section id={`cat-${cat.slug}`} class="screen-line-after">
+        <div class="container-narrow py-10 sm:py-14">
+          <div class="reveal">
+            <p class="text-eyebrow">{cat.short}</p>
+            <h2 class="panel-title mt-1">{cat.label}<span class="count-badge">{cat.items.length}</span></h2>
+          </div>
+
+          <div class="projects-grid mt-6">
+            {cat.items.map((p) => (
+              <article class="project-card reveal">
+                <a href={`/projects/${p.slug}`} class="project-card-link">
+                  <div class="project-card-art" aria-hidden="true">
+                    {p.image ? (
+                      <img src={opt(p.image, 720)} alt={p.name} class="project-card-img" loading="lazy" decoding="async" width="720" height="360" />
+                    ) : (
+                      <Fragment set:html={getCardArt(p.name, p.id)} />
+                    )}
+                    {p.featured && <span class="featured-badge">★ Featured</span>}
                   </div>
-                  {p.description && (
-                    <p class="project-card-desc">{p.description}</p>
-                  )}
-                  {p.tags.length > 0 && (
-                    <div class="project-card-tags">
-                      {p.tags.slice(0, 4).map((t: string) => <span class="tag">{t}</span>)}
+                  <div class="project-card-body">
+                    <div class="project-card-head">
+                      <h3 class="project-card-title">{p.name}</h3>
+                      <span class="project-card-arrow">→</span>
                     </div>
-                  )}
-                  <div class="project-card-meta">
-                    {p.url && <span class="meta-badge">Live</span>}
-                    {p.github && <span class="meta-badge">Source</span>}
+                    {p.description && (
+                      <p class="project-card-desc">{p.description}</p>
+                    )}
+                    {p.tags.length > 0 && (
+                      <div class="project-card-tags">
+                        {p.tags.slice(0, 4).map((t: string) => <span class="tag">{t}</span>)}
+                      </div>
+                    )}
+                    <div class="project-card-meta">
+                      {p.url && <span class="meta-badge">Live</span>}
+                      {p.github && <span class="meta-badge">Source</span>}
+                      <span class="meta-badge meta-badge-cat">{categoryLabel(categories, p.category)}</span>
+                    </div>
                   </div>
-                </div>
-              </a>
-              <div class="project-card-footer">
-                <button class="star-btn" data-project-id={p.id} data-stars={p.stars || 0} type="button">
-                  <svg class="star-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                  </svg>
-                  <span class="star-count">{(p.stars || 0).toLocaleString()}</span>
-                </button>
-                <a href={`/projects/${slug(p.name)}`} class="read-more">
-                  Read case study
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
                 </a>
-              </div>
-            </div>
-          ))}
+                <div class="project-card-footer">
+                  {p.stars > 0 && (
+                    <span class="stars-badge" title="GitHub stars">★ {p.stars.toLocaleString()}</span>
+                  )}
+                  <a href={`/projects/${p.slug}`} class="read-more">
+                    Read case study
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
-      )}
-    </div>
-  </section>
+      </section>
+    ))}
+    {uncategorized.length > 0 && (
+      <section id="cat-other" class="screen-line-after">
+        <div class="container-narrow py-10 sm:py-14">
+          <div class="reveal">
+            <p class="text-eyebrow">More work</p>
+            <h2 class="panel-title mt-1">Other projects<span class="count-badge">{uncategorized.length}</span></h2>
+          </div>
+          <div class="projects-grid mt-6">
+            {uncategorized.map((p) => (
+              <article class="project-card reveal">
+                <a href={`/projects/${p.slug}`} class="project-card-link">
+                  <div class="project-card-art" aria-hidden="true">
+                    {p.image ? (
+                      <img src={opt(p.image, 720)} alt={p.name} class="project-card-img" loading="lazy" decoding="async" width="720" height="360" />
+                    ) : (
+                      <Fragment set:html={getCardArt(p.name, p.id)} />
+                    )}
+                  </div>
+                  <div class="project-card-body">
+                    <h3 class="project-card-title">{p.name}</h3>
+                    {p.description && <p class="project-card-desc">{p.description}</p>}
+                    <div class="project-card-meta">
+                      {p.url && <span class="meta-badge">Live</span>}
+                      {p.github && <span class="meta-badge">Source</span>}
+                    </div>
+                  </div>
+                </a>
+                <div class="project-card-footer">
+                  <a href={`/projects/${p.slug}`} class="read-more">
+                    Read case study
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+    </>
+  )}
 </BaseLayout>
 
 <style>
+  .category-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-edge);
+  }
+  .category-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-edge);
+    background: var(--color-card);
+    color: var(--color-fg-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  .category-tab:hover {
+    border-color: var(--color-edge-strong);
+    color: var(--color-fg);
+    transform: translateY(-1px);
+  }
+  .category-tab-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.15rem;
+    height: 1.15rem;
+    padding: 0 0.3rem;
+    border-radius: 999px;
+    background: var(--color-bg-2);
+    border: 1px solid var(--color-edge);
+    font-size: 0.62rem;
+    color: var(--color-fg-subtle);
+  }
+
   .projects-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -135,9 +275,6 @@ const schema = {
   }
   @media (min-width: 700px) {
     .projects-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (min-width: 1024px) {
-    .projects-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
   }
 
   .project-card {
@@ -150,9 +287,9 @@ const schema = {
     transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
   }
   .project-card:hover {
-    border-color: var(--color-accent);
+    border-color: var(--color-edge-strong);
     transform: translateY(-3px);
-    box-shadow: 0 20px 48px -16px rgba(139, 92, 246, 0.3);
+    box-shadow: 0 20px 48px -16px rgba(0, 0, 0, 0.4);
   }
 
   .project-card-link {
@@ -169,12 +306,28 @@ const schema = {
     align-items: center;
     justify-content: center;
     aspect-ratio: 16 / 8;
+    overflow: hidden;
     background:
-      repeating-linear-gradient(315deg, rgba(139, 92, 246, 0.04) 0, rgba(139, 92, 246, 0.04) 1px, transparent 1px, transparent 10px),
-      radial-gradient(ellipse at 30% 30%, rgba(139, 92, 246, 0.12), transparent 60%),
-      radial-gradient(ellipse at 70% 70%, rgba(52, 211, 153, 0.08), transparent 60%),
+      repeating-linear-gradient(315deg, rgba(255, 255, 255, 0.02) 0, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 10px),
       var(--color-bg-2);
     border-bottom: 1px solid var(--color-edge);
+  }
+  @media (prefers-color-scheme: light) {
+    .project-card-art {
+      background:
+        repeating-linear-gradient(315deg, rgba(0, 0, 0, 0.02) 0, rgba(0, 0, 0, 0.02) 1px, transparent 1px, transparent 10px),
+        var(--color-bg-2);
+    }
+  }
+  html[data-theme="light"] .project-card-art {
+    background:
+      repeating-linear-gradient(315deg, rgba(0, 0, 0, 0.02) 0, rgba(0, 0, 0, 0.02) 1px, transparent 1px, transparent 10px),
+      var(--color-bg-2);
+  }
+  .project-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   .featured-badge {
     position: absolute;
@@ -182,9 +335,9 @@ const schema = {
     right: 0.6rem;
     padding: 0.2rem 0.55rem;
     border-radius: 999px;
-    background: rgba(251, 191, 36, 0.12);
-    border: 1px solid rgba(251, 191, 36, 0.3);
-    color: #FBBF24;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--color-edge);
+    color: var(--color-fg);
     font-family: var(--font-mono);
     font-size: 0.6rem;
     font-weight: 600;
@@ -212,9 +365,6 @@ const schema = {
     color: var(--color-fg);
     transition: color 0.2s ease;
   }
-  .project-card:hover .project-card-title {
-    color: var(--color-accent);
-  }
   .project-card-arrow {
     color: var(--color-fg-subtle);
     font-size: 1rem;
@@ -222,7 +372,7 @@ const schema = {
   }
   .project-card:hover .project-card-arrow {
     transform: translateX(3px);
-    color: var(--color-accent);
+    color: var(--color-fg);
   }
   .project-card-desc {
     color: var(--color-fg-muted);
@@ -255,6 +405,11 @@ const schema = {
     border-radius: 6px;
     background: rgba(255, 255, 255, 0.02);
   }
+  .meta-badge-cat {
+    margin-left: auto;
+    color: var(--color-accent-2);
+    border-color: var(--color-edge-strong);
+  }
 
   .project-card-footer {
     display: flex;
@@ -264,43 +419,16 @@ const schema = {
     border-top: 1px dashed var(--color-edge);
   }
 
-  .star-btn {
+  .stars-badge {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.3rem 0.65rem;
-    border: 1px solid var(--color-edge);
-    border-radius: 999px;
-    background: transparent;
-    color: var(--color-fg-subtle);
     font-family: var(--font-mono);
     font-size: 0.7rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    line-height: 1;
-  }
-  .star-btn:hover {
-    border-color: #FBBF24;
-    color: #FBBF24;
-    background: rgba(251, 191, 36, 0.08);
-  }
-  .star-btn.starred {
-    border-color: #FBBF24;
-    color: #FBBF24;
-    background: rgba(251, 191, 36, 0.12);
-  }
-  .star-btn.starred .star-icon {
-    fill: #FBBF24;
-  }
-  .star-icon {
-    width: 14px;
-    height: 14px;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .star-btn:active .star-icon {
-    transform: scale(1.3);
-  }
-  .star-count {
+    font-weight: 500;
+    color: var(--color-accent-2);
+    border: 1px solid var(--color-edge-strong);
+    border-radius: 999px;
+    padding: 0.3rem 0.65rem;
     font-variant-numeric: tabular-nums;
   }
 
@@ -310,12 +438,12 @@ const schema = {
     gap: 0.35rem;
     font-family: var(--font-mono);
     font-size: 0.7rem;
-    color: var(--color-accent-2);
+    color: var(--color-fg-subtle);
     text-decoration: none;
     transition: color 0.2s ease;
   }
   .read-more:hover {
-    color: var(--color-accent);
+    color: var(--color-fg);
   }
   .read-more svg {
     transition: transform 0.2s ease;
@@ -325,51 +453,3 @@ const schema = {
   }
 </style>
 
-<script>
-  document.querySelectorAll('.star-btn').forEach((btn) => {
-    btn.addEventListener('click', async (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      const el = btn as HTMLElement;
-      const id = Number(el.dataset.projectId);
-      if (!id) return;
-
-      const countEl = el.querySelector('.star-count');
-      if (!countEl) return;
-
-      const isStarred = el.classList.contains('starred');
-
-      if (!isStarred) {
-        try {
-          const res = await fetch('/api/projects/star', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id }),
-          });
-          const data = await res.json();
-          if (data.success) {
-            el.classList.add('starred');
-            countEl.textContent = data.stars?.toLocaleString() || String(Number(el.dataset.stars) + 1);
-            el.dataset.stars = String(data.stars || Number(el.dataset.stars) + 1);
-          }
-        } catch {}
-      } else {
-        el.classList.remove('starred');
-        const current = Number(el.dataset.stars) || 0;
-        countEl.textContent = Math.max(0, current - 1).toLocaleString();
-        el.dataset.stars = String(Math.max(0, current - 1));
-      }
-    });
-  });
-
-  document.querySelectorAll('.project-card-link').forEach((link) => {
-    link.addEventListener('click', (e) => {
-      const card = (e.currentTarget as HTMLElement).closest('.project-card');
-      const btn = card?.querySelector('.star-btn');
-      if (btn && !(btn as HTMLElement).classList.contains('starred')) {
-        btn.click();
-      }
-    });
-  });
-</script>

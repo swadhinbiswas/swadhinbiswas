@@ -1,61 +1,72 @@
 ---
 import { getDynamicConfig } from "../../lib/config";
-import { db, navigationItems } from "../../db";
-import { eq, or, asc } from "drizzle-orm";
 
 const siteConfig = await getDynamicConfig();
 const pathname = Astro.url.pathname;
-
-let navItems: { label: string; href: string; external?: boolean }[] = [];
-
-try {
-  const dbItems = await db
-    .select()
-    .from(navigationItems)
-    .where(or(eq(navigationItems.location, "header"), eq(navigationItems.location, "both")))
-    .orderBy(asc(navigationItems.order));
-
-  if (dbItems.length > 0) {
-    navItems = dbItems.map((item) => ({
-      label: item.label,
-      href: item.href,
-      external: item.external || false,
-    }));
-  }
-} catch {
-  navItems = [];
-}
-
-if (navItems.length === 0) {
-  navItems = [
-    { label: "Home", href: "/" },
-    { label: "Projects", href: "/projects" },
-    { label: "Skills", href: "/skills" },
-    { label: "Blog", href: "/posts" },
-    { label: "About", href: "/about" },
-    { label: "Contact", href: "/contact" },
-  ];
-}
-
 const author = siteConfig.author || "Swadhin Biswas";
-const isActive = (href: string) =>
-  href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+const navItems = (siteConfig.navItems || []).map((item) => ({
+  ...item,
+  icon: item.href === "/" ? "home"
+    : item.href.startsWith("/project") ? "folder"
+    : /skill/i.test(item.href) ? "code"
+    : item.href.startsWith("/researc") ? "flask"
+    : /(post|blog|writing)/i.test(item.href) ? "book-open"
+    : item.href.startsWith("/about") ? "user"
+    : item.href.startsWith("/contact") ? "mail"
+    : item.href.startsWith("/experience") ? "briefcase"
+    : /educati/i.test(item.href) ? "book"
+    : "link",
+}));
 
 const socials = [
-  siteConfig.links?.github ? { label: "GitHub", href: siteConfig.links.github } : null,
-  siteConfig.links?.linkedin ? { label: "LinkedIn", href: siteConfig.links.linkedin } : null,
-  siteConfig.links?.twitter ? { label: "Twitter", href: siteConfig.links.twitter } : null,
-].filter(Boolean);
+  siteConfig.links?.github ? { label: "GitHub", href: siteConfig.links.github, icon: "github" } : null,
+  siteConfig.links?.linkedin ? { label: "LinkedIn", href: siteConfig.links.linkedin, icon: "linkedin" } : null,
+  siteConfig.links?.twitter ? { label: "Twitter", href: siteConfig.links.twitter, icon: "twitter" } : null,
+  siteConfig.links?.youtube ? { label: "YouTube", href: siteConfig.links.youtube, icon: "youtube" } : null,
+  siteConfig.email ? { label: "Email", href: `mailto:${siteConfig.email}`, icon: "mail" } : null,
+].filter(Boolean) as { label: string; href: string; icon: string }[];
+
+const isActive = (href: string) =>
+  href === "/" ? pathname === "/" : pathname.startsWith(href);
 ---
 
-<aside class="delphi-sidebar">
+<aside class="shell-sidebar" data-open="false">
   <div class="sidebar-header">
-    <a href="/" class="brand-text" aria-label={`${author} home`}>
-      <strong>{author.toLowerCase().replace(/\s+/g, "")}</strong>
-      <span>portfolio</span>
+    <a href="/" class="brand" aria-label={`${author} — home`}>
+      <span class="brand-mark cat-wrap" aria-hidden="true">
+        <svg class="cat-icon" viewBox="0 0 64 64" width="32" height="32">
+          <!-- Cat ears -->
+          <path d="M14 28 L18 10 L26 22 Z" fill="#F97316" opacity="0.9"/>
+          <path d="M50 28 L46 10 L38 22 Z" fill="#F97316" opacity="0.9"/>
+          <!-- Inner ears -->
+          <path d="M17 26 L19.5 14 L24 22 Z" fill="#FB923C" opacity="0.5"/>
+          <path d="M47 26 L44.5 14 L40 22 Z" fill="#FB923C" opacity="0.5"/>
+          <!-- Head -->
+          <ellipse cx="32" cy="36" rx="18" ry="16" fill="#F97316"/>
+          <!-- Eyes -->
+          <ellipse class="cat-eye left-eye" cx="24" cy="34" rx="3.5" ry="4" fill="#0A0A0A"/>
+          <ellipse class="cat-eye right-eye" cx="40" cy="34" rx="3.5" ry="4" fill="#0A0A0A"/>
+          <ellipse class="cat-pupil left-pupil" cx="24" cy="34" rx="1.5" ry="3" fill="#F4F4F5"/>
+          <ellipse class="cat-pupil right-pupil" cx="40" cy="34" rx="1.5" ry="3" fill="#F4F4F5"/>
+          <!-- Nose -->
+          <path d="M30 40 L32 42 L34 40 Z" fill="#0A0A0A" opacity="0.5"/>
+          <!-- Mouth -->
+          <path d="M32 42 Q28 46 25 44" fill="none" stroke="#0A0A0A" stroke-width="1" opacity="0.35"/>
+          <path d="M32 42 Q36 46 39 44" fill="none" stroke="#0A0A0A" stroke-width="1" opacity="0.35"/>
+          <!-- Whiskers -->
+          <line x1="6" y1="36" x2="20" y2="38" stroke="#0A0A0A" stroke-width="0.8" opacity="0.25"/>
+          <line x1="6" y1="40" x2="20" y2="40" stroke="#0A0A0A" stroke-width="0.8" opacity="0.25"/>
+          <line x1="44" y1="38" x2="58" y2="36" stroke="#0A0A0A" stroke-width="0.8" opacity="0.25"/>
+          <line x1="44" y1="40" x2="58" y2="40" stroke="#0A0A0A" stroke-width="0.8" opacity="0.25"/>
+        </svg>
+      </span>
+      <span class="brand-text">
+        <strong>{author}</strong>
+      </span>
     </a>
-    <button class="mobile-menu-toggle" aria-label="Toggle menu" type="button">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <button class="mobile-menu-toggle" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="sidebar-nav" data-menu-toggle>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
         <line x1="4" y1="7" x2="20" y2="7" />
         <line x1="4" y1="12" x2="20" y2="12" />
         <line x1="4" y1="17" x2="20" y2="17" />
@@ -63,100 +74,233 @@ const socials = [
     </button>
   </div>
 
-  <nav class="sidebar-nav" aria-label="Primary navigation">
+  <nav class="sidebar-nav" id="sidebar-nav" aria-label="Primary navigation">
     {navItems.map((item) => (
       <a
         href={item.href}
-        target={item.external ? "_blank" : undefined}
-        rel={item.external ? "noopener noreferrer" : undefined}
         class:list={["nav-item", isActive(item.href) && "active"]}
         aria-current={isActive(item.href) ? "page" : undefined}
       >
-        <span class="nav-icon" aria-hidden="true">▸</span>
-        {item.label}
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          {item.icon === "home" && <><path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/></>}
+          {item.icon === "folder" && <><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></>}
+          {item.icon === "code" && <><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></>}
+          {item.icon === "flask" && <><path d="M9 3h6"/><path d="M10 3v6L4 19a2 2 0 0 0 2 3h12a2 2 0 0 0 2-3l-6-10V3"/><path d="M7 14h10"/></>}
+          {item.icon === "book-open" && <><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></>}
+          {item.icon === "user" && <><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></>}
+          {item.icon === "mail" && <><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></>}
+          {item.icon === "briefcase" && <><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></>}
+          {item.icon === "book" && <><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></>}
+          {item.icon === "link" && <><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></>}
+        </svg>
+        <span>{item.label}</span>
       </a>
     ))}
 
     {socials.length > 0 && (
-      <div class="nav-section">
-        <h4 class="nav-section-title">Social</h4>
-        {socials.map((social) => (
-          <a href={social!.href} target="_blank" rel="noopener noreferrer" class="nav-item">
-            <span class="nav-icon" aria-hidden="true">↗</span>
-            {social!.label}
+      <>
+        <p class="nav-section-title">Elsewhere</p>
+        {socials.map((s) => (
+          <a href={s.href} target={s.href.startsWith("http") ? "_blank" : undefined} rel={s.href.startsWith("http") ? "noopener noreferrer" : undefined} class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              {s.icon === "github" && <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>}
+              {s.icon === "linkedin" && <><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></>}
+              {s.icon === "twitter" && <path d="M22 4.01c-1 .49-1.98.689-3 .99-1.121-1.265-2.783-1.335-4.38-.737S11.977 6.323 12 8v1c-3.245.083-6.135-1.395-8-4 0 0-4.182 7.433 4 11-1.872 1.247-3.739 2.088-6 2 3.308 1.803 6.913 2.423 10.034 1.517 3.58-1.04 6.522-3.723 7.651-7.742a13.84 13.84 0 0 0 .497-3.753C20.18 7.773 21.692 5.25 22 4.009z"/>}
+              {s.icon === "youtube" && <><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></>}
+              {s.icon === "mail" && <><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></>}
+            </svg>
+            <span>{s.label}</span>
           </a>
         ))}
-      </div>
+      </>
     )}
   </nav>
 
   <div class="sidebar-footer">
-    Data engineering.<br />
-    Backend systems.<br />
-    Handmade web.
+    {siteConfig.sidebarTagline && <p>{siteConfig.sidebarTagline}</p>}
+    <button type="button" class="theme-toggle" aria-label="Toggle dark mode" data-theme-toggle>
+      <svg class="theme-icon theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <svg class="theme-icon theme-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <span class="theme-toggle-label" data-theme-label>Dark</span>
+    </button>
   </div>
 </aside>
 
 <script>
-  const bindMenu = () => {
-    const button = document.querySelector(".mobile-menu-toggle");
-    const nav = document.querySelector(".sidebar-nav");
-    const footer = document.querySelector(".sidebar-footer");
-    button?.addEventListener("click", () => {
-      nav?.classList.toggle("is-open");
-      footer?.classList.toggle("is-open");
+  const init = () => {
+    const sidebar = document.querySelector<HTMLElement>(".shell-sidebar");
+    const btn = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+    btn?.addEventListener("click", () => {
+      const open = sidebar?.getAttribute("data-open") === "true";
+      sidebar?.setAttribute("data-open", open ? "false" : "true");
+      btn.setAttribute("aria-expanded", open ? "false" : "true");
     });
-  };
 
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bindMenu);
-  else bindMenu();
-  document.addEventListener("astro:page-load", bindMenu);
+    const themeBtn = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
+    const themeLabel = document.querySelector<HTMLSpanElement>("[data-theme-label]");
+    const applyTheme = (t: string) => {
+      document.documentElement.setAttribute("data-theme", t);
+      try { localStorage.setItem("theme", t); } catch {}
+      if (themeLabel) themeLabel.textContent = t === "dark" ? "Dark" : "Light";
+      if (themeBtn) themeBtn.setAttribute("aria-label", t === "dark" ? "Switch to light mode" : "Switch to dark mode");
+    };
+    themeBtn?.addEventListener("click", () => {
+      const cur = document.documentElement.getAttribute("data-theme")
+        || (window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark");
+      applyTheme(cur === "dark" ? "light" : "dark");
+    });
+    const resolved = document.documentElement.getAttribute("data-theme")
+      || (window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark");
+    if (themeLabel) themeLabel.textContent = resolved === "dark" ? "Dark" : "Light";
+    if (themeBtn) themeBtn.setAttribute("aria-label", resolved === "dark" ? "Switch to light mode" : "Switch to dark mode");
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+  document.addEventListener("astro:page-load", init);
 </script>
 
 <style>
-  .brand-mark-animated {
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 1.1rem 1.1rem 1rem;
+    border-bottom: 1px solid var(--color-edge);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    flex: 1;
+    min-width: 0;
+    color: var(--color-fg);
+    text-decoration: none;
+  }
+  .brand-mark {
     display: inline-flex;
-    width: 2.4rem;
-    height: 2.4rem;
+    width: 2.2rem;
+    height: 2.2rem;
     align-items: center;
     justify-content: center;
     border-radius: 10px;
+    background: rgba(249, 115, 22, 0.08);
+    flex-shrink: 0;
     transition: transform 0.3s ease;
+    color: var(--color-fg);
+    overflow: hidden;
+  }
+  .brand:hover .brand-mark { transform: rotate(-5deg) scale(1.05); }
+
+  /* Cat animation */
+  .cat-icon { width: 28px; height: 28px; }
+  .cat-eye { animation: cat-blink 4s ease-in-out infinite; }
+  .left-eye { animation-delay: 0s; }
+  .right-eye { animation-delay: 0.05s; }
+  @keyframes cat-blink {
+    0%, 92%, 100% { ry: 4; }
+    95% { ry: 0.5; }
+  }
+  .cat-pupil { animation: cat-look 6s ease-in-out infinite; }
+  .left-pupil { animation-delay: 0s; }
+  .right-pupil { animation-delay: 0.05s; }
+  @keyframes cat-look {
+    0%, 40%, 100% { cx: 24; }
+    45%, 55% { cx: 22; }
+    60%, 90% { cx: 26; }
+  }
+  .right-pupil {
+    animation-name: cat-look-r;
+  }
+  @keyframes cat-look-r {
+    0%, 40%, 100% { cx: 40; }
+    45%, 55% { cx: 38; }
+    60%, 90% { cx: 42; }
+  }
+  .cat-wrap { animation: cat-float 3s ease-in-out infinite; }
+  @keyframes cat-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
   }
 
-  .brand-mark-animated:hover {
-    transform: rotate(-5deg) scale(1.05);
+  .brand-text { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+  .brand-text strong {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .brand-text span {
+    margin-top: 0.1rem;
+    color: var(--color-fg-subtle);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.04em;
   }
 
-  .logo-svg {
-    width: 100%;
-    height: 100%;
+  .mobile-menu-toggle {
+    display: none;
+    width: 2.1rem;
+    height: 2.1rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-edge);
+    border-radius: 8px;
+    background: var(--color-card);
+    color: var(--color-fg);
+    transition: all 0.2s ease;
+  }
+  .mobile-menu-toggle:hover { border-color: var(--color-fg-subtle); color: var(--color-fg); }
+
+  .sidebar-nav { flex: 1; padding: 0.6rem 0; }
+  .sidebar-footer {
+    padding: 1rem 1.1rem;
+    border-top: 1px solid var(--color-edge);
+    color: var(--color-fg-subtle);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
   }
 
-  .logo-bg {
-    animation: logoPulse 3s ease-in-out infinite alternate;
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    align-self: flex-start;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--color-edge);
+    border-radius: 999px;
+    background: var(--color-card);
+    color: var(--color-fg-muted);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  .theme-toggle:hover {
+    border-color: var(--color-edge-strong);
+    color: var(--color-fg);
+  }
+  .theme-icon-moon { display: none; }
+  html[data-theme="light"] .theme-icon-moon { display: block; }
+  html[data-theme="light"] .theme-icon-sun { display: none; }
+  @media (prefers-color-scheme: light) {
+    html:not([data-theme]) .theme-icon-moon { display: block; }
+    html:not([data-theme]) .theme-icon-sun { display: none; }
   }
 
-  .logo-dot {
-    animation: dotBlink 2s ease-in-out infinite;
-  }
-
-  .logo-text {
-    animation: textGlow 3s ease-in-out infinite alternate;
-  }
-
-  @keyframes logoPulse {
-    0% { opacity: 0.9; }
-    100% { opacity: 1; filter: brightness(1.1); }
-  }
-
-  @keyframes dotBlink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
-  @keyframes textGlow {
-    0% { filter: drop-shadow(0 0 2px rgba(255,255,255,0.3)); }
-    100% { filter: drop-shadow(0 0 6px rgba(255,255,255,0.6)); }
+  @media (max-width: 768px) {
+    .mobile-menu-toggle { display: inline-flex; }
   }
 </style>

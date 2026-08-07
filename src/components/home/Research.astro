@@ -1,6 +1,5 @@
 ---
-import { db, publications } from "../../db";
-import { desc } from "drizzle-orm";
+import { getPublications } from "../../lib/loaders";
 
 interface Publication {
   id: number;
@@ -11,13 +10,8 @@ interface Publication {
   description?: string | null;
 }
 
-let pubs: Publication[] = [];
-try {
-  const rows = await db.select().from(publications).orderBy(desc(publications.date));
-  pubs = rows as Publication[];
-} catch {
-  pubs = [];
-}
+const pubs = (await getPublications()) as Publication[];
+
 
 function formatDate(s: string) {
   const d = new Date(s);
@@ -26,60 +20,99 @@ function formatDate(s: string) {
 }
 ---
 
-<section id="research" class="screen-line-after">
-  <div class="container-narrow py-12 sm:py-16">
-    <div class="mb-6 flex items-baseline justify-between reveal">
-      <h2 class="panel-title">
-        Research<span class="count-badge">{pubs.length || ""}</span>
-      </h2>
-      {pubs.length > 0 && (
-        <a href="/research" class="text-mono text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-[var(--color-accent)]">
-          All publications →
-        </a>
-      )}
+<section id="research" class="section">
+  <div class="container-narrow">
+    <div class="section-head reveal">
+      <div>
+        <p class="text-eyebrow">Research</p>
+        <h2 class="section-title">
+          Publications
+          {pubs.length > 0 && <span class="count-badge">{pubs.length}</span>}
+        </h2>
+      </div>
+      {pubs.length > 0 && <a href="/research" class="section-link">All publications →</a>}
     </div>
 
     {pubs.length === 0 ? (
-      <p class="text-sm text-[var(--color-fg-muted)] reveal">
+      <p class="panel p-6 text-sm text-[var(--color-fg-muted)] reveal">
         Publications will appear here once added from the admin panel.
       </p>
     ) : (
-      <div class="panel">
-        <div class="panel-top"></div>
+      <div class="panel panel-accent">
+      <ul class="pub-list reveal reveal-delay-1">
         {pubs.map((pub) => (
-          <a
-            href={pub.url || "#"}
-            target={pub.url ? "_blank" : undefined}
-            rel={pub.url ? "noopener noreferrer" : undefined}
-            class="row-card group"
-          >
-            <div class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)] w-14 flex-shrink-0 pt-1">
-              {formatDate(pub.date)}
-            </div>
-
-            <div class="min-w-0 flex-1 row-card-divider">
-              <h3 class="row-card-title">{pub.title}</h3>
-              {pub.venue && (
-                <p class="row-card-meta">{pub.venue}</p>
-              )}
-              {pub.description && (
-                <p class="prose-mono mt-1 line-clamp-2">{pub.description}</p>
-              )}
-            </div>
-
-            <div class="row-card-actions">
+          <li>
+            <a
+              class="pub-row"
+              href={pub.url || "#"}
+              target={pub.url ? "_blank" : undefined}
+              rel={pub.url ? "noopener noreferrer" : undefined}
+            >
+              <time class="pub-date">{formatDate(pub.date)}</time>
+              <div class="pub-body">
+                <h3 class="pub-title">{pub.title}</h3>
+                {pub.venue && <p class="pub-venue">{pub.venue}</p>}
+                {pub.description && <p class="pub-desc">{pub.description}</p>}
+              </div>
               {pub.url && (
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5">
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                  <polyline points="15 3 21 3 21 9"/>
-                  <line x1="10" y1="14" x2="21" y2="3"/>
-                </svg>
+                <span class="pub-arrow" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 17 17 7 M9 7 H17 V15"/>
+                  </svg>
+                </span>
               )}
-            </div>
-          </a>
+            </a>
+          </li>
         ))}
-        <div class="panel-bottom"></div>
+      </ul>
       </div>
     )}
   </div>
 </section>
+
+<style>
+  .pub-list { list-style: none; margin: 0; padding: 0.5rem 0; display: flex; flex-direction: column; }
+  .pub-list > li + li { border-top: 1px dashed var(--color-edge); }
+  .pub-row {
+    display: grid;
+    grid-template-columns: 4rem 1fr auto;
+    gap: 1rem;
+    align-items: start;
+    padding: 0.9rem 1.1rem;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.2s ease;
+  }
+  .pub-row:hover { background: rgba(255, 255, 255, 0.02); }
+  .pub-date {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-fg-subtle);
+    padding-top: 0.2rem;
+  }
+  .pub-title {
+    font-family: var(--font-display);
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--color-fg);
+    line-height: 1.4;
+  }
+  .pub-venue {
+    margin-top: 0.2rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-fg-subtle);
+  }
+  .pub-desc {
+    margin-top: 0.4rem;
+    color: var(--color-fg-muted);
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  .pub-arrow {
+    color: var(--color-fg-subtle);
+    align-self: center;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+  .pub-row:hover .pub-arrow { color: var(--color-fg); transform: translate(2px, -2px); }
+</style>

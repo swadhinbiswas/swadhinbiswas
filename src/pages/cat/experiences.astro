@@ -19,33 +19,51 @@ const expRows = await db.select().from(experiences).orderBy(asc(experiences.orde
     <form id="create-form" class="space-y-4">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm text-gray-400 mb-1">Company</label>
+          <label class="block text-sm text-gray-400 mb-1">Company / Workplace <span class="text-red-400">*</span></label>
           <input type="text" name="company" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
         </div>
         <div>
-          <label class="block text-sm text-gray-400 mb-1">Role</label>
+          <label class="block text-sm text-gray-400 mb-1">Role / Title <span class="text-red-400">*</span></label>
           <input type="text" name="role" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
         </div>
         <div>
-          <label class="block text-sm text-gray-400 mb-1">URL</label>
-          <input type="url" name="url" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+          <label class="block text-sm text-gray-400 mb-1">URL (company site)</label>
+          <input type="url" name="url" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="https://company.com" />
         </div>
         <div>
           <label class="block text-sm text-gray-400 mb-1">Logo URL</label>
           <input type="url" name="logoUrl" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
         </div>
         <div>
-          <label class="block text-sm text-gray-400 mb-1">Start Date</label>
+          <label class="block text-sm text-gray-400 mb-1">Start Date <span class="text-red-400">*</span></label>
           <input type="date" name="startDate" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
         </div>
         <div>
-          <label class="block text-sm text-gray-400 mb-1">End Date</label>
+          <label class="block text-sm text-gray-400 mb-1">End Date <span class="text-gray-500">(leave blank = Present)</span></label>
           <input type="date" name="endDate" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
         </div>
       </div>
       <div>
-        <label class="block text-sm text-gray-400 mb-1">Details</label>
-        <textarea name="details" rows="3" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400"></textarea>
+        <label class="block text-sm text-gray-400 mb-1">Company Description</label>
+        <textarea name="companyDescription" rows="2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="Brief description of the company/mission"></textarea>
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Key Responsibilities <span class="text-gray-500">(one per line)</span></label>
+        <textarea name="responsibilities" rows="4" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 font-mono text-sm" placeholder="Separate each line with |  e.g.  Architect the core platform | Set technical direction | Review community PRs"></textarea>
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Key Learnings <span class="text-gray-500">(one per line)</span></label>
+        <textarea name="learnings" rows="3" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 font-mono text-sm" placeholder="Separate each line with |  e.g.  Scaling teaches you capacity planning | Communication is half the job"></textarea>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Order</label>
+          <input type="number" name="order" value="0" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1">Details <span class="text-gray-500">(extra markdown content — optional)</span></label>
+        <textarea name="details" rows="3" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 font-mono text-sm"></textarea>
       </div>
       <div class="flex gap-3">
         <button type="submit" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm">Save</button>
@@ -56,22 +74,63 @@ const expRows = await db.select().from(experiences).orderBy(asc(experiences.orde
 
   <!-- List -->
   <div class="space-y-3 max-w-3xl">
-    {expRows.map((exp) => (
+    {expRows.map((exp) => {
+      const responsibilities = (() => { try { return JSON.parse(exp.responsibilities || "[]"); } catch { return []; } })();
+      const learnings = (() => { try { return JSON.parse(exp.learnings || "[]"); } catch { return []; } })();
+      return (
       <div class="p-4 rounded-xl border border-white/10 bg-white/5 group">
         <div class="flex justify-between items-start">
-          <div class="flex-1">
-            <h3 class="font-semibold">{exp.role}</h3>
-            <p class="text-cyan-400 text-sm">{exp.company}</p>
-            <p class="text-gray-500 text-xs mt-1">{exp.startDate} — {exp.endDate || "Present"}</p>
-            {exp.details && <p class="text-gray-300 text-sm mt-2">{exp.details}</p>}
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start gap-3">
+              {exp.logoUrl ? (
+                <img src={exp.logoUrl} alt="" class="w-10 h-10 rounded-lg object-contain bg-white/10 p-1 flex-shrink-0" />
+              ) : (
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center text-sm font-bold text-cyan-400 flex-shrink-0 border border-cyan-500/20">
+                  {exp.company?.charAt(0)?.toUpperCase() || "?"}
+                </div>
+              )}
+              <div class="min-w-0">
+                <h3 class="font-semibold text-white">{exp.role}</h3>
+                <p class="text-cyan-400 text-sm">{exp.company}</p>
+                <p class="text-gray-500 text-xs mt-1">{exp.startDate} — {exp.endDate || "Present"}</p>
+                {exp.companyDescription && <p class="text-gray-400 text-xs mt-1 italic">{exp.companyDescription}</p>}
+              </div>
+            </div>
+            {responsibilities.length > 0 && (
+              <div class="mt-3">
+                <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Responsibilities</p>
+                <ul class="space-y-0.5">
+                  {responsibilities.map((r: string) => (
+                    <li class="text-gray-300 text-sm flex items-start gap-1.5">
+                      <span class="text-cyan-500 mt-0.5 shrink-0">▹</span>
+                      <span>{r}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {learnings.length > 0 && (
+              <div class="mt-2">
+                <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Learnings</p>
+                <ul class="space-y-0.5">
+                  {learnings.map((l: string) => (
+                    <li class="text-gray-400 text-sm flex items-start gap-1.5">
+                      <span class="text-yellow-500 mt-0.5 shrink-0">✦</span>
+                      <span>{l}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
-          <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button onclick={`editExp(${JSON.stringify(exp).replace(/"/g, '&quot;')})`} class="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs hover:bg-yellow-500/30">Edit</button>
-            <button onclick={`deleteExp(${exp.id})`} class="px-3 py-1 bg-red-500/20 text-red-400 rounded text-xs hover:bg-red-500/30">Delete</button>
+          <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity ml-3 shrink-0">
+            <button data-edit={JSON.stringify(exp)} class="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs hover:bg-yellow-500/30">Edit</button>
+            <button data-delete={exp.id} class="px-3 py-1 bg-red-500/20 text-red-400 rounded text-xs hover:bg-red-500/30">Delete</button>
           </div>
         </div>
       </div>
-    ))}
+      );
+    })}
   </div>
 
   <!-- Edit Modal -->
@@ -80,13 +139,14 @@ const expRows = await db.select().from(experiences).orderBy(asc(experiences.orde
       <h2 class="text-lg font-semibold mb-4">Edit Experience</h2>
       <form id="edit-form" class="space-y-4">
         <input type="hidden" name="id" />
+
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm text-gray-400 mb-1">Company</label>
+            <label class="block text-sm text-gray-400 mb-1">Company / Workplace <span class="text-red-400">*</span></label>
             <input type="text" name="company" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
           </div>
           <div>
-            <label class="block text-sm text-gray-400 mb-1">Role</label>
+            <label class="block text-sm text-gray-400 mb-1">Role / Title <span class="text-red-400">*</span></label>
             <input type="text" name="role" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
           </div>
           <div>
@@ -98,7 +158,7 @@ const expRows = await db.select().from(experiences).orderBy(asc(experiences.orde
             <input type="url" name="logoUrl" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
           </div>
           <div>
-            <label class="block text-sm text-gray-400 mb-1">Start Date</label>
+            <label class="block text-sm text-gray-400 mb-1">Start Date <span class="text-red-400">*</span></label>
             <input type="date" name="startDate" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
           </div>
           <div>
@@ -107,8 +167,26 @@ const expRows = await db.select().from(experiences).orderBy(asc(experiences.orde
           </div>
         </div>
         <div>
+          <label class="block text-sm text-gray-400 mb-1">Company Description</label>
+          <textarea name="companyDescription" rows="2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Key Responsibilities <span class="text-gray-500">(one per line)</span></label>
+          <textarea name="responsibilities" rows="4" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 font-mono text-sm"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Key Learnings <span class="text-gray-500">(one per line)</span></label>
+          <textarea name="learnings" rows="3" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 font-mono text-sm"></textarea>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">Order</label>
+            <input type="number" name="order" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+          </div>
+        </div>
+        <div>
           <label class="block text-sm text-gray-400 mb-1">Details</label>
-          <textarea name="details" rows="3" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400"></textarea>
+          <textarea name="details" rows="3" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 font-mono text-sm"></textarea>
         </div>
         <div class="flex gap-3">
           <button type="submit" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm">Update</button>
@@ -128,11 +206,25 @@ const expRows = await db.select().from(experiences).orderBy(asc(experiences.orde
     setTimeout(() => el.remove(), 3000);
   }
 
+  function parseLines(text: string): string[] {
+    return text
+      .split(/\||\n/)
+      .map((l: string) => l.trim())
+      .filter(Boolean);
+  }
+
   // Create
   document.getElementById("create-form")?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
-    const data = Object.fromEntries(new FormData(form).entries());
+    const fd = new FormData(form);
+    const data: Record<string, any> = {};
+    for (const [key, val] of fd.entries()) {
+      data[key] = val;
+    }
+    data.order = Number(data.order) || 0;
+    data.responsibilities = parseLines(data.responsibilities || "");
+    data.learnings = parseLines(data.learnings || "");
     const res = await fetch("/api/admin/experiences", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -142,25 +234,74 @@ const expRows = await db.select().from(experiences).orderBy(asc(experiences.orde
     else { toast("Failed", false); }
   });
 
-  // Edit
-  (window as any).editExp = function(exp: any) {
-    const form = document.getElementById("edit-form") as HTMLFormElement;
-    form.id.value = exp.id;
-    form.company.value = exp.company || "";
-    form.role.value = exp.role || "";
-    form.url.value = exp.url || "";
-    form.logoUrl.value = exp.logoUrl || "";
-    form.startDate.value = exp.startDate || "";
-    form.endDate.value = exp.endDate || "";
-    form.details.value = exp.details || "";
-    document.getElementById("edit-modal")!.classList.remove("hidden");
-  };
+  document.addEventListener("click", async (e) => {
+    const target = e.target as HTMLElement;
+    const editBtn = target.closest("[data-edit]") as HTMLElement;
+    if (editBtn) {
+      try {
+        const exp = JSON.parse(editBtn.dataset.edit || "{}");
+        const modal = document.getElementById("edit-modal")!;
+        const form = document.getElementById("edit-form") as HTMLFormElement;
+        (form.querySelector("[name='id']") as HTMLInputElement).value = String(exp.id);
+        (form.querySelector("[name='company']") as HTMLInputElement).value = exp.company || "";
+        (form.querySelector("[name='role']") as HTMLInputElement).value = exp.role || "";
+        (form.querySelector("[name='url']") as HTMLInputElement).value = exp.url || "";
+        (form.querySelector("[name='logoUrl']") as HTMLInputElement).value = exp.logoUrl || "";
+        (form.querySelector("[name='startDate']") as HTMLInputElement).value = exp.startDate || "";
+        (form.querySelector("[name='endDate']") as HTMLInputElement).value = exp.endDate || "";
+        (form.querySelector("[name='order']") as HTMLInputElement).value = String(exp.order ?? 0);
+        (form.querySelector("[name='companyDescription']") as HTMLTextAreaElement).value = exp.companyDescription || "";
+        (form.querySelector("[name='details']") as HTMLTextAreaElement).value = exp.details || "";
+
+        const responsibilities = (() => {
+          try {
+            if (Array.isArray(exp.responsibilities)) return exp.responsibilities;
+            return JSON.parse(exp.responsibilities || "[]");
+          } catch { return []; }
+        })();
+        const learnings = (() => {
+          try {
+            if (Array.isArray(exp.learnings)) return exp.learnings;
+            return JSON.parse(exp.learnings || "[]");
+          } catch { return []; }
+        })();
+        (form.querySelector("[name='responsibilities']") as HTMLTextAreaElement).value = responsibilities.join("\n");
+        (form.querySelector("[name='learnings']") as HTMLTextAreaElement).value = learnings.join("\n");
+
+        modal.classList.remove("hidden");
+      } catch (err) {
+        console.error("Parse edit data error:", err);
+      }
+      return;
+    }
+
+    const deleteBtn = target.closest("[data-delete]") as HTMLElement;
+    if (deleteBtn) {
+      const id = Number(deleteBtn.dataset.delete);
+      if (!id || isNaN(id)) return;
+      if (!confirm("Delete this experience?")) return;
+      const res = await fetch("/api/admin/experiences", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      if (res.ok) { toast("Deleted!"); setTimeout(() => location.reload(), 500); }
+      else { toast("Failed", false); }
+    }
+  });
 
   document.getElementById("edit-form")?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
-    const data = Object.fromEntries(new FormData(form).entries());
+    const fd = new FormData(form);
+    const data: Record<string, any> = {};
+    for (const [key, val] of fd.entries()) {
+      data[key] = val;
+    }
     data.id = Number(data.id);
+    data.order = Number(data.order) || 0;
+    data.responsibilities = parseLines(data.responsibilities || "");
+    data.learnings = parseLines(data.learnings || "");
     const res = await fetch("/api/admin/experiences", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -169,16 +310,5 @@ const expRows = await db.select().from(experiences).orderBy(asc(experiences.orde
     if (res.ok) { toast("Updated!"); setTimeout(() => location.reload(), 500); }
     else { toast("Failed", false); }
   });
-
-  // Delete
-  (window as any).deleteExp = async function(id: number) {
-    if (!confirm("Delete this experience?")) return;
-    const res = await fetch("/api/admin/experiences", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id }),
-    });
-    if (res.ok) { toast("Deleted!"); setTimeout(() => location.reload(), 500); }
-    else { toast("Failed", false); }
-  };
 </script>
+

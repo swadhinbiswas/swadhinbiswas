@@ -16,7 +16,7 @@ const db = drizzle(client);
 async function main() {
   await db.update(experiences).set({
     role: 'DATA/ Backend Engineer & Co-founder',
-    details: 'Data Engineer & Tech Lead (Boringrats, acquired). Scaled infrastructure to 1M+ active users. Currently building OPNCODEHUB, an open-source ecosystem democratizing developer tools. Architecting robust data pipelines and production ML systems.'
+    details: 'Data Engineer & Tech Lead (Boringrats, acquired Nov 2025 — acquirer name under NDA. Co-founder available as reference upon request). Scaled infrastructure to 1M+ active users. Currently building OPNCODEHUB, an open-source ecosystem democratizing developer tools. Architecting robust data pipelines and production ML systems.'
   }).where(eq(experiences.company, 'BoringRats'));
   console.log('Done');
   process.exit(0);
