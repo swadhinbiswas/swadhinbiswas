@@ -33,8 +33,11 @@ const {
   themeColor = "#0A0A12",
 } = Astro.props;
 
-const siteConfig = await getDynamicConfig();
-const { getEducation, getCertifications } = await import("../lib/loaders");
+const [siteConfig, eduPromise, certPromise] = await Promise.all([
+  getDynamicConfig(),
+  import("../lib/loaders").then(({ getEducation }) => getEducation().catch(() => [])),
+  import("../lib/loaders").then(({ getCertifications }) => getCertifications().catch(() => [])),
+]);
 
 const author = authorName || siteConfig.author || env.siteName;
 const fullTitle = title
@@ -65,7 +68,7 @@ const siteUrl = (siteConfig.url || env.siteUrl || "https://swadhin.cv").replace(
 
 let alumniOf: unknown[] = [];
 try {
-  const eduRows = await getEducation();
+  const eduRows = await eduPromise;
   alumniOf = eduRows.map((e: any) => ({
     "@type": "CollegeOrUniversity",
     name: e.institution,
@@ -74,7 +77,7 @@ try {
 
 let credentials: unknown[] = [];
 try {
-  const certRows = await getCertifications();
+  const certRows = await certPromise;
   credentials = certRows.map((c: any) => ({
     "@type": "EducationalOccupationalCredential",
     name: c.name,

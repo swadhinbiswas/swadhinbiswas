@@ -73,23 +73,25 @@ function makeLoader<T>(
 
   return async (): Promise<T[]> => {
     if (mem && Date.now() - memTs < MEM_TTL) return mem;
-    const cached = await getCachedData(`${CACHE_VERSION}:${key}`);
+    // DB-first: run the DB query and the (timeout-bounded) cache read in
+    // parallel and prefer the DB — Turso is same-region and fast, Redis may
+    // be far away. The cache is a fallback + write-through, never a blocker.
+    const [rows, cached] = await Promise.all([
+      fetchFn().catch(() => null as unknown as T[]),
+      getCachedData(`${CACHE_VERSION}:${key}`),
+    ]);
+    if (validate(rows)) {
+      mem = rows;
+      memTs = Date.now();
+      setCachedData(`${CACHE_VERSION}:${key}`, rows, 600).catch(() => {});
+      return rows;
+    }
     if (validate(cached)) {
       mem = cached;
       memTs = Date.now();
       return cached;
     }
-    try {
-      const rows = await fetchFn();
-      if (validate(rows)) {
-        mem = rows;
-        memTs = Date.now();
-        setCachedData(`${CACHE_VERSION}:${key}`, rows, 600).catch(() => {});
-      }
-      return rows;
-    } catch {
-      return mem || [];
-    }
+    return rows || mem || [];
   };
 }
 

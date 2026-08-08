@@ -26,28 +26,35 @@ function memSet(key: string, data: any) {
   mem.set(key, { data, exp: Date.now() + MEM_TTL });
 }
 
+// Hard timeout — a slow/far-away cache must NEVER block a page render.
+// The DB (same region as the serverless function) is the fast path.
+const CACHE_TIMEOUT_MS = 600;
+
+function withTimeout<T>(p: Promise<T>): Promise<T | null> {
+  return new Promise((resolve) => {
+    const t = setTimeout(() => resolve(null), CACHE_TIMEOUT_MS);
+    p.then(
+      (v) => { clearTimeout(t); resolve(v); },
+      () => { clearTimeout(t); resolve(null); }
+    );
+  });
+}
+
 export async function getCachedData(key: string) {
-  // L1: memory
+  // L1: memory (instant)
   const m = memGet(key);
   if (m !== undefined) return m;
-  // L2: Upstash
+  // L2: Upstash with timeout
   const r = getRedis();
   if (!r) return null;
+  const raw = await withTimeout(r.get(key));
+  if (raw == null) return null;
   try {
-    const raw = await r.get(key);
-    if (raw) {
-      try {
-        const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
-        memSet(key, data);
-        return data;
-      } catch {
-        // Corrupted cached value — drop it so callers fall back to the DB
-        await r.del(key).catch(() => {});
-        return null;
-      }
-    }
-    return null;
+    const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    memSet(key, data);
+    return data;
   } catch {
+    await r.del(key).catch(() => {});
     return null;
   }
 }
@@ -57,7 +64,7 @@ export async function setCachedData(key: string, data: any, ttlSeconds: number =
   const r = getRedis();
   if (!r) return;
   try {
-    await r.set(key, JSON.stringify(data), { ex: ttlSeconds });
+    await withTimeout(r.set(key, JSON.stringify(data), { ex: ttlSeconds }));
   } catch {}
 }
 
@@ -65,7 +72,7 @@ export async function deleteKey(key: string) {
   mem.delete(key);
   const r = getRedis();
   if (!r) return;
-  try { await r.del(key); } catch {}
+  try { await withTimeout(r.del(key)); } catch {}
 }
 
 export async function deletePattern(pattern: string) {
@@ -76,7 +83,7 @@ export async function deletePattern(pattern: string) {
   const r = getRedis();
   if (!r) return;
   try {
-    const keys = await r.keys(pattern);
-    if (keys.length) await r.del(...keys);
+    const keys = await withTimeout(r.keys(pattern));
+    if (keys && keys.length) await withTimeout(r.del(...keys));
   } catch {}
 }

@@ -157,14 +157,9 @@ async function fetchDynamicConfig(): Promise<DynamicSiteConfig> {
     return cachedConfig;
   }
 
-  // L2: Upstash cache (fast)
+  // L2: Upstash write-through cache — read is bypassed for speed; the DB
+  // (same region) is the fast path and the in-process cache covers repeats.
   const upstashKey = "site:config";
-  const upstashData = await getCachedData(upstashKey);
-  if (upstashData) {
-    cachedConfig = upstashData as DynamicSiteConfig;
-    cacheTimestamp = Date.now();
-    return cachedConfig;
-  }
 
   /**
    * Run a single DB query and silently fall back to an empty array on failure.
@@ -389,11 +384,9 @@ async function fetchDynamicConfig(): Promise<DynamicSiteConfig> {
       },
     };
 
-    // Update cache
+    // Update caches (in-process + write-through to Upstash)
     cachedConfig = config;
     cacheTimestamp = Date.now();
-
-    // Persist to Upstash (survives restarts, shared across instances)
     setCachedData(upstashKey, config, 600).catch(() => {});
 
     return config;
