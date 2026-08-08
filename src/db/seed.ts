@@ -42,6 +42,23 @@ const client = createClient({
 
 const db = drizzle(client);
 
+// ── Safety guard ────────────────────────────────────────────────────────────
+// This script DELETES every table before reseeding. Running it against the
+// production Turso DB wipes all your live content (projects, experiences, ...).
+// Refuse to run when the DB already contains data unless --force is passed.
+const isRemote = !dbUrl.startsWith('file:');
+if (isRemote && !process.argv.includes('--force')) {
+  const existing = await db.select({ count: 1 }).from(projects).limit(1).catch(() => []);
+  if (existing.length > 0) {
+    console.error(
+      '🚫 Refusing to seed: the remote database already has projects.\n' +
+      '   This would DELETE all production content.\n' +
+      '   If you really want a full reset, run: bun run src/db/seed.ts --force'
+    );
+    process.exit(1);
+  }
+}
+
 async function seed() {
   console.log('🌱 Starting database seed...\n');
 

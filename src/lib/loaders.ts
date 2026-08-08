@@ -54,6 +54,8 @@ function mapProject(r: any): Project {
   };
 }
 
+const loaderCaches = new Set<{ clear: () => void }>();
+
 function makeLoader<T>(
   key: string,
   fetchFn: () => Promise<T[]>,
@@ -62,6 +64,12 @@ function makeLoader<T>(
   let mem: T[] | null = null;
   let memTs = 0;
   const MEM_TTL = 30_000;
+  loaderCaches.add({
+    clear: () => {
+      mem = null;
+      memTs = 0;
+    },
+  });
 
   return async (): Promise<T[]> => {
     if (mem && Date.now() - memTs < MEM_TTL) return mem;
@@ -129,6 +137,12 @@ export const getLanguages = makeLoader("languages", async () => {
 export const getCertifications = makeLoader("certifications", async () => {
   return db.select().from(certifications).orderBy(asc(certifications.order));
 });
+
+// Reset all in-process loader caches — called after admin mutations so
+// content changes (create/edit/delete) are visible immediately.
+export function clearLoaderCaches() {
+  for (const c of loaderCaches) c.clear();
+}
 
 export function slugify(name: string): string {
   return name.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/[\s_-]+/g, "-").replace(/^-+|-+$/g, "");

@@ -479,6 +479,8 @@ export function clearConfigCache() {
 export async function purgeSiteCaches() {
   clearConfigCache();
   try {
+    const { clearLoaderCaches } = await import("./loaders");
+    clearLoaderCaches();
     await deleteKey("site:config");
     await deletePattern("home:*");
     await deleteKey("projects:all");

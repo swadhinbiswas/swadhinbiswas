@@ -62,6 +62,7 @@ export const POST: APIRoute = async ({ request }) => {
       })
       .returning();
 
+    purgeSiteCaches().catch(() => {});
     return new Response(JSON.stringify({ success: true, data: result[0] }), {
       status: 201,
       headers: { "Content-Type": "application/json" },
@@ -100,6 +101,7 @@ export const PUT: APIRoute = async ({ request }) => {
     if (body.newSlug && body.newSlug !== slug) setData.slug = body.newSlug;
 
     const result = await db.update(posts).set(setData).where(eq(posts.slug, slug)).returning();
+    purgeSiteCaches().catch(() => {});
     if (result.length === 0) {
       return new Response(JSON.stringify({ success: false, error: "Post not found" }), {
         status: 404,
@@ -128,6 +130,7 @@ export const DELETE: APIRoute = async ({ request }) => {
   try {
     const { slug } = await request.json();
     await db.delete(posts).where(eq(posts.slug, slug));
+    purgeSiteCaches().catch(() => {});
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { "Content-Type": "application/json" },

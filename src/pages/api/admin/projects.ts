@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { db, projects } from "../../../db";
 import { eq } from "drizzle-orm";
-import { purgeSiteCaches } from "../../../lib/config";
+import { purgeSiteCaches, clearConfigCache } from "../../../lib/config";
 
 export const prerender = false;
 
