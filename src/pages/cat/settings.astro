@@ -42,6 +42,10 @@ settingsRows.forEach(s => { settings[s.key] = s.value; });
         <input type="url" name="cv_url" value={settings.cv_url || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="https://..." />
       </div>
       <div>
+        <label class="block text-sm text-gray-400 mb-1">Profile Image URL (hero + about portrait)</label>
+        <input type="url" name="profile_image" value={settings.profile_image || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="https://... or /profile.jpg" />
+      </div>
+      <div>
         <label class="block text-sm text-gray-400 mb-1">SEO Title</label>
         <input type="text" name="seo_title" value={settings.seo_title || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
       </div>
@@ -80,6 +84,11 @@ settingsRows.forEach(s => { settings[s.key] = s.value; });
     <div>
       <label class="block text-sm text-gray-400 mb-1">Contact Blurb</label>
       <textarea name="contact_blurb" rows="2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">{settings.contact_blurb || ""}</textarea>
+    </div>
+
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">About Page CTA Title</label>
+      <input type="text" name="about_cta_title" value={settings.about_cta_title || ""} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="Let's build something useful" />
     </div>
 
     <div>

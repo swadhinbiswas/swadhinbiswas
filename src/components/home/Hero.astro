@@ -37,7 +37,7 @@ const termLines = [
   <div class="hero-grid">
     <div class="hero-portrait reveal">
       <div class="portrait-frame">
-        <img src="/profile.jpg" alt={author} class="portrait" loading="eager" decoding="async" fetchpriority="high" width="160" height="160" />
+        <img src={siteConfig.profileImage || "/profile.jpg"} alt={author} class="portrait" loading="eager" decoding="async" fetchpriority="high" width="160" height="160" />
         <span class="portrait-ring" aria-hidden="true"></span>
       </div>
     </div>

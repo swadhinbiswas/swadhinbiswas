@@ -44,11 +44,13 @@ for (const s of settingsData as any[]) settings[s.key] = s.value;
 
 const author = settings.author || siteConfig.author;
 const location = settings.location || siteConfig.location;
+const profileImage = settings.profile_image || "/profile.jpg";
 const bioLong = bio.long || siteConfig.bio?.long || "";
 const bioStory = bio.story || siteConfig.bio?.story || "";
 const bioQuote = bio.quote || siteConfig.bio?.quote || "";
 const bioFunFact = bio.funFact || siteConfig.bio?.funFact || "";
 const languages = settings.languages || siteConfig.languages || "";
+const aboutCtaTitle = settings.about_cta_title || "Let's build something useful";
 
 function formatDate(s?: string) {
   if (!s) return "Present";
@@ -108,7 +110,7 @@ const schema = {
       <div class="about-grid reveal">
         <div class="about-portrait">
           <div class="portrait-frame">
-            <img src="/profile.jpg" alt={author} class="portrait" width="160" height="160" loading="eager" decoding="async" fetchpriority="high" />
+            <img src={profileImage} alt={author} class="portrait" width="160" height="160" loading="eager" decoding="async" fetchpriority="high" />
             <span class="portrait-ring" aria-hidden="true"></span>
           </div>
         </div>
@@ -497,7 +499,7 @@ const schema = {
   <section class="screen-line-after">
     <div class="container-narrow pb-12 sm:pb-16">
       <div class="panel p-6 sm:p-8 text-center reveal">
-        <h2 class="panel-title">Let's build something useful</h2>
+        <h2 class="panel-title">{aboutCtaTitle}</h2>
         <p class="mt-3 mx-auto max-w-prose text-sm text-[var(--color-fg-muted)] leading-relaxed">
           {siteConfig.contactBlurb || "Open to senior data and backend engineering opportunities."}
         </p>

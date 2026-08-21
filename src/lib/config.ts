@@ -24,12 +24,14 @@ export interface DynamicSiteConfig {
   email: string;
   location: string;
   timezone: string;
+  profileImage: string;
 
   sidebarTagline: string;
   footerTagline: string;
   contactBlurb: string;
   usesPhilosophy: string;
   blogUrl: string;
+  aboutCtaTitle: string;
 
   noticePeriod: string;
   workAuthorization: string;
@@ -251,11 +253,13 @@ async function fetchDynamicConfig(): Promise<DynamicSiteConfig> {
       email: settings.email || env.email,
       location: settings.location || env.location,
       timezone: settings.timezone || env.timezone,
+      profileImage: cleanValue(settings.profile_image),
       sidebarTagline: cleanValue(settings.sidebar_tagline),
       footerTagline: cleanValue(settings.footer_tagline),
       contactBlurb: cleanValue(settings.contact_blurb),
       usesPhilosophy: cleanValue(settings.uses_philosophy),
       blogUrl: cleanValue(settings.blog_url),
+      aboutCtaTitle: cleanValue(settings.about_cta_title),
       noticePeriod: cleanValue(settings.notice_period),
       workAuthorization: cleanValue(settings.work_authorization),
       relocationTargets: cleanValue(settings.relocation_targets),
@@ -406,11 +410,13 @@ async function fetchDynamicConfig(): Promise<DynamicSiteConfig> {
       email: env.email,
       location: env.location,
       timezone: env.timezone,
+      profileImage: "",
       sidebarTagline: "",
       footerTagline: "",
       contactBlurb: "",
       usesPhilosophy: "",
       blogUrl: "",
+      aboutCtaTitle: "",
       noticePeriod: "",
       workAuthorization: "",
       relocationTargets: "",
