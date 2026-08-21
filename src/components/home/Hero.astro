@@ -205,6 +205,22 @@ const termLines = [
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    /* Solid fallback for browsers without background-clip:text */
+    color: var(--color-fg);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .hero-name-glow {
+      background: linear-gradient(135deg, #18181B 0%, #3F3F46 50%, #52525B 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+  :root[data-theme="light"] .hero-name-glow {
+    background: linear-gradient(135deg, #18181B 0%, #3F3F46 50%, #52525B 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .hero-status { margin-top: 0.85rem; }

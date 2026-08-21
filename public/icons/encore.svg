@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <!-- Encore.ts brand: stylized E with Encore teal -->
+  <rect width="24" height="24" rx="5" fill="#0F172A"/>
+  <text x="12" y="16" text-anchor="middle" font-family="Inter, sans-serif" font-weight="800" font-size="13" fill="#fff">E</text>
+  <circle cx="18" cy="6" r="2.5" fill="#22D3EE"/>
+</svg>

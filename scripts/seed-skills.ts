@@ -2,12 +2,12 @@ import { db, skills } from "../src/db";
 import { sql } from "drizzle-orm";
 
 const newSkills: Array<{ name: string; category: string; order: number }> = [
-  // Languages
+  // Languages — JavaScript & Mojo removed, SQL added
   { name: "Python", category: "language", order: 10 },
-  { name: "JavaScript", category: "language", order: 11 },
   { name: "TypeScript", category: "language", order: 12 },
   { name: "Rust", category: "language", order: 13 },
-  { name: "Mojo", category: "language", order: 14 },
+  { name: "Go", category: "language", order: 14 },
+  { name: "SQL", category: "language", order: 15 },
 
   // AI
   { name: "Machine Learning", category: "ai", order: 20 },
@@ -15,11 +15,14 @@ const newSkills: Array<{ name: string; category: string; order: number }> = [
   { name: "Neural Networks", category: "ai", order: 22 },
   { name: "Data Analysis", category: "ai", order: 23 },
 
-  // Frameworks
+  // Frameworks — Hono, Elysia, Encore.ts added
   { name: "Django", category: "framework", order: 30 },
   { name: "FastAPI", category: "framework", order: 31 },
   { name: "React", category: "framework", order: 32 },
   { name: "Next.js", category: "framework", order: 33 },
+  { name: "Hono", category: "framework", order: 34 },
+  { name: "Elysia", category: "framework", order: 35 },
+  { name: "Encore.ts", category: "framework", order: 36 },
 
   // Other
   { name: "Cybersecurity", category: "other", order: 40 },

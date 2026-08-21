@@ -227,9 +227,9 @@ console.log('🛠️ Seeding skills...');
       const skillDesc = typeof skill === 'string' ? '' : (skill.description || '');
       // Determine category based on skill name
       let category = 'general';
-      if (['Python', 'JavaScript', 'TypeScript', 'Rust', 'Mojo', 'Go'].includes(skillName)) {
+      if (['Python', 'TypeScript', 'Rust', 'Go', 'SQL'].includes(skillName)) {
         category = 'language';
-      } else if (['Django', 'FastAPI', 'React', 'Next.js', 'Node.js', 'Express'].includes(skillName)) {
+      } else if (['Django', 'FastAPI', 'React', 'Next.js', 'Node.js', 'Express', 'Hono', 'Elysia', 'Encore.ts', 'Astro', 'Vue.js'].includes(skillName)) {
         category = 'framework';
       } else if (['Docker', 'Kubernetes', 'DevOps', 'Linux', 'AWS', 'GCP'].includes(skillName)) {
         category = 'devops';
@@ -406,6 +406,16 @@ console.log('🛠️ Seeding skills...');
       createdAt: now,
       updatedAt: now,
     });
+    await db.insert(publications).values({
+      title: "An Empirical Benchmark Dataset for Paillier-Based Privacy-Preserving REST API Gateways",
+      venue: "Zenodo (DOI: 10.5281/zenodo.18655966)",
+      url: "https://zenodo.org/records/18655966",
+      date: "2026-02-16",
+      description: "homomorphic_request — comprehensive benchmark dataset for Paillier-based homomorphic encryption in privacy-preserving REST API gateways under realistic conditions. Covers concurrency scaling, batch variation, homomorphic overhead, burst traffic, and fault injection with per-request telemetry. Reproducible Go harness. Affiliation: Daffodil International University. DOI: 10.5281/zenodo.18655966",
+      order: 1,
+      createdAt: now,
+      updatedAt: now,
+    });
     console.log(`  ✅ Inserted publications`);
 
     // 11. Interests
@@ -469,8 +479,8 @@ console.log('🛠️ Seeding skills...');
     // 15. Uses / toolbox (DB-driven)
     console.log('🧰 Seeding uses...');
     const usesData: { category: string; item: string; order: number }[] = [
-      ...['Python','TypeScript','JavaScript','Go','Rust','SQL','Bash'].map((item, i) => ({ category: 'Languages', item, order: i })),
-      ...['FastAPI','Django','Node.js','Express','Flask','gRPC','REST'].map((item, i) => ({ category: 'Backend', item, order: i })),
+      ...['Python','Rust','Go','TypeScript','SQL','Bash'].map((item, i) => ({ category: 'Languages', item, order: i })),
+      ...['FastAPI','Django','Node.js','Express','Hono','Elysia','Encore.ts','Flask','gRPC','REST'].map((item, i) => ({ category: 'Backend', item, order: i })),
       ...['PyTorch','TensorFlow','LangChain','Hugging Face','scikit-learn'].map((item, i) => ({ category: 'AI / ML', item, order: i })),
       ...['Apache Spark','Apache Kafka','Apache Airflow','dbt','Snowflake','BigQuery'].map((item, i) => ({ category: 'Data', item, order: i })),
       ...['PostgreSQL','MongoDB','Redis','SQLite','Turso (libSQL)','Elasticsearch'].map((item, i) => ({ category: 'Database', item, order: i })),

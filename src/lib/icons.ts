@@ -14,6 +14,10 @@ export const thesvgIconMap: Record<string, string> = {
   "vuejs": "vue",
   "node.js": "nodejs",
   "nodejs": "nodejs",
+  "hono": "hono",
+  "elysia": "elysia",
+  "encore": "encore",
+  "encore.ts": "encore",
   "docker": "docker",
   "kubernetes": "kubernetes",
   "terraform": "terraform",
@@ -173,6 +177,28 @@ export const thesvgIconMap: Record<string, string> = {
 
 export function thesvgIconUrl(name: string): string | null {
   const key = name.toLowerCase().trim();
+
+  // Brand-color overrides: thesvg defaults for some icons are white-on-dark (mono)
+  // so they disappear on white. Return full brand-color SVGs for those.
+  const brandIconMap: Record<string, string> = {
+    // Languages — true brand colors via devicons
+    "rust": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rust/rust-original.svg",
+    "go": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg",
+    "golang": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg",
+    "sql": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",
+    "mysql": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",
+    // Databases — Qdrant light is brand red, Weaviate local colored fallback
+    "qdrant": "https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/qdrant/light.svg",
+    "weaviate": "/icons/weaviate.svg",
+    // Frameworks — Hono brand orange, Elysia official, Encore local
+    "hono": "https://cdn.simpleicons.org/hono/E36002",
+    "elysia": "https://elysiajs.com/assets/elysia.svg",
+    "elysia.js": "https://elysiajs.com/assets/elysia.svg",
+    "encore": "/icons/encore.svg",
+    "encore.ts": "/icons/encore.svg",
+  };
+  if (brandIconMap[key]) return brandIconMap[key];
+
   const mapped = thesvgIconMap[key];
   if (!mapped) return null;
   if (mapped.includes("/")) {
