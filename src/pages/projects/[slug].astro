@@ -11,6 +11,7 @@ import { getCachedData, setCachedData } from "../../lib/redis";
 import { getProjectCategories, categoryLabel } from "../../lib/projects";
 import { getProjects } from "../../lib/loaders";
 import { opt } from "../../lib/image";
+import { thesvgIconUrl } from "../../lib/icons";
 
 const { slug } = Astro.params;
 if (!slug) return Astro.redirect("/404");
@@ -101,6 +102,31 @@ const schema = {
 
 const stars = project.stars || 0;
 
+// Strip a leading H1 that duplicates the project title (content usually opens with "# Name")
+const h1Pattern = new RegExp(`^\\s*<h1[^>]*>\\s*(?:[^<]|<[^/])*?${project.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}[\\s\\S]*?</h1>`, "i");
+contentHtml = contentHtml.replace(h1Pattern, "").trimStart();
+
+// Build an on-this-page TOC from the H2s (rehype-slug adds the ids)
+interface TocItem { id: string; text: string }
+const toc: TocItem[] = [];
+for (const m of contentHtml.matchAll(/<h2 id="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)) {
+  toc.push({ id: m[1], text: m[2].replace(/<[^>]+>/g, "").trim() });
+}
+
+// Split metrics into headline stats vs. facts-sidebar entries
+const metricEntries = Object.entries(metrics as Record<string, string>);
+const factKeys = new Set(["license", "repository_status"]);
+const statMetrics = metricEntries.filter(([k]) => !factKeys.has(k));
+const license = (metrics as Record<string, string>).license || null;
+
+// Duration is stored bare ("6") — make it readable
+const durationLabel = project.duration
+  ? (/^\d+$/.test(String(project.duration)) ? `${project.duration} months` : project.duration)
+  : null;
+const teamLabel = project.teamSize
+  ? `${project.teamSize} ${Number(project.teamSize) === 1 ? "person" : "people"}`
+  : null;
+
 // Reading time — ~200 words/min on the rendered content
 const wordCount = ((project.content || "") + " " + (project.challenges || "") + " " + (project.outcomes || "") + " " + (project.lessonsLearned || ""))
   .replace(/[#>*\-\[\]()!`]/g, " ")
@@ -139,202 +165,238 @@ const relatedProjects = (await getProjects())
   </Fragment>
 
   <article>
-    <section class="screen-line-after">
+    <!-- Hero -->
+    <section class="project-hero">
       <div class="container-narrow py-12 sm:py-16">
         <a href="/projects" class="text-mono inline-flex items-center gap-1.5 text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-[var(--color-accent)] reveal">
           ← All projects
         </a>
 
-        <div class="mt-8 reveal reveal-delay-1">
-          <div class="flex flex-wrap items-center gap-3 text-mono text-xs text-[var(--color-fg-subtle)]">
-            {category && (
-              <a
-                href={`/projects#cat-${category.slug}`}
-                class="px-2 py-0.5 rounded-full border border-[var(--color-edge-strong)] bg-[var(--color-card)] text-[var(--color-accent-2)] transition-colors hover:border-[var(--color-fg-subtle)]"
-              >
-                {category.label}
-              </a>
-            )}
-            {project.featured && <span class="px-2 py-0.5 rounded-full bg-[rgba(251,191,36,0.1)] text-yellow-400 border border-yellow-400/30">★ Featured</span>}
-            <span>{new Date(projectDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}</span>
-            {project.status && <span>· {project.status}</span>}
-            <span>· {readingMinutes} min read</span>
-          </div>
-
-          <h1 class="text-display mt-3 text-3xl text-[var(--color-fg)] sm:text-4xl">
-            <span class="text-aurora">{project.name}</span>
-          </h1>
-
-          <p class="prose-mono mt-4 max-w-prose">{project.description}</p>
-
-          <div class="mt-6 flex flex-wrap items-center gap-3">
-            {project.url && (
-              <a href={project.url} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></polyline></svg>
-                Live demo
-              </a>
-            )}
-            {project.github && (
-              <a href={project.github} target="_blank" rel="noopener noreferrer" class="btn btn-outline">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-                Source
-              </a>
-            )}
-            {project.documentation && (
-              <a href={project.documentation} target="_blank" rel="noopener noreferrer" class="btn btn-outline">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                Docs
-              </a>
-            )}
-            {stars > 0 && (
-              <span class="btn btn-ghost text-yellow-400 cursor-default">
-                ★ {stars.toLocaleString()} stars
-              </span>
-            )}
-          </div>
-
-          {tags.length > 0 && (
-            <div class="mt-6 flex flex-wrap gap-1.5">
-              {tags.map((t: string) => (
-                <span class="tag">{t}</span>
-              ))}
+        <div class="hero-grid mt-8 reveal reveal-delay-1">
+          <div class="hero-main">
+            <div class="flex flex-wrap items-center gap-2 text-mono text-xs text-[var(--color-fg-subtle)]">
+              {category && (
+                <a
+                  href={`/projects#cat-${category.slug}`}
+                  class="hero-chip"
+                >
+                  {category.label}
+                </a>
+              )}
+              {project.status && (
+                <span class="hero-chip hero-chip-status">
+                  <span class="status-dot" aria-hidden="true"></span>
+                  {project.status}
+                </span>
+              )}
+              {project.featured && <span class="hero-chip">★ Featured</span>}
+              <span>{new Date(projectDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}</span>
             </div>
-          )}
-        </div>
-      </div>
-    </section>
 
-    {project.image && (
-      <section class="screen-line-after">
-        <div class="container-narrow py-8 sm:py-12">
-          <div class="overflow-hidden rounded-xl border border-[var(--color-edge)] shadow-lg">
-            <img src={opt(project.image, 1200)} alt={project.name} class="w-full h-auto" loading="lazy" decoding="async" width="1200" />
-          </div>
-        </div>
-      </section>
-    )}
+            <h1 class="text-display mt-4 text-3xl text-[var(--color-fg)] sm:text-5xl sm:leading-[1.08]">
+              <span class="text-aurora">{project.name}</span>
+            </h1>
 
-    <!-- Project Meta Section -->
-    {(project.role || project.duration || project.teamSize || Object.keys(metrics).length > 0 || techStack.length > 0) && (
-      <section class="screen-line-after">
-        <div class="container-narrow py-8 sm:py-12">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Project Info -->
-            {(project.role || project.duration || project.teamSize) && (
-              <div class="panel p-6">
-                <h3 class="text-sm font-semibold text-[var(--color-fg-subtle)] uppercase tracking-wider mb-4">Project Info</h3>
-                <dl class="space-y-3">
-                  {project.role && (
-                    <div class="flex justify-between">
-                      <dt class="text-[var(--color-fg-muted)]">Role</dt>
-                      <dd class="text-[var(--color-fg)] font-medium">{project.role}</dd>
-                    </div>
-                  )}
-                  {project.duration && (
-                    <div class="flex justify-between">
-                      <dt class="text-[var(--color-fg-muted)]">Duration</dt>
-                      <dd class="text-[var(--color-fg)] font-medium">{project.duration}</dd>
-                    </div>
-                  )}
-                  {project.teamSize && (
-                    <div class="flex justify-between">
-                      <dt class="text-[var(--color-fg-muted)]">Team Size</dt>
-                      <dd class="text-[var(--color-fg)] font-medium">{project.teamSize}</dd>
-                    </div>
-                  )}
-                </dl>
-              </div>
-            )}
+            <p class="prose-mono mt-4 max-w-prose text-[0.95rem]">{project.description}</p>
 
-            <!-- Metrics -->
-            {Object.keys(metrics).length > 0 && (
-              <div class="panel p-6">
-                <h3 class="text-sm font-semibold text-[var(--color-fg-subtle)] uppercase tracking-wider mb-4">Key Metrics</h3>
-                <dl class="grid grid-cols-2 gap-4">
-                  {Object.entries(metrics).map(([key, value]) => (
-                    <div class="text-center">
-                      <dt class="text-2xl font-bold text-[var(--color-fg)]">{String(value)}</dt>
-                      <dd class="text-xs text-[var(--color-fg-muted)] mt-1 capitalize">{key.replace(/_/g, ' ')}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </div>
-            )}
+            <div class="mt-7 flex flex-wrap items-center gap-3">
+              {project.url && (
+                <a href={project.url} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></polyline></svg>
+                  Live demo
+                </a>
+              )}
+              {project.github && (
+                <a href={project.github} target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  Source
+                </a>
+              )}
+              {project.documentation && (
+                <a href={project.documentation} target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                  Docs
+                </a>
+              )}
+              {stars > 0 && (
+                <span class="text-mono text-sm text-[var(--color-fg-muted)] cursor-default">★ {stars.toLocaleString()}</span>
+              )}
+            </div>
           </div>
 
-          <!-- Tech Stack -->
-          {techStack.length > 0 && (
-            <div class="mt-6">
-              <h3 class="text-sm font-semibold text-[var(--color-fg-subtle)] uppercase tracking-wider mb-3">Tech Stack</h3>
-              <div class="flex flex-wrap gap-2">
-                {techStack.map((tech: string) => (
-                  <span class="px-3 py-1.5 bg-[var(--color-card)] border border-[var(--color-edge)] rounded-lg text-sm text-[var(--color-fg)]">{tech}</span>
-                ))}
+          {project.image && (
+            <div class="hero-art">
+              <div class="hero-art-frame">
+                <img src={opt(project.image, 720)} alt={project.name} loading="eager" decoding="async" width="360" height="360" />
               </div>
             </div>
           )}
         </div>
-      </section>
-    )}
 
-    <!-- Gallery -->
-    {gallery.length > 0 && (
-      <section class="screen-line-after">
-        <div class="container-narrow py-8 sm:py-12">
-          <h3 class="text-sm font-semibold text-[var(--color-fg-subtle)] uppercase tracking-wider mb-4">Gallery</h3>
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {gallery.map((img: string) => (
-              <div class="overflow-hidden rounded-lg border border-[var(--color-edge)]">
-                <img src={opt(img, 720)} alt={`${project.name} screenshot`} class="w-full h-48 object-cover hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" width="720" height="288" />
-              </div>
+        {tags.length > 0 && (
+          <div class="mt-8 flex flex-wrap gap-1.5 reveal reveal-delay-2">
+            {tags.map((t: string) => (
+              <span class="tag">{t}</span>
             ))}
-          </div>
-        </div>
-      </section>
-    )}
-
-    <section class="screen-line-after">
-      <div class="container-narrow py-12 sm:py-16">
-        {contentHtml ? (
-          <div class="prose-content" set:html={contentHtml} />
-        ) : (
-          <div class="panel p-8 text-center">
-            <p class="text-[var(--color-fg-muted)]">No detailed content yet for this project.</p>
-            {project.description && (
-              <p class="text-[var(--color-fg-subtle)] text-sm mt-2">{project.description}</p>
-            )}
           </div>
         )}
       </div>
     </section>
 
-    <!-- Challenges & Outcomes -->
-    {(project.challenges || project.outcomes || project.lessonsLearned) && (
+    <!-- Headline stats -->
+    {statMetrics.length > 0 && (
       <section class="screen-line-after">
-        <div class="container-narrow py-12 sm:py-16">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {project.challenges && (
-              <div>
-                <h2 class="text-xl font-bold text-[var(--color-fg)] mb-4">Challenges</h2>
-                <div class="prose-content text-sm" set:html={await renderMarkdown(project.challenges).then(r => r.html)} />
+        <div class="container-narrow py-8 sm:py-10">
+          <dl class:list={["stats-grid", statMetrics.length <= 3 && "stats-grid-tight"]}>
+            {statMetrics.map(([key, value]) => (
+              <div class="stat-card reveal">
+                <dt class="stat-label">{String(key).replace(/_/g, " ")}</dt>
+                <dd class="stat-value">{String(value)}</dd>
               </div>
-            )}
-            {project.outcomes && (
-              <div>
-                <h2 class="text-xl font-bold text-[var(--color-fg)] mb-4">Outcomes</h2>
-                <div class="prose-content text-sm" set:html={await renderMarkdown(project.outcomes).then(r => r.html)} />
-              </div>
-            )}
-          </div>
-          {project.lessonsLearned && (
-            <div class="mt-8">
-              <h2 class="text-xl font-bold text-[var(--color-fg)] mb-4">Lessons Learned</h2>
-              <div class="prose-content text-sm" set:html={await renderMarkdown(project.lessonsLearned).then(r => r.html)} />
-            </div>
-          )}
+            ))}
+          </dl>
         </div>
       </section>
     )}
+
+    <!-- Body: content + facts sidebar -->
+    <section class="screen-line-after">
+      <div class="container-narrow py-10 sm:py-14">
+        <div class="body-grid">
+          <div class="body-content min-w-0">
+            {contentHtml ? (
+              <div class="prose-content" set:html={contentHtml} />
+            ) : (
+              <div class="panel p-8 text-center">
+                <p class="text-[var(--color-fg-muted)]">No detailed content yet for this project.</p>
+                {project.description && (
+                  <p class="text-[var(--color-fg-subtle)] text-sm mt-2">{project.description}</p>
+                )}
+              </div>
+            )}
+
+            <!-- Challenges & Outcomes -->
+            {(project.challenges || project.outcomes || project.lessonsLearned) && (
+              <div class="mt-14 space-y-10">
+                {project.challenges && (
+                  <div class="story-block">
+                    <p class="text-eyebrow">The hard part</p>
+                    <div class="prose-content prose-story mt-3" set:html={await renderMarkdown(project.challenges).then(r => r.html)} />
+                  </div>
+                )}
+                {project.outcomes && (
+                  <div class="story-block">
+                    <p class="text-eyebrow">Outcome</p>
+                    <div class="prose-content prose-story mt-3" set:html={await renderMarkdown(project.outcomes).then(r => r.html)} />
+                  </div>
+                )}
+                {project.lessonsLearned && (
+                  <div class="story-block">
+                    <p class="text-eyebrow">What I'd do differently</p>
+                    <div class="prose-content prose-story mt-3" set:html={await renderMarkdown(project.lessonsLearned).then(r => r.html)} />
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <!-- Facts sidebar -->
+          <aside class="body-side">
+            <div class="side-sticky">
+              {(project.role || durationLabel || teamLabel || license || project.status) && (
+                <div class="side-card">
+                  <h3 class="side-title">Project facts</h3>
+                  <dl class="side-list">
+                    {project.role && (
+                      <div class="side-row">
+                        <dt>Role</dt>
+                        <dd>{project.role}</dd>
+                      </div>
+                    )}
+                    {durationLabel && (
+                      <div class="side-row">
+                        <dt>Duration</dt>
+                        <dd>{durationLabel}</dd>
+                      </div>
+                    )}
+                    {teamLabel && (
+                      <div class="side-row">
+                        <dt>Team</dt>
+                        <dd>{teamLabel}</dd>
+                      </div>
+                    )}
+                    {project.status && (
+                      <div class="side-row">
+                        <dt>Status</dt>
+                        <dd>{project.status}</dd>
+                      </div>
+                    )}
+                    {license && (
+                      <div class="side-row">
+                        <dt>License</dt>
+                        <dd>{license}</dd>
+                      </div>
+                    )}
+                  </dl>
+                </div>
+              )}
+
+              {techStack.length > 0 && (
+                <div class="side-card">
+                  <h3 class="side-title">Built with</h3>
+                  <ul class="tech-list">
+                    {techStack.slice(0, 10).map((tech: string) => {
+                      const icon = thesvgIconUrl(tech);
+                      return (
+                        <li class="tech-item">
+                          <span class="tech-icon">
+                            {icon
+                              ? <img src={icon} alt="" loading="lazy" width="16" height="16" />
+                              : <span class="tech-dot" aria-hidden="true"></span>}
+                          </span>
+                          <span>{tech}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  {techStack.length > 10 && (
+                    <details class="tech-more">
+                      <summary>+{techStack.length - 10} more</summary>
+                      <ul class="tech-list mt-2">
+                        {techStack.slice(10).map((tech: string) => {
+                          const icon = thesvgIconUrl(tech);
+                          return (
+                            <li class="tech-item">
+                              <span class="tech-icon">
+                                {icon
+                                  ? <img src={icon} alt="" loading="lazy" width="16" height="16" />
+                                  : <span class="tech-dot" aria-hidden="true"></span>}
+                              </span>
+                              <span>{tech}</span>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </details>
+                  )}
+                </div>
+              )}
+
+              {toc.length > 0 && (
+                <nav class="side-card" aria-label="On this page">
+                  <h3 class="side-title">On this page</h3>
+                  <ul class="toc-list">
+                    {toc.map((item) => (
+                      <li><a href={`#${item.id}`}>{item.text}</a></li>
+                    ))}
+                  </ul>
+                </nav>
+              )}
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
     <!-- Prev / Next navigation -->
     {(prev || next) && (
       <section class="screen-line-after">
@@ -452,6 +514,234 @@ const relatedProjects = (await getProjects())
 </script>
 
 <style>
+  /* ── Hero ── */
+  .project-hero {
+    border-bottom: 1px solid var(--color-edge);
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 0%, var(--pattern-fg), transparent),
+      var(--color-bg);
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+  @media (min-width: 820px) {
+    .hero-grid { grid-template-columns: 1fr auto; gap: 3rem; }
+  }
+
+  .hero-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-edge-strong);
+    background: var(--color-card);
+    color: var(--color-accent-2);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+    transition: border-color 0.2s ease, color 0.2s ease;
+    text-decoration: none;
+  }
+  a.hero-chip:hover { border-color: var(--color-fg-subtle); color: var(--color-fg); }
+  .hero-chip-status { color: var(--color-fg-muted); }
+  .status-dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 999px;
+    background: currentColor;
+    animation: status-pulse 2s ease-in-out infinite;
+  }
+  @keyframes status-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.35; }
+  }
+
+  .hero-art-frame {
+    width: min(300px, 60vw);
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    border: 1px solid var(--color-edge);
+    border-radius: 18px;
+    background:
+      repeating-linear-gradient(315deg, var(--pattern-fg) 0, var(--pattern-fg) 1px, transparent 1px, transparent 10px),
+      var(--color-card);
+    box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.5);
+  }
+  .hero-art-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* ── Stats strip ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 0;
+  }
+  @media (min-width: 700px) {
+    .stats-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .stats-grid-tight { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  .stat-card {
+    border: 1px solid var(--color-edge);
+    background: linear-gradient(180deg, var(--color-card) 0%, var(--color-card-strong) 100%);
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .stat-card:hover { border-color: var(--color-edge-strong); transform: translateY(-1px); }
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-fg-subtle);
+  }
+  .stat-value {
+    margin-top: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-fg);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  /* ── Body grid: content + sticky sidebar ── */
+  .body-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  @media (min-width: 1024px) {
+    .body-grid { grid-template-columns: minmax(0, 1fr) 264px; gap: 3rem; }
+  }
+
+  .side-sticky {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  @media (min-width: 1024px) {
+    .side-sticky { position: sticky; top: 5.5rem; max-height: calc(100vh - 6.5rem); overflow-y: auto; scrollbar-width: none; }
+    .side-sticky::-webkit-scrollbar { display: none; }
+  }
+  /* Sidebar below content on mobile */
+  @media (max-width: 1023px) {
+    .body-side { order: 2; }
+  }
+
+  .side-card {
+    border: 1px solid var(--color-edge);
+    background: var(--color-card);
+    border-radius: 14px;
+    padding: 1.1rem 1.2rem;
+  }
+  .side-title {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--color-fg-subtle);
+    margin-bottom: 0.8rem;
+  }
+
+  .side-list { margin: 0; display: flex; flex-direction: column; gap: 0.65rem; }
+  .side-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.8rem;
+  }
+  .side-row dt { color: var(--color-fg-subtle); flex-shrink: 0; }
+  .side-row dd {
+    color: var(--color-fg);
+    font-weight: 500;
+    text-align: right;
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+
+  .tech-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .tech-item {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--color-fg-muted);
+  }
+  .tech-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.15rem;
+    height: 1.15rem;
+    flex-shrink: 0;
+  }
+  .tech-icon img { width: 16px; height: 16px; object-fit: contain; }
+  .tech-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    background: var(--color-fg-subtle);
+  }
+  .tech-more summary {
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-accent-2);
+    margin-top: 0.65rem;
+    user-select: none;
+  }
+  .tech-more summary:hover { color: var(--color-fg); }
+
+  .toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .toc-list a {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.45;
+    color: var(--color-fg-muted);
+    text-decoration: none;
+    transition: color 0.15s ease;
+    display: block;
+  }
+  .toc-list a:hover { color: var(--color-fg); }
+
+  /* ── Story blocks (challenges / outcome / lessons) ── */
+  .story-block {
+    border-left: 2px solid var(--color-edge-strong);
+    padding-left: 1.5rem;
+  }
+  .prose-story { font-size: 0.95rem; }
+  .prose-story h1, .prose-story h2 { font-size: 1.15rem; margin-top: 1.5rem; }
+  .prose-story h3 { font-size: 1rem; }
+
   .pager-card {
     text-decoration: none;
     display: block;
