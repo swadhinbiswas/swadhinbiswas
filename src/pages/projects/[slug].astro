@@ -160,9 +160,15 @@ const relatedProjects = (await getProjects())
     {features.hasMermaid && <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js" />}
     {features.hasPlotly && <script src="https://cdn.jsdelivr.net/npm/plotly.js@3.3.1/dist/plotly.min.js" />}
     {features.hasCharts && <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js" />}
-    <script is:inline>
-      {features.hasMermaid && `document.addEventListener("DOMContentLoaded", () => { mermaid.initialize({ startOnLoad: true, theme: "dark", themeVariables: { primaryColor: "#FFFFFF", primaryTextColor: "#F4F4F5", primaryBorderColor: "#27272A", lineColor: "#A1A1AA", secondaryColor: "#141414", tertiaryColor: "#1A1A1A" } }); mermaid.run({ querySelector: ".mermaid" }); });`}
-    </script>
+    {features.hasMermaid && (
+      <script is:inline>
+        document.addEventListener("DOMContentLoaded", function () {
+          if (typeof mermaid === "undefined") return;
+          mermaid.initialize({ startOnLoad: true, theme: "dark", themeVariables: { primaryColor: "#FFFFFF", primaryTextColor: "#F4F4F5", primaryBorderColor: "#27272A", lineColor: "#A1A1AA", secondaryColor: "#141414", tertiaryColor: "#1A1A1A" } });
+          mermaid.run({ querySelector: ".mermaid" });
+        });
+      </script>
+    )}
   </Fragment>
 
   <article>

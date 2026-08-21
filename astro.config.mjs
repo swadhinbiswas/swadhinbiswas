@@ -55,6 +55,11 @@ export default defineConfig({
     inlineStylesheets: 'auto',
     assets: '_a',
   },
+  image: {
+    // Admin-entered content can reference any https image host; authorize all
+    // so Vercel's /_vercel/image optimizer never 400s on a new host.
+    remotePatterns: [{ protocol: 'https' }],
+  },
   vite: {
     plugins: [tailwindcss()],
     css: { devSourcemap: false },
