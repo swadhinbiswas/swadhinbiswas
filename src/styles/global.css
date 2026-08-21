@@ -514,6 +514,13 @@
     margin: 0 auto;
     padding: 3rem 1.5rem 4rem;
   }
+  /* Wide variant for detail pages (project case studies, etc.) */
+  .shell-content.shell-content-wide {
+    max-width: 1120px;
+  }
+  @media (max-width: 768px) {
+    .shell-content.shell-content-wide { max-width: 100%; }
+  }
 
   .nav-item {
     display: flex;

@@ -151,6 +151,7 @@ const relatedProjects = (await getProjects())
   description={project.description}
   image={ogImage}
   ogType="article"
+  wide
 >
   <Fragment slot="head">
     <meta name="twitter:image" content={twitterImage} />
@@ -167,12 +168,12 @@ const relatedProjects = (await getProjects())
   <article>
     <!-- Hero -->
     <section class="project-hero">
-      <div class="container-narrow py-12 sm:py-16">
+      <div class="py-8 sm:py-10">
         <a href="/projects" class="text-mono inline-flex items-center gap-1.5 text-xs text-[var(--color-fg-subtle)] transition-colors hover:text-[var(--color-accent)] reveal">
           ← All projects
         </a>
 
-        <div class="hero-grid mt-8 reveal reveal-delay-1">
+        <div class="hero-grid mt-6 sm:mt-8 reveal reveal-delay-1">
           <div class="hero-main">
             <div class="flex flex-wrap items-center gap-2 text-mono text-xs text-[var(--color-fg-subtle)]">
               {category && (
@@ -234,7 +235,7 @@ const relatedProjects = (await getProjects())
         </div>
 
         {tags.length > 0 && (
-          <div class="mt-8 flex flex-wrap gap-1.5 reveal reveal-delay-2">
+          <div class="mt-6 sm:mt-7 flex flex-wrap gap-1.5 reveal reveal-delay-2">
             {tags.map((t: string) => (
               <span class="tag">{t}</span>
             ))}
@@ -246,8 +247,8 @@ const relatedProjects = (await getProjects())
     <!-- Headline stats -->
     {statMetrics.length > 0 && (
       <section class="screen-line-after">
-        <div class="container-narrow py-8 sm:py-10">
-          <dl class:list={["stats-grid", statMetrics.length <= 3 && "stats-grid-tight"]}>
+        <div class="py-6 sm:py-8">
+          <dl class="stats-grid">
             {statMetrics.map(([key, value]) => (
               <div class="stat-card reveal">
                 <dt class="stat-label">{String(key).replace(/_/g, " ")}</dt>
@@ -261,7 +262,7 @@ const relatedProjects = (await getProjects())
 
     <!-- Body: content + facts sidebar -->
     <section class="screen-line-after">
-      <div class="container-narrow py-10 sm:py-14">
+      <div class="py-8 sm:py-10">
         <div class="body-grid">
           <div class="body-content min-w-0">
             {contentHtml ? (
@@ -400,7 +401,7 @@ const relatedProjects = (await getProjects())
     <!-- Prev / Next navigation -->
     {(prev || next) && (
       <section class="screen-line-after">
-        <div class="container-narrow py-10 sm:py-14">
+        <div class="py-8 sm:py-10">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {prev && (
               <a href={`/projects/${prev.slug}/`} class="panel p-5 pager-card reveal">
@@ -422,7 +423,7 @@ const relatedProjects = (await getProjects())
     <!-- Related projects -->
     {relatedProjects.length > 0 && (
       <section class="screen-line-after">
-        <div class="container-narrow py-10 sm:py-14">
+        <div class="py-8 sm:py-10">
           <p class="text-eyebrow reveal">More in {category?.label || "this category"}</p>
           <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
             {relatedProjects.map((rp) => (
@@ -525,12 +526,18 @@ const relatedProjects = (await getProjects())
   .hero-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.75rem;
     align-items: center;
   }
-  @media (min-width: 820px) {
-    .hero-grid { grid-template-columns: 1fr auto; gap: 3rem; }
+  @media (min-width: 720px) {
+    .hero-grid { grid-template-columns: minmax(0, 1fr) auto; gap: 2.5rem; }
   }
+  @media (min-width: 1024px) {
+    .hero-grid { gap: 3.5rem; }
+  }
+
+  .hero-main { min-width: 0; }
+  .hero-main .prose-mono { max-width: 62ch; }
 
   .hero-chip {
     display: inline-flex;
@@ -562,18 +569,24 @@ const relatedProjects = (await getProjects())
   }
 
   .hero-art-frame {
-    width: min(300px, 60vw);
+    width: min(220px, 52vw);
     aspect-ratio: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: 1.5rem;
     border: 1px solid var(--color-edge);
     border-radius: 18px;
     background:
       repeating-linear-gradient(315deg, var(--pattern-fg) 0, var(--pattern-fg) 1px, transparent 1px, transparent 10px),
       var(--color-card);
     box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.5);
+  }
+  @media (min-width: 720px) {
+    .hero-art-frame { width: min(260px, 30vw); padding: 1.75rem; }
+  }
+  @media (min-width: 1024px) {
+    .hero-art-frame { width: 280px; }
   }
   .hero-art-frame img {
     width: 100%;
@@ -584,60 +597,68 @@ const relatedProjects = (await getProjects())
   /* ── Stats strip ── */
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 0.75rem;
     margin: 0;
-  }
-  @media (min-width: 700px) {
-    .stats-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .stats-grid-tight { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
   .stat-card {
     border: 1px solid var(--color-edge);
     background: linear-gradient(180deg, var(--color-card) 0%, var(--color-card-strong) 100%);
     border-radius: 14px;
-    padding: 1rem 1.1rem;
+    padding: 0.9rem 1rem;
     transition: border-color 0.2s ease, transform 0.2s ease;
+    min-width: 0;
   }
   .stat-card:hover { border-color: var(--color-edge-strong); transform: translateY(-1px); }
   .stat-label {
     font-family: var(--font-mono);
-    font-size: 0.62rem;
+    font-size: 0.6rem;
     text-transform: uppercase;
     letter-spacing: 0.07em;
     color: var(--color-fg-subtle);
+    overflow-wrap: break-word;
   }
   .stat-value {
-    margin-top: 0.45rem;
+    margin-top: 0.4rem;
     font-family: var(--font-mono);
-    font-size: 1.15rem;
+    font-size: clamp(0.95rem, 1.5vw, 1.15rem);
     font-weight: 700;
     color: var(--color-fg);
-    line-height: 1.2;
+    line-height: 1.25;
     letter-spacing: -0.01em;
+    overflow-wrap: break-word;
   }
 
   /* ── Body grid: content + sticky sidebar ── */
   .body-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 2.5rem;
+    gap: 2rem;
   }
-  @media (min-width: 1024px) {
-    .body-grid { grid-template-columns: minmax(0, 1fr) 264px; gap: 3rem; }
+  @media (min-width: 900px) {
+    .body-grid { grid-template-columns: minmax(0, 1fr) 264px; gap: 2.75rem; }
   }
 
   .side-sticky {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1rem;
+    align-items: start;
   }
-  @media (min-width: 1024px) {
-    .side-sticky { position: sticky; top: 5.5rem; max-height: calc(100vh - 6.5rem); overflow-y: auto; scrollbar-width: none; }
+  @media (min-width: 900px) {
+    .side-sticky {
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 5.5rem;
+      max-height: calc(100vh - 6.5rem);
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
     .side-sticky::-webkit-scrollbar { display: none; }
   }
   /* Sidebar below content on mobile */
-  @media (max-width: 1023px) {
+  @media (max-width: 899px) {
     .body-side { order: 2; }
   }
 
@@ -645,7 +666,8 @@ const relatedProjects = (await getProjects())
     border: 1px solid var(--color-edge);
     background: var(--color-card);
     border-radius: 14px;
-    padding: 1.1rem 1.2rem;
+    padding: 1.05rem 1.15rem;
+    min-width: 0;
   }
   .side-title {
     font-family: var(--font-mono);
@@ -678,16 +700,20 @@ const relatedProjects = (await getProjects())
     margin: 0;
     padding: 0;
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.9rem;
+  }
+  @media (min-width: 900px) {
+    .tech-list { flex-direction: column; flex-wrap: nowrap; gap: 0.5rem; }
   }
   .tech-item {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 0.55rem;
     font-family: var(--font-mono);
     font-size: 0.74rem;
     color: var(--color-fg-muted);
+    min-width: 0;
   }
   .tech-icon {
     display: inline-flex;
@@ -736,11 +762,25 @@ const relatedProjects = (await getProjects())
   /* ── Story blocks (challenges / outcome / lessons) ── */
   .story-block {
     border-left: 2px solid var(--color-edge-strong);
-    padding-left: 1.5rem;
+    padding-left: 1.25rem;
+  }
+  @media (min-width: 720px) {
+    .story-block { padding-left: 1.5rem; }
   }
   .prose-story { font-size: 0.95rem; }
   .prose-story h1, .prose-story h2 { font-size: 1.15rem; margin-top: 1.5rem; }
   .prose-story h3 { font-size: 1rem; }
+
+  /* Prose tables overflow safely on small screens */
+  :global(.prose-content table) {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  :global(.prose-content pre) {
+    max-width: 100%;
+    overflow-x: auto;
+  }
 
   .pager-card {
     text-decoration: none;

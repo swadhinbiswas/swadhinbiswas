@@ -17,6 +17,7 @@ interface Props {
   authorName?: string;
   keywords?: string[];
   themeColor?: string;
+  wide?: boolean;
 }
 
 const {
@@ -31,6 +32,7 @@ const {
   authorName,
   keywords,
   themeColor = "#0A0A12",
+  wide = false,
 } = Astro.props;
 
 const [siteConfig, eduPromise, certPromise] = await Promise.all([
@@ -286,7 +288,7 @@ const baseSchema = {
     <div class="shell">
       <Header />
       <div class="shell-main">
-        <main id="main" class="shell-content">
+        <main id="main" class:list={["shell-content", wide && "shell-content-wide"]}>
           <slot />
         </main>
         <Footer />
