@@ -3,6 +3,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getDynamicConfig } from "../lib/config";
 import { db, publications } from "../db";
+import { getProjects, projectUrl } from "../lib/loaders";
 import JsonLd from "../components/seo/JsonLd.astro";
 import { env } from "../lib/env";
 
@@ -17,6 +18,9 @@ const publicationsList = await safe(
   db.select().from(publications).orderBy(publications.order),
   [] as any[]
 );
+
+const allProjects = await getProjects();
+const caseStudies = allProjects.filter((p) => p.category === "research");
 
 function formatDate(s?: string) {
   if (!s) return "—";
@@ -57,7 +61,7 @@ const schema = {
 };
 ---
 
-<BaseLayout title="Research" description={`Peer-reviewed research and publications by ${siteConfig.author}.`}>
+<BaseLayout title="Research" description={`Publications, benchmark datasets, and applied research by ${siteConfig.author}.`}>
   <JsonLd slot="head" schema={schema} />
   <section class="screen-line-after">
     <div class="container-narrow py-12 sm:py-16">
@@ -65,7 +69,7 @@ const schema = {
         <p class="text-eyebrow">Research</p>
         <h1 class="text-display mt-3 text-3xl sm:text-4xl text-aurora">Selected publications</h1>
         <p class="prose-mono mt-4 max-w-prose">
-          Peer-reviewed and preprint work in AI systems, ML infrastructure, and applied research.
+          Preprints, open benchmark datasets, and applied research artifacts in AI systems, data infrastructure, and privacy-preserving computation.
         </p>
       </div>
     </div>
@@ -111,4 +115,47 @@ const schema = {
       )}
     </div>
   </section>
+
+  {caseStudies.length > 0 && (
+    <section class="screen-line-after">
+      <div class="container-narrow py-12 sm:py-16">
+        <div class="reveal">
+          <p class="text-eyebrow">Experiments</p>
+          <h2 class="text-display mt-3 text-2xl sm:text-3xl">Engineering case studies</h2>
+          <p class="prose-mono mt-4 max-w-prose">
+            Benchmarks, prototypes, and write-ups from my own experiments. Source and data are public on GitHub.
+          </p>
+        </div>
+        <div class="mt-8 panel">
+          <div class="panel-top"></div>
+          {caseStudies.map((cs) => (
+            <a href={projectUrl(cs)} class="row-card group">
+              <div class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)] w-14 flex-shrink-0 pt-1">
+                {formatDate(cs.projectDate)}
+              </div>
+              <div class="min-w-0 flex-1 row-card-divider">
+                <h3 class="row-card-title">{cs.name}</h3>
+                <p class="prose-mono mt-1 line-clamp-2">{cs.description}</p>
+                {cs.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-1.5 mt-2">
+                    {cs.tags.slice(0, 5).map((t) => <span class="tag">{t}</span>)}
+                  </div>
+                )}
+              </div>
+              <div class="row-card-actions">
+                {cs.github && (
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                    <polyline points="15 3 21 3 21 9"/>
+                    <line x1="10" y1="14" x2="21" y2="3"/>
+                  </svg>
+                )}
+              </div>
+            </a>
+          ))}
+          <div class="panel-bottom"></div>
+        </div>
+      </div>
+    </section>
+  )}
 </BaseLayout>

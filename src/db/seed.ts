@@ -366,7 +366,7 @@ console.log('🛠️ Seeding skills...');
         value: "With a deep love for problem-solving and building systems that scale, I've dedicated my career to creating backend infrastructure and AI solutions that help people express and share their ideas more effectively. I believe every problem has a solution – you just need to find the right algorithm."
       },
       { key: 'currentFocus', value: siteConfig.bio.currentFocus || 'Data Engineering · MLOps · AI Systems · Open Source' },
-      { key: 'currentlyBuilding', value: siteConfig.bio.currentlyBuilding || 'OPNCODEHUB — Open-source developer tools and ecosystems' },
+      { key: 'currentlyBuilding', value: siteConfig.bio.currentlyBuilding || 'OpencodeHub — Open-source developer tools and ecosystems' },
       { key: 'seeking', value: siteConfig.bio.seeking || 'EU Relocation · Germany · Netherlands · Austria' },
       { key: 'availability', value: siteConfig.bio.availability || 'Open to Mid-level Data/Backend Roles' },
     ];
@@ -561,3 +561,4 @@ console.log('🛠️ Seeding skills...');
 }
 
 seed();
+   

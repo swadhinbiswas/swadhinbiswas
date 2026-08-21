@@ -175,7 +175,7 @@ log(`  ${usesCount} uses inserted`);
 log("── Bio terminal keys ──");
 const bioKeys = [
   ["currentFocus", "Data Engineering · MLOps · AI Systems · Open Source"],
-  ["currentlyBuilding", "OPNCODEHUB — Open-source developer tools and ecosystems"],
+  ["currentlyBuilding", "OpencodeHub — Open-source developer tools and ecosystems"],
   ["seeking", "EU Relocation · Germany · Netherlands · Austria"],
   ["availability", "Open to Mid-level Data/Backend Roles"],
 ];
