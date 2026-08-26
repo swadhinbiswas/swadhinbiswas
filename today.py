@@ -1470,7 +1470,7 @@ def render_top_repos_box(top_repos):
     pad = 8  # leading columns — centers the 80-glyph box in ~96-col containers
     title = " top repositories "
     fill = max(0, inner - len(title))
-    lines = ["╭" + "─" * (fill // 2) + title + "─" * (fill - fill // 2) + "╮"]
+    lines = ["┌" + "─" * (fill // 2) + title + "─" * (fill - fill // 2) + "┐"]
     for name, lang, stars in top_repos:
         display_name = name[:24]
         display_lang = LANG_SHORT.get(lang.lower(), lang.lower())[:8]
@@ -1483,7 +1483,7 @@ def render_top_repos_box(top_repos):
         if dots < 3:
             dots = 3
         lines.append(" " * pad + "│ {} {} {} │".format(anchor, "." * dots, value))
-    lines.append(" " * pad + "╰" + "─" * inner + "╯")
+    lines.append(" " * pad + "└" + "─" * inner + "┘")
     lines[0] = " " * pad + lines[0]
     return "\n".join(lines)
 
