@@ -1682,7 +1682,7 @@ def generate_hero_svg(today_stats, alltime, lang_data):
 
     # ---- self-introduction (top) with a waving hand -------------------------
     # the dotted SWADHIN is gone — the intro is now the hero
-    intro = "Hi, Myself Swadhin Biswas"
+    intro = "Hello, I am Swadhin"
     # 32px mono -> char ~19.2px; hand sits 28px to the right of the text end
     intro_w = len(intro) * 19.2
     parts.append(
