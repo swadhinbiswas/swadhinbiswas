@@ -22,6 +22,7 @@
 
 <!-- the badge above is real time: komarev increments it on every view.
      the hero and contribution SVGs refresh hourly via github actions. -->
+
 <!-- TODAY:END -->
 
 <!--
