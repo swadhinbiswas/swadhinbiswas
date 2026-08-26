@@ -1681,18 +1681,18 @@ def generate_hero_svg(today_stats, alltime, lang_data):
     )
 
     # ---- self-introduction (top) with a waving hand -------------------------
+    # the dotted SWADHIN is gone — the intro is now the hero
     intro = "Hi, Myself Swadhin Biswas"
-    intro_w = len(intro) * 13.2
+    # 32px mono -> char ~19.2px; hand sits 28px to the right of the text end
+    intro_w = len(intro) * 19.2
     parts.append(
-        '<text x="{x}" y="44" text-anchor="middle" font-family="{font}" '
-        'font-size="22" fill="{fill}">{t}</text>'.format(
+        '<text x="{x}" y="72" text-anchor="middle" font-family="{font}" '
+        'font-size="32" font-weight="bold" fill="{fill}">{t}</text>'.format(
             x=cx, font=MONO_FONT, fill=c["text"], t=_xml_escape(intro)
         )
     )
-    # waving hand: drawn icon (emoji glyphs are unreliable inside <img> SVGs),
-    # animated with a SMIL rotate around the wrist pivot
-    hx = cx + intro_w / 2 + 26
-    hy = 58
+    hx = cx + intro_w / 2 + 28
+    hy = 82
     parts.append(
         '<g transform="translate({x},{y})">'
         '<g>'
@@ -1708,21 +1708,12 @@ def generate_hero_svg(today_stats, alltime, lang_data):
         '</g></g>'.format(x=hx, y=hy, s=c["text"])
     )
 
-    # ---- dotted-outline name ------------------------------------------------
-    parts.append(
-        '<text x="{x}" y="84" text-anchor="middle" font-family="{font}" '
-        'font-size="58" font-weight="bold" letter-spacing="10" fill="none" '
-        'stroke="{stroke}" stroke-width="1.1" stroke-dasharray="4 3.2">{name}</text>'.format(
-            x=cx, font=MONO_FONT, stroke=c["text"], name=_xml_escape(HERO_NAME)
-        )
-    )
-
     # ---- static taglines (no typing effect) ----------------------------------
     for i, tagline in enumerate(TAGLINES):
         parts.append(
             '<text x="{x}" y="{y}" text-anchor="middle" font-family="{font}" '
-            'font-size="15" fill="{fill}">{t}</text>'.format(
-                x=cx, y=120 + i * 22, font=MONO_FONT, fill=c["muted"],
+            'font-size="14" fill="{fill}">{t}</text>'.format(
+                x=cx, y=110 + i * 22, font=MONO_FONT, fill=c["muted"],
                 t=_xml_escape(tagline),
             )
         )
