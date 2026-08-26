@@ -14,17 +14,17 @@
 │ rust             █░░░░░░░░░░░░░░░░░░░░░░░░░░░░░   2%                                   │
 │ go               ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░   1%                                   │
 ├─────────────────────────────────── top repositories ───────────────────────────────────┤
-│ <a href="https://github.com/swadhinbiswas/opengrammar">opengrammar</a> ............................................................... ts   116 ★ │
-│ <a href="https://github.com/swadhinbiswas/veet">veet</a> ...................................................................... go   115 ★ │
-│ <a href="https://github.com/swadhinbiswas/Mervelas">Mervelas</a> .................................................................. ts    50 ★ │
-│ <a href="https://github.com/swadhinbiswas/FAANG-Playbook">FAANG-Playbook</a> ......................................................... astro    35 ★ │
+│ <a href="https://github.com/swadhinbiswas/veet">veet</a> ............................. │
+│ <a href="https://github.com/swadhinbiswas/opengrammar">opengrammar</a> ............... │
+│ <a href="https://github.com/swadhinbiswas/Mervelas">Mervelas</a> ..................... │
+│ <a href="https://github.com/swadhinbiswas/FAANG-Playbook">FAANG-Playbook</a> ......... │
 ├─────────────────────────────────────── all time ───────────────────────────────────────┤
-│ contributions ...................... 7,205  net lines .......................... +9.8M │
-│ stars ................................ 618  public repos ......................... 117 │
+│ contributions ...................... 7,206  net lines .......................... +9.1M │
+│ stars ................................ 620  public repos ......................... 117 │
 │ followers ............................. 96  longest streak .................. 127 days │
-│ dev score .................... 83/100 · A+  account age ................... 4y 2mo 11d │
+│ dev score .................... 86/100 · A+  account age ................... 4y 2mo 12d │
 │                                                                                        │
-│                  auto-generated · 2026-08-25 21:18 · data: github api                  │
+│                  auto-generated · 2026-08-26 08:30 · data: github api                  │
 ╰────────────────────────────────────────────────────────────────────────────────────────╯
 </pre>
 
