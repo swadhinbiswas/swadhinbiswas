@@ -12,17 +12,16 @@
 </p>
 
 <pre>
-╭─────────────────────────────────── top repositories ───────────────────────────────────╮
-│ <a href="https://github.com/swadhinbiswas/veet">veet</a> ....................................................................... go  116 ★ │
-│ <a href="https://github.com/swadhinbiswas/opengrammar">opengrammar</a> ................................................................ ts  116 ★ │
-│ <a href="https://github.com/swadhinbiswas/Mervelas">Mervelas</a> ................................................................... ts   51 ★ │
-│ <a href="https://github.com/swadhinbiswas/FAANG-Playbook">FAANG-Playbook</a> .......................................................... astro   35 ★ │
-╰────────────────────────────────────────────────────────────────────────────────────────╯
+╭────────────────────────────── top repositories ──────────────────────────────╮
+│ <a href="https://github.com/swadhinbiswas/opengrammar">opengrammar</a> ...................................................... ts  117 ★ │
+│ <a href="https://github.com/swadhinbiswas/veet">veet</a> ............................................................. go  116 ★ │
+│ <a href="https://github.com/swadhinbiswas/Mervelas">Mervelas</a> ......................................................... ts   51 ★ │
+│ <a href="https://github.com/swadhinbiswas/FAANG-Playbook">FAANG-Playbook</a> ................................................ astro   35 ★ │
+╰──────────────────────────────────────────────────────────────────────────────╯
 </pre>
 
 <!-- the badge above is real time: komarev increments it on every view.
      the hero and contribution SVGs refresh hourly via github actions. -->
-
 <!-- TODAY:END -->
 
 <!--
@@ -69,7 +68,7 @@ MACHINE-LEARNING                                  <a href="https://github.com/sw
 -->
 
 <pre>
-├─────────────────────────────────────── connect ────────────────────────────────────────┤
+├────────────────────────────────── connect ───────────────────────────────────┤
 </pre>
 
 <p align="center">

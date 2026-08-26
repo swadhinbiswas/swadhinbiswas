@@ -1459,13 +1459,16 @@ def _language_rows(lang_data, limit=5, ensure=("rust", "go")):
 def render_top_repos_box(top_repos):
     """
     Builds the bordered 'top repositories' box that sits directly under the
-    hero SVG — same design language as the dashboard: dotted leaders, the
-    language and star count flush right, names as hyperlinks.
+    contribution strip — same design language as the dashboard: dotted
+    leaders, the language and star count flush right, names as hyperlinks.
+    Total width is kept at 80 glyphs so the box keeps a margin inside
+    narrow README containers instead of clipping against their edge.
     """
     if not top_repos:
         return ""
+    inner = 78  # glyphs between the two border glyphs
     title = " top repositories "
-    fill = max(0, PANEL_WIDTH - len(title))
+    fill = max(0, inner - len(title))
     lines = ["╭" + "─" * (fill // 2) + title + "─" * (fill - fill // 2) + "╮"]
     for name, lang, stars in top_repos:
         display_name = name[:24]
@@ -1474,10 +1477,12 @@ def render_top_repos_box(top_repos):
         anchor = '<a href="{u}">{n}</a>'.format(
             u=html.escape(_repo_url(name), quote=True), n=html.escape(display_name)
         )
-        # visible width: "│ " + name + " " + dots + " " + value + " │" == PANEL_WIDTH + 2
-        dots = PANEL_WIDTH - len(display_name) - len(value) - 4
+        # visible width: "│ " + name + " " + dots + " " + value + " │" == inner + 2
+        dots = inner - len(display_name) - len(value) - 4
+        if dots < 3:
+            dots = 3
         lines.append("│ {} {} {} │".format(anchor, "." * dots, value))
-    lines.append("╰" + "─" * PANEL_WIDTH + "╯")
+    lines.append("╰" + "─" * inner + "╯")
     return "\n".join(lines)
 
 
