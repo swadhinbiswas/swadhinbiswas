@@ -1467,6 +1467,7 @@ def render_top_repos_box(top_repos):
     if not top_repos:
         return ""
     inner = 78  # glyphs between the two border glyphs
+    pad = 8  # leading columns — centers the 80-glyph box in ~96-col containers
     title = " top repositories "
     fill = max(0, inner - len(title))
     lines = ["╭" + "─" * (fill // 2) + title + "─" * (fill - fill // 2) + "╮"]
@@ -1481,8 +1482,9 @@ def render_top_repos_box(top_repos):
         dots = inner - len(display_name) - len(value) - 4
         if dots < 3:
             dots = 3
-        lines.append("│ {} {} {} │".format(anchor, "." * dots, value))
-    lines.append("╰" + "─" * inner + "╯")
+        lines.append(" " * pad + "│ {} {} {} │".format(anchor, "." * dots, value))
+    lines.append(" " * pad + "╰" + "─" * inner + "╯")
+    lines[0] = " " * pad + lines[0]
     return "\n".join(lines)
 
 
