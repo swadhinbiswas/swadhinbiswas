@@ -1,6 +1,5 @@
 import datetime
 import html
-import json
 import os
 import re
 import time
@@ -23,9 +22,11 @@ except ImportError:
 # Repository permissions: read:Commit statuses, read:Contents, read:Issues, read:Metadata, read:Pull Requests
 HEADERS = {
     "authorization": "token "
-    + os.environ.get("GITHUB_TOKEN", os.environ.get("ACCESS_TOKEN", ""))
+    # `or` (not get-default): CI may export these as EMPTY strings when the
+    # secret is unset, which would bypass a plain default
+    + (os.environ.get("GITHUB_TOKEN") or os.environ.get("ACCESS_TOKEN") or "")
 }
-USER_NAME = os.environ.get("USER_NAME", "swadhinbiswas")
+USER_NAME = os.environ.get("USER_NAME") or "swadhinbiswas"
 QUERY_COUNT = {
     "user_getter": 0,
     "follower_getter": 0,
@@ -38,8 +39,8 @@ QUERY_COUNT = {
     "recent_repos_getter": 0,
     "today_contrib_getter": 0,
     "repo_loc_since": 0,
-    "today_contrib_getter": 0,
-    "visits_getter": 0,
+    "year_contrib_getter": 0,
+    "latest_merged_commit": 0,
     "top_repos_getter": 0,
     "rest_star_total": 0,
 }
@@ -1024,6 +1025,8 @@ def formatter(query_type, difference, funct_return=False, whitespace=0):
 README_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "readme.md")
 HERO_SVG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hero.svg")
 HERO_SVG_URL = "https://raw.githubusercontent.com/{u}/{u}/main/hero.svg"
+CONTRIBS_SVG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "contribs.svg")
+CONTRIBS_SVG_URL = "https://raw.githubusercontent.com/{u}/{u}/main/contribs.svg"
 README_START_MARKER = "<!-- TODAY:START -->"
 README_END_MARKER = "<!-- TODAY:END -->"
 PANEL_WIDTH = 88
@@ -1031,12 +1034,10 @@ PANEL_WIDTH = 88
 # Name shown in the hero banner
 HERO_NAME = "SWADHIN"
 
-# Phrases cycled by the hero typewriter animation
-TYPING_PHRASES = [
-    "mlops & data engineer",
-    "python · spark · kubernetes",
-    "pipeline automation",
-    "open to eu relocation",
+# Static taglines under the hero name — plain text, no typing animation
+TAGLINES = [
+    "mlops & data engineer · python · spark · kubernetes",
+    "pipeline automation · open to eu relocation",
 ]
 
 # Shorter display names for the languages panel
@@ -1134,12 +1135,12 @@ def _panel_line(content=""):
     return "│" + content.ljust(PANEL_WIDTH)[:PANEL_WIDTH] + "│"
 
 
-def _panel_divider(title=""):
+def _panel_divider(title="", width=PANEL_WIDTH):
     """Returns ├────┤ with an optional centered section title embedded."""
     if not title:
-        return "├" + "─" * PANEL_WIDTH + "┤"
+        return "├" + "─" * width + "┤"
     label = " {} ".format(title)
-    fill = max(0, PANEL_WIDTH - len(label))
+    fill = max(0, width - len(label))
     left = fill // 2
     return "├" + "─" * left + label + "─" * (fill - left) + "┤"
 
@@ -1164,23 +1165,6 @@ def _panel_cell(key, value, width, key_html=None):
     key_part = key_html if key_html is not None else html.escape(key)
     cell = " {} ".format(key_part) + "." * dots + " " + html.escape(value)
     return cell.ljust(width)[:width]
-
-
-def _two_col(left_pair, right_pair):
-    """
-    Two key/value cells side by side filling one panel row. Each cell is one
-    narrower than its half so values never sit flush against the border.
-    """
-    half = PANEL_WIDTH // 2 - 1
-    left = _panel_cell(*left_pair, half)
-    right = _panel_cell(*right_pair, half)
-    return _panel_line(left + " " + right + " ")
-
-
-def _bar(pct, width=18):
-    """Renders a percentage as a █/░ bar."""
-    filled = int(round(width * max(0, min(100, pct)) / 100))
-    return "█" * filled + "░" * (width - filled)
 
 
 def _abbrev_number(value):
@@ -1313,66 +1297,115 @@ def today_contrib_getter():
     }
 
 
-def visits_getter():
-    """
-    Reads the profile-views count by parsing the komarev counter SVG — the
-    same visit URL embedded in the README — and records a daily snapshot in
-    data/visits_history.json (last 60 days) used for the sparkline.
-    Returns (count, daily_deltas_oldest_first).
-    """
-    request = requests.get(
-        "https://komarev.com/ghpvc/?username={}".format(USER_NAME),
-        headers={"User-Agent": "github-readme-today.py"},
-        timeout=30,
+def _time_ago(dt_str):
+    """'2026-08-20T14:03:00Z' -> '2d ago' style relative label (UTC)."""
+    dt = datetime.datetime.strptime(dt_str, "%Y-%m-%dT%H:%M:%SZ").replace(
+        tzinfo=datetime.timezone.utc
     )
-    if request.status_code != 200:
-        raise Exception("visits_getter() failed with", request.status_code)
-    matches = re.findall(r"<text[^>]*>([0-9,]+)</text>", request.text)
-    if not matches:
-        raise Exception("visits_getter(): no view count found in counter SVG")
-    count = int(matches[-1].replace(",", ""))
-
-    history_path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "data", "visits_history.json"
-    )
-    history = {}
-    if os.path.exists(history_path):
-        try:
-            with open(history_path, "r") as f:
-                history = json.load(f)
-        except (ValueError, OSError):
-            history = {}
-    today_key = datetime.date.today().isoformat()
-    history[today_key] = max(count, int(history.get(today_key, 0) or 0))
-    trimmed = dict(sorted(history.items())[-60:])
-    os.makedirs(os.path.dirname(history_path), exist_ok=True)
-    with open(history_path, "w") as f:
-        json.dump(trimmed, f, indent=1, sort_keys=True)
-
-    values = [int(v) for v in trimmed.values()]
-    deltas = [values[0]] + [b - a for a, b in zip(values, values[1:])]
-    return count, deltas[-30:]
+    delta = datetime.datetime.now(datetime.timezone.utc) - dt
+    days = delta.days
+    if days == 0:
+        hours = delta.seconds // 3600
+        return "just now" if hours == 0 else "{}h ago".format(hours)
+    if days < 7:
+        return "{}d ago".format(days)
+    if days < 30:
+        return "{}w ago".format(days // 7)
+    if days < 365:
+        return "{}mo ago".format(days // 30)
+    return "{}y ago".format(days // 365)
 
 
-def visits_fallback():
+def year_contrib_getter():
     """
-    Best-effort count from the local history file when the counter URL is
-    unreachable, so a komarev hiccup never breaks the README build.
+    This calendar year's contribution stats via GraphQL:
+    {'year', 'total', 'months': [12 monthly totals]} for the strip chart.
     """
-    history_path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "data", "visits_history.json"
-    )
-    try:
-        with open(history_path, "r") as f:
-            history = json.load(f)
-        pairs = sorted(history.items())[-60:]
-        if pairs:
-            values = [int(v) for _d, v in pairs]
-            deltas = [values[0]] + [b - a for a, b in zip(values, values[1:])]
-            return values[-1], deltas[-30:]
-    except (OSError, ValueError):
-        pass
-    return 0, [0, 0]
+    query_count("year_contrib_getter")
+    now = datetime.datetime.utcnow()
+    start = datetime.datetime(now.year, 1, 1)
+    query = """
+    query($login: String!, $from: DateTime!, $to: DateTime!) {
+        user(login: $login) {
+            contributionsCollection(from: $from, to: $to) {
+                contributionCalendar {
+                    weeks {
+                        contributionDays {
+                            contributionCount
+                            date
+                        }
+                    }
+                }
+            }
+        }
+    }"""
+    variables = {
+        "login": USER_NAME,
+        "from": start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "to": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+    }
+    request = simple_request(year_contrib_getter.__name__, query, variables)
+    weeks = request.json()["data"]["user"]["contributionsCollection"][
+        "contributionCalendar"
+    ]["weeks"]
+    months = [0] * 12
+    total = 0
+    for week in weeks:
+        for day in week["contributionDays"]:
+            count = int(day["contributionCount"])
+            total += count
+            months[int(day["date"][5:7]) - 1] += count
+    return {"year": now.year, "total": total, "months": months}
+
+
+def latest_merged_commit():
+    """
+    The most recently merged open-source pull request authored by this
+    account, with its merge-commit id:
+    {'sha7', 'oid', 'repo', 'title', 'number', 'url', 'ago'} or None.
+    """
+    query_count("latest_merged_commit")
+    # the username is interpolated in python — graphql variables cannot be
+    # used inside a quoted search string (%-format: no brace escaping)
+    query = """
+    query {
+        search(
+            query: "author:%s is:pr is:merged sort:updated-desc"
+            type: ISSUE
+            first: 10
+        ) {
+            nodes {
+                ... on PullRequest {
+                    number
+                    title
+                    mergedAt
+                    url
+                    mergeCommit {
+                        oid
+                    }
+                    repository {
+                        nameWithOwner
+                    }
+                }
+            }
+        }
+    }""" % USER_NAME
+    request = simple_request(latest_merged_commit.__name__, query, {})
+    nodes = request.json()["data"]["search"]["nodes"]
+    for node in nodes:
+        if not node or not node.get("mergeCommit"):
+            continue
+        oid = node["mergeCommit"]["oid"]
+        return {
+            "sha7": oid[:7],
+            "oid": oid,
+            "repo": node["repository"]["nameWithOwner"],
+            "title": node["title"],
+            "number": node["number"],
+            "url": node["url"],
+            "ago": _time_ago(node["mergedAt"]),
+        }
+    return None
 
 
 def top_repos_getter(limit=5):
@@ -1423,90 +1456,27 @@ def _language_rows(lang_data, limit=5, ensure=("rust", "go")):
     return rows
 
 
-def render_stats_panel(
-    lang_data,
-    top_repos,
-    contrib_data,
-    star_data,
-    repo_data,
-    follower_data,
-    loc_data,
-    streak_data,
-    score_data,
-    age_data,
-):
+def render_top_repos_box(top_repos):
     """
-    Builds the ASCII stats panel (languages / top repositories / all time)
-    that sits below the hero SVG. Every glyph is single-width so alignment
-    holds in GitHub code blocks.
+    Builds the bordered 'top repositories' box that sits directly under the
+    hero SVG — same design language as the dashboard: dotted leaders, the
+    language and star count flush right, names as hyperlinks.
     """
-    lines = ["╭" + "─" * PANEL_WIDTH + "╮"]
-
-    lines.append(_panel_divider("languages"))
-    for name, pct in _language_rows(lang_data):
-        display_name = LANGUAGE_ALIASES.get(name.lower(), name.lower())[:16]
-        lines.append(
-            _panel_line(
-                " {:<16} {} {:>3}%".format(
-                    html.escape(display_name), _bar(pct, 30), pct
-                )
-            )
+    if not top_repos:
+        return ""
+    title = " top repositories "
+    fill = max(0, PANEL_WIDTH - len(title))
+    lines = ["╭" + "─" * (fill // 2) + title + "─" * (fill - fill // 2) + "╮"]
+    for name, lang, stars in top_repos:
+        display_name = name[:24]
+        display_lang = LANG_SHORT.get(lang.lower(), lang.lower())[:8]
+        value = "{} {:>4} ★".format(display_lang, stars)
+        anchor = '<a href="{u}">{n}</a>'.format(
+            u=html.escape(_repo_url(name), quote=True), n=html.escape(display_name)
         )
-
-    lines.append(_panel_divider("top repositories"))
-    if top_repos:
-        for name, lang, stars in top_repos:
-            display_name = name[:20]
-            display_lang = LANG_SHORT.get(lang.lower(), lang.lower())[:8]
-            anchor = '<a href="{u}">{n}</a>'.format(
-                u=html.escape(_repo_url(name), quote=True),
-                n=html.escape(display_name),
-            )
-            lines.append(
-                _panel_line(
-                    _panel_cell(
-                        display_name,
-                        "{} {:>5} ★".format(display_lang, stars),
-                        PANEL_WIDTH - 1,
-                        key_html=anchor,
-                    )
-                    + " "
-                )
-            )
-    else:
-        lines.append(_panel_line(" (no public repositories)"))
-
-    net_lines = _abbrev_number(loc_data[2])
-    lines.append(_panel_divider("all time"))
-    lines.append(
-        _two_col(
-            ("contributions", "{:,}".format(contrib_data)),
-            ("net lines", "+" + net_lines),
-        )
-    )
-    lines.append(
-        _two_col(("stars", star_data), ("public repos", repo_data))
-    )
-    lines.append(
-        _two_col(
-            ("followers", follower_data),
-            ("longest streak", "{} days".format(streak_data)),
-        )
-    )
-    lines.append(
-        _two_col(
-            ("dev score", "{}/100 · {}".format(score_data[0], score_data[1])),
-            ("account age", _compact_age(age_data)),
-        )
-    )
-    lines.append(_panel_line())
-    lines.append(
-        _panel_line(
-            "auto-generated · {} · data: github api".format(
-                datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-            ).center(PANEL_WIDTH).rstrip()
-        )
-    )
+        # visible width: "│ " + name + " " + dots + " " + value + " │" == PANEL_WIDTH + 2
+        dots = PANEL_WIDTH - len(display_name) - len(value) - 4
+        lines.append("│ {} {} {} │".format(anchor, "." * dots, value))
     lines.append("╰" + "─" * PANEL_WIDTH + "╯")
     return "\n".join(lines)
 
@@ -1571,7 +1541,11 @@ def render_projects_panel():
             return html.escape(payload)[:PROJ_COL_W].ljust(PROJ_COL_W)
         return " " * PROJ_COL_W
 
-    return "\n".join(render(l) + render(r) for l, r in zip(left, right)).rstrip()
+    grid_w = PROJ_COL_W * 2
+    # _panel_divider adds the two corner glyphs on top of `width`
+    header = _panel_divider("projects you might be interested in", width=grid_w - 2)
+    grid = "\n".join(render(l) + render(r) for l, r in zip(left, right))
+    return header + "\n\n" + grid
 
 
 def _xml_escape(text):
@@ -1614,113 +1588,65 @@ def _icon(kind, x, y, color, scale=1.0, filled=False):
     ).format(x, y, scale, fill, stroke, paths[kind])
 
 
-def _typewriter_elements(x, y, char_width=9.0):
+def _card_title(parts, card, title):
     """
-    Builds the SMIL typewriter for the tagline: each phrase gets a clip-path
-    whose width animates 0 -> full (monospace, so width == typed characters),
-    a matching opacity envelope, and a blinking block cursor at the text head.
-    Returns (svg_fragment, total_duration_seconds).
+    Draws a '├─ title ─┤' style header on a card: a hairline across the card
+    with the label sitting in a gap, matching the ASCII divider language.
     """
-    type_t, hold_t, gap_t = 1.4, 1.3, 0.3
-    phrase_dur = type_t + hold_t + gap_t
-    total = phrase_dur * len(TYPING_PHRASES)
-    parts = []
-    for index, phrase in enumerate(TYPING_PHRASES):
-        t0 = index * phrase_dur
-        t1 = t0 + type_t
-        t2 = t0 + type_t + hold_t
-        t3 = t2 + 0.15
-        width = round(len(phrase) * char_width)
-        key_times = "0;{:.4f};{:.4f};{:.4f};{:.4f};1".format(
-            t0 / total, t1 / total, t2 / total, t3 / total
+    c = COLORS
+    cx = card["x"] + card["w"] / 2
+    ty = card["y"] + 16
+    label_w = len(title) * 7.8
+    parts.append(
+        '<line x1="{a}" y1="{y}" x2="{b}" y2="{y}" stroke="{s}" stroke-width="1"/>'.format(
+            a=card["x"] + 20, y=ty, b=cx - label_w / 2 - 12, s=c["card_stroke"]
         )
-        parts.append(
-            '<clipPath id="type-clip-{i}"><rect x="{x}" y="{y}" width="0" height="26">'
-            '<animate attributeName="width" values="0;0;{w};{w};0;0" keyTimes="{kt}" '
-            'dur="{total}s" repeatCount="indefinite"/></rect></clipPath>'.format(
-                i=index, x=x, y=y - 17, w=width, kt=key_times, total=total
-            )
-        )
-        parts.append(
-            '<text x="{x}" y="{y}" font-family="{font}" font-size="15" fill="{fill}" '
-            'textLength="{w}" lengthAdjust="spacingAndGlyphs" clip-path="url(#type-clip-{i})" opacity="0">'
-            '<animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="{kt}" '
-            'dur="{total}s" repeatCount="indefinite"/>{text}</text>'.format(
-                x=x, y=y, font=MONO_FONT, fill=COLORS["muted"], w=width,
-                i=index, kt=key_times, total=total, text=_xml_escape(phrase),
-            )
-        )
-        # block cursor, visible (and blinking) only during its phrase's slot
-        stops = []
-        if t0 > 0:
-            stops.append((0.0, 0))
-            stops.append((t0, 1))
-        else:
-            stops.append((0.0, 1))
-        clock, visible = t0 + 0.35, 0
-        while clock < t3:
-            stops.append((clock, visible))
-            visible = 1 - visible
-            clock += 0.35
-        stops.append((t3, 0))
-        stops.append((total, 0))
-        cleaned = [stops[0]]
-        for stop in stops[1:]:
-            if stop[0] > cleaned[-1][0]:
-                cleaned.append(stop)
-        parts.append(
-            '<rect x="{x}" y="{y}" width="9" height="17" fill="{fill}" opacity="0">'
-            '<animate attributeName="opacity" values="{vals}" keyTimes="{kt}" '
-            'dur="{total}s" repeatCount="indefinite"/></rect>'.format(
-                x=x + width, y=y - 13, fill=COLORS["blue_light"],
-                vals=";".join(str(v) for _t, v in cleaned),
-                kt=";".join("{:.4f}".format(t / total) for t, _v in cleaned),
-                total=total,
-            )
-        )
-    return "\n".join(parts), total
-
-
-def _sparkline_paths(deltas, x, y, w, h):
-    """
-    Smooth line+area paths for the visits sparkline; daily deltas normalized
-    into the box.
-    """
-    values = list(deltas) if deltas else [0, 0]
-    if len(values) == 1:
-        values = values * 2
-    lo, hi = min(values), max(values)
-    span = hi - lo
-    count = len(values)
-    points = []
-    for i, v in enumerate(values):
-        if span == 0:  # flat history: ride the mid-line, not the floor
-            py = y + h / 2
-        else:
-            py = y + h - 3 - (v - lo) / span * (h - 6)
-        points.append((x + i * w / (count - 1), py))
-    line = "M {:.1f} {:.1f}".format(points[0][0], points[0][1])
-    for i in range(1, count):
-        mid_x = (points[i - 1][0] + points[i][0]) / 2
-        mid_y = (points[i - 1][1] + points[i][1]) / 2
-        line += " Q {:.1f} {:.1f} {:.1f} {:.1f}".format(
-            points[i - 1][0], points[i - 1][1], mid_x, mid_y
-        )
-    line += " T {:.1f} {:.1f}".format(points[-1][0], points[-1][1])
-    area = "{} L {:.1f} {:.1f} L {:.1f} {:.1f} Z".format(
-        line, points[-1][0], y + h, points[0][0], y + h
     )
-    return line, area
+    parts.append(
+        '<line x1="{a}" y1="{y}" x2="{b}" y2="{y}" stroke="{s}" stroke-width="1"/>'.format(
+            a=cx + label_w / 2 + 12, y=ty, b=card["x"] + card["w"] - 20, s=c["card_stroke"]
+        )
+    )
+    parts.append(
+        '<text x="{x}" y="{y}" text-anchor="middle" font-family="{font}" '
+        'font-size="12" letter-spacing="4" fill="{fill}">{t}</text>'.format(
+            x=cx, y=ty + 4, font=MONO_FONT, fill=c["muted"], t=_xml_escape(title)
+        )
+    )
 
 
-def generate_hero_svg(
-    today_stats, visit_count, visit_deltas, follower_data, star_data, animate=True
-):
+def _kv_cell(parts, x, end_x, y, key, value):
     """
-    Renders the hero dashboard (dark cards) as a standalone SVG:
-    left — dotted-outline name, typewriter tagline, today's commit boxes;
-    right — total visits with sparkline, followers, stars.
-    Animation is pure SMIL so it runs inside GitHub's <img> sandbox.
+    One 'key ..... value' cell rendered with SVG text: muted key, dim dotted
+    leader, bold value flush right — mirrors the ASCII dotted rows.
+    """
+    c = COLORS
+    key_w = len(str(key)) * 7.6
+    val_w = len(str(value)) * 8.7
+    dots = max(3, int((end_x - x - key_w - val_w - 20) / 7.5))
+    parts.append(
+        '<text x="{x}" y="{y}" font-family="{font}" font-size="12.5" fill="{fill}">{t}</text>'.format(
+            x=x, y=y, font=MONO_FONT, fill=c["muted"], t=_xml_escape(key)
+        )
+    )
+    parts.append(
+        '<text x="{x}" y="{y}" font-family="{font}" font-size="12.5" fill="{fill}">{t}</text>'.format(
+            x=x + key_w + 10, y=y, font=MONO_FONT, fill=c["card_stroke"], t="." * dots
+        )
+    )
+    parts.append(
+        '<text x="{x}" y="{y}" text-anchor="end" font-family="{font}" '
+        'font-size="14" font-weight="bold" fill="{fill}">{t}</text>'.format(
+            x=end_x, y=y, font=MONO_FONT, fill=c["text"], t=_xml_escape(value)
+        )
+    )
+
+
+def generate_hero_svg(today_stats, alltime, lang_data):
+    """
+    Renders the hero dashboard as a standalone SVG — one wide banner card
+    (dotted-outline name, static taglines, date row, today's commit boxes)
+    over the languages and all-time panels. Static markup only.
     """
     c = COLORS
     now = datetime.datetime.now()
@@ -1728,83 +1654,71 @@ def generate_hero_svg(
         now.strftime("%A").lower(), now.strftime("%b").lower(), now.strftime("%d %Y")
     )
 
-    svg_w, svg_h = 1140, 300
-    left = {"x": 8, "y": 8, "w": 724, "h": 284}
-    right = {"x": 748, "y": 8, "w": 384, "h": 284}
-    left_cx = left["x"] + left["w"] / 2
-    right_cx = right["x"] + right["w"] / 2
+    svg_w, svg_h = 1140, 560
+    hero = {"x": 8, "y": 8, "w": 1124, "h": 276}
+    langs = {"x": 8, "y": 300, "w": 556, "h": 252}
+    alt = {"x": 572, "y": 300, "w": 560, "h": 252}
+    cx = hero["x"] + hero["w"] / 2
 
     parts = [
         '<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
         'viewBox="0 0 {w} {h}" role="img" aria-label="Swadhin Biswas — live GitHub dashboard">'.format(
             w=svg_w, h=svg_h
         ),
-        "<defs>"
-        '<linearGradient id="spark-fill" x1="0" y1="0" x2="0" y2="1">'
-        '<stop offset="0" stop-color="{blue}" stop-opacity="0.35"/>'
-        '<stop offset="1" stop-color="{blue}" stop-opacity="0"/>'
-        "</linearGradient></defs>".format(blue=c["blue"]),
     ]
-    for card in (left, right):
-        parts.append(
-            '<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="16" '
-            'fill="{fill}" stroke="{stroke}" stroke-width="1"/>'.format(
-                fill=c["card"], stroke=c["card_stroke"], **card
-            )
-        )
-
-    # ---- left card: dotted-outline name ------------------------------------
     parts.append(
-        '<text x="{x}" y="80" text-anchor="middle" font-family="{font}" '
-        'font-size="58" font-weight="bold" letter-spacing="10" fill="none" '
-        'stroke="{stroke}" stroke-width="1.1" stroke-dasharray="4 3.2">{name}</text>'.format(
-            x=left_cx, font=MONO_FONT, stroke=c["text"], name=_xml_escape(HERO_NAME)
+        '<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="16" '
+        'fill="{fill}" stroke="{stroke}" stroke-width="1"/>'.format(
+            fill=c["card"], stroke=c["card_stroke"], **hero
         )
     )
 
-    # ---- left card: typewriter tagline -------------------------------------
-    max_phrase_w = max(len(p) for p in TYPING_PHRASES) * 9.0
-    type_x = left_cx - max_phrase_w / 2
-    if animate:
-        typewriter, _total = _typewriter_elements(type_x, 126)
-        parts.append(typewriter)
-    else:
+    # ---- dotted-outline name ------------------------------------------------
+    parts.append(
+        '<text x="{x}" y="76" text-anchor="middle" font-family="{font}" '
+        'font-size="58" font-weight="bold" letter-spacing="10" fill="none" '
+        'stroke="{stroke}" stroke-width="1.1" stroke-dasharray="4 3.2">{name}</text>'.format(
+            x=cx, font=MONO_FONT, stroke=c["text"], name=_xml_escape(HERO_NAME)
+        )
+    )
+
+    # ---- static taglines (no typing effect) ----------------------------------
+    for i, tagline in enumerate(TAGLINES):
         parts.append(
-            '<text x="{x}" y="126" text-anchor="middle" font-family="{font}" '
+            '<text x="{x}" y="{y}" text-anchor="middle" font-family="{font}" '
             'font-size="15" fill="{fill}">{t}</text>'.format(
-                x=left_cx, font=MONO_FONT, fill=c["muted"],
-                t=_xml_escape(TYPING_PHRASES[0]),
+                x=cx, y=112 + i * 22, font=MONO_FONT, fill=c["muted"],
+                t=_xml_escape(tagline),
             )
         )
 
-    # ---- left card: date row ------------------------------------------------
+    # ---- date row -------------------------------------------------------------
     date_w = len(date_label) * 7.8
-    line_y = 158
+    line_y = 166
     gap = date_w / 2 + 26
     for a, b in (
-        (left["x"] + 36, left_cx - gap),
-        (left_cx + gap, left["x"] + left["w"] - 36),
+        (hero["x"] + 36, cx - gap),
+        (cx + gap, hero["x"] + hero["w"] - 36),
     ):
         parts.append(
             '<line x1="{a}" y1="{y}" x2="{b}" y2="{y}" stroke="{s}" stroke-width="1"/>'.format(
                 a=a, y=line_y, b=b, s=c["card_stroke"]
             )
         )
-    parts.append(_icon("calendar", left_cx - date_w / 2 - 18, line_y - 4, c["muted"], 0.9))
+    parts.append(_icon("calendar", cx - date_w / 2 - 18, line_y - 4, c["muted"], 0.9))
     parts.append(
         '<text x="{x}" y="{y}" text-anchor="middle" font-family="{font}" '
         'font-size="13" fill="{fill}">{t}</text>'.format(
-            x=left_cx, y=line_y + 4, font=MONO_FONT, fill=c["muted"],
+            x=cx, y=line_y + 4, font=MONO_FONT, fill=c["muted"],
             t=_xml_escape(date_label),
         )
     )
 
-    # ---- left card: today boxes ---------------------------------------------
-    box_y, box_h = 178, 96
-    box_w = (left["w"] - 72 - 16) // 2
+    # ---- today boxes -----------------------------------------------------------
+    box_y, box_h, box_w = 186, 92, 318
+    boxes_x = [244, 244 + box_w + 16]
     boxes = [
         {
-            "x": left["x"] + 36,
             "icon": "branch", "icon_color": c["green"],
             "label": "commits", "value": str(today_stats["commits"]),
             "side_label": "added",
@@ -1812,7 +1726,6 @@ def generate_hero_svg(
             "side_color": c["green"],
         },
         {
-            "x": left["x"] + 36 + box_w + 16,
             "icon": "repo", "icon_color": c["blue_light"],
             "label": "top repo",
             "value": "—" if today_stats["top_repo"] == "---" else today_stats["top_repo"][:12],
@@ -1821,25 +1734,25 @@ def generate_hero_svg(
             "side_color": c["red"],
         },
     ]
-    for box in boxes:
+    for box_x, box in zip(boxes_x, boxes):
         parts.append(
             '<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="12" '
             'fill="{fill}" stroke="{stroke}" stroke-width="1"/>'.format(
-                x=box["x"], y=box_y, w=box_w, h=box_h,
+                x=box_x, y=box_y, w=box_w, h=box_h,
                 fill=c["panel"], stroke=c["card_stroke"],
             )
         )
-        parts.append(_icon(box["icon"], box["x"] + 28, box_y + 30, box["icon_color"], 1.15))
+        parts.append(_icon(box["icon"], box_x + 28, box_y + 28, box["icon_color"], 1.15))
         parts.append(
             '<text x="{x}" y="{y}" font-family="{font}" font-size="12.5" fill="{fill}">{t}</text>'.format(
-                x=box["x"] + 50, y=box_y + 34, font=MONO_FONT, fill=c["muted"],
+                x=box_x + 50, y=box_y + 32, font=MONO_FONT, fill=c["muted"],
                 t=_xml_escape(box["label"]),
             )
         )
         parts.append(
             '<text x="{x}" y="{y}" font-family="{font}" font-size="{size}" '
             'font-weight="bold" fill="{fill}">{t}</text>'.format(
-                x=box["x"] + 50, y=box_y + 72, font=MONO_FONT,
+                x=box_x + 50, y=box_y + 70, font=MONO_FONT,
                 size=22 if box["label"] == "commits" else 17,
                 fill=c["text"], t=_xml_escape(str(box["value"])),
             )
@@ -1847,61 +1760,220 @@ def generate_hero_svg(
         parts.append(
             '<text x="{x}" y="{y}" text-anchor="end" font-family="{font}" '
             'font-size="12.5" fill="{fill}">{t}</text>'.format(
-                x=box["x"] + box_w - 24, y=box_y + 34, font=MONO_FONT,
+                x=box_x + box_w - 24, y=box_y + 32, font=MONO_FONT,
                 fill=c["muted"], t=_xml_escape(box["side_label"]),
             )
         )
         parts.append(
             '<text x="{x}" y="{y}" text-anchor="end" font-family="{font}" '
             'font-size="19" font-weight="bold" fill="{fill}">{t}</text>'.format(
-                x=box["x"] + box_w - 24, y=box_y + 72, font=MONO_FONT,
+                x=box_x + box_w - 24, y=box_y + 70, font=MONO_FONT,
                 fill=box["side_color"], t=_xml_escape(box["side_value"]),
             )
         )
 
-    # ---- right card: visits ---------------------------------------------------
+    # ---- bottom left: languages ---------------------------------------------
     parts.append(
-        '<text x="{x}" y="48" text-anchor="middle" font-family="{font}" '
-        'font-size="13" letter-spacing="4" fill="{fill}">TOTAL VISITS</text>'.format(
-            x=right_cx, font=MONO_FONT, fill=c["muted"]
+        '<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="16" '
+        'fill="{fill}" stroke="{stroke}" stroke-width="1"/>'.format(
+            fill=c["card"], stroke=c["card_stroke"], **langs
         )
     )
-    parts.append(
-        '<text x="{x}" y="98" text-anchor="middle" font-family="{font}" '
-        'font-size="42" font-weight="bold" fill="{fill}">{t}</text>'.format(
-            x=right_cx, font=MONO_FONT, fill=c["blue"], t="{:,}".format(visit_count)
-        )
-    )
-    line_path, area_path = _sparkline_paths(
-        visit_deltas, right["x"] + 26, 112, right["w"] - 52, 56
-    )
-    parts.append('<path d="{}" fill="url(#spark-fill)" stroke="none"/>'.format(area_path))
-    parts.append(
-        '<path d="{}" fill="none" stroke="{}" stroke-width="2" stroke-linecap="round"/>'.format(
-            line_path, c["blue_light"]
-        )
-    )
-    parts.append(
-        '<line x1="{a}" y1="190" x2="{b}" y2="190" stroke="{s}" stroke-width="1"/>'.format(
-            a=right["x"] + 26, b=right["x"] + right["w"] - 26, s=c["card_stroke"]
-        )
-    )
-    for kind, label, value, color, filled, row_y in (
-        ("person", "FOLLOWERS", follower_data, c["muted"], False, 226),
-        ("star", "STARS", star_data, c["yellow"], True, 264),
-    ):
-        parts.append(_icon(kind, right["x"] + 36, row_y - 5, color, 1.0, filled=filled))
+    _card_title(parts, langs, "languages")
+
+    lang_rows = _language_rows(lang_data, limit=7)[:7]
+    bar_x = langs["x"] + 150
+    bar_w = langs["w"] - 150 - 64
+    seg_w, seg_gap = 9, 2
+    segs = int(bar_w // (seg_w + seg_gap))
+    track_w = segs * (seg_w + seg_gap) - seg_gap
+    for i, (name, pct) in enumerate(lang_rows):
+        y = 356 + i * 27
+        display = LANGUAGE_ALIASES.get(name.lower(), name.lower())[:16]
         parts.append(
             '<text x="{x}" y="{y}" font-family="{font}" font-size="13" '
-            'letter-spacing="2.5" fill="{fill}">{t}</text>'.format(
-                x=right["x"] + 56, y=row_y, font=MONO_FONT, fill=c["muted"], t=label
+            'fill="{fill}">{t}</text>'.format(
+                x=langs["x"] + 24, y=y, font=MONO_FONT, fill=c["muted"],
+                t=_xml_escape(display),
             )
         )
         parts.append(
+            '<rect x="{x}" y="{y}" width="{w}" height="12" rx="2" fill="{f}"/>'.format(
+                x=bar_x, y=y - 10, w=track_w, f=c["panel"]
+            )
+        )
+        filled = min(segs, max(1, round(segs * max(0, min(100, pct)) / 100)))
+        for s in range(filled):
+            parts.append(
+                '<rect x="{x}" y="{y}" width="{w}" height="12" rx="1.5" fill="{f}"/>'.format(
+                    x=bar_x + s * (seg_w + seg_gap), y=y - 10, w=seg_w, f=c["text"]
+                )
+            )
+        parts.append(
             '<text x="{x}" y="{y}" text-anchor="end" font-family="{font}" '
-            'font-size="18" font-weight="bold" fill="{fill}">{t}</text>'.format(
-                x=right["x"] + right["w"] - 28, y=row_y, font=MONO_FONT,
-                fill=c["text"], t="{:,}".format(value),
+            'font-size="12.5" fill="{fill}">{t}%</text>'.format(
+                x=langs["x"] + langs["w"] - 24, y=y, font=MONO_FONT,
+                fill=c["muted"], t=pct,
+            )
+        )
+
+    # ---- bottom right: all time ----------------------------------------------
+    parts.append(
+        '<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="16" '
+        'fill="{fill}" stroke="{stroke}" stroke-width="1"/>'.format(
+            fill=c["card"], stroke=c["card_stroke"], **alt
+        )
+    )
+    _card_title(parts, alt, "all time")
+    mid = alt["x"] + alt["w"] / 2
+    cells = [
+        (
+            "contributions",
+            "{:,}".format(alltime["contrib"]),
+            "net lines",
+            "+" + _abbrev_number(alltime["net_loc"]),
+        ),
+        (
+            "stars",
+            "{:,}".format(alltime["stars"]),
+            "public repos",
+            "{:,}".format(alltime["repos"]),
+        ),
+        (
+            "followers",
+            "{:,}".format(alltime["followers"]),
+            "longest streak",
+            "{} days".format(alltime["streak"]),
+        ),
+        (
+            "dev score",
+            "{}/100 · {}".format(alltime["score"], alltime["rank"]),
+            "account age",
+            _compact_age(alltime["age"]),
+        ),
+    ]
+    for i, (k1, v1, k2, v2) in enumerate(cells):
+        y = 356 + i * 34
+        _kv_cell(parts, alt["x"] + 24, mid - 28, y, k1, v1)
+        _kv_cell(parts, mid + 22, alt["x"] + alt["w"] - 24, y, k2, v2)
+
+    parts.append("</svg>")
+    return "\n".join(parts)
+
+
+def generate_contribs_svg(year_stats, merged):
+    """
+    Renders the strip under the hero: this year's contributions (big number +
+    12-month bar chart) on the left, the latest merged open-source pull
+    request with its merge-commit id on the right.
+    """
+    c = COLORS
+    svg_w, svg_h = 1140, 172
+    card = {"x": 8, "y": 8, "w": 1124, "h": 156}
+
+    parts = [
+        '<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
+        'viewBox="0 0 {w} {h}" role="img" '
+        'aria-label="Contributions this year and latest merged commit">'.format(
+            w=svg_w, h=svg_h
+        ),
+        '<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="16" '
+        'fill="{fill}" stroke="{stroke}" stroke-width="1"/>'.format(
+            fill=c["card"], stroke=c["card_stroke"], **card
+        ),
+    ]
+
+    # ---- left: contributions this year ---------------------------------------
+    parts.append(
+        '<text x="48" y="44" font-family="{font}" font-size="12" '
+        'letter-spacing="4" fill="{fill}">THIS YEAR · CONTRIBUTIONS</text>'.format(
+            font=MONO_FONT, fill=c["muted"]
+        )
+    )
+    parts.append(
+        '<text x="48" y="108" font-family="{font}" font-size="44" '
+        'font-weight="bold" fill="{fill}">{t}</text>'.format(
+            font=MONO_FONT, fill=c["blue"], t="{:,}".format(year_stats["total"])
+        )
+    )
+    parts.append(
+        '<text x="48" y="134" font-family="{font}" font-size="12.5" '
+        'fill="{fill}">contributions in {y}</text>'.format(
+            font=MONO_FONT, fill=c["muted"], y=year_stats["year"]
+        )
+    )
+
+    base_y, max_h = 128, 74
+    slot, bar_w = 19, 13
+    x0 = 310
+    peak = max(year_stats["months"]) or 1
+    for i, count in enumerate(year_stats["months"]):
+        h = max(3, round(max_h * count / peak)) if count else 3
+        color = c["green"] if i == len(year_stats["months"]) - 1 else c["blue_light"]
+        parts.append(
+            '<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="2.5" fill="{f}"/>'.format(
+                x=x0 + i * slot, y=base_y - h, w=bar_w, h=h, f=color
+            )
+        )
+    parts.append(
+        '<line x1="{a}" y1="{y}" x2="{b}" y2="{y}" stroke="{s}" stroke-width="1"/>'.format(
+            a=x0 - 6, y=base_y + 0.5, b=x0 + 12 * slot - (slot - bar_w), s=c["card_stroke"]
+        )
+    )
+
+    # ---- divider ---------------------------------------------------------------
+    parts.append(
+        '<line x1="570" y1="32" x2="570" y2="140" stroke="{s}" stroke-width="1"/>'.format(
+            s=c["card_stroke"]
+        )
+    )
+
+    # ---- right: latest merged commit -------------------------------------------
+    parts.append(
+        '<text x="606" y="44" font-family="{font}" font-size="12" '
+        'letter-spacing="4" fill="{fill}">LATEST MERGED COMMIT</text>'.format(
+            font=MONO_FONT, fill=c["muted"]
+        )
+    )
+    if merged:
+        parts.append(
+            '<rect x="606" y="60" width="88" height="26" rx="6" '
+            'fill="{f}" stroke="{s}" stroke-width="1"/>'.format(
+                f=c["panel"], s=c["card_stroke"]
+            )
+        )
+        parts.append(
+            '<text x="650" y="78" text-anchor="middle" font-family="{font}" '
+            'font-size="12.5" font-weight="bold" fill="{fill}">{t}</text>'.format(
+                font=MONO_FONT, fill=c["blue_light"], t=merged["sha7"]
+            )
+        )
+        parts.append(
+            '<text x="708" y="79" font-family="{font}" font-size="13" '
+            'fill="{fill}">{t}</text>'.format(
+                font=MONO_FONT, fill=c["text"], t=_xml_escape(merged["repo"][:26])
+            )
+        )
+        parts.append(
+            '<text x="606" y="112" font-family="{font}" font-size="13.5" '
+            'fill="{fill}">{t}</text>'.format(
+                font=MONO_FONT, fill=c["text"],
+                t=_xml_escape(merged["title"][:54]),
+            )
+        )
+        parts.append('<circle cx="612" cy="133" r="3.5" fill="{g}"/>'.format(g=c["green"]))
+        parts.append(
+            '<text x="624" y="137" font-family="{font}" font-size="11.5" '
+            'fill="{fill}">merged #{n} · {ago} · {oid}</text>'.format(
+                font=MONO_FONT, fill=c["muted"],
+                n=merged["number"], ago=merged["ago"], oid=merged["sha7"],
+            )
+        )
+    else:
+        parts.append(
+            '<text x="606" y="80" font-family="{font}" font-size="13" '
+            'fill="{fill}">no merged pull requests yet</text>'.format(
+                font=MONO_FONT, fill=c["muted"]
             )
         )
 
@@ -1944,53 +2016,67 @@ def rebuild_readme(
     age_data,
 ):
     """
-    Regenerates the README block between the markers: the animated hero SVG
-    on top and the borderless ASCII stats panel below it. Projects live in
-    readme.md outside this block so they can be edited by hand.
+    Regenerates the README block between the TODAY markers: the hero SVG
+    (languages + all-time panels inside), the contributions strip SVG
+    (this year + latest merged commit), a real-time view-counter badge and
+    the linked top-repositories box. Projects live between the PROJECTS
+    markers so they can be maintained separately.
     """
     today_stats = today_contrib_getter()
-
-    try:
-        visit_count, visit_deltas = visits_getter()
-    except Exception as error:
-        print("⚠️  visit counter unavailable ({}), using history".format(error))
-        visit_count, visit_deltas = visits_fallback()
-
+    year_stats = year_contrib_getter()
+    merged = latest_merged_commit()
     top_repos = top_repos_getter()
 
-    # hero dashboard image (dark cards, SMIL typewriter)
+    # hero banner + panels
+    try:
+        net_loc = int(str(loc_data[2]).replace(",", ""))
+    except (ValueError, IndexError, TypeError):
+        net_loc = 0
     hero_svg = generate_hero_svg(
-        today_stats, visit_count, visit_deltas, follower_data, star_data
+        today_stats,
+        {
+            "contrib": contrib_data,
+            "stars": star_data,
+            "repos": repo_data,
+            "followers": follower_data,
+            "net_loc": net_loc,
+            "streak": streak_data,
+            "score": score_data[0],
+            "rank": score_data[1],
+            "age": age_data,
+        },
+        lang_data,
     )
     with open(HERO_SVG_PATH, "w", encoding="utf-8") as handle:
         handle.write(hero_svg)
 
-    # borderless ASCII stats panel under the hero
-    panel = render_stats_panel(
-        lang_data,
-        top_repos,
-        contrib_data,
-        star_data,
-        repo_data,
-        follower_data,
-        loc_data,
-        streak_data,
-        score_data,
-        age_data,
-    )
+    # contributions strip (this year + latest merged commit)
+    contribs_svg = generate_contribs_svg(year_stats, merged)
+    with open(CONTRIBS_SVG_PATH, "w", encoding="utf-8") as handle:
+        handle.write(contribs_svg)
 
+    # real-time badge (increments on every README view) + linked top-repos box
+    top_box = render_top_repos_box(top_repos)
     block_html = (
         '<p align="center">\n'
-        '<img src="{}" width="100%" alt="Swadhin Biswas — live GitHub dashboard '
-        '(animated)"/>'.format(HERO_SVG_URL.format(u=USER_NAME))
-        + "\n</p>\n\n<pre>\n"
-        + panel  # already HTML-escaped at the source (anchors stay clickable)
-        + "\n</pre>\n\n"
-        + "<!-- invisible pixel: keeps the komarev counter incrementing from "
-        'real profile views -->\n<img src="https://komarev.com/ghpvc/'
-        '?username={}&label=%20&color=0e75b6" alt="" width="1" height="1"/>\n'.format(
-            USER_NAME
+        '<img src="{}" width="100%" alt="Swadhin Biswas — live GitHub dashboard"/>'.format(
+            HERO_SVG_URL.format(u=USER_NAME)
         )
+        + "\n</p>\n\n"
+        + '<p align="center">\n'
+        + '<img src="{}" width="100%" alt="Swadhin Biswas — contributions this '
+        'year and latest merged commit"/>'.format(CONTRIBS_SVG_URL.format(u=USER_NAME))
+        + "\n</p>\n\n"
+        + '<p align="center">\n'
+        + '<img src="https://komarev.com/ghpvc/?username={u}'
+        '&label=profile+views&color=0d1117&style=for-the-badge" '
+        'alt="profile views — live counter"/>\n</p>\n\n'.format(u=USER_NAME)
+    )
+    if top_box:
+        block_html += "<pre>\n" + top_box + "\n</pre>\n\n"
+    block_html += (
+        "<!-- the badge above is real time: komarev increments it on every view.\n"
+        "     the hero and contribution SVGs refresh hourly via github actions. -->\n"
     )
     update_readme(block_html)
 
@@ -2007,8 +2093,8 @@ def rebuild_readme(
     except RuntimeError as error:
         print("⚠️  projects grid skipped: {}".format(error))
 
-    print("readme.md regenerated (hero.svg written, {} panel lines)".format(
-        panel.count("\n") + 1
+    print("readme.md regenerated (hero.svg written, {} top repos linked)".format(
+        len(top_repos)
     ))
 
 

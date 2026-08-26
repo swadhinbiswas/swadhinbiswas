@@ -1,35 +1,27 @@
 <!-- TODAY:START -->
 <p align="center">
-<img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/hero.svg" width="100%" alt="Swadhin Biswas — live GitHub dashboard (animated)"/>
+<img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/hero.svg" width="100%" alt="Swadhin Biswas — live GitHub dashboard"/>
+</p>
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/contribs.svg" width="100%" alt="Swadhin Biswas — contributions this year and latest merged commit"/>
+</p>
+
+<p align="center">
+<img src="https://komarev.com/ghpvc/?username=swadhinbiswas&label=profile+views&color=0d1117&style=for-the-badge" alt="profile views — live counter"/>
 </p>
 
 <pre>
-╭────────────────────────────────────────────────────────────────────────────────────────╮
-├────────────────────────────────────── languages ───────────────────────────────────────┤
-│ python           ██████████░░░░░░░░░░░░░░░░░░░░  35%                                   │
-│ typescript       ██████████░░░░░░░░░░░░░░░░░░░░  34%                                   │
-│ javascript       ███░░░░░░░░░░░░░░░░░░░░░░░░░░░  10%                                   │
-│ jupyter          ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░   5%                                   │
-│ astro            █░░░░░░░░░░░░░░░░░░░░░░░░░░░░░   3%                                   │
-│ rust             █░░░░░░░░░░░░░░░░░░░░░░░░░░░░░   2%                                   │
-│ go               ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░   1%                                   │
-├─────────────────────────────────── top repositories ───────────────────────────────────┤
-│ <a href="https://github.com/swadhinbiswas/opengrammar">opengrammar</a> ............................................................... ts   116 ★ │
-│ <a href="https://github.com/swadhinbiswas/veet">veet</a> ...................................................................... go   115 ★ │
-│ <a href="https://github.com/swadhinbiswas/Mervelas">Mervelas</a> .................................................................. ts    50 ★ │
-│ <a href="https://github.com/swadhinbiswas/FAANG-Playbook">FAANG-Playbook</a> ......................................................... astro    35 ★ │
-├─────────────────────────────────────── all time ───────────────────────────────────────┤
-│ contributions ...................... 7,205  net lines .......................... +9.8M │
-│ stars ................................ 618  public repos ......................... 117 │
-│ followers ............................. 96  longest streak .................. 127 days │
-│ dev score .................... 83/100 · A+  account age ................... 4y 2mo 11d │
-│                                                                                        │
-│                  auto-generated · 2026-08-25 21:18 · data: github api                  │
+╭─────────────────────────────────── top repositories ───────────────────────────────────╮
+│ <a href="https://github.com/swadhinbiswas/veet">veet</a> ....................................................................... go  116 ★ │
+│ <a href="https://github.com/swadhinbiswas/opengrammar">opengrammar</a> ................................................................ ts  116 ★ │
+│ <a href="https://github.com/swadhinbiswas/Mervelas">Mervelas</a> ................................................................... ts   51 ★ │
+│ <a href="https://github.com/swadhinbiswas/FAANG-Playbook">FAANG-Playbook</a> .......................................................... astro   35 ★ │
 ╰────────────────────────────────────────────────────────────────────────────────────────╯
 </pre>
 
-<!-- invisible pixel: keeps the komarev counter incrementing from real profile views -->
-<img src="https://komarev.com/ghpvc/?username=swadhinbiswas&label=%20&color=0e75b6" alt="" width="1" height="1"/>
+<!-- the badge above is real time: komarev increments it on every view.
+     the hero and contribution SVGs refresh hourly via github actions. -->
 
 <!-- TODAY:END -->
 
@@ -46,6 +38,8 @@
 
 <!-- PROJECTS:START -->
 <pre>
+├──────────────────────────── projects you might be interested in ─────────────────────────────┤
+
 DATA ENGINEERING                                RESEARCH                                        
   <a href="https://github.com/swadhinbiswas/air-traffic">air-traffic</a>    european flight data pipeline    <a href="https://github.com/swadhinbiswas/contexa">contexa</a>        versioned llm agent memory     
   <a href="https://github.com/swadhinbiswas/eurostream">eurostream</a>     eu data streaming pipeline       <a href="https://github.com/swadhinbiswas/DOOMSDAYCS">DOOMSDAYCS</a>     offline cs encyclopedia        
@@ -65,7 +59,7 @@ MACHINE-LEARNING                                  <a href="https://github.com/sw
   <a href="https://github.com/swadhinbiswas/opengrammar">opengrammar</a>    open-source grammarly alt        <a href="https://github.com/swadhinbiswas/de-omarchy">de-omarchy</a>     modern desktop, no omarchy     
                                                   <a href="https://github.com/swadhinbiswas/Mervelas">Mervelas</a>       ai coding cli built on bun     
                                                   <a href="https://github.com/swadhinbiswas/VidoLib">VidoLib</a>        lag-free media engine          
-                                                  <a href="https://github.com/swadhinbiswas/moonshell">moonshell</a>      personal qml linux rice
+                                                  <a href="https://github.com/swadhinbiswas/moonshell">moonshell</a>      personal qml linux rice        
 </pre>
 <!-- PROJECTS:END -->
 
@@ -95,5 +89,5 @@ MACHINE-LEARNING                                  <a href="https://github.com/sw
 </p>
 
 <pre>
-          ── swadhin biswas · pipelines over promises · auto-generated by today.py ──
+          ── off the clock: street-food hunter · passport-stamp collector · anime marathoner ──
 </pre>

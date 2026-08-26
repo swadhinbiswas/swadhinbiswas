@@ -1,45 +1,105 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1140" height="300" viewBox="0 0 1140 300" role="img" aria-label="Swadhin Biswas — live GitHub dashboard">
-<defs><linearGradient id="spark-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4493f8" stop-opacity="0.35"/><stop offset="1" stop-color="#4493f8" stop-opacity="0"/></linearGradient></defs>
-<rect x="8" y="8" width="724" height="284" rx="16" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
-<rect x="748" y="8" width="384" height="284" rx="16" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
-<text x="370.0" y="80" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="58" font-weight="bold" letter-spacing="10" fill="none" stroke="#e6edf3" stroke-width="1.1" stroke-dasharray="4 3.2">SWADHIN</text>
-<clipPath id="type-clip-0"><rect x="248.5" y="109" width="0" height="26"><animate attributeName="width" values="0;0;189;189;0;0" keyTimes="0;0.0000;0.1167;0.2250;0.2375;1" dur="12.0s" repeatCount="indefinite"/></rect></clipPath>
-<text x="248.5" y="126" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="15" fill="#8b949e" textLength="189" lengthAdjust="spacingAndGlyphs" clip-path="url(#type-clip-0)" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.0000;0.1167;0.2250;0.2375;1" dur="12.0s" repeatCount="indefinite"/>mlops &amp; data engineer</text>
-<rect x="437.5" y="113" width="9" height="17" fill="#58a6ff" opacity="0"><animate attributeName="opacity" values="1;0;1;0;1;0;1;0;1;0;0" keyTimes="0.0000;0.0292;0.0583;0.0875;0.1167;0.1458;0.1750;0.2042;0.2333;0.2375;1.0000" dur="12.0s" repeatCount="indefinite"/></rect>
-<clipPath id="type-clip-1"><rect x="248.5" y="109" width="0" height="26"><animate attributeName="width" values="0;0;243;243;0;0" keyTimes="0;0.2500;0.3667;0.4750;0.4875;1" dur="12.0s" repeatCount="indefinite"/></rect></clipPath>
-<text x="248.5" y="126" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="15" fill="#8b949e" textLength="243" lengthAdjust="spacingAndGlyphs" clip-path="url(#type-clip-1)" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.2500;0.3667;0.4750;0.4875;1" dur="12.0s" repeatCount="indefinite"/>python · spark · kubernetes</text>
-<rect x="491.5" y="113" width="9" height="17" fill="#58a6ff" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;0" keyTimes="0.0000;0.2500;0.2792;0.3083;0.3375;0.3667;0.3958;0.4250;0.4542;0.4833;0.4875;1.0000" dur="12.0s" repeatCount="indefinite"/></rect>
-<clipPath id="type-clip-2"><rect x="248.5" y="109" width="0" height="26"><animate attributeName="width" values="0;0;171;171;0;0" keyTimes="0;0.5000;0.6167;0.7250;0.7375;1" dur="12.0s" repeatCount="indefinite"/></rect></clipPath>
-<text x="248.5" y="126" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="15" fill="#8b949e" textLength="171" lengthAdjust="spacingAndGlyphs" clip-path="url(#type-clip-2)" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.5000;0.6167;0.7250;0.7375;1" dur="12.0s" repeatCount="indefinite"/>pipeline automation</text>
-<rect x="419.5" y="113" width="9" height="17" fill="#58a6ff" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;0" keyTimes="0.0000;0.5000;0.5292;0.5583;0.5875;0.6167;0.6458;0.6750;0.7042;0.7333;0.7375;1.0000" dur="12.0s" repeatCount="indefinite"/></rect>
-<clipPath id="type-clip-3"><rect x="248.5" y="109" width="0" height="26"><animate attributeName="width" values="0;0;189;189;0;0" keyTimes="0;0.7500;0.8667;0.9750;0.9875;1" dur="12.0s" repeatCount="indefinite"/></rect></clipPath>
-<text x="248.5" y="126" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="15" fill="#8b949e" textLength="189" lengthAdjust="spacingAndGlyphs" clip-path="url(#type-clip-3)" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.7500;0.8667;0.9750;0.9875;1" dur="12.0s" repeatCount="indefinite"/>open to eu relocation</text>
-<rect x="437.5" y="113" width="9" height="17" fill="#58a6ff" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;0" keyTimes="0.0000;0.7500;0.7792;0.8083;0.8375;0.8667;0.8958;0.9250;0.9542;0.9833;0.9875;1.0000" dur="12.0s" repeatCount="indefinite"/></rect>
-<line x1="44" y1="158" x2="234.8" y2="158" stroke="#30363d" stroke-width="1"/>
-<line x1="505.2" y1="158" x2="696" y2="158" stroke="#30363d" stroke-width="1"/>
-<g transform="translate(242.8 154) scale(0.9)" fill="none" stroke="#8b949e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="-6.5" y="-5" width="13" height="11.5" rx="2"/><path d="M-3 -7.2 v3 M3 -7.2 v3 M-6.5 -1.2 h13"/></g>
-<text x="370.0" y="162" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" fill="#8b949e">today · tuesday, aug 25 2026</text>
-<rect x="44" y="178" width="318" height="96" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-<g transform="translate(72 208) scale(1.15)" fill="none" stroke="#3fb950" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="0" cy="-5.2" r="2"/><circle cx="0" cy="5.2" r="2"/><circle cx="6.8" cy="0" r="2"/><path d="M0 -3.2 L0 3.2 M0 0 C4.8 0 6.8 -1.4 6.8 -2"/></g>
-<text x="94" y="212" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">commits</text>
-<text x="94" y="250" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="22" font-weight="bold" fill="#e6edf3">0</text>
-<text x="338" y="212" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">added</text>
-<text x="338" y="250" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="19" font-weight="bold" fill="#3fb950">+0</text>
-<rect x="378" y="178" width="318" height="96" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-<g transform="translate(406 208) scale(1.15)" fill="none" stroke="#58a6ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="-5.5" y="-7" width="11" height="14" rx="2"/><path d="M-2 -7 v5.5 l2 -1.6 2 1.6 v-5.5"/></g>
-<text x="428" y="212" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">top repo</text>
-<text x="428" y="250" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="17" font-weight="bold" fill="#e6edf3">—</text>
-<text x="672" y="212" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">removed</text>
-<text x="672" y="250" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="19" font-weight="bold" fill="#f85149">-0</text>
-<text x="940.0" y="48" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" letter-spacing="4" fill="#8b949e">TOTAL VISITS</text>
-<text x="940.0" y="98" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="42" font-weight="bold" fill="#4493f8">9,983</text>
-<path d="M 774.0 140.0 Q 774.0 140.0 940.0 140.0 T 1106.0 140.0 L 1106.0 168.0 L 774.0 168.0 Z" fill="url(#spark-fill)" stroke="none"/>
-<path d="M 774.0 140.0 Q 774.0 140.0 940.0 140.0 T 1106.0 140.0" fill="none" stroke="#58a6ff" stroke-width="2" stroke-linecap="round"/>
-<line x1="774" y1="190" x2="1106" y2="190" stroke="#30363d" stroke-width="1"/>
-<g transform="translate(784 221) scale(1.0)" fill="none" stroke="#8b949e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="0" cy="-3.6" r="3.3"/><path d="M-6.4 6.8 C-6.4 2.6 6.4 2.6 6.4 6.8"/></g>
-<text x="804" y="226" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" letter-spacing="2.5" fill="#8b949e">FOLLOWERS</text>
-<text x="1104" y="226" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="18" font-weight="bold" fill="#e6edf3">96</text>
-<g transform="translate(784 259) scale(1.0)" fill="#e3b341" stroke="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M0 -7 L2 -2.3 7 -1.9 3.2 1.4 4.3 6.3 0 3.7 -4.3 6.3 -3.2 1.4 -7 -1.9 -2 -2.3 Z"/></g>
-<text x="804" y="264" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" letter-spacing="2.5" fill="#8b949e">STARS</text>
-<text x="1104" y="264" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="18" font-weight="bold" fill="#e6edf3">618</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1140" height="560" viewBox="0 0 1140 560" role="img" aria-label="Swadhin Biswas — live GitHub dashboard">
+<rect x="8" y="8" width="1124" height="276" rx="16" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+<text x="570.0" y="76" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="58" font-weight="bold" letter-spacing="10" fill="none" stroke="#e6edf3" stroke-width="1.1" stroke-dasharray="4 3.2">SWADHIN</text>
+<text x="570.0" y="112" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="15" fill="#8b949e">mlops &amp; data engineer · python · spark · kubernetes</text>
+<text x="570.0" y="134" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="15" fill="#8b949e">pipeline automation · open to eu relocation</text>
+<line x1="44" y1="166" x2="427.0" y2="166" stroke="#30363d" stroke-width="1"/>
+<line x1="713.0" y1="166" x2="1096" y2="166" stroke="#30363d" stroke-width="1"/>
+<g transform="translate(435.0 162) scale(0.9)" fill="none" stroke="#8b949e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="-6.5" y="-5" width="13" height="11.5" rx="2"/><path d="M-3 -7.2 v3 M3 -7.2 v3 M-6.5 -1.2 h13"/></g>
+<text x="570.0" y="170" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" fill="#8b949e">today · wednesday, aug 26 2026</text>
+<rect x="244" y="186" width="318" height="92" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<g transform="translate(272 214) scale(1.15)" fill="none" stroke="#3fb950" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="0" cy="-5.2" r="2"/><circle cx="0" cy="5.2" r="2"/><circle cx="6.8" cy="0" r="2"/><path d="M0 -3.2 L0 3.2 M0 0 C4.8 0 6.8 -1.4 6.8 -2"/></g>
+<text x="294" y="218" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">commits</text>
+<text x="294" y="256" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="22" font-weight="bold" fill="#e6edf3">2</text>
+<text x="538" y="218" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">added</text>
+<text x="538" y="256" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="19" font-weight="bold" fill="#3fb950">+1,260</text>
+<rect x="578" y="186" width="318" height="92" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<g transform="translate(606 214) scale(1.15)" fill="none" stroke="#58a6ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="-5.5" y="-7" width="11" height="14" rx="2"/><path d="M-2 -7 v5.5 l2 -1.6 2 1.6 v-5.5"/></g>
+<text x="628" y="218" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">top repo</text>
+<text x="628" y="256" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="17" font-weight="bold" fill="#e6edf3">swadhinbiswa</text>
+<text x="872" y="218" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">removed</text>
+<text x="872" y="256" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="19" font-weight="bold" fill="#f85149">-171</text>
+<rect x="8" y="300" width="556" height="252" rx="16" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+<line x1="28" y1="316" x2="238.9" y2="316" stroke="#30363d" stroke-width="1"/>
+<line x1="333.1" y1="316" x2="544" y2="316" stroke="#30363d" stroke-width="1"/>
+<text x="286.0" y="320" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12" letter-spacing="4" fill="#8b949e">languages</text>
+<text x="32" y="356" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" fill="#8b949e">python</text>
+<rect x="158" y="346" width="339" height="12" rx="2" fill="#161b22"/>
+<rect x="158" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="169" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="180" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="191" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="202" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="213" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="224" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="235" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="246" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="257" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="268" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<text x="540" y="356" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">35%</text>
+<text x="32" y="383" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" fill="#8b949e">typescript</text>
+<rect x="158" y="373" width="339" height="12" rx="2" fill="#161b22"/>
+<rect x="158" y="373" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="169" y="373" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="180" y="373" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="191" y="373" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="202" y="373" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="213" y="373" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="224" y="373" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="235" y="373" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="246" y="373" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="257" y="373" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="268" y="373" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<text x="540" y="383" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">34%</text>
+<text x="32" y="410" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" fill="#8b949e">javascript</text>
+<rect x="158" y="400" width="339" height="12" rx="2" fill="#161b22"/>
+<rect x="158" y="400" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="169" y="400" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="180" y="400" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<text x="540" y="410" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">10%</text>
+<text x="32" y="437" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" fill="#8b949e">jupyter</text>
+<rect x="158" y="427" width="339" height="12" rx="2" fill="#161b22"/>
+<rect x="158" y="427" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="169" y="427" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<text x="540" y="437" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">5%</text>
+<text x="32" y="464" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" fill="#8b949e">astro</text>
+<rect x="158" y="454" width="339" height="12" rx="2" fill="#161b22"/>
+<rect x="158" y="454" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<text x="540" y="464" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">3%</text>
+<text x="32" y="491" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" fill="#8b949e">rust</text>
+<rect x="158" y="481" width="339" height="12" rx="2" fill="#161b22"/>
+<rect x="158" y="481" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<text x="540" y="491" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">2%</text>
+<text x="32" y="518" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" fill="#8b949e">qml</text>
+<rect x="158" y="508" width="339" height="12" rx="2" fill="#161b22"/>
+<rect x="158" y="508" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<text x="540" y="518" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">2%</text>
+<rect x="572" y="300" width="560" height="252" rx="16" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+<line x1="592" y1="316" x2="808.8" y2="316" stroke="#30363d" stroke-width="1"/>
+<line x1="895.2" y1="316" x2="1112" y2="316" stroke="#30363d" stroke-width="1"/>
+<text x="852.0" y="320" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12" letter-spacing="4" fill="#8b949e">all time</text>
+<text x="596" y="356" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">contributions</text>
+<text x="704.8" y="356" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#30363d">........</text>
+<text x="824.0" y="356" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">7,207</text>
+<text x="874.0" y="356" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">net lines</text>
+<text x="952.4" y="356" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#30363d">.............</text>
+<text x="1108" y="356" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">+9.1M</text>
+<text x="596" y="390" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">stars</text>
+<text x="644.0" y="390" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#30363d">...................</text>
+<text x="824.0" y="390" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">620</text>
+<text x="874.0" y="390" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">public repos</text>
+<text x="975.2" y="390" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#30363d">............</text>
+<text x="1108" y="390" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">117</text>
+<text x="596" y="424" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">followers</text>
+<text x="674.4" y="424" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#30363d">................</text>
+<text x="824.0" y="424" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">96</text>
+<text x="874.0" y="424" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">longest streak</text>
+<text x="990.4" y="424" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#30363d">.....</text>
+<text x="1108" y="424" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">127 days</text>
+<text x="596" y="458" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">dev score</text>
+<text x="674.4" y="458" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#30363d">.....</text>
+<text x="824.0" y="458" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">86/100 · A+</text>
+<text x="874.0" y="458" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">account age</text>
+<text x="967.6" y="458" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#30363d">.....</text>
+<text x="1108" y="458" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">4y 2mo 12d</text>
 </svg>

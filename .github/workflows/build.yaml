@@ -1,10 +1,24 @@
 name: README build
+
 on:
   push:
     branches:
       - main
   schedule:
-    - cron: "0 4 * * *"
+    # hourly at :17 — keeps the hero SVG stats (incl. view count) fresh;
+    # github may delay scheduled runs by up to ~30 min
+    - cron: "17 * * * *"
+  workflow_dispatch: {} # manual run button
+
+# the job pushes regenerated files back to main
+permissions:
+  contents: write
+
+# never let a push-triggered run overlap the nightly one
+concurrency:
+  group: readme-build
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,36 +28,45 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
+
       - name: Get Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
       - name: Configure pip cache
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/cache/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('cache/requirements.txt') }}
           restore-keys: ${{ runner.os }}-pip-
+
+      # speeds up the first run of a day; the cache file itself is also
+      # committed back below, so a cold actions-cache costs nothing
       - name: Cache LOC data
         uses: actions/cache@v4
         with:
           path: cache/*.txt
           key: ${{ runner.os }}-loc-${{ github.run_id }}
           restore-keys: ${{ runner.os }}-loc-
+
       - name: Install dependencies
         run: python -m pip install -r cache/requirements.txt
+
       - name: Update README file
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          USER_NAME: ${{ secrets.USER_NAME }}
+          USER_NAME: ${{ secrets.USER_NAME || 'swadhinbiswas' }}
           TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
           TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
         run: python today.py
+
       - name: Commit
         run: |-
-          git add .
-          git diff
           git config --global user.email "swadhinbiswas.cse@gmail.com"
           git config --global user.name "Swadhin Biswas"
-          git commit -m "Updated README" -a || echo "No changes to commit"
-          git push
+          git add .
+          git diff --cached --quiet && echo "No changes to commit" || {
+            git commit -m "chore(readme): auto-update stats $(date -u +%F)"
+            git push
+          }
