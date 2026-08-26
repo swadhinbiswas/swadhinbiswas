@@ -1680,9 +1680,37 @@ def generate_hero_svg(today_stats, alltime, lang_data):
         )
     )
 
+    # ---- self-introduction (top) with a waving hand -------------------------
+    intro = "Hi, Myself Swadhin Biswas"
+    intro_w = len(intro) * 13.2
+    parts.append(
+        '<text x="{x}" y="44" text-anchor="middle" font-family="{font}" '
+        'font-size="22" fill="{fill}">{t}</text>'.format(
+            x=cx, font=MONO_FONT, fill=c["text"], t=_xml_escape(intro)
+        )
+    )
+    # waving hand: drawn icon (emoji glyphs are unreliable inside <img> SVGs),
+    # animated with a SMIL rotate around the wrist pivot
+    hx = cx + intro_w / 2 + 26
+    hy = 58
+    parts.append(
+        '<g transform="translate({x},{y})">'
+        '<g>'
+        '<rect x="-10" y="-26" width="20" height="24" rx="7" fill="{s}"/>'
+        '<rect x="-9" y="-42" width="4" height="18" rx="2" fill="{s}"/>'
+        '<rect x="-3.5" y="-45" width="4" height="21" rx="2" fill="{s}"/>'
+        '<rect x="2" y="-45" width="4" height="21" rx="2" fill="{s}"/>'
+        '<rect x="7.5" y="-42" width="4" height="18" rx="2" fill="{s}"/>'
+        '<rect x="9" y="-24" width="16" height="5" rx="2.5" fill="{s}" '
+        'transform="rotate(-35)"/>'
+        '<animateTransform attributeName="transform" type="rotate" '
+        'values="-18;18;-18" dur="1.3s" repeatCount="indefinite"/>'
+        '</g></g>'.format(x=hx, y=hy, s=c["text"])
+    )
+
     # ---- dotted-outline name ------------------------------------------------
     parts.append(
-        '<text x="{x}" y="76" text-anchor="middle" font-family="{font}" '
+        '<text x="{x}" y="84" text-anchor="middle" font-family="{font}" '
         'font-size="58" font-weight="bold" letter-spacing="10" fill="none" '
         'stroke="{stroke}" stroke-width="1.1" stroke-dasharray="4 3.2">{name}</text>'.format(
             x=cx, font=MONO_FONT, stroke=c["text"], name=_xml_escape(HERO_NAME)
@@ -1694,7 +1722,7 @@ def generate_hero_svg(today_stats, alltime, lang_data):
         parts.append(
             '<text x="{x}" y="{y}" text-anchor="middle" font-family="{font}" '
             'font-size="15" fill="{fill}">{t}</text>'.format(
-                x=cx, y=112 + i * 22, font=MONO_FONT, fill=c["muted"],
+                x=cx, y=120 + i * 22, font=MONO_FONT, fill=c["muted"],
                 t=_xml_escape(tagline),
             )
         )
@@ -2024,15 +2052,15 @@ def rebuild_readme(
 ):
     """
     Regenerates the README block between the TODAY markers: the hero SVG
-    (languages + all-time panels inside), the contributions strip SVG
-    (this year + latest merged commit), a real-time view-counter badge and
-    the linked top-repositories box. Projects live between the PROJECTS
-    markers so they can be maintained separately.
+    (languages + all-time panels inside, now with a waving-hand intro),
+    the contributions strip SVG (this year + latest merged commit) and a
+    real-time view-counter badge. Featured projects live in a MANUAL
+    block outside these markers so you can curate them by hand. The full
+    projects grid lives between the PROJECTS markers.
     """
     today_stats = today_contrib_getter()
     year_stats = year_contrib_getter()
     merged = latest_merged_commit()
-    top_repos = top_repos_getter()
 
     # hero banner + panels
     try:
@@ -2062,8 +2090,7 @@ def rebuild_readme(
     with open(CONTRIBS_SVG_PATH, "w", encoding="utf-8") as handle:
         handle.write(contribs_svg)
 
-    # real-time badge (increments on every README view) + linked top-repos box
-    top_box = render_top_repos_box(top_repos)
+    # badge only — featured projects is a manual block outside TODAY
     block_html = (
         '<p align="center">\n'
         '<img src="{}" width="100%" alt="Swadhin Biswas — live GitHub dashboard"/>'.format(
@@ -2078,11 +2105,7 @@ def rebuild_readme(
         + '<img src="https://komarev.com/ghpvc/?username={u}'
         '&label=profile+views&color=0d1117&style=for-the-badge" '
         'alt="profile views — live counter"/>\n</p>\n\n'.format(u=USER_NAME)
-    )
-    if top_box:
-        block_html += "<pre>\n" + top_box + "\n</pre>\n\n"
-    block_html += (
-        "<!-- the badge above is real time: komarev increments it on every view.\n"
+        + "<!-- the badge above is real time: komarev increments it on every view.\n"
         "     the hero and contribution SVGs refresh hourly via github actions. -->\n"
     )
     update_readme(block_html)
@@ -2100,9 +2123,7 @@ def rebuild_readme(
     except RuntimeError as error:
         print("⚠️  projects grid skipped: {}".format(error))
 
-    print("readme.md regenerated (hero.svg written, {} top repos linked)".format(
-        len(top_repos)
-    ))
+    print("readme.md regenerated (hero.svg + contribs.svg written)")
 
 
 if __name__ == "__main__":

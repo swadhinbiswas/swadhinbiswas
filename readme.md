@@ -11,18 +11,27 @@
 <img src="https://komarev.com/ghpvc/?username=swadhinbiswas&label=profile+views&color=0d1117&style=for-the-badge" alt="profile views — live counter"/>
 </p>
 
-<pre>
-        ┌────────────────────────────── top repositories ──────────────────────────────┐
-        │ <a href="https://github.com/swadhinbiswas/opengrammar">opengrammar</a> ...................................................... ts  117 ★ │
-        │ <a href="https://github.com/swadhinbiswas/veet">veet</a> ............................................................. go  116 ★ │
-        │ <a href="https://github.com/swadhinbiswas/Mervelas">Mervelas</a> ......................................................... ts   51 ★ │
-        │ <a href="https://github.com/swadhinbiswas/FAANG-Playbook">FAANG-Playbook</a> ................................................ astro   35 ★ │
-        └──────────────────────────────────────────────────────────────────────────────┘
-</pre>
-
 <!-- the badge above is real time: komarev increments it on every view.
      the hero and contribution SVGs refresh hourly via github actions. -->
+
 <!-- TODAY:END -->
+
+<!--
+  featured projects — EDIT BY HAND. today.py never touches this block.
+  Add a row per project: keep the name field ≤ 22 chars and keep the
+  link target correct. The box is 80 glyphs + 8 pad, square corners.
+  Delete or duplicate the example rows below.
+-->
+<!-- FEATURED:START -->
+<pre>
+        ┌───────────────────────────── featured projects ──────────────────────────────┐
+        │ <a href="https://github.com/swadhinbiswas/veet">veet</a>                   ........................... universal app uninstaller │
+        │ <a href="https://github.com/swadhinbiswas/opengrammar">opengrammar</a>            ........................... open-source grammarly alt │
+        │ <a href="https://github.com/swadhinbiswas/eurostream">eurostream</a>             .......................... eu data streaming pipeline │
+        │ <a href="https://github.com/swadhinbiswas/air-traffic">air-traffic</a>            ....................... european flight data pipeline │
+        └──────────────────────────────────────────────────────────────────────────────┘
+</pre>
+<!-- FEATURED:END -->
 
 <!--
   projects — auto-generated from the PROJECTS list in today.py.
