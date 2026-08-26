@@ -1,6 +1,7 @@
 # Dependencies
 node_modules/
-
+.claude
+.mimocode
 # Build output
 dist/
 .vercel/

@@ -1,78 +1,99 @@
+<!-- TODAY:START -->
+<p align="center">
+<img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/hero.svg" width="100%" alt="Swadhin Biswas — live GitHub dashboard (animated)"/>
+</p>
+
+<pre>
+╭────────────────────────────────────────────────────────────────────────────────────────╮
+├────────────────────────────────────── languages ───────────────────────────────────────┤
+│ python           ██████████░░░░░░░░░░░░░░░░░░░░  35%                                   │
+│ typescript       ██████████░░░░░░░░░░░░░░░░░░░░  34%                                   │
+│ javascript       ███░░░░░░░░░░░░░░░░░░░░░░░░░░░  10%                                   │
+│ jupyter          ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░   5%                                   │
+│ astro            █░░░░░░░░░░░░░░░░░░░░░░░░░░░░░   3%                                   │
+│ rust             █░░░░░░░░░░░░░░░░░░░░░░░░░░░░░   2%                                   │
+│ go               ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░   1%                                   │
+├─────────────────────────────────── top repositories ───────────────────────────────────┤
+│ <a href="https://github.com/swadhinbiswas/opengrammar">opengrammar</a> ............................................................... ts   116 ★ │
+│ <a href="https://github.com/swadhinbiswas/veet">veet</a> ...................................................................... go   115 ★ │
+│ <a href="https://github.com/swadhinbiswas/Mervelas">Mervelas</a> .................................................................. ts    50 ★ │
+│ <a href="https://github.com/swadhinbiswas/FAANG-Playbook">FAANG-Playbook</a> ......................................................... astro    35 ★ │
+├─────────────────────────────────────── all time ───────────────────────────────────────┤
+│ contributions ...................... 7,205  net lines .......................... +9.8M │
+│ stars ................................ 618  public repos ......................... 117 │
+│ followers ............................. 96  longest streak .................. 127 days │
+│ dev score .................... 83/100 · A+  account age ................... 4y 2mo 11d │
+│                                                                                        │
+│                  auto-generated · 2026-08-25 21:18 · data: github api                  │
+╰────────────────────────────────────────────────────────────────────────────────────────╯
+</pre>
+
+<!-- invisible pixel: keeps the komarev counter incrementing from real profile views -->
+<img src="https://komarev.com/ghpvc/?username=swadhinbiswas&label=%20&color=0e75b6" alt="" width="1" height="1"/>
+
+<!-- TODAY:END -->
+
+<!--
+  projects — auto-generated from the PROJECTS list in today.py.
+
+  to add a project by hand, append one tuple to the matching category:
+      ("repo-name", "short tagline")
+  or, for a custom link target:
+      ("display Name", "tagline", "https://example.com")
+  the repository link, alignment and layout are regenerated
+  automatically on the next run.
+-->
+
+<!-- PROJECTS:START -->
+<pre>
+DATA ENGINEERING                                RESEARCH                                        
+  <a href="https://github.com/swadhinbiswas/air-traffic">air-traffic</a>    european flight data pipeline    <a href="https://github.com/swadhinbiswas/contexa">contexa</a>        versioned llm agent memory     
+  <a href="https://github.com/swadhinbiswas/eurostream">eurostream</a>     eu data streaming pipeline       <a href="https://github.com/swadhinbiswas/DOOMSDAYCS">DOOMSDAYCS</a>     offline cs encyclopedia        
+                                                  <a href="https://github.com/swadhinbiswas/FAANG-Playbook">FAANG-Playbook</a> 1,400+ leetcode problems       
+DEVOPS                                                                                          
+  <a href="https://github.com/swadhinbiswas/OpencodeHub">OpencodeHub</a>    git platform w/ ci pipelines   TOOLS                                           
+  <a href="https://github.com/swadhinbiswas/gvx">gvx</a>            the pnpm of python               <a href="https://github.com/swadhinbiswas/veet">veet</a>           universal app uninstaller      
+  <a href="https://github.com/swadhinbiswas/HiFiLinux">HiFiLinux</a>      audiophile audio for linux       <a href="https://github.com/swadhinbiswas/lsf">lsf</a>            ls with nerd-font icons        
+                                                  <a href="https://github.com/swadhinbiswas/fetchx">fetchx</a>         neofetch rewritten in rust     
+BACKEND                                           <a href="https://github.com/swadhinbiswas/Ghost">Ghost</a>          free &amp; open coding tool    
+  <a href="https://github.com/swadhinbiswas/JustAPI">JustAPI</a>        zero-copy rust web framework     <a href="https://github.com/swadhinbiswas/ZenDownload">ZenDownload</a>    download anything, one place   
+                                                  <a href="https://github.com/swadhinbiswas/vscode-android">vscode-android</a> a real ide for android         
+MACHINE-LEARNING                                  <a href="https://github.com/swadhinbiswas/warren">warren</a>         rootless cli runtime           
+  <a href="https://github.com/swadhinbiswas/Aurora">Aurora</a>         modular reasoning architecture                                                 
+  <a href="https://github.com/swadhinbiswas/AegisVision">AegisVision</a>    multi-camera ai surveillance   OTHERS                                          
+  <a href="https://github.com/swadhinbiswas/Ecoguard">Ecoguard</a>       self-hosted llm inference gw     <a href="https://github.com/swadhinbiswas/linuxy">linuxy</a>         one-click appimage runner      
+  <a href="https://github.com/swadhinbiswas/opengrammar">opengrammar</a>    open-source grammarly alt        <a href="https://github.com/swadhinbiswas/de-omarchy">de-omarchy</a>     modern desktop, no omarchy     
+                                                  <a href="https://github.com/swadhinbiswas/Mervelas">Mervelas</a>       ai coding cli built on bun     
+                                                  <a href="https://github.com/swadhinbiswas/VidoLib">VidoLib</a>        lag-free media engine          
+                                                  <a href="https://github.com/swadhinbiswas/moonshell">moonshell</a>      personal qml linux rice
+</pre>
+<!-- PROJECTS:END -->
+
+<!--
+  socials — hand-edited; today.py never touches anything below the
+  PROJECTS block. swap any href/badge freely.
+-->
+
+<pre>
+├─────────────────────────────────────── connect ────────────────────────────────────────┤
+</pre>
 
 <p align="center">
-  <a href="https://github.com/swadhinbiswas/swadhinbiswas">
-    <img alt="Swadhin Biswas - Developer Cosmos" src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/cosmos.svg" width="100%"/>
-  </a>
+  <a href="mailto:swadhinbiswas.cse@gmail.com"><img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=16&duration=2800&pause=1100&color=58A6FF&center=true&vCenter=true&width=640&height=32&lines=let%E2%80%99s+build+something+%E2%80%94+together;data+eng+%C2%B7+backend+%C2%B7+mlops+%C2%B7+open+source;based+in+bd+%C2%B7+open+to+eu+relocation;replies+within+24h+%E2%86%92+swadhinbiswas.cse%40gmail.com" alt="let's build something together"/></a>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Backend_Engineer-2C3E50?style=for-the-badge&logo=python&logoColor=white" alt="Backend Engineer"/>
-  <img src="https://img.shields.io/badge/AI/ML_Engineer-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white" alt="AI/ML Engineer"/>
-  <img src="https://img.shields.io/badge/Problem_Solver-27AE60?style=for-the-badge&logo=leetcode&logoColor=white" alt="Problem Solver"/>
+  <a href="https://swadhin.cv"><img src="https://img.shields.io/badge/portfolio-0d1117?style=for-the-badge&logo=googlechrome&logoColor=4493f8" alt="portfolio — swadhin.cv"/></a>&nbsp;
+  <a href="https://www.linkedin.com/in/swadhinbiswas"><img src="https://img.shields.io/badge/linkedin-0d1117?style=for-the-badge&logo=linkedin&logoColor=0a66c2" alt="linkedin"/></a>&nbsp;
+  <a href="mailto:swadhinbiswas.cse@gmail.com"><img src="https://img.shields.io/badge/email-0d1117?style=for-the-badge&logo=gmail&logoColor=f85149" alt="email"/></a>
 </p>
 
 <p align="center">
-  <em>I build things that work. No fluff, just functional code that solves real problems.</em>
+  <a href="https://x.com/swadin_sh"><img src="https://img.shields.io/badge/x-0d1117?style=for-the-badge&logo=x&logoColor=e6edf3" alt="x (twitter)"/></a>&nbsp;
+  <a href="https://www.youtube.com/@BitsWar"><img src="https://img.shields.io/badge/youtube-0d1117?style=for-the-badge&logo=youtube&logoColor=f85149" alt="youtube"/></a>&nbsp;
+  <a href="https://github.com/swadhinbiswas"><img src="https://img.shields.io/badge/github-0d1117?style=for-the-badge&logo=github&logoColor=3fb950" alt="github"/></a>
 </p>
 
----
-
-### You may be interested in
-
-| | Project | What it does |
-|---|---|---|
-| <img src="https://img.shields.io/badge/-TS-3178C6?style=flat-square&logo=typescript&logoColor=fff" /> | [**OpencodeHub**](https://github.com/swadhinbiswas/OpencodeHub) | Self-hosted Git platform with SSH, CI pipelines, and AI code reviews |
-| <img src="https://img.shields.io/badge/-Rust-DEA584?style=flat-square&logo=rust&logoColor=000" /> | [**fetchx**](https://github.com/swadhinbiswas/fetchx) | Modern neofetch replacement, blazing fast, written in Rust |
-| <img src="https://img.shields.io/badge/-Rust-DEA584?style=flat-square&logo=rust&logoColor=000" /> | [**ls-f**](https://github.com/swadhinbiswas/ls-f) | `ls` with Nerd Font icons for every file type |
-| <img src="https://img.shields.io/badge/-Astro-BC52EE?style=flat-square&logo=astro&logoColor=fff" /> | [**FAANG-Playbook**](https://github.com/swadhinbiswas/FAANG-Playbook) | 1,400+ LeetCode problems, interview strategies, and study plans |
-
----
-
-<table align="center">
-<tr>
-<td align="center" width="100">
-<a href="mailto:swadhinbiswas.cse@gmail.com">
-<img src="https://cdn.simpleicons.org/gmail/EA4335" width="36" height="36" alt="Email"/><br/>
-<sub><b>Email</b></sub>
-</a>
-</td>
-<td align="center" width="100">
-<a href="https://swadhin.my.id">
-<img src="https://cdn.simpleicons.org/googlechrome/4285F4" width="36" height="36" alt="Website"/><br/>
-<sub><b>Website</b></sub>
-</a>
-</td>
-<td align="center" width="100">
-<a href="https://linkedin.com/in/swadh1n">
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" width="36" height="36" alt="LinkedIn"/><br/>
-<sub><b>LinkedIn</b></sub>
-</a>
-</td>
-<td align="center" width="100">
-<a href="https://x.com/swadh1n">
-<img src="https://cdn.simpleicons.org/x/fff" width="36" height="36" alt="X"/><br/>
-<sub><b>Twitter</b></sub>
-</a>
-</td>
-<td align="center" width="100">
-<a href="https://discord.com/users/swadhinbiswas">
-<img src="https://cdn.simpleicons.org/discord/5865F2" width="36" height="36" alt="Discord"/><br/>
-<sub><b>Discord</b></sub>
-</a>
-</td>
-</tr>
-</table>
-
-<p align="center">
-  <sub>I actually respond to messages. Revolutionary, I know.</sub>
-</p>
-
----
-
-<p align="center">
-  <sub>Built with Python, powered by curiosity, maintained by coffee.</sub>
-</p>
-
-<p align="center">
-  <img src="https://komarev.com/ghpvc/?username=swadhinbiswas&label=Profile%20Views&color=0e75b6&style=flat-square" alt="Profile Views"/>
-</p>
+<pre>
+          ── swadhin biswas · pipelines over promises · auto-generated by today.py ──
+</pre>
