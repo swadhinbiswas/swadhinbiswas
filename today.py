@@ -1036,8 +1036,8 @@ HERO_NAME = "SWADHIN"
 
 # Static taglines under the hero name — plain text, no typing animation
 TAGLINES = [
-    "mlops & data engineer · python · spark · kubernetes",
-    "pipeline automation · open to eu relocation",
+    "MLOps & DATA ENGINEER · Python · Spark · Kubernetes",
+    "Pipeline Automation · Open to EU Relocation",
 ]
 
 # Shorter display names for the languages panel

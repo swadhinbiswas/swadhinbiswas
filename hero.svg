@@ -2,8 +2,8 @@
 <rect x="8" y="8" width="1124" height="276" rx="16" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
 <text x="570.0" y="72" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="32" font-weight="bold" fill="#e6edf3">Hello, I am Swadhin</text>
 <g transform="translate(780.4,82)"><g><text x="0" y="10" font-size="28" text-anchor="middle">👋</text><animateTransform attributeName="transform" type="rotate" values="-18;18;-18" dur="1.3s" repeatCount="indefinite"/></g></g>
-<text x="570.0" y="110" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">mlops &amp; data engineer · python · spark · kubernetes</text>
-<text x="570.0" y="132" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">pipeline automation · open to eu relocation</text>
+<text x="570.0" y="110" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">MLOps &amp; DATA ENGINEER · Python · Spark · Kubernetes</text>
+<text x="570.0" y="132" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">Pipeline Automation · Open to EU Relocation</text>
 <line x1="44" y1="166" x2="430.9" y2="166" stroke="#30363d" stroke-width="1"/>
 <line x1="709.1" y1="166" x2="1096" y2="166" stroke="#30363d" stroke-width="1"/>
 <g transform="translate(438.9 162) scale(0.9)" fill="none" stroke="#8b949e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="-6.5" y="-5" width="13" height="11.5" rx="2"/><path d="M-3 -7.2 v3 M3 -7.2 v3 M-6.5 -1.2 h13"/></g>
@@ -11,15 +11,15 @@
 <rect x="244" y="186" width="318" height="92" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1"/>
 <g transform="translate(272 214) scale(1.15)" fill="none" stroke="#3fb950" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="0" cy="-5.2" r="2"/><circle cx="0" cy="5.2" r="2"/><circle cx="6.8" cy="0" r="2"/><path d="M0 -3.2 L0 3.2 M0 0 C4.8 0 6.8 -1.4 6.8 -2"/></g>
 <text x="294" y="218" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">commits</text>
-<text x="294" y="256" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="22" font-weight="bold" fill="#e6edf3">0</text>
+<text x="294" y="256" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="22" font-weight="bold" fill="#e6edf3">3</text>
 <text x="538" y="218" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">added</text>
-<text x="538" y="256" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="19" font-weight="bold" fill="#3fb950">+0</text>
+<text x="538" y="256" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="19" font-weight="bold" fill="#3fb950">+51</text>
 <rect x="578" y="186" width="318" height="92" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1"/>
 <g transform="translate(606 214) scale(1.15)" fill="none" stroke="#58a6ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="-5.5" y="-7" width="11" height="14" rx="2"/><path d="M-2 -7 v5.5 l2 -1.6 2 1.6 v-5.5"/></g>
 <text x="628" y="218" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">top repo</text>
-<text x="628" y="256" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="17" font-weight="bold" fill="#e6edf3">—</text>
+<text x="628" y="256" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="17" font-weight="bold" fill="#e6edf3">swadhinbiswa</text>
 <text x="872" y="218" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">removed</text>
-<text x="872" y="256" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="19" font-weight="bold" fill="#f85149">-0</text>
+<text x="872" y="256" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="19" font-weight="bold" fill="#f85149">-58</text>
 <rect x="8" y="300" width="556" height="252" rx="16" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
 <line x1="28" y1="316" x2="238.9" y2="316" stroke="#30363d" stroke-width="1"/>
 <line x1="333.1" y1="316" x2="544" y2="316" stroke="#30363d" stroke-width="1"/>
