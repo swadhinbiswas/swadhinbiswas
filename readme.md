@@ -42,7 +42,7 @@
 
 **Now — Builder · [AegisVision](https://github.com/swadhinbiswas/AegisVision)** — multi-camera AI surveillance & security system — Python
 
-**Previously — Founder · Open Source Community Platform** — discovery, learning paths & real-world guidance — Blog + Discord + Telegram — **1M+ combined users** — *Acquired (NDA)*
+**2023–2025 — Founder · Open Source Community Platform** — discovery, learning paths & real-world guidance — Blog + Discord + Telegram — **1M+ combined users** — *Acquired (NDA)*
 
 <!-- EXPERIENCE:END -->
 
