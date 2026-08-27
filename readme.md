@@ -25,10 +25,10 @@
 <!-- FEATURED:START -->
 ### Featured Projects
 
-- <a href="https://github.com/swadhinbiswas/veet"><strong>veet</strong></a> — universal app uninstaller — deep-clean residual files
-- <a href="https://github.com/swadhinbiswas/opengrammar"><strong>opengrammar</strong></a> — open-source, self-hosted Grammarly alternative
-- <a href="https://github.com/swadhinbiswas/eurostream"><strong>eurostream</strong></a> — EU data streaming pipeline
-- <a href="https://github.com/swadhinbiswas/air-traffic"><strong>air-traffic</strong></a> — European flight data pipeline & warehouse
+- <a href="https://github.com/swadhinbiswas/air-traffic"><strong>air-traffic</strong></a> — EU flight warehousing · Python · incremental pipelines
+- <a href="https://github.com/swadhinbiswas/eurostream"><strong>eurostream</strong></a> — EU open-data streaming · Kafka · Spark
+- <a href="https://github.com/swadhinbiswas/Ecoguard"><strong>Ecoguard</strong></a> — self-hosted LLM gateway · Python · MLOps
+- <a href="https://github.com/swadhinbiswas/opengrammar"><strong>opengrammar</strong></a> — open-source Grammarly alt · TypeScript · 117★
 <!-- FEATURED:END -->
 
 <!--
@@ -92,6 +92,10 @@ MACHINE-LEARNING                                  <a href="https://github.com/sw
   <a href="https://x.com/swadin_sh"><img src="https://img.shields.io/badge/x-0d1117?style=for-the-badge&logo=x&logoColor=e6edf3" alt="x (twitter)"/></a>&nbsp;
   <a href="https://www.youtube.com/@BitsWar"><img src="https://img.shields.io/badge/youtube-0d1117?style=for-the-badge&logo=youtube&logoColor=f85149" alt="youtube"/></a>&nbsp;
   <a href="https://github.com/swadhinbiswas"><img src="https://img.shields.io/badge/github-0d1117?style=for-the-badge&logo=github&logoColor=3fb950" alt="github"/></a>
+</p>
+
+<p align="center">
+  <sub>Based in Dhaka, BD · Willing to relocate EU · Available immediately — <a href="mailto:swadhinbiswas.cse@gmail.com">let's talk</a></sub>
 </p>
 
 <pre>

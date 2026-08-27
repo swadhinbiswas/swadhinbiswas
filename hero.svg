@@ -1,9 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1140" height="560" viewBox="0 0 1140 560" role="img" aria-label="Swadhin Biswas — live GitHub dashboard">
 <rect x="8" y="8" width="1124" height="276" rx="16" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
-<text x="570.0" y="72" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="32" font-weight="bold" fill="#e6edf3">Hello, I am Swadhin</text>
-<g transform="translate(780.4,82)"><g><text x="0" y="10" font-size="28" text-anchor="middle">👋</text><animateTransform attributeName="transform" type="rotate" values="-18;18;-18" dur="1.3s" repeatCount="indefinite"/></g></g>
+<text x="570.0" y="72" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="32" font-weight="bold" fill="#e6edf3">Hello, I am Swadhin Biswas</text>
+<g transform="translate(847.6,82)"><g><text x="0" y="10" font-size="28" text-anchor="middle">👋</text><animateTransform attributeName="transform" type="rotate" values="-18;18;-18" dur="1.3s" repeatCount="indefinite"/></g></g>
 <text x="570.0" y="110" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">MLOps &amp; DATA ENGINEER · Python · Spark · Kubernetes</text>
 <text x="570.0" y="132" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">Pipeline Automation · Open to EU Relocation</text>
+<text x="570.0" y="154" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12" letter-spacing="1.5" fill="#8b949e">Based in Dhaka, BD  ·  Willing to relocate EU  ·  Available immediately</text>
 <line x1="44" y1="166" x2="430.9" y2="166" stroke="#30363d" stroke-width="1"/>
 <line x1="709.1" y1="166" x2="1096" y2="166" stroke="#30363d" stroke-width="1"/>
 <g transform="translate(438.9 162) scale(0.9)" fill="none" stroke="#8b949e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="-6.5" y="-5" width="13" height="11.5" rx="2"/><path d="M-3 -7.2 v3 M3 -7.2 v3 M-6.5 -1.2 h13"/></g>
@@ -11,34 +12,34 @@
 <rect x="244" y="186" width="318" height="92" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1"/>
 <g transform="translate(272 214) scale(1.15)" fill="none" stroke="#3fb950" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="0" cy="-5.2" r="2"/><circle cx="0" cy="5.2" r="2"/><circle cx="6.8" cy="0" r="2"/><path d="M0 -3.2 L0 3.2 M0 0 C4.8 0 6.8 -1.4 6.8 -2"/></g>
 <text x="294" y="218" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">commits</text>
-<text x="294" y="256" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="22" font-weight="bold" fill="#e6edf3">3</text>
+<text x="294" y="256" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="22" font-weight="bold" fill="#e6edf3">5</text>
 <text x="538" y="218" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">added</text>
-<text x="538" y="256" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="19" font-weight="bold" fill="#3fb950">+51</text>
+<text x="538" y="256" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="19" font-weight="bold" fill="#3fb950">+82</text>
 <rect x="578" y="186" width="318" height="92" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1"/>
 <g transform="translate(606 214) scale(1.15)" fill="none" stroke="#58a6ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="-5.5" y="-7" width="11" height="14" rx="2"/><path d="M-2 -7 v5.5 l2 -1.6 2 1.6 v-5.5"/></g>
 <text x="628" y="218" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">top repo</text>
 <text x="628" y="256" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="17" font-weight="bold" fill="#e6edf3">swadhinbiswa</text>
 <text x="872" y="218" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">removed</text>
-<text x="872" y="256" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="19" font-weight="bold" fill="#f85149">-58</text>
+<text x="872" y="256" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="19" font-weight="bold" fill="#f85149">-89</text>
 <rect x="8" y="300" width="556" height="252" rx="16" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
 <line x1="28" y1="316" x2="238.9" y2="316" stroke="#30363d" stroke-width="1"/>
 <line x1="333.1" y1="316" x2="544" y2="316" stroke="#30363d" stroke-width="1"/>
 <text x="286.0" y="320" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12" letter-spacing="4" fill="#8b949e">languages</text>
-<text x="32" y="356" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" fill="#8b949e">python</text>
+<text x="32" y="356" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" font-weight="bold" fill="#58a6ff">python</text>
 <rect x="158" y="346" width="339" height="12" rx="2" fill="#161b22"/>
-<rect x="158" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
-<rect x="169" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
-<rect x="180" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
-<rect x="191" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
-<rect x="202" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
-<rect x="213" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
-<rect x="224" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
-<rect x="235" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
-<rect x="246" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
-<rect x="257" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
-<rect x="268" y="346" width="9" height="12" rx="1.5" fill="#e6edf3"/>
+<rect x="158" y="346" width="9" height="12" rx="1.5" fill="#4493f8"/>
+<rect x="169" y="346" width="9" height="12" rx="1.5" fill="#4493f8"/>
+<rect x="180" y="346" width="9" height="12" rx="1.5" fill="#4493f8"/>
+<rect x="191" y="346" width="9" height="12" rx="1.5" fill="#4493f8"/>
+<rect x="202" y="346" width="9" height="12" rx="1.5" fill="#4493f8"/>
+<rect x="213" y="346" width="9" height="12" rx="1.5" fill="#4493f8"/>
+<rect x="224" y="346" width="9" height="12" rx="1.5" fill="#4493f8"/>
+<rect x="235" y="346" width="9" height="12" rx="1.5" fill="#4493f8"/>
+<rect x="246" y="346" width="9" height="12" rx="1.5" fill="#4493f8"/>
+<rect x="257" y="346" width="9" height="12" rx="1.5" fill="#4493f8"/>
+<rect x="268" y="346" width="9" height="12" rx="1.5" fill="#4493f8"/>
 <text x="540" y="356" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">35%</text>
-<text x="32" y="383" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" fill="#8b949e">typescript</text>
+<text x="32" y="383" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" font-weight="normal" fill="#8b949e">typescript</text>
 <rect x="158" y="373" width="339" height="12" rx="2" fill="#161b22"/>
 <rect x="158" y="373" width="9" height="12" rx="1.5" fill="#e6edf3"/>
 <rect x="169" y="373" width="9" height="12" rx="1.5" fill="#e6edf3"/>
@@ -52,26 +53,26 @@
 <rect x="257" y="373" width="9" height="12" rx="1.5" fill="#e6edf3"/>
 <rect x="268" y="373" width="9" height="12" rx="1.5" fill="#e6edf3"/>
 <text x="540" y="383" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">34%</text>
-<text x="32" y="410" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" fill="#8b949e">javascript</text>
+<text x="32" y="410" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" font-weight="normal" fill="#8b949e">javascript</text>
 <rect x="158" y="400" width="339" height="12" rx="2" fill="#161b22"/>
 <rect x="158" y="400" width="9" height="12" rx="1.5" fill="#e6edf3"/>
 <rect x="169" y="400" width="9" height="12" rx="1.5" fill="#e6edf3"/>
 <rect x="180" y="400" width="9" height="12" rx="1.5" fill="#e6edf3"/>
 <text x="540" y="410" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">10%</text>
-<text x="32" y="437" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" fill="#8b949e">jupyter</text>
+<text x="32" y="437" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" font-weight="normal" fill="#8b949e">jupyter</text>
 <rect x="158" y="427" width="339" height="12" rx="2" fill="#161b22"/>
 <rect x="158" y="427" width="9" height="12" rx="1.5" fill="#e6edf3"/>
 <rect x="169" y="427" width="9" height="12" rx="1.5" fill="#e6edf3"/>
 <text x="540" y="437" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">5%</text>
-<text x="32" y="464" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" fill="#8b949e">astro</text>
+<text x="32" y="464" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" font-weight="normal" fill="#8b949e">astro</text>
 <rect x="158" y="454" width="339" height="12" rx="2" fill="#161b22"/>
 <rect x="158" y="454" width="9" height="12" rx="1.5" fill="#e6edf3"/>
 <text x="540" y="464" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">3%</text>
-<text x="32" y="491" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" fill="#8b949e">rust</text>
+<text x="32" y="491" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" font-weight="normal" fill="#8b949e">rust</text>
 <rect x="158" y="481" width="339" height="12" rx="2" fill="#161b22"/>
 <rect x="158" y="481" width="9" height="12" rx="1.5" fill="#e6edf3"/>
 <text x="540" y="491" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">2%</text>
-<text x="32" y="518" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" fill="#8b949e">qml</text>
+<text x="32" y="518" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" font-weight="normal" fill="#8b949e">qml</text>
 <rect x="158" y="508" width="339" height="12" rx="2" fill="#161b22"/>
 <rect x="158" y="508" width="9" height="12" rx="1.5" fill="#e6edf3"/>
 <text x="540" y="518" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">2%</text>
@@ -81,7 +82,7 @@
 <text x="852.0" y="320" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12" letter-spacing="4" fill="#8b949e">all time</text>
 <text x="596" y="356" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">contributions</text>
 <text x="704.8" y="356" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#30363d">........</text>
-<text x="824.0" y="356" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">7,229</text>
+<text x="824.0" y="356" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">7,234</text>
 <text x="874.0" y="356" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">net lines</text>
 <text x="952.4" y="356" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#30363d">.............</text>
 <text x="1108" y="356" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">+9.1M</text>

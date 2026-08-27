@@ -1681,8 +1681,8 @@ def generate_hero_svg(today_stats, alltime, lang_data):
     )
 
     # ---- self-introduction (top) with a waving hand -------------------------
-    # the dotted SWADHIN is gone — the intro is now the hero
-    intro = "Hello, I am Swadhin"
+    # full name for ATS/search — last name matters
+    intro = "Hello, I am Swadhin Biswas"
     # 32px mono -> char ~19.2px; hand sits 28px to the right of the text end
     intro_w = len(intro) * 19.2
     parts.append(
@@ -1712,6 +1712,15 @@ def generate_hero_svg(today_stats, alltime, lang_data):
                 t=_xml_escape(tagline),
             )
         )
+
+    # ---- availability — what EU recruiters filter on -------------------------
+    parts.append(
+        '<text x="{x}" y="154" text-anchor="middle" font-family="{font}" '
+        'font-size="12" letter-spacing="1.5" fill="{fill}">'
+        'Based in Dhaka, BD  ·  Willing to relocate EU  ·  Available immediately</text>'.format(
+            x=cx, font=MONO_FONT, fill=c["muted"]
+        )
+    )
 
     # ---- date row -------------------------------------------------------------
     date_w = len(date_label) * 7.8
@@ -1811,10 +1820,13 @@ def generate_hero_svg(today_stats, alltime, lang_data):
     for i, (name, pct) in enumerate(lang_rows):
         y = 356 + i * 27
         display = LANGUAGE_ALIASES.get(name.lower(), name.lower())[:16]
+        is_python = name.lower() == "python"
         parts.append(
             '<text x="{x}" y="{y}" font-family="{font}" font-size="13" '
-            'fill="{fill}">{t}</text>'.format(
-                x=langs["x"] + 24, y=y, font=MONO_FONT, fill=c["muted"],
+            'font-weight="{w}" fill="{fill}">{t}</text>'.format(
+                x=langs["x"] + 24, y=y, font=MONO_FONT,
+                w="bold" if is_python else "normal",
+                fill=c["blue_light"] if is_python else c["muted"],
                 t=_xml_escape(display),
             )
         )
@@ -1824,10 +1836,11 @@ def generate_hero_svg(today_stats, alltime, lang_data):
             )
         )
         filled = min(segs, max(1, round(segs * max(0, min(100, pct)) / 100)))
+        bar_color = c["blue"] if is_python else c["text"]
         for s in range(filled):
             parts.append(
                 '<rect x="{x}" y="{y}" width="{w}" height="12" rx="1.5" fill="{f}"/>'.format(
-                    x=bar_x + s * (seg_w + seg_gap), y=y - 10, w=seg_w, f=c["text"]
+                    x=bar_x + s * (seg_w + seg_gap), y=y - 10, w=seg_w, f=bar_color
                 )
             )
         parts.append(
