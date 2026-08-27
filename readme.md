@@ -38,9 +38,9 @@
 <!-- EXPERIENCE:START -->
 ### Experience
 
-**Now: Founder & Maintainer at [OpencodeHUB](https://github.com/swadhinbiswas/OpencodeHub)** - self-hosted Git platform (Gitea-class parity, 668 tests, E2E), Go / TypeScript
+**2024-Now: Founder & Maintainer at [OpencodeHUB](https://github.com/swadhinbiswas/OpencodeHub)** - self-hosted Git platform (Gitea-class parity, 668 tests, E2E), Go / TypeScript
 
-**Now: Builder at [AegisVision](https://github.com/swadhinbiswas/AegisVision)** - multi-camera AI surveillance and security system, Python
+**2025-Now: Builder at [AegisVision](https://github.com/swadhinbiswas/AegisVision)** - multi-camera AI surveillance and security system, Python
 
 **2023-2025: Founder, Open Source Community Platform** - discovery, learning paths and real-world guidance - Blog + Discord + Telegram - **1M+ combined users** - *Acquired (NDA)*
 
@@ -58,6 +58,9 @@
 -->
 
 <!-- PROJECTS:START -->
+<details>
+<summary>All 25 projects - click to expand</summary>
+
 <pre>
 ├──────────────────────────── projects you might be interested in ─────────────────────────────┤
 
@@ -82,6 +85,8 @@ MACHINE-LEARNING                                  <a href="https://github.com/sw
                                                   <a href="https://github.com/swadhinbiswas/VidoLib">VidoLib</a>        lag-free media engine          
                                                   <a href="https://github.com/swadhinbiswas/moonshell">moonshell</a>      personal qml linux rice        
 </pre>
+
+</details>
 <!-- PROJECTS:END -->
 
 <!--
