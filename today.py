@@ -1693,27 +1693,22 @@ def generate_hero_svg(today_stats, alltime, lang_data):
     )
     hx = cx + intro_w / 2 + 28
     hy = 82
+    # emoji hand — reliable color emoji in <img> SVGs, SMIL waving
     parts.append(
         '<g transform="translate({x},{y})">'
         '<g>'
-        '<rect x="-10" y="-26" width="20" height="24" rx="7" fill="{s}"/>'
-        '<rect x="-9" y="-42" width="4" height="18" rx="2" fill="{s}"/>'
-        '<rect x="-3.5" y="-45" width="4" height="21" rx="2" fill="{s}"/>'
-        '<rect x="2" y="-45" width="4" height="21" rx="2" fill="{s}"/>'
-        '<rect x="7.5" y="-42" width="4" height="18" rx="2" fill="{s}"/>'
-        '<rect x="9" y="-24" width="16" height="5" rx="2.5" fill="{s}" '
-        'transform="rotate(-35)"/>'
+        '<text x="0" y="10" font-size="28" text-anchor="middle">👋</text>'
         '<animateTransform attributeName="transform" type="rotate" '
         'values="-18;18;-18" dur="1.3s" repeatCount="indefinite"/>'
-        '</g></g>'.format(x=hx, y=hy, s=c["text"])
+        '</g></g>'.format(x=hx, y=hy)
     )
 
     # ---- static taglines (no typing effect) ----------------------------------
     for i, tagline in enumerate(TAGLINES):
         parts.append(
             '<text x="{x}" y="{y}" text-anchor="middle" font-family="{font}" '
-            'font-size="14" fill="{fill}">{t}</text>'.format(
-                x=cx, y=110 + i * 22, font=MONO_FONT, fill=c["muted"],
+            'font-size="14" font-weight="bold" fill="{fill}">{t}</text>'.format(
+                x=cx, y=110 + i * 22, font=MONO_FONT, fill=c["text"],
                 t=_xml_escape(tagline),
             )
         )

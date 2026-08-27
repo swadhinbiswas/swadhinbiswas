@@ -23,14 +23,12 @@
   Delete or duplicate the example rows below.
 -->
 <!-- FEATURED:START -->
-<pre>
-        ┌───────────────────────────── featured projects ──────────────────────────────┐
-        │ <a href="https://github.com/swadhinbiswas/veet">veet</a>                   ........................... universal app uninstaller │
-        │ <a href="https://github.com/swadhinbiswas/opengrammar">opengrammar</a>            ........................... open-source grammarly alt │
-        │ <a href="https://github.com/swadhinbiswas/eurostream">eurostream</a>             .......................... eu data streaming pipeline │
-        │ <a href="https://github.com/swadhinbiswas/air-traffic">air-traffic</a>            ....................... european flight data pipeline │
-        └──────────────────────────────────────────────────────────────────────────────┘
-</pre>
+### Featured Projects
+
+- <a href="https://github.com/swadhinbiswas/veet"><strong>veet</strong></a> — universal app uninstaller — deep-clean residual files
+- <a href="https://github.com/swadhinbiswas/opengrammar"><strong>opengrammar</strong></a> — open-source, self-hosted Grammarly alternative
+- <a href="https://github.com/swadhinbiswas/eurostream"><strong>eurostream</strong></a> — EU data streaming pipeline
+- <a href="https://github.com/swadhinbiswas/air-traffic"><strong>air-traffic</strong></a> — European flight data pipeline & warehouse
 <!-- FEATURED:END -->
 
 <!--
