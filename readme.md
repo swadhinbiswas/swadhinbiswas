@@ -32,6 +32,21 @@
 <!-- FEATURED:END -->
 
 <!--
+  experience — EDIT BY HAND. today.py never touches this block.
+  Keep it to 3 entries: now + now + previously. One line per role.
+-->
+<!-- EXPERIENCE:START -->
+### Experience
+
+**Now — Founder & Maintainer · [OpencodeHUB](https://github.com/swadhinbiswas/OpencodeHub)** — self-hosted Git platform (Gitea-class parity · 668 tests · E2E) — Go / TypeScript
+
+**Now — Builder · [AegisVision](https://github.com/swadhinbiswas/AegisVision)** — multi-camera AI surveillance & security system — Python
+
+**Previously — Founder · Open Source Community Platform** — discovery, learning paths & real-world guidance — Blog + Discord + Telegram — **1M+ combined users** — *Acquired (NDA)*
+
+<!-- EXPERIENCE:END -->
+
+<!--
   projects — auto-generated from the PROJECTS list in today.py.
 
   to add a project by hand, append one tuple to the matching category:
