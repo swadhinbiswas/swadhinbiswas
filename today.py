@@ -2110,14 +2110,11 @@ def rebuild_readme(
     update_readme(block_html)
 
     # linked projects grid — single source of truth: PROJECTS at the top
-    # wrapped in <details> so mobile/recruiter scan isn't overwhelmed
     try:
         update_readme_section(
             PROJECTS_START_MARKER,
             PROJECTS_END_MARKER,
-            "<details>\n<summary>All 25 projects - click to expand</summary>\n\n<pre>\n"
-            + render_projects_panel()
-            + "\n</pre>\n\n</details>",
+            "<pre>\n" + render_projects_panel() + "\n</pre>",
         )
         print("projects grid regenerated ({} repositories linked)".format(
             sum(len(repos) for repos in PROJECTS.values())

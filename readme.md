@@ -58,9 +58,6 @@
 -->
 
 <!-- PROJECTS:START -->
-<details>
-<summary>All 25 projects - click to expand</summary>
-
 <pre>
 ├──────────────────────────── projects you might be interested in ─────────────────────────────┤
 
@@ -85,8 +82,6 @@ MACHINE-LEARNING                                  <a href="https://github.com/sw
                                                   <a href="https://github.com/swadhinbiswas/VidoLib">VidoLib</a>        lag-free media engine          
                                                   <a href="https://github.com/swadhinbiswas/moonshell">moonshell</a>      personal qml linux rice        
 </pre>
-
-</details>
 <!-- PROJECTS:END -->
 
 <!--
@@ -105,7 +100,7 @@ MACHINE-LEARNING                                  <a href="https://github.com/sw
 <p align="center">
   <a href="https://swadhin.cv"><img src="https://img.shields.io/badge/portfolio-0d1117?style=for-the-badge&logo=googlechrome&logoColor=4493f8" alt="portfolio - swadhin.cv"/></a>&nbsp;
   <a href="https://www.linkedin.com/in/swadhinbiswas"><img src="https://img.shields.io/badge/linkedin-0d1117?style=for-the-badge&logo=linkedin&logoColor=0a66c2" alt="linkedin"/></a>&nbsp;
-  <a href="mailto:swadhinbiswas.cse@gmail.com"><img src="https://img.shields.io/badge/email-0d1117?style=for-the-badge&logo=gmail&logoColor=f85149" alt="email"/></a>
+  <a href="mailto:swadhinbiswas.cse@gmail.com" target="_blank"><img src="https://img.shields.io/badge/email-0d1117?style=for-the-badge&logo=gmail&logoColor=f85149" alt="email"/></a>
 </p>
 
 <p align="center">
@@ -115,7 +110,7 @@ MACHINE-LEARNING                                  <a href="https://github.com/sw
 </p>
 
 <p align="center">
-  <sub>Based in Dhaka, BD · Willing to relocate EU · Available immediately - <a href="mailto:swadhinbiswas.cse@gmail.com">let's talk</a></sub>
+  <sub>Based in Dhaka, BD · Willing to relocate EU · Available immediately - <a href="mailto:swadhinbiswas.cse@gmail.com" target="_blank">let's talk</a></sub>
 </p>
 
 <pre>
