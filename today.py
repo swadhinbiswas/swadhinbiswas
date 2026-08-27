@@ -1669,7 +1669,7 @@ def generate_hero_svg(today_stats, alltime, lang_data):
 
     parts = [
         '<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
-        'viewBox="0 0 {w} {h}" role="img" aria-label="Swadhin Biswas — live GitHub dashboard">'.format(
+        'viewBox="0 0 {w} {h}" role="img" aria-label="Swadhin Biswas - live GitHub dashboard">'.format(
             w=svg_w, h=svg_h
         ),
     ]
@@ -1758,7 +1758,7 @@ def generate_hero_svg(today_stats, alltime, lang_data):
         {
             "icon": "repo", "icon_color": c["blue_light"],
             "label": "top repo",
-            "value": "—" if today_stats["top_repo"] == "---" else today_stats["top_repo"][:12],
+            "value": "-" if today_stats["top_repo"] == "---" else today_stats["top_repo"][:12],
             "side_label": "removed",
             "side_value": "-" + _abbrev_number(today_stats["deleted"]),
             "side_color": c["red"],
@@ -2092,18 +2092,18 @@ def rebuild_readme(
     # badge only — featured projects is a manual block outside TODAY
     block_html = (
         '<p align="center">\n'
-        '<img src="{}" width="100%" alt="Swadhin Biswas — live GitHub dashboard"/>'.format(
+        '<img src="{}" width="100%" alt="Swadhin Biswas - live GitHub dashboard"/>'.format(
             HERO_SVG_URL.format(u=USER_NAME)
         )
         + "\n</p>\n\n"
         + '<p align="center">\n'
-        + '<img src="{}" width="100%" alt="Swadhin Biswas — contributions this '
+        + '<img src="{}" width="100%" alt="Swadhin Biswas - contributions this '
         'year and latest merged commit"/>'.format(CONTRIBS_SVG_URL.format(u=USER_NAME))
         + "\n</p>\n\n"
         + '<p align="center">\n'
         + '<img src="https://komarev.com/ghpvc/?username={u}'
         '&label=profile+views&color=0d1117&style=for-the-badge" '
-        'alt="profile views — live counter"/>\n</p>\n\n'.format(u=USER_NAME)
+        'alt="profile views - live counter"/>\n</p>\n\n'.format(u=USER_NAME)
         + "<!-- the badge above is real time: komarev increments it on every view.\n"
         "     the hero and contribution SVGs refresh hourly via github actions. -->\n"
     )

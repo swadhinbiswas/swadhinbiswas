@@ -1,14 +1,14 @@
 <!-- TODAY:START -->
 <p align="center">
-<img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/hero.svg" width="100%" alt="Swadhin Biswas — live GitHub dashboard"/>
+<img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/hero.svg" width="100%" alt="Swadhin Biswas - live GitHub dashboard"/>
 </p>
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/contribs.svg" width="100%" alt="Swadhin Biswas — contributions this year and latest merged commit"/>
+<img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/contribs.svg" width="100%" alt="Swadhin Biswas - contributions this year and latest merged commit"/>
 </p>
 
 <p align="center">
-<img src="https://komarev.com/ghpvc/?username=swadhinbiswas&label=profile+views&color=0d1117&style=for-the-badge" alt="profile views — live counter"/>
+<img src="https://komarev.com/ghpvc/?username=swadhinbiswas&label=profile+views&color=0d1117&style=for-the-badge" alt="profile views - live counter"/>
 </p>
 
 <!-- the badge above is real time: komarev increments it on every view.
@@ -17,7 +17,7 @@
 <!-- TODAY:END -->
 
 <!--
-  featured projects — EDIT BY HAND. today.py never touches this block.
+  featured projects - EDIT BY HAND. today.py never touches this block.
   Add a row per project: keep the name field ≤ 22 chars and keep the
   link target correct. The box is 80 glyphs + 8 pad, square corners.
   Delete or duplicate the example rows below.
@@ -25,29 +25,29 @@
 <!-- FEATURED:START -->
 ### Featured Projects
 
-- <a href="https://github.com/swadhinbiswas/air-traffic"><strong>air-traffic</strong></a> — EU flight warehousing · Python · incremental pipelines
-- <a href="https://github.com/swadhinbiswas/eurostream"><strong>eurostream</strong></a> — EU open-data streaming · Kafka · Spark
-- <a href="https://github.com/swadhinbiswas/Ecoguard"><strong>Ecoguard</strong></a> — self-hosted LLM gateway · Python · MLOps
-- <a href="https://github.com/swadhinbiswas/opengrammar"><strong>opengrammar</strong></a> — open-source Grammarly alt · TypeScript · 117★
+- <a href="https://github.com/swadhinbiswas/air-traffic"><strong>air-traffic</strong></a>: EU flight warehousing, Python, incremental pipelines
+- <a href="https://github.com/swadhinbiswas/eurostream"><strong>eurostream</strong></a>: EU open-data streaming, Kafka, Spark
+- <a href="https://github.com/swadhinbiswas/Ecoguard"><strong>Ecoguard</strong></a>: self-hosted LLM gateway, Python, MLOps
+- <a href="https://github.com/swadhinbiswas/opengrammar"><strong>opengrammar</strong></a>: open-source Grammarly alt, TypeScript, 117★
 <!-- FEATURED:END -->
 
 <!--
-  experience — EDIT BY HAND. today.py never touches this block.
+  experience - EDIT BY HAND. today.py never touches this block.
   Keep it to 3 entries: now + now + previously. One line per role.
 -->
 <!-- EXPERIENCE:START -->
 ### Experience
 
-**Now — Founder & Maintainer · [OpencodeHUB](https://github.com/swadhinbiswas/OpencodeHub)** — self-hosted Git platform (Gitea-class parity · 668 tests · E2E) — Go / TypeScript
+**Now: Founder & Maintainer at [OpencodeHUB](https://github.com/swadhinbiswas/OpencodeHub)** - self-hosted Git platform (Gitea-class parity, 668 tests, E2E), Go / TypeScript
 
-**Now — Builder · [AegisVision](https://github.com/swadhinbiswas/AegisVision)** — multi-camera AI surveillance & security system — Python
+**Now: Builder at [AegisVision](https://github.com/swadhinbiswas/AegisVision)** - multi-camera AI surveillance and security system, Python
 
-**2023–2025 — Founder · Open Source Community Platform** — discovery, learning paths & real-world guidance — Blog + Discord + Telegram — **1M+ combined users** — *Acquired (NDA)*
+**2023-2025: Founder, Open Source Community Platform** - discovery, learning paths and real-world guidance - Blog + Discord + Telegram - **1M+ combined users** - *Acquired (NDA)*
 
 <!-- EXPERIENCE:END -->
 
 <!--
-  projects — auto-generated from the PROJECTS list in today.py.
+  projects - auto-generated from the PROJECTS list in today.py.
 
   to add a project by hand, append one tuple to the matching category:
       ("repo-name", "short tagline")
@@ -85,7 +85,7 @@ MACHINE-LEARNING                                  <a href="https://github.com/sw
 <!-- PROJECTS:END -->
 
 <!--
-  socials — hand-edited; today.py never touches anything below the
+  socials - hand-edited; today.py never touches anything below the
   PROJECTS block. swap any href/badge freely.
 -->
 
@@ -98,7 +98,7 @@ MACHINE-LEARNING                                  <a href="https://github.com/sw
 </p>
 
 <p align="center">
-  <a href="https://swadhin.cv"><img src="https://img.shields.io/badge/portfolio-0d1117?style=for-the-badge&logo=googlechrome&logoColor=4493f8" alt="portfolio — swadhin.cv"/></a>&nbsp;
+  <a href="https://swadhin.cv"><img src="https://img.shields.io/badge/portfolio-0d1117?style=for-the-badge&logo=googlechrome&logoColor=4493f8" alt="portfolio - swadhin.cv"/></a>&nbsp;
   <a href="https://www.linkedin.com/in/swadhinbiswas"><img src="https://img.shields.io/badge/linkedin-0d1117?style=for-the-badge&logo=linkedin&logoColor=0a66c2" alt="linkedin"/></a>&nbsp;
   <a href="mailto:swadhinbiswas.cse@gmail.com"><img src="https://img.shields.io/badge/email-0d1117?style=for-the-badge&logo=gmail&logoColor=f85149" alt="email"/></a>
 </p>
@@ -110,7 +110,7 @@ MACHINE-LEARNING                                  <a href="https://github.com/sw
 </p>
 
 <p align="center">
-  <sub>Based in Dhaka, BD · Willing to relocate EU · Available immediately — <a href="mailto:swadhinbiswas.cse@gmail.com">let's talk</a></sub>
+  <sub>Based in Dhaka, BD · Willing to relocate EU · Available immediately - <a href="mailto:swadhinbiswas.cse@gmail.com">let's talk</a></sub>
 </p>
 
 <pre>
