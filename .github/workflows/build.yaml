@@ -5,9 +5,9 @@ on:
     branches:
       - main
   schedule:
-    # hourly at :17 — keeps the hero SVG stats (incl. view count) fresh;
+    # every 3 hours at :17 — full system refresh (hero + contribs + stats);
     # github may delay scheduled runs by up to ~30 min
-    - cron: "17 * * * *"
+    - cron: "17 */3 * * *"
   workflow_dispatch: {} # manual run button
 
 # the job pushes regenerated files back to main
