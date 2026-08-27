@@ -38,9 +38,9 @@
 <!-- EXPERIENCE:START -->
 ### Experience
 
-**2024-Now: Founder & Maintainer at [OpencodeHUB](https://github.com/swadhinbiswas/OpencodeHub)** - self-hosted Git platform (Gitea-class parity, 668 tests, E2E), Go / TypeScript
+**2026-Now: Founder & Maintainer at [OpencodeHUB](https://github.com/swadhinbiswas/OpencodeHub)** - self-hosted Git platform (Gitea-class parity, 668 tests, E2E), Go / TypeScript
 
-**2025-Now: Builder at [AegisVision](https://github.com/swadhinbiswas/AegisVision)** - multi-camera AI surveillance and security system, Python
+**2026-Now: Builder at [AegisVision](https://github.com/swadhinbiswas/AegisVision)** - multi-camera AI surveillance and security system, Python
 
 **2023-2025: Founder, Open Source Community Platform** - discovery, learning paths and real-world guidance - Blog + Discord + Telegram - **1M+ combined users** - *Acquired (NDA)*
 
