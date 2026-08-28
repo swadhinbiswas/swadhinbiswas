@@ -57,6 +57,77 @@
   automatically on the next run.
 -->
 
+<!--
+  stack — curated from portfolio skills (thesvg.org). Edit by hand.
+  Icons via thesvg.org (cdn.jsdelivr.net/gh/glincker/thesvg). Add/remove an <a> line per tech.
+-->
+<!-- STACK:START -->
+### Stack
+
+<p align="center">
+  <sub>Data Engineering · Cloud · Databases · AI · Portfolio — <a href="https://swadhin.cv/skills">full stack →</a></sub>
+</p>
+
+<p align="center">
+  <strong>Data Engineering</strong><br/>
+  <a href="https://swadhin.cv/skills" title="Apache Spark"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/spark/default.svg" width="42" height="42" alt="apache spark" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Kafka"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/apache-kafka/dark.svg" width="42" height="42" alt="kafka" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Apache Airflow"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/apache-airflow/default.svg" width="42" height="42" alt="apache airflow" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="dbt"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/dbt/default.svg" width="42" height="42" alt="dbt" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Airbyte"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/airbyte/default.svg" width="42" height="42" alt="airbyte" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="AWS Glue"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/aws-aws-glue/default.svg" width="42" height="42" alt="aws glue" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="AWS Redshift"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/aws-amazon-redshift/default.svg" width="42" height="42" alt="aws redshift" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="AWS Athena"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/aws-amazon-athena/default.svg" width="42" height="42" alt="aws athena" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Azure Data Factory"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/azure-data-factories/default.svg" width="42" height="42" alt="azure data factory" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Dagster"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/dagster/default.svg" width="42" height="42" alt="dagster" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Apache Flink"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/apache-flink/default.svg" width="42" height="42" alt="apache flink" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Prefect"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/prefect/default.svg" width="42" height="42" alt="prefect" loading="lazy" /></a>
+</p>
+
+<p align="center">
+  <strong>Databases</strong><br/>
+  <a href="https://swadhin.cv/skills" title="DuckDB"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/duckdb/default.svg" width="42" height="42" alt="duckdb" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="ClickHouse"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/clickhouse/default.svg" width="42" height="42" alt="clickhouse" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="PostgreSQL"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/postgresql/default.svg" width="42" height="42" alt="postgresql" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Qdrant"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/qdrant/light.svg" width="42" height="42" alt="qdrant" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Weaviate"><img src="https://swadhin.cv/icons/weaviate.svg" width="42" height="42" alt="weaviate" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Pinecone"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/pinecone/default.svg" width="42" height="42" alt="pinecone" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Redis"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/redis/default.svg" width="42" height="42" alt="redis" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="MongoDB"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/mongodb/default.svg" width="42" height="42" alt="mongodb" loading="lazy" /></a>
+</p>
+
+<p align="center">
+  <strong>AI / ML</strong><br/>
+  <a href="https://swadhin.cv/skills" title="PyTorch"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/pytorch/default.svg" width="42" height="42" alt="pytorch" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="TensorFlow"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/tensorflow/default.svg" width="42" height="42" alt="tensorflow" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Hugging Face"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/huggingface/default.svg" width="42" height="42" alt="hugging face" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="LangChain"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/langchain/default.svg" width="42" height="42" alt="langchain" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="OpenAI API"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/openai/default.svg" width="42" height="42" alt="openai api" loading="lazy" /></a>
+</p>
+
+<p align="center">
+  <strong>Cloud & DevOps</strong><br/>
+  <a href="https://swadhin.cv/skills" title="AWS"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/aws/default.svg" width="42" height="42" alt="aws" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="GCP"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/google-cloud/default.svg" width="42" height="42" alt="gcp" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Docker"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/docker/default.svg" width="42" height="42" alt="docker" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Kubernetes"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/kubernetes/default.svg" width="42" height="42" alt="kubernetes" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Terraform"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/terraform/default.svg" width="42" height="42" alt="terraform" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="GitHub Actions"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/github-actions/default.svg" width="42" height="42" alt="github actions" loading="lazy" /></a>
+</p>
+
+<p align="center">
+  <strong>Portfolio</strong><br/>
+  <a href="https://swadhin.cv/skills" title="Astro"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/astro/default.svg" width="42" height="42" alt="astro" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="React"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/react/default.svg" width="42" height="42" alt="react" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Next.js"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/nextjs/default.svg" width="42" height="42" alt="next.js" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="TypeScript"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/typescript/default.svg" width="42" height="42" alt="typescript" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Python"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/python/default.svg" width="42" height="42" alt="python" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Go"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/go/default.svg" width="42" height="42" alt="go" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Rust"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/rust/default.svg" width="42" height="42" alt="rust" loading="lazy" /></a>
+</p>
+
+<!-- STACK:END -->
+
 <!-- PROJECTS:START -->
 <pre>
 ├──────────────────────────── projects you might be interested in ─────────────────────────────┤
