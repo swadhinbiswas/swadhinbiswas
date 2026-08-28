@@ -184,6 +184,6 @@ MACHINE-LEARNING                                  <a href="https://github.com/sw
   <sub>Based in Dhaka, BD · Willing to relocate EU · Available immediately</sub>
 </p>
 
-<pre>
-     ── off the clock: street-food hunter · passport-stamp collector · anime marathoner ──
-</pre>
+<p align="center">
+  <em>off the clock: 🍜 street-food hunter · 📺 anime marathoner · 📚 Mestry & Mythological story hunter</em>
+</p>
