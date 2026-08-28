@@ -1549,11 +1549,8 @@ def render_projects_panel():
         return " " * PROJ_COL_W
 
     grid_w = PROJ_COL_W * 2
-    title = " projects you might be interested in "
-    fill = grid_w - 2 - len(title)
-    header = "┌" + "─" * (fill // 2) + title + "─" * (fill - fill // 2) + "┐"
     grid = "\n".join(render(l) + render(r) for l, r in zip(left, right))
-    return header + "\n\n" + grid
+    return grid
 
 
 def _xml_escape(text):
@@ -2115,7 +2112,9 @@ def rebuild_readme(
         update_readme_section(
             PROJECTS_START_MARKER,
             PROJECTS_END_MARKER,
-            "<pre>\n" + render_projects_panel() + "\n</pre>",
+            "### Projects you might be interested in\n\n<pre>\n"
+            + render_projects_panel()
+            + "\n</pre>",
         )
         print("projects grid regenerated ({} repositories linked)".format(
             sum(len(repos) for repos in PROJECTS.values())
