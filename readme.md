@@ -117,9 +117,6 @@
 
 <p align="center">
   <strong>Portfolio</strong><br/>
-  <a href="https://swadhin.cv/skills" title="Astro"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/astro/default.svg" width="42" height="42" alt="astro" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="React"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/react/default.svg" width="42" height="42" alt="react" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Next.js"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/nextjs/default.svg" width="42" height="42" alt="next.js" loading="lazy" /></a>
   <a href="https://swadhin.cv/skills" title="TypeScript"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/typescript/default.svg" width="42" height="42" alt="typescript" loading="lazy" /></a>
   <a href="https://swadhin.cv/skills" title="Python"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/python/default.svg" width="42" height="42" alt="python" loading="lazy" /></a>
   <a href="https://swadhin.cv/skills" title="Go"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/go/default.svg" width="42" height="42" alt="go" loading="lazy" /></a>
