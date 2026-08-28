@@ -1549,8 +1549,9 @@ def render_projects_panel():
         return " " * PROJ_COL_W
 
     grid_w = PROJ_COL_W * 2
-    # _panel_divider adds the two corner glyphs on top of `width`
-    header = _panel_divider("projects you might be interested in", width=grid_w - 2)
+    title = " projects you might be interested in "
+    fill = grid_w - 2 - len(title)
+    header = "┌" + "─" * (fill // 2) + title + "─" * (fill - fill // 2) + "┐"
     grid = "\n".join(render(l) + render(r) for l, r in zip(left, right))
     return header + "\n\n" + grid
 

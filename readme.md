@@ -127,7 +127,7 @@
 
 <!-- PROJECTS:START -->
 <pre>
-├──────────────────────────── projects you might be interested in ─────────────────────────────┤
+┌──────────────────────────── projects you might be interested in ─────────────────────────────┐
 
 DATA ENGINEERING                                RESEARCH                                        
   <a href="https://github.com/swadhinbiswas/air-traffic">air-traffic</a>    european flight data pipeline    <a href="https://github.com/swadhinbiswas/contexa">contexa</a>        versioned llm agent memory     
