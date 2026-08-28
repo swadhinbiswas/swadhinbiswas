@@ -42,7 +42,7 @@
 
 **2026-Now: Builder at [AegisVision](https://github.com/swadhinbiswas/AegisVision)** - multi-camera AI surveillance and security system, Python
 
-**2023-2025: Founder, Open Source Community Platform** - discovery, learning paths and real-world guidance - Blog + Discord + Telegram - **1M+ combined users** - *Acquired (NDA)*
+**2023-2025: Founder, Open Source Community Platform(BoringRats)** - discovery, learning paths and real-world guidance - Blog + Discord + Telegram - **1M+ combined users** - *Acquired (NDA)*
 
 **2021-2025: Freelance - Backend & MLOps Engineer** - 100+ open source contracts - backend systems and MLOps pipelines
 
