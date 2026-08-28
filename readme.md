@@ -131,7 +131,7 @@
   <a href="https://swadhin.cv/skills" title="FastAPI"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/fastapi/default.svg" width="42" height="42" alt="fastapi" loading="lazy" /></a>
   <a href="https://swadhin.cv/skills" title="Django"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/django/default.svg" width="42" height="42" alt="django" loading="lazy" /></a>
   <a href="https://swadhin.cv/skills" title="Hono"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/hono/default.svg" width="42" height="42" alt="hono" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Elysia"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/elysia/default.svg" width="42" height="42" alt="elysia" loading="lazy" /></a>
+  <a href="https://swadhin.cv/skills" title="Elysia"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/elysiajs/default.svg" width="42" height="42" alt="elysia" loading="lazy" /></a>
   <a href="https://swadhin.cv/skills" title="Node.js"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/nodejs/default.svg" width="42" height="42" alt="node.js" loading="lazy" /></a>
   <a href="https://swadhin.cv/skills" title="Encore.ts"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/encore/default.svg" width="42" height="42" alt="encore.ts" loading="lazy" /></a>
 </p>
