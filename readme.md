@@ -60,22 +60,22 @@
 -->
 
 <!--
-  stack — curated from portfolio skills (thesvg.org). Edit by hand.
+  stack - curated from portfolio skills (thesvg.org). Edit by hand.
   Icons via thesvg.org (cdn.jsdelivr.net/gh/glincker/thesvg). Add/remove an <a> line per tech.
 -->
 <!--
-  stack — curated from portfolio skills (thesvg.org). Edit by hand.
+  stack - curated from portfolio skills (thesvg.org). Edit by hand.
   Icons via thesvg.org (cdn.jsdelivr.net/gh/glincker/thesvg). Add/remove an <a> line per tech.
 -->
 <!--
-  stack — curated from portfolio skills (thesvg.org). Edit by hand.
+  stack - curated from portfolio skills (thesvg.org). Edit by hand.
   Icons via thesvg.org (cdn.jsdelivr.net/gh/glincker/thesvg). Add/remove an <a> line per tech.
 -->
 <!-- STACK:START -->
 ### Stack
 
 <p align="center">
-  <sub>Data Engineering · Cloud · Databases · AI · Backend — <a href="https://swadhin.cv/skills">full stack →</a></sub>
+  <sub>Data Engineering · Cloud · Databases · AI · Backend - <a href="https://swadhin.cv/skills">full stack →</a></sub>
 </p>
 
 <p align="center">
@@ -168,7 +168,7 @@ MACHINE-LEARNING                                  <a href="https://github.com/sw
 <!-- PROJECTS:END -->
 
 <!--
-  socials — hand-edited; today.py never touches anything below the
+  socials - hand-edited; today.py never touches anything below the
   PROJECTS block. swap any href freely.
 -->
 
@@ -185,5 +185,5 @@ MACHINE-LEARNING                                  <a href="https://github.com/sw
 </p>
 
 <p align="center">
-  <em>off the clock: 🍜 street-food hunter · 📺 anime marathoner · 📚 Mestry & Mythological story hunter</em>
+  <em>off the clock: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg> street-food hunter · <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg> anime marathoner · <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> Mestry & Mythological story hunter</em>
 </p>
