@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1140" height="172" viewBox="0 0 1140 172" role="img" aria-label="Contributions this year and latest merged commit">
 <rect x="8" y="8" width="1124" height="156" rx="16" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
 <text x="48" y="44" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12" letter-spacing="4" fill="#8b949e">THIS YEAR · CONTRIBUTIONS</text>
-<text x="48" y="108" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="44" font-weight="bold" fill="#4493f8">4,077</text>
+<text x="48" y="108" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="44" font-weight="bold" fill="#4493f8">4,093</text>
 <text x="48" y="134" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">contributions in 2026</text>
 <rect x="310" y="115" width="13" height="13" rx="2.5" fill="#58a6ff"/>
 <rect x="329" y="95" width="13" height="33" rx="2.5" fill="#58a6ff"/>
@@ -10,7 +10,7 @@
 <rect x="386" y="109" width="13" height="19" rx="2.5" fill="#58a6ff"/>
 <rect x="405" y="115" width="13" height="13" rx="2.5" fill="#58a6ff"/>
 <rect x="424" y="87" width="13" height="41" rx="2.5" fill="#58a6ff"/>
-<rect x="443" y="86" width="13" height="42" rx="2.5" fill="#58a6ff"/>
+<rect x="443" y="85" width="13" height="43" rx="2.5" fill="#58a6ff"/>
 <rect x="462" y="125" width="13" height="3" rx="2.5" fill="#58a6ff"/>
 <rect x="481" y="125" width="13" height="3" rx="2.5" fill="#58a6ff"/>
 <rect x="500" y="125" width="13" height="3" rx="2.5" fill="#58a6ff"/>
@@ -19,9 +19,9 @@
 <line x1="570" y1="32" x2="570" y2="140" stroke="#30363d" stroke-width="1"/>
 <text x="606" y="44" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12" letter-spacing="4" fill="#8b949e">LATEST MERGED COMMIT</text>
 <rect x="606" y="60" width="88" height="26" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-<text x="650" y="78" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" fill="#58a6ff">32cb9b1</text>
-<text x="708" y="79" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" fill="#e6edf3">swadhinbiswas/OpencodeHub</text>
-<text x="606" y="112" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13.5" fill="#e6edf3">feat: production readiness overhaul — 668 tests, E2E p</text>
+<text x="650" y="78" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" font-weight="bold" fill="#58a6ff">fc705d2</text>
+<text x="708" y="79" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" fill="#e6edf3">swadhinbiswas/linuxy</text>
+<text x="606" y="112" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13.5" fill="#e6edf3">chore(release): bump version to 2.0.4</text>
 <circle cx="612" cy="133" r="3.5" fill="#3fb950"/>
-<text x="624" y="137" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" fill="#8b949e">merged #81 · 1w ago · 32cb9b1</text>
+<text x="624" y="137" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" fill="#8b949e">merged #47 · 8h ago · fc705d2</text>
 </svg>
