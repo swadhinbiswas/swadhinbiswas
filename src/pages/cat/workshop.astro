@@ -1,0 +1,471 @@
+---
+export const prerender = false;
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db, workshopProjects } from "../../db";
+import { asc } from "drizzle-orm";
+
+const projectRows = await db.select().from(workshopProjects).orderBy(asc(workshopProjects.order));
+---
+
+<AdminLayout title="The Workshop & DIY Projects">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold flex items-center gap-2">
+        <svg class="w-6 h-6 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+        </svg>
+        <span>The Workshop & DIY Projects ({projectRows.length})</span>
+      </h1>
+      <p class="text-xs text-gray-400 mt-1">Manage hardware builds, custom mechanical keyboards, homelabs, IoT devices, with image & video media support.</p>
+    </div>
+    <button onclick="document.getElementById('add-form').classList.toggle('hidden')" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm flex items-center gap-1.5">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <span>Add DIY Project</span>
+    </button>
+  </div>
+
+  <!-- Add DIY Project Form -->
+  <div id="add-form" class="hidden mb-6 p-5 rounded-xl border border-cyan-400/30 bg-cyan-400/5">
+    <h2 class="text-lg font-semibold mb-4 text-cyan-300">Add New DIY / Hardware Project</h2>
+    <form id="create-form" class="space-y-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Project Title *</label>
+          <input type="text" name="title" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" placeholder="e.g. Custom 65% Alice Ergonomic Keyboard" />
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Slug</label>
+          <input type="text" name="slug" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" placeholder="e.g. alice-split-keyboard (auto-generated if empty)" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Badge</label>
+          <input type="text" name="badge" value="Completed" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" placeholder="e.g. Daily Driver, Active" />
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Timeframe</label>
+          <input type="text" name="timeframe" value="1 weekend" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" placeholder="e.g. 3 weekends, 2 weeks" />
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Category</label>
+          <select name="categoryKey" class="w-full bg-[#111] border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm">
+            <option value="keyboards">Keyboards & Input</option>
+            <option value="homelab">Homelab & Clusters</option>
+            <option value="iot">IoT & Embedded</option>
+            <option value="lighting">Smart Lighting</option>
+            <option value="general">General Hardware</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Icon Style</label>
+          <select name="icon" class="w-full bg-[#111] border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm">
+            <option value="keyboard">Keyboard</option>
+            <option value="server">Server / Cluster</option>
+            <option value="cpu">Microcontroller / Chip</option>
+            <option value="zap">Lighting / Power</option>
+            <option value="tool">Wrench / Tool</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Image & Video Media Links -->
+      <div class="p-4 rounded-xl bg-white/5 border border-white/10 space-y-3">
+        <p class="text-xs font-mono uppercase tracking-wider text-cyan-300 font-semibold">Media Attachments (Image & Video)</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Image Link (Photo / Blueprint)</label>
+            <input type="url" name="image" class="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" placeholder="https://cdn.swadhin.cv/.../photo.jpg" />
+          </div>
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Video Link (MP4 / Clip)</label>
+            <input type="url" name="video" class="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" placeholder="https://cdn.swadhin.cv/.../build_demo.mp4" />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Project Summary</label>
+        <textarea name="summary" rows="2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" placeholder="Brief summary of what this hardware project is and what it solves..."></textarea>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Highlights (One per line)</label>
+          <textarea name="highlights" rows="3" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" placeholder="Highlight 1&#10;Highlight 2&#10;Highlight 3"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Bill of Materials (BOM) — Item: Spec (One per line)</label>
+          <textarea name="bom" rows="3" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" placeholder="Microcontroller: Raspberry Pi RP2040&#10;Switches: Gateron Oil King Linears&#10;Keycaps: PBT Dye-Sub Chalk"></textarea>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Tools Used (Comma separated)</label>
+          <input type="text" name="tools" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" placeholder="Soldering Iron, 3D Printer, Multimeter, QMK CLI" />
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Display Order</label>
+          <input type="number" name="order" value="0" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Key Takeaway / Engineering Learning</label>
+        <input type="text" name="learnings" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" placeholder="What key engineering lesson was learned during this build?" />
+      </div>
+
+      <div class="flex items-center gap-2">
+        <input type="checkbox" id="add-featured" name="featured" class="w-4 h-4 rounded accent-cyan-400" />
+        <label for="add-featured" class="text-xs text-gray-300">Feature this project prominently</label>
+      </div>
+
+      <div class="flex gap-3 pt-2">
+        <button type="submit" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm">Save DIY Project</button>
+        <button type="button" onclick="document.getElementById('add-form').classList.add('hidden')" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors text-sm">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Project List -->
+  <div class="space-y-4 max-w-4xl">
+    {projectRows.map((item) => (
+      <div class="p-5 rounded-xl border border-white/10 bg-white/5 group hover:border-white/20 transition-all">
+        <div class="flex justify-between items-start gap-4">
+          <div class="flex items-start gap-3.5 flex-1">
+            <div class="p-2.5 rounded-lg bg-white/5 border border-white/10 text-cyan-400 shrink-0 mt-0.5">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+              </svg>
+            </div>
+
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <span class="text-xs font-mono uppercase px-2 py-0.5 rounded bg-cyan-400/10 text-cyan-300 border border-cyan-400/20">
+                  {item.badge || "Completed"}
+                </span>
+                <span class="text-xs font-mono px-2 py-0.5 rounded bg-white/10 text-gray-300">
+                  ⏱ {item.timeframe}
+                </span>
+                <span class="text-xs font-mono text-gray-400">
+                  {item.category}
+                </span>
+              </div>
+
+              <h3 class="font-bold text-base text-white tracking-tight">
+                {item.title}
+              </h3>
+              <p class="text-gray-300 text-xs mt-1 leading-relaxed">{item.summary}</p>
+
+              <!-- Media Badges -->
+              <div class="flex flex-wrap gap-2 mt-2">
+                {item.image && (
+                  <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-blue-500/10 text-blue-300 border border-blue-500/20 flex items-center gap-1">
+                    <span>Image Attached</span>
+                  </span>
+                )}
+                {item.video && (
+                  <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20 flex items-center gap-1">
+                    <span>Video Attached</span>
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-2 opacity-80 group-hover:opacity-100 transition-opacity shrink-0">
+            <button data-edit={JSON.stringify(item)} class="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs hover:bg-yellow-500/30">Edit</button>
+            <button data-delete={item.id} class="px-3 py-1 bg-red-500/20 text-red-400 rounded text-xs hover:bg-red-500/30">Delete</button>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="edit-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="bg-[#111] border border-white/20 rounded-2xl p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+      <h2 class="text-lg font-semibold mb-4 text-cyan-300">Edit DIY Project</h2>
+      <form id="edit-form" class="space-y-4">
+        <input type="hidden" name="id" />
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Project Title *</label>
+            <input type="text" name="title" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Slug</label>
+            <input type="text" name="slug" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Badge</label>
+            <input type="text" name="badge" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Timeframe</label>
+            <input type="text" name="timeframe" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Category</label>
+            <select name="categoryKey" class="w-full bg-[#111] border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm">
+              <option value="keyboards">Keyboards & Input</option>
+              <option value="homelab">Homelab & Clusters</option>
+              <option value="iot">IoT & Embedded</option>
+              <option value="lighting">Smart Lighting</option>
+              <option value="general">General Hardware</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Icon Style</label>
+            <select name="icon" class="w-full bg-[#111] border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm">
+              <option value="keyboard">Keyboard</option>
+              <option value="server">Server / Cluster</option>
+              <option value="cpu">Microcontroller / Chip</option>
+              <option value="zap">Lighting / Power</option>
+              <option value="tool">Wrench / Tool</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Image & Video Media Links -->
+        <div class="p-4 rounded-xl bg-white/5 border border-white/10 space-y-3">
+          <p class="text-xs font-mono uppercase tracking-wider text-cyan-300 font-semibold">Media Attachments (Image & Video)</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Image Link</label>
+              <input type="url" name="image" class="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" placeholder="https://..." />
+            </div>
+            <div>
+              <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Video Link</label>
+              <input type="url" name="video" class="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" placeholder="https://..." />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Project Summary</label>
+          <textarea name="summary" rows="2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Highlights (One per line)</label>
+            <textarea name="highlights" rows="3" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm"></textarea>
+          </div>
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Bill of Materials (BOM) — Item: Spec (One per line)</label>
+            <textarea name="bom" rows="3" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm"></textarea>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Tools Used (Comma separated)</label>
+            <input type="text" name="tools" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Display Order</label>
+            <input type="number" name="order" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Key Takeaway / Engineering Learning</label>
+          <input type="text" name="learnings" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 text-sm" />
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="edit-featured" name="featured" class="w-4 h-4 rounded accent-cyan-400" />
+          <label for="edit-featured" class="text-xs text-gray-300">Feature this project prominently</label>
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <button type="submit" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm">Update Project</button>
+          <button type="button" onclick="document.getElementById('edit-modal').classList.add('hidden')" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors text-sm">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  function parseTextLines(text: string): string[] {
+    return text.split("\n").map(l => l.trim()).filter(Boolean);
+  }
+
+  function parseBomLines(text: string): Array<{ item: string; spec: string }> {
+    return text.split("\n").map(line => {
+      const parts = line.split(":");
+      if (parts.length >= 2) {
+        return { item: parts[0].trim(), spec: parts.slice(1).join(":").trim() };
+      }
+      return { item: line.trim(), spec: "" };
+    }).filter(b => b.item);
+  }
+
+  // Create Project Submit
+  const createForm = document.getElementById("create-form") as HTMLFormElement;
+  createForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const fd = new FormData(createForm);
+    const rawHighlights = parseTextLines(fd.get("highlights") as string || "");
+    const rawBom = parseBomLines(fd.get("bom") as string || "");
+    const rawTools = ((fd.get("tools") as string) || "").split(",").map(t => t.trim()).filter(Boolean);
+
+    const data = {
+      title: fd.get("title"),
+      slug: fd.get("slug") || "",
+      badge: fd.get("badge") || "Completed",
+      timeframe: fd.get("timeframe") || "1 weekend",
+      categoryKey: fd.get("categoryKey") || "keyboards",
+      icon: fd.get("icon") || "cpu",
+      summary: fd.get("summary") || "",
+      image: fd.get("image") || "",
+      video: fd.get("video") || "",
+      highlights: JSON.stringify(rawHighlights),
+      bom: JSON.stringify(rawBom),
+      tools: JSON.stringify(rawTools),
+      learnings: fd.get("learnings") || "",
+      featured: fd.get("featured") === "on",
+      order: parseInt(fd.get("order") as string) || 0,
+    };
+
+    try {
+      const res = await fetch("/api/admin/workshop", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+      if (result.success) {
+        window.location.reload();
+      } else {
+        alert("Error: " + (result.error || "Failed to create"));
+      }
+    } catch {
+      alert("Network error");
+    }
+  });
+
+  // Edit Button Click
+  document.querySelectorAll("[data-edit]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const item = JSON.parse(btn.getAttribute("data-edit") || "{}");
+      const modal = document.getElementById("edit-modal");
+      const form = document.getElementById("edit-form") as HTMLFormElement;
+      if (!modal || !form) return;
+
+      (form.querySelector('[name="id"]') as HTMLInputElement).value = item.id;
+      (form.querySelector('[name="title"]') as HTMLInputElement).value = item.title || "";
+      (form.querySelector('[name="slug"]') as HTMLInputElement).value = item.slug || "";
+      (form.querySelector('[name="badge"]') as HTMLInputElement).value = item.badge || "";
+      (form.querySelector('[name="timeframe"]') as HTMLInputElement).value = item.timeframe || "";
+      (form.querySelector('[name="categoryKey"]') as HTMLSelectElement).value = item.categoryKey || "keyboards";
+      (form.querySelector('[name="icon"]') as HTMLSelectElement).value = item.icon || "cpu";
+      (form.querySelector('[name="image"]') as HTMLInputElement).value = item.image || "";
+      (form.querySelector('[name="video"]') as HTMLInputElement).value = item.video || "";
+      (form.querySelector('[name="summary"]') as HTMLTextAreaElement).value = item.summary || "";
+      (form.querySelector('[name="learnings"]') as HTMLInputElement).value = item.learnings || "";
+      (form.querySelector('[name="order"]') as HTMLInputElement).value = (item.order || 0).toString();
+      (form.querySelector('[name="featured"]') as HTMLInputElement).checked = Boolean(item.featured);
+
+      try {
+        const highlightsArr = typeof item.highlights === "string" ? JSON.parse(item.highlights || "[]") : (item.highlights || []);
+        (form.querySelector('[name="highlights"]') as HTMLTextAreaElement).value = highlightsArr.join("\n");
+      } catch {
+        (form.querySelector('[name="highlights"]') as HTMLTextAreaElement).value = item.highlights || "";
+      }
+
+      try {
+        const bomArr = typeof item.bom === "string" ? JSON.parse(item.bom || "[]") : (item.bom || []);
+        (form.querySelector('[name="bom"]') as HTMLTextAreaElement).value = bomArr.map((b: any) => `${b.item}: ${b.spec}`).join("\n");
+      } catch {
+        (form.querySelector('[name="bom"]') as HTMLTextAreaElement).value = item.bom || "";
+      }
+
+      try {
+        const toolsArr = typeof item.tools === "string" ? JSON.parse(item.tools || "[]") : (item.tools || []);
+        (form.querySelector('[name="tools"]') as HTMLInputElement).value = toolsArr.join(", ");
+      } catch {
+        (form.querySelector('[name="tools"]') as HTMLInputElement).value = item.tools || "";
+      }
+
+      modal.classList.remove("hidden");
+    });
+  });
+
+  // Edit Form Submit
+  const editForm = document.getElementById("edit-form") as HTMLFormElement;
+  editForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const fd = new FormData(editForm);
+    const rawHighlights = parseTextLines(fd.get("highlights") as string || "");
+    const rawBom = parseBomLines(fd.get("bom") as string || "");
+    const rawTools = ((fd.get("tools") as string) || "").split(",").map(t => t.trim()).filter(Boolean);
+
+    const data = {
+      id: parseInt(fd.get("id") as string),
+      title: fd.get("title"),
+      slug: fd.get("slug") || "",
+      badge: fd.get("badge") || "Completed",
+      timeframe: fd.get("timeframe") || "1 weekend",
+      categoryKey: fd.get("categoryKey") || "keyboards",
+      icon: fd.get("icon") || "cpu",
+      summary: fd.get("summary") || "",
+      image: fd.get("image") || "",
+      video: fd.get("video") || "",
+      highlights: JSON.stringify(rawHighlights),
+      bom: JSON.stringify(rawBom),
+      tools: JSON.stringify(rawTools),
+      learnings: fd.get("learnings") || "",
+      featured: fd.get("featured") === "on",
+      order: parseInt(fd.get("order") as string) || 0,
+    };
+
+    try {
+      const res = await fetch("/api/admin/workshop", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+      if (result.success) {
+        window.location.reload();
+      } else {
+        alert("Error: " + (result.error || "Failed to update"));
+      }
+    } catch {
+      alert("Network error");
+    }
+  });
+
+  // Delete Project Click
+  document.querySelectorAll("[data-delete]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const id = parseInt(btn.getAttribute("data-delete") || "0");
+      if (!confirm("Are you sure you want to delete this DIY project?")) return;
+
+      try {
+        const res = await fetch("/api/admin/workshop", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id }),
+        });
+        const result = await res.json();
+        if (result.success) {
+          window.location.reload();
+        } else {
+          alert("Error: " + (result.error || "Failed to delete"));
+        }
+      } catch {
+        alert("Network error");
+      }
+    });
+  });
+</script>

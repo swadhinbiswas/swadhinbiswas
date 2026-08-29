@@ -25,7 +25,12 @@ import {
   certifications,
   faqs,
   languages,
+  galleryPhotos,
+  books,
+  workshopProjects,
 } from './schema';
+
+import { defaultPhotosList } from '../lib/photos';
 
 // Import static config
 import { getDynamicConfig } from "../lib/config";
@@ -141,14 +146,28 @@ async function seed() {
         href: nav.href,
         external: nav.external || false,
         location: 'header',
-        order: i,
+        order: i + 1,
+        createdAt: now,
+        updatedAt: now,
+      });
+    }
+    // Creative nav
+    const creativeNav = siteConfig.creativeNavItems || [];
+    for (let i = 0; i < creativeNav.length; i++) {
+      const nav = creativeNav[i];
+      await db.insert(navigationItems).values({
+        label: nav.label,
+        href: nav.href,
+        external: nav.external || false,
+        location: 'creative',
+        order: i + 10,
         createdAt: now,
         updatedAt: now,
       });
     }
     // Menu nav (additional items)
     const menuOnlyItems = siteConfig.navMenuItems.filter(
-      item => !siteConfig.navItems.some(n => n.href === item.href)
+      item => !siteConfig.navItems.some(n => n.href === item.href) && !creativeNav.some(c => c.href === item.href)
     );
     for (let i = 0; i < menuOnlyItems.length; i++) {
       const nav = menuOnlyItems[i];
@@ -162,7 +181,242 @@ async function seed() {
         updatedAt: now,
       });
     }
-    console.log(`  ✅ Inserted ${siteConfig.navItems.length + menuOnlyItems.length} navigation items`);
+    console.log(`  ✅ Inserted ${siteConfig.navItems.length + creativeNav.length + menuOnlyItems.length} navigation items`);
+
+    // 3c. Gallery Photos
+    console.log('📷 Seeding gallery photos...');
+    for (const photo of defaultPhotosList) {
+      await db.insert(galleryPhotos).values({
+        slug: photo.slug || photo.id,
+        title: photo.title,
+        url: photo.url,
+        thumb: photo.thumb || photo.url,
+        mediaType: photo.mediaType || 'image',
+        category: photo.category || 'nature',
+        categoryLabel: photo.categoryLabel || 'Photography',
+        location: photo.location || 'Bangladesh',
+        year: photo.year || '2026',
+        camera: photo.exif?.camera || 'Digital Sensor',
+        lens: photo.exif?.lens || 'Prime Lens',
+        aperture: photo.exif?.aperture || 'ƒ/1.8',
+        shutter: photo.exif?.shutter || '1/120s',
+        iso: photo.exif?.iso || 'ISO 200',
+        focal: photo.exif?.focal || '26mm',
+        story: photo.story || 'Captured on location.',
+        aspect: photo.aspect || 'wide',
+        featured: photo.featured ? 1 : 0,
+        order: photo.order || 0,
+        createdAt: now,
+        updatedAt: now,
+      });
+    }
+    console.log(`  ✅ Inserted ${defaultPhotosList.length} gallery photos`);
+
+    // 3d. Technical Books & Audiobooks
+    console.log('📚 Seeding technical books & audiobooks...');
+    const initialBooks = [
+      {
+        title: 'Designing Data-Intensive Applications',
+        author: 'Martin Kleppmann',
+        type: 'read',
+        category: 'Distributed Systems',
+        status: 'completed',
+        rating: 5,
+        url: 'https://dataintensive.net/',
+        takeaway: 'The definitive masterclass on replication, partitioning, distributed transactions, and stream processing architectures.',
+        featured: true,
+        order: 1
+      },
+      {
+        title: 'Database Internals',
+        author: 'Alex Petrov',
+        type: 'read',
+        category: 'Database Architecture',
+        status: 'completed',
+        rating: 5,
+        url: 'https://www.databass.dev/',
+        takeaway: 'Deep engineering dive into B-Trees, LSM-Trees, Write-Ahead Logs (WAL), and distributed consensus algorithms.',
+        featured: true,
+        order: 2
+      },
+      {
+        title: 'Site Reliability Engineering: How Google Runs Production Systems',
+        author: 'Betsy Beyer, Chris Jones, Niall Murphy',
+        type: 'listened',
+        category: 'Systems & Reliability',
+        status: 'completed',
+        rating: 5,
+        url: 'https://sre.google/sre-book/table-of-contents/',
+        takeaway: 'Practical approaches to SLOs, error budgets, blameless postmortems, and distributed systems automation at scale.',
+        featured: true,
+        order: 3
+      },
+      {
+        title: 'The Pragmatic Programmer: 20th Anniversary Edition',
+        author: 'David Thomas, Andrew Hunt',
+        type: 'both',
+        category: 'Software Engineering',
+        status: 'completed',
+        rating: 5,
+        url: 'https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/',
+        takeaway: 'Timeless principles on tracer bullets, orthogonality, defensive coding, and continuous intellectual investment.',
+        featured: false,
+        order: 4
+      },
+      {
+        title: 'Staff Engineer: Leadership Beyond the Management Track',
+        author: 'Will Larson',
+        type: 'listened',
+        category: 'Engineering Leadership',
+        status: 'completed',
+        rating: 5,
+        url: 'https://staffeng.com/book',
+        takeaway: 'Frameworks for setting technical direction, sponsorship, cross-team alignment, and high-leverage architectural execution.',
+        featured: false,
+        order: 5
+      },
+      {
+        title: 'Building Microservices: Designing Fine-Grained Systems',
+        author: 'Sam Newman',
+        type: 'read',
+        category: 'System Design',
+        status: 'completed',
+        rating: 5,
+        url: 'https://samnewman.io/books/building_microservices_2nd_edition/',
+        takeaway: 'Decoupling services, event-driven integration patterns, distributed tracing, and evolutionary database design.',
+        featured: false,
+        order: 6
+      }
+    ];
+    for (const b of initialBooks) {
+      await db.insert(books).values({ ...b, createdAt: now, updatedAt: now });
+    }
+    console.log(`  ✅ Inserted ${initialBooks.length} technical books & audiobooks`);
+
+    // 3e. DIY Workshop & Hardware Projects
+    console.log('🛠️ Seeding workshop & DIY projects...');
+    const initialBuilds = [
+      {
+        slug: 'alice-split-keyboard',
+        title: 'Custom 65% Alice Ergonomic Mechanical Keyboard',
+        badge: 'Completed / Daily Driver',
+        timeframe: '3 weekends',
+        categoryKey: 'keyboards',
+        category: 'Hardware / Peripherals',
+        icon: 'keyboard',
+        summary: 'A bespoke ergonomic mechanical keyboard built from scratch with custom-machined FR4 plates, hand-lubed switches, and QMK/VIA programmable firmware.',
+        image: '',
+        video: '',
+        highlights: JSON.stringify([
+          'Ergonomic angled Alice layout to reduce wrist pronation during 10+ hour coding sessions',
+          'Hand-lubricated Gateron Oil King linear switches with Krytox 205g0 and GPL 105 for buttery smooth actuation',
+          'Custom poured silicone dampener inside CNC anodized aluminum casing eliminating hollow case resonance',
+          'Powered by Raspberry Pi RP2040 microcontroller with custom layer keymaps (Vim navigation on CapsLock)'
+        ]),
+        bom: JSON.stringify([
+          { item: 'Microcontroller', spec: 'Raspberry Pi RP2040 (Zero)' },
+          { item: 'Switches', spec: 'Gateron Oil King Linears (55g actuation)' },
+          { item: 'Keycaps', spec: 'PBT Dye-Sub Chalk Profile' },
+          { item: 'Stabilizers', spec: 'TX AP Screw-in V4 Stabilizers' },
+          { item: 'Plate & Foam', spec: 'Custom laser-cut FR4 + Poron Gasket Strips' }
+        ]),
+        tools: JSON.stringify(['Soldering Iron (TS100)', 'Krytox 205g0', 'Switch Opener', 'Multimeter', 'QMK CLI']),
+        learnings: 'Achieving true acoustic thock requires strict tolerance matching between switch housings, plate stiffness, and gasket compression.',
+        featured: true,
+        order: 1
+      },
+      {
+        slug: 'silent-homelab-cluster',
+        title: 'Zero-Noise 3-Node Homelab Cluster & Private Cloud',
+        badge: 'Hardware Active (99.9% Uptime)',
+        timeframe: '2 weeks',
+        categoryKey: 'homelab',
+        category: 'Infrastructure / Homelab',
+        icon: 'server',
+        summary: 'An ultra-compact, silent 3-node mini server cluster housed in a custom 3D-printed rack running lightweight Kubernetes (K3s), Tailscale mesh VPN, and local LLM inference.',
+        image: '',
+        video: '',
+        highlights: JSON.stringify([
+          'Custom PETG modular 3D-printed rack with integrated cable management and magnetic front dust filter',
+          'Zero-RPM silent Noctua 5V cooling channels keeping SoC temperatures under 48°C under full multi-core load',
+          '100% NVMe SSD storage over dedicated USB 3.0 UASP bridges delivering 420 MB/s sustained sequential I/O',
+          'Automated GitOps deployment via ArgoCD hosting local DNS, Home Assistant, WireGuard, and Docker containers'
+        ]),
+        bom: JSON.stringify([
+          { item: 'Compute Nodes', spec: '3x Raspberry Pi 4B (8GB RAM each, 24GB total)' },
+          { item: 'Storage', spec: '3x Kingston 1TB NVMe M.2 + Sabrent Aluminum Enclosures' },
+          { item: 'Cooling', spec: '2x Noctua NF-A4x10 5V Low-Noise PWM Fans' },
+          { item: 'Networking', spec: 'Netgear 5-Port Gigabit Managed Switch (VLAN configured)' },
+          { item: 'Chassis', spec: 'Custom designed PETG 3D Printed Stack' }
+        ]),
+        tools: JSON.stringify(['Bambu Lab 3D Printer (PETG)', 'Crimping Tool (RJ45)', 'Digital Caliper', 'Ansible']),
+        learnings: 'Designing custom ventilation ducts in CAD beforehand prevents hot air recycling between densely stacked SBC boards.',
+        featured: true,
+        order: 2
+      },
+      {
+        slug: 'esp32-co2-sentry',
+        title: 'ESP32 Micro-Climate & True NDIR CO2 Sentry',
+        badge: 'Deployed in Studio',
+        timeframe: '4 days',
+        categoryKey: 'iot',
+        category: 'IoT / Embedded',
+        icon: 'cpu',
+        summary: 'An ultra-low-power environmental desk monitor using Photoacoustic NDIR CO2 sensing and a paper-like e-Paper display to prevent cognitive fatigue during deep focus.',
+        image: '',
+        video: '',
+        highlights: JSON.stringify([
+          'Sensirion SCD40 Photoacoustic sensor measuring accurate ppm CO2, temperature, and relative humidity',
+          '2.9" black-and-white e-Paper display with zero backlighting glare that remains legible under direct sunlight',
+          'Deep-sleep firmware cycle waking every 5 minutes, achieving months of battery life on a single 18650 cell',
+          'Seamless MQTT integration publishing real-time telemetry into Home Assistant and Grafana dashboards'
+        ]),
+        bom: JSON.stringify([
+          { item: 'Processor', spec: 'ESP32-S3 Mini Module (Wi-Fi + BLE)' },
+          { item: 'CO2 Sensor', spec: 'Sensirion SCD40 True NDIR Photoacoustic' },
+          { item: 'Display', spec: 'Waveshare 2.9" SPI e-Paper Module' },
+          { item: 'Power', spec: 'Panasonic 18650 3400mAh Li-ion + TP4056 USB-C' },
+          { item: 'Case', spec: 'Handcrafted Solid Walnut & Frosted Smoked Acrylic' }
+        ]),
+        tools: JSON.stringify(['Soldering Station', 'ESP-IDF / PlatformIO', 'Oscilloscope', 'Laser Cutter']),
+        learnings: 'CO2 levels above 1000 ppm measurably reduce cognitive sharpness; having a real-time e-paper indicator directly prompts natural room ventilation.',
+        featured: true,
+        order: 3
+      },
+      {
+        slug: 'circadian-smart-lighting',
+        title: 'Studio Bias Luminescence & Circadian Smart Lighting',
+        badge: 'Active Daily',
+        timeframe: '1 weekend',
+        categoryKey: 'lighting',
+        category: 'Smart Lighting / Firmware',
+        icon: 'zap',
+        summary: 'A high-CRI (95+) addressable bias lighting system running custom WLED firmware, automatically synchronizing color temperature with natural solar circadian rhythm.',
+        image: '',
+        video: '',
+        highlights: JSON.stringify([
+          'High Color Rendering Index (CRI 95+) LED diodes minimizing eye strain during late night development sessions',
+          '45° angled matte black aluminum extrusion channel with heavy frosted diffuser eliminating visible LED hot spots',
+          'Local HomeKit & Home Assistant integration with hardware rotary encoder for physical stepless dimming',
+          'Custom sound-reactive visualizer mode using an integrated MEMS microphone (INMP441) for music sessions'
+        ]),
+        bom: JSON.stringify([
+          { item: 'LED Strip', spec: 'WS2812B 60 LED/m (High CRI 95+, 5V)' },
+          { item: 'MCU', spec: 'ESP32-WROOM-32 with Logic Level Shifter (74AHCT125)' },
+          { item: 'Power Supply', spec: 'Mean Well 5V 10A LRS-50 Switching PSU' },
+          { item: 'Diffuser', spec: 'Black Anodized V-Slot Extrusion Channel (2m)' },
+          { item: 'Audio Sensor', spec: 'INMP441 I2S Digital MEMS Microphone' }
+        ]),
+        tools: JSON.stringify(['Wire Strippers', 'Heat Gun', 'Multimeter', 'WLED Web Flasher']),
+        learnings: 'Level shifting the 3.3V ESP32 data signal to 5.0V with a 74AHCT125 IC prevents high-frequency flickering over long wire runs.',
+        featured: false,
+        order: 4
+      }
+    ];
+    for (const b of initialBuilds) {
+      await db.insert(workshopProjects).values({ ...b, createdAt: now, updatedAt: now });
+    }
+    console.log(`  ✅ Inserted ${initialBuilds.length} workshop projects`);
 
     // 4. Experiences
     console.log('💼 Seeding experiences...');

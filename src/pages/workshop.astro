@@ -1,0 +1,328 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getDynamicConfig } from "../lib/config";
+import { getWorkshopProjects } from "../lib/loaders";
+import JsonLd from "../components/seo/JsonLd.astro";
+import { env } from "../lib/env";
+
+const siteConfig = await getDynamicConfig();
+const siteUrl = (siteConfig.url || env.siteUrl || "https://swadhin.cv").replace(/\/$/, "");
+const author = siteConfig.author || "Swadhin Biswas";
+
+function safeParse<T>(raw: any, fallback: T): T {
+  if (!raw) return fallback;
+  if (typeof raw !== "string") return raw as T;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+const rawProjects = await getWorkshopProjects();
+
+const diyProjects = rawProjects.map((p) => ({
+  id: p.id,
+  slug: p.slug,
+  title: p.title,
+  badge: p.badge || "Completed",
+  timeframe: p.timeframe || "1 weekend",
+  categoryKey: p.categoryKey || "keyboards",
+  category: p.category || "Hardware / Peripherals",
+  icon: p.icon || "cpu",
+  summary: p.summary || "",
+  image: p.image || null,
+  video: p.video || null,
+  highlights: safeParse<string[]>(p.highlights, []),
+  bom: safeParse<Array<{ item: string; spec: string }>>(p.bom, []),
+  tools: safeParse<string[]>(p.tools, []),
+  learnings: p.learnings || "",
+}));
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": `${siteUrl}/` },
+        { "@type": "ListItem", "position": 2, "name": "The Workshop", "item": `${siteUrl}/workshop` }
+      ]
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": `${siteUrl}/workshop/#webpage`,
+      "url": `${siteUrl}/workshop`,
+      "name": `The Workshop & DIY Hardware Builds — ${author}`,
+      "description": `Custom mechanical keyboards, silent homelab clusters, embedded IoT devices, and physical hardware builds by ${author}.`,
+      "isPartOf": { "@id": `${siteUrl}/#website` },
+      "mainEntity": { "@id": `${siteUrl}/#person` }
+    }
+  ]
+};
+---
+
+<BaseLayout
+  title="The Workshop — Hardware & DIY Builds"
+  description={`Custom mechanical keyboards, 3D printed homelab clusters, embedded IoT devices, and physical builds by ${author}.`}
+>
+  <JsonLd slot="head" schema={schema} />
+
+  <!-- Hero Section -->
+  <section class="screen-line-after">
+    <div class="container-narrow py-12 sm:py-16">
+      <div class="reveal">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg)]">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
+          </span>
+          <p class="text-eyebrow">Physical Craft & Electronics</p>
+        </div>
+        <h1 class="text-display text-3xl sm:text-4xl lg:text-5xl text-aurora">
+          The Workshop
+        </h1>
+        <p class="prose-mono mt-4 max-w-2xl text-[var(--color-fg-muted)] leading-relaxed">
+          Where code meets the electronics bench. Custom mechanical keyboards, silent 3D-printed homelab clusters, embedded IoT sensors, and physical studio tools.
+        </p>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="mt-8 flex flex-wrap items-center justify-between gap-3 border-b border-[var(--color-edge)] pb-4 reveal">
+        <div class="flex flex-wrap items-center gap-1.5" id="workshop-filters">
+          <button type="button" class="workshop-filter-pill active" data-workshop-tag="all">
+            All Builds ({diyProjects.length})
+          </button>
+          <button type="button" class="workshop-filter-pill" data-workshop-tag="keyboards">
+            Keyboards & Input
+          </button>
+          <button type="button" class="workshop-filter-pill" data-workshop-tag="homelab">
+            Homelab & Clusters
+          </button>
+          <button type="button" class="workshop-filter-pill" data-workshop-tag="iot">
+            IoT & Sensors
+          </button>
+          <button type="button" class="workshop-filter-pill" data-workshop-tag="lighting">
+            Smart Lighting
+          </button>
+        </div>
+
+        <a href="/explore" class="text-xs font-mono text-[var(--color-fg-subtle)] hover:text-[var(--color-fg)] transition-colors flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+          <span>View Photography Gallery →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Builds Section -->
+  <section class="screen-line-after">
+    <div class="container-narrow py-12 sm:py-16">
+      <div class="grid grid-cols-1 gap-6" id="workshop-grid">
+        {diyProjects.map((diy) => (
+          <div
+            class="workshop-card panel p-6 sm:p-7 reveal transition-all duration-300 hover:border-[var(--color-edge-strong)]"
+            data-workshop-card
+            data-category={diy.categoryKey}
+          >
+            <!-- Optional Project Media Header (Image or Video) -->
+            {diy.video ? (
+              <div class="mb-5 -mx-6 -mt-6 sm:-mx-7 sm:-mt-7 rounded-t-[14px] overflow-hidden bg-black aspect-video relative border-b border-[var(--color-edge)]">
+                <video
+                  src={diy.video}
+                  controls
+                  preload="metadata"
+                  playsinline
+                  class="w-full h-full object-contain"
+                />
+              </div>
+            ) : diy.image ? (
+              <div class="mb-5 -mx-6 -mt-6 sm:-mx-7 sm:-mt-7 rounded-t-[14px] overflow-hidden bg-[var(--color-card-strong)] max-h-72 border-b border-[var(--color-edge)]">
+                <img
+                  src={diy.image}
+                  alt={diy.title}
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+            ) : null}
+
+            <div class="flex flex-wrap items-start justify-between gap-3 border-b border-[var(--color-edge)] pb-4">
+              <div>
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="p-1.5 rounded-md bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg)]">
+                    {diy.icon === 'keyboard' ? (
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/>
+                      </svg>
+                    ) : diy.icon === 'server' ? (
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+                      </svg>
+                    ) : diy.icon === 'zap' ? (
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                      </svg>
+                    ) : (
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/>
+                      </svg>
+                    )}
+                  </span>
+                  <span class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg)]">
+                    {diy.badge}
+                  </span>
+                  <span class="text-xs font-mono text-[var(--color-fg-subtle)]">
+                    {diy.timeframe}
+                  </span>
+                  <span class="text-xs font-mono text-[var(--color-fg-subtle)]">
+                    · {diy.category}
+                  </span>
+                </div>
+                <h2 class="text-lg sm:text-xl font-bold text-[var(--color-fg)] tracking-tight">
+                  {diy.title}
+                </h2>
+              </div>
+            </div>
+
+            <p class="mt-4 text-sm text-[var(--color-fg-muted)] leading-relaxed">
+              {diy.summary}
+            </p>
+
+            <!-- Key Build Highlights -->
+            {diy.highlights && diy.highlights.length > 0 && (
+              <div class="mt-5">
+                <p class="text-xs font-mono font-semibold uppercase tracking-wider text-[var(--color-accent-2)] mb-2.5">
+                  Engineering Highlights
+                </p>
+                <ul class="space-y-2 text-xs sm:text-sm text-[var(--color-fg-muted)]">
+                  {diy.highlights.map((h) => (
+                    <li class="flex items-start gap-2">
+                      <span class="text-[var(--color-fg-subtle)] mt-0.5 select-none font-mono">↳</span>
+                      <span>{h}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <!-- Bill of Materials / Expandable Drawer -->
+            <div class="mt-6 pt-4 border-t border-[var(--color-edge)] bg-[var(--color-card-strong)]/40 -mx-6 -mb-6 p-6 rounded-b-[14px]">
+              <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+                <p class="text-xs font-mono uppercase tracking-wider text-[var(--color-fg-subtle)] font-medium">
+                  Bill of Materials (BOM) & Tooling Specs
+                </p>
+                {diy.tools && diy.tools.length > 0 && (
+                  <div class="flex flex-wrap gap-1">
+                    {diy.tools.map((t) => (
+                      <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--color-card)] border border-[var(--color-edge)] text-[var(--color-fg-muted)]">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {diy.bom && diy.bom.length > 0 && (
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
+                  {diy.bom.map((b) => (
+                    <div class="flex items-center justify-between text-xs font-mono p-2 rounded bg-[var(--color-card)] border border-[var(--color-edge)]">
+                      <span class="text-[var(--color-fg-muted)]">{b.item}</span>
+                      <span class="font-medium text-[var(--color-fg)]">{b.spec}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {diy.learnings && (
+                <div class="mt-3 p-3 rounded bg-[var(--color-card)] border border-[var(--color-edge)]/60">
+                  <p class="text-xs text-[var(--color-fg-muted)] italic">
+                    <strong class="font-mono not-italic text-[var(--color-fg)]">Key Takeaway:</strong> {diy.learnings}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Cross-link Callout to Explore & Photography (Clean SVG Icon) -->
+  <section class="screen-line-after">
+    <div class="container-narrow py-10 sm:py-12">
+      <a href="/explore" class="panel p-6 sm:p-7 group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:border-[var(--color-edge-strong)] transition-all">
+        <div class="flex items-start sm:items-center gap-3.5">
+          <span class="p-3 rounded-xl bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg)] shrink-0">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          </span>
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-[var(--color-fg)] group-hover:text-[var(--color-accent-2)] transition-colors">
+              Looking for Photography & Visual Notes?
+            </h3>
+            <p class="text-xs text-[var(--color-fg-muted)] mt-0.5">
+              Explore 16 original nightscapes, Padma River panoramas, and live ambient synthesizer.
+            </p>
+          </div>
+        </div>
+        <span class="text-xs font-mono font-medium px-3.5 py-2 rounded-lg bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg)] group-hover:translate-x-1 transition-transform shrink-0">
+          Visit Explore Gallery →
+        </span>
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .workshop-filter-pill {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    color: var(--color-fg-subtle);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .workshop-filter-pill:hover {
+    color: var(--color-fg);
+    background: var(--color-card-strong);
+  }
+  .workshop-filter-pill.active {
+    color: var(--color-fg);
+    background: var(--color-card-strong);
+    border-color: var(--color-edge);
+    font-weight: 600;
+  }
+</style>
+
+<script>
+  const workshopFilterPills = document.querySelectorAll<HTMLButtonElement>('[data-workshop-tag]');
+  const workshopCards = document.querySelectorAll<HTMLElement>('[data-workshop-card]');
+
+  workshopFilterPills.forEach((pill) => {
+    pill.addEventListener('click', () => {
+      workshopFilterPills.forEach((p) => p.classList.remove('active'));
+      pill.classList.add('active');
+
+      const tag = pill.getAttribute('data-workshop-tag');
+      workshopCards.forEach((card) => {
+        const cat = card.getAttribute('data-category');
+        if (tag === 'all' || cat === tag) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>

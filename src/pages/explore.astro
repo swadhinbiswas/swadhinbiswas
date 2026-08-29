@@ -1,0 +1,1002 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getDynamicConfig } from "../lib/config";
+import JsonLd from "../components/seo/JsonLd.astro";
+import { env } from "../lib/env";
+import { getPhotos } from "../lib/photos";
+
+const siteConfig = await getDynamicConfig();
+const siteUrl = (siteConfig.url || env.siteUrl || "https://swadhin.cv").replace(/\/$/, "");
+const author = siteConfig.author || "Swadhin Biswas";
+
+const photos = await getPhotos();
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": `${siteUrl}/` },
+        { "@type": "ListItem", "position": 2, "name": "Explore", "item": `${siteUrl}/explore` }
+      ]
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": `${siteUrl}/explore/#webpage`,
+      "url": `${siteUrl}/explore`,
+      "name": `Explore & Photography Gallery — ${author}`,
+      "description": `Original photography gallery, visual field notes, and interactive digital experiments by ${author}.`,
+      "isPartOf": { "@id": `${siteUrl}/#website` },
+      "mainEntity": { "@id": `${siteUrl}/#person` }
+    }
+  ]
+};
+---
+
+<BaseLayout
+  title="Explore & Photography Gallery"
+  description={`Original field photography, nightscapes, natural horizons, and interactive digital experiments by ${author}.`}
+>
+  <JsonLd slot="head" schema={schema} />
+
+  <!-- Hero Section -->
+  <section class="screen-line-after">
+    <div class="container-narrow py-12 sm:py-16">
+      <div class="reveal">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg)]">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          </span>
+          <p class="text-eyebrow">Visuals & Digital Lab</p>
+        </div>
+        <h1 class="text-display text-3xl sm:text-4xl lg:text-5xl text-aurora">
+          Explore & Photography
+        </h1>
+        <p class="prose-mono mt-4 max-w-2xl text-[var(--color-fg-muted)] leading-relaxed">
+          A visual collection of original field photography, atmospheric nightscapes, nature studies, and interactive audio-visual playgrounds.
+        </p>
+      </div>
+
+      <!-- Section Tabs -->
+      <div class="mt-8 flex flex-wrap items-center gap-2 border-b border-[var(--color-edge)] pb-4 reveal">
+        <button type="button" class="craft-tab active" data-target="gallery">
+          <svg class="w-3.5 h-3.5 inline-block -mt-0.5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+          <span>Photography Gallery</span>
+          <span class="tab-badge">{photos.length} frames</span>
+        </button>
+        <button type="button" class="craft-tab" data-target="lab">
+          <svg class="w-3.5 h-3.5 inline-block -mt-0.5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          <span>Interactive Audio/Canvas</span>
+          <span class="tab-badge">Live</span>
+        </button>
+        <a href="/workshop" class="craft-tab-link ml-auto flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+          </svg>
+          <span>Go to The Workshop (DIY & Hardware) →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 1: PHOTOGRAPHY GALLERY -->
+  <section class="explore-section screen-line-after" data-category="gallery">
+    <div class="container-narrow py-12 sm:py-16">
+      <div class="section-head">
+        <div>
+          <div class="flex items-center gap-2">
+            <p class="section-eyebrow">Field Notes</p>
+            <span class="count-badge">{photos.length} frames</span>
+          </div>
+          <h2 class="section-title mt-1">Field photography & frames</h2>
+          <p class="prose-mono text-xs text-[var(--color-fg-subtle)] mt-1">
+            Original captures from travels, nightscapes, and natural horizons. Click any frame for slide-by-slide modal preview.
+          </p>
+        </div>
+
+        <!-- Photo category pills -->
+        <div class="flex flex-wrap items-center gap-1.5 photo-filters" id="photo-filters">
+          <button type="button" class="filter-pill active" data-photo-tag="all">All ({photos.length})</button>
+          <button type="button" class="filter-pill" data-photo-tag="night">Night & Moonlit</button>
+          <button type="button" class="filter-pill" data-photo-tag="nature">Nature & Waters</button>
+          <button type="button" class="filter-pill" data-photo-tag="street">Street & Life</button>
+          <button type="button" class="filter-pill" data-photo-tag="travel">Travel & Motion</button>
+        </div>
+      </div>
+
+      <!-- Photo Grid / Bento -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6" id="photo-grid">
+        {photos.map((p, index) => (
+          <div
+            class="photo-card panel group cursor-pointer overflow-hidden relative"
+            data-photo-item
+            data-category={p.category}
+            data-index={index}
+            data-title={p.title}
+            data-location={p.location}
+            data-year={p.year}
+            data-story={p.story}
+            data-full={p.url}
+            data-media-type={p.mediaType || "image"}
+            data-camera={p.exif?.camera || p.camera || "Digital Sensor"}
+            data-lens={p.exif?.lens || p.lens || "Prime Wide"}
+            data-settings={`${p.exif?.aperture || p.aperture || "ƒ/1.8"} · ${p.exif?.shutter || p.shutter || "1/120s"} · ${p.exif?.iso || p.iso || "ISO 200"}`}
+          >
+            <div class="aspect-[4/3] w-full overflow-hidden bg-[var(--color-card-strong)] relative flex items-center justify-center">
+              {p.mediaType === "video" ? (
+                <div class="relative w-full h-full bg-black flex items-center justify-center">
+                  <video
+                    src={`${p.url}#t=0.001`}
+                    poster={p.thumb && !p.thumb.endsWith(".mp4") ? p.thumb : undefined}
+                    preload="metadata"
+                    muted
+                    playsinline
+                    class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                  <div class="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors pointer-events-none">
+                    <span class="w-12 h-12 rounded-full bg-black/75 border border-white/30 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                      <svg class="w-5 h-5 ml-0.5" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </span>
+                  </div>
+                  <span class="absolute top-2.5 right-2.5 text-[10px] font-mono px-2 py-0.5 rounded bg-black/70 backdrop-blur-sm text-white font-medium flex items-center gap-1">
+                    <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                    <span>VIDEO</span>
+                  </span>
+                </div>
+              ) : (
+                <div class="relative w-full h-full img-wrap">
+                  <div class="skeleton-shimmer"></div>
+                  <img
+                    src={p.thumb || p.url}
+                    alt={p.title}
+                    loading="lazy"
+                    decoding="async"
+                    onload="this.parentElement.classList.add('img-loaded')"
+                    class="gallery-img w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 group-hover:filter group-hover:brightness-105"
+                  />
+                </div>
+              )}
+
+              <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent opacity-85 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none flex flex-col justify-end p-4 text-white">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-xs font-medium tracking-wide uppercase font-mono text-zinc-300">{p.location}</span>
+                  <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/20 backdrop-blur-sm">
+                    {p.year || "2026"}
+                  </span>
+                </div>
+                <h3 class="text-sm font-semibold text-white mt-1 leading-snug">{p.title}</h3>
+                <p class="text-[11px] font-mono text-zinc-400 mt-0.5">
+                  {p.exif?.camera || p.camera || "Digital"} · {p.exif?.aperture || p.aperture || "ƒ/1.8"}
+                </p>
+              </div>
+            </div>
+            <div class="p-3 bg-[var(--color-card)] border-t border-[var(--color-edge)] flex items-center justify-between">
+              <span class="text-xs font-mono font-medium text-[var(--color-fg)] truncate max-w-[70%]">{p.title}</span>
+              <span class="text-[10px] font-mono text-[var(--color-fg-subtle)] shrink-0">{p.categoryLabel || p.category}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: INTERACTIVE LAB & AUDIO -->
+  <section class="explore-section screen-line-after hidden-section" data-category="lab">
+    <div class="container-narrow py-12 sm:py-16">
+      <div class="section-head">
+        <div>
+          <div class="flex items-center gap-2">
+            <p class="section-eyebrow">Creative Lab</p>
+            <span class="count-badge">Live interactive</span>
+          </div>
+          <h2 class="section-title mt-1">Digital playground & ambient audio</h2>
+          <p class="prose-mono text-xs text-[var(--color-fg-subtle)] mt-1">
+            Real-time generative physics particle canvas and in-browser Web Audio soundscape synthesizer.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
+        <!-- Interactive Canvas -->
+        <div class="lg:col-span-7 panel p-5 flex flex-col justify-between reveal">
+          <div>
+            <div class="flex items-center justify-between border-b border-[var(--color-edge)] pb-3 mb-3">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-xs font-mono font-medium text-[var(--color-fg)]">Particle Constellation</span>
+              </div>
+              <span class="text-[10px] font-mono text-[var(--color-fg-subtle)]">Interact with Cursor / Tap</span>
+            </div>
+            <p class="text-xs text-[var(--color-fg-muted)] mb-3">
+              Move your mouse or drag your finger across the canvas to distort magnetic gravitational nodes and trigger particle webs.
+            </p>
+          </div>
+
+          <div class="relative w-full h-64 sm:h-72 rounded-lg bg-[var(--color-bg)] border border-[var(--color-edge)] overflow-hidden">
+            <canvas id="gravity-canvas" class="w-full h-full cursor-crosshair"></canvas>
+            <div class="absolute bottom-2 right-2 flex gap-1 z-10">
+              <button type="button" id="canvas-reset" class="text-[10px] font-mono px-2 py-1 rounded bg-[var(--color-card)]/80 backdrop-blur-md border border-[var(--color-edge)] text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]">
+                Reset Nodes
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ambient Focus Audio Synth -->
+        <div class="lg:col-span-5 panel p-5 flex flex-col justify-between reveal">
+          <div>
+            <div class="flex items-center justify-between border-b border-[var(--color-edge)] pb-3 mb-3">
+              <div class="flex items-center gap-2">
+                <span class="p-1.5 rounded-md bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg)]">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+                    <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+                  </svg>
+                </span>
+                <span class="text-xs font-mono font-medium text-[var(--color-fg)]">Ambient Soundscapes</span>
+              </div>
+              <span class="text-[10px] font-mono text-[var(--color-fg-subtle)]">Web Audio API</span>
+            </div>
+            <p class="text-xs text-[var(--color-fg-muted)] mb-4">
+              Zero audio downloads. Procedurally synthesized ambient background textures designed for deep flow-state coding.
+            </p>
+
+            <!-- Soundscape Selection -->
+            <div class="space-y-2 mb-5">
+              <label class="sound-option flex items-center justify-between p-2.5 rounded-lg bg-[var(--color-card-strong)] border border-[var(--color-edge)] cursor-pointer hover:border-[var(--color-edge-strong)] transition-colors">
+                <div class="flex items-center gap-2.5">
+                  <input type="radio" name="sound-mode" value="rain" checked class="text-[var(--color-fg)] accent-white" />
+                  <span class="text-xs font-mono font-medium text-[var(--color-fg)]">Midnight Rain</span>
+                </div>
+                <span class="text-[10px] font-mono text-[var(--color-fg-subtle)]">Pink Noise / Drops</span>
+              </label>
+
+              <label class="sound-option flex items-center justify-between p-2.5 rounded-lg bg-[var(--color-card-strong)] border border-[var(--color-edge)] cursor-pointer hover:border-[var(--color-edge-strong)] transition-colors">
+                <div class="flex items-center gap-2.5">
+                  <input type="radio" name="sound-mode" value="drone" class="text-[var(--color-fg)] accent-white" />
+                  <span class="text-xs font-mono font-medium text-[var(--color-fg)]">Celestial Drone</span>
+                </div>
+                <span class="text-[10px] font-mono text-[var(--color-fg-subtle)]">Harmonic Sine LFO</span>
+              </label>
+
+              <label class="sound-option flex items-center justify-between p-2.5 rounded-lg bg-[var(--color-card-strong)] border border-[var(--color-edge)] cursor-pointer hover:border-[var(--color-edge-strong)] transition-colors">
+                <div class="flex items-center gap-2.5">
+                  <input type="radio" name="sound-mode" value="brown" class="text-[var(--color-fg)] accent-white" />
+                  <span class="text-xs font-mono font-medium text-[var(--color-fg)]">Brownian Focus</span>
+                </div>
+                <span class="text-[10px] font-mono text-[var(--color-fg-subtle)]">Deep Warmth</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="pt-4 border-t border-[var(--color-edge)]">
+            <div class="flex items-center justify-between gap-4">
+              <button
+                type="button"
+                id="audio-toggle-btn"
+                class="flex-1 py-2.5 px-4 rounded-lg bg-[var(--color-fg)] text-[var(--color-bg)] font-mono text-xs font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+              >
+                <span id="audio-play-icon">▶</span>
+                <span id="audio-play-label">Start Ambient Sound</span>
+              </button>
+
+              <div class="flex items-center gap-2 w-28 text-[var(--color-fg-subtle)]">
+                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                </svg>
+                <input
+                  type="range"
+                  id="audio-volume"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value="0.4"
+                  class="w-full h-1.5 bg-[var(--color-edge)] rounded-lg appearance-none cursor-pointer accent-white"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cross-link Callout to The Workshop -->
+  <section class="screen-line-after">
+    <div class="container-narrow py-10 sm:py-12">
+      <a href="/workshop" class="panel p-6 sm:p-7 group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:border-[var(--color-edge-strong)] transition-all">
+        <div class="flex items-start sm:items-center gap-3.5">
+          <span class="p-3 rounded-xl bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg)] shrink-0">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
+          </span>
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-[var(--color-fg)] group-hover:text-[var(--color-accent-2)] transition-colors">
+              Looking for DIY Hardware & Physical Builds?
+            </h3>
+            <p class="text-xs text-[var(--color-fg-muted)] mt-0.5">
+              Explore custom Alice mechanical keyboards, 3-Node silent homelab clusters, and ESP32 environmental sentries.
+            </p>
+          </div>
+        </div>
+        <span class="text-xs font-mono font-medium px-3.5 py-2 rounded-lg bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg)] group-hover:translate-x-1 transition-transform shrink-0">
+          Visit The Workshop →
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <!-- LIGHTBOX MODAL COMPONENT -->
+  <div id="lightbox-modal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-lg hidden items-center justify-center p-2 sm:p-6" aria-modal="true" role="dialog">
+    <div class="relative max-w-6xl w-full max-h-[95vh] flex flex-col bg-[var(--color-card)] border border-[var(--color-edge)] rounded-2xl overflow-hidden shadow-2xl">
+      <!-- Top Bar Controls -->
+      <div class="flex items-center justify-between p-3.5 px-5 bg-[var(--color-card)] border-b border-[var(--color-edge)] z-20">
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-mono font-medium text-[var(--color-fg-subtle)]" id="lightbox-counter">1 / 16</span>
+          <span class="w-1 h-1 rounded-full bg-[var(--color-edge-strong)]"></span>
+          <span class="text-xs font-mono font-semibold text-[var(--color-fg)]" id="lightbox-top-title">Photo Title</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <a id="lightbox-open-full" href="" target="_blank" rel="noopener noreferrer" class="text-xs font-mono px-2.5 py-1 rounded bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] transition-colors">
+            Open Original ↗
+          </a>
+          <button type="button" id="lightbox-close" class="w-7 h-7 rounded-full bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-white flex items-center justify-center hover:bg-white hover:text-black transition-colors" aria-label="Close modal">
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Stage -->
+      <div class="flex-1 flex flex-col md:flex-row min-h-0 overflow-hidden">
+        <!-- Media Area -->
+        <div class="md:w-3/4 bg-black/60 flex items-center justify-center relative min-h-[300px] sm:min-h-[480px] p-4">
+          <!-- Image -->
+          <img id="lightbox-img" src="" alt="" class="max-h-[68vh] w-auto max-w-full object-contain rounded transition-opacity duration-200" />
+          
+          <!-- Video -->
+          <video id="lightbox-video" src="" controls autoplay playsinline loop class="max-h-[68vh] w-auto max-w-full rounded hidden bg-black"></video>
+          
+          <!-- Prev/Next buttons -->
+          <button type="button" id="lightbox-prev" class="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/70 border border-white/20 text-white flex items-center justify-center hover:bg-white hover:text-black hover:scale-105 transition-all" aria-label="Previous photo">
+            ❮
+          </button>
+          <button type="button" id="lightbox-next" class="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/70 border border-white/20 text-white flex items-center justify-center hover:bg-white hover:text-black hover:scale-105 transition-all" aria-label="Next photo">
+            ❯
+          </button>
+        </div>
+
+        <!-- Metadata & Story Sidebar -->
+        <div class="md:w-1/4 p-5 flex flex-col justify-between overflow-y-auto max-h-[35vh] md:max-h-[70vh] border-t md:border-t-0 md:border-l border-[var(--color-edge)] bg-[var(--color-card)]">
+          <div>
+            <div class="flex items-center justify-between text-xs font-mono text-[var(--color-fg-subtle)] mb-2">
+              <span id="lightbox-location">Location</span>
+              <span id="lightbox-year" class="px-1.5 py-0.5 rounded bg-[var(--color-card-strong)] border border-[var(--color-edge)]">2026</span>
+            </div>
+            <h3 id="lightbox-title" class="text-lg font-bold text-[var(--color-fg)] mb-2.5">Photo Title</h3>
+            <p id="lightbox-story" class="text-xs text-[var(--color-fg-muted)] leading-relaxed mb-4">
+              Story note.
+            </p>
+          </div>
+
+          <div class="border-t border-[var(--color-edge)] pt-3.5 space-y-2">
+            <p class="text-[10px] font-mono uppercase tracking-wider text-[var(--color-fg-subtle)] font-semibold">
+              Capture & Lens Profile
+            </p>
+            <div class="p-2.5 rounded-lg bg-[var(--color-card-strong)] border border-[var(--color-edge)] space-y-1.5 text-xs font-mono">
+              <div class="flex justify-between">
+                <span class="text-[var(--color-fg-subtle)]">Camera</span>
+                <span id="lightbox-camera" class="text-[var(--color-fg)] font-medium">LMC 8.4</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-[var(--color-fg-subtle)]">Profile</span>
+                <span id="lightbox-lens" class="text-[var(--color-fg)] font-medium">Wide Lens</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-[var(--color-fg-subtle)]">Settings</span>
+                <span id="lightbox-settings" class="text-[var(--color-fg)] font-medium">ƒ/1.8 · 1/120s · ISO 200</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Thumbnail Slider Strip -->
+      <div class="p-2 bg-[var(--color-card-strong)] border-t border-[var(--color-edge)] overflow-x-auto flex gap-2 no-scrollbar" id="lightbox-thumbs-strip">
+        {photos.map((p, idx) => (
+          <button
+            type="button"
+            class="thumb-strip-btn shrink-0 w-12 h-12 rounded overflow-hidden border border-transparent hover:border-white transition-all opacity-60 hover:opacity-100 relative bg-black"
+            data-thumb-idx={idx}
+            aria-label={`Jump to media ${idx + 1}`}
+          >
+            {p.mediaType === "video" ? (
+              <video
+                src={`${p.url}#t=0.001`}
+                poster={p.thumb && !p.thumb.endsWith(".mp4") ? p.thumb : undefined}
+                preload="metadata"
+                muted
+                playsinline
+                class="w-full h-full object-cover pointer-events-none"
+              />
+            ) : (
+              <img src={p.thumb || p.url} alt={p.title} class="w-full h-full object-cover pointer-events-none" />
+            )}
+            {p.mediaType === "video" && (
+              <span class="absolute inset-0 bg-black/40 flex items-center justify-center text-white">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .craft-tab {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 9999px;
+    border: 1px solid var(--color-edge);
+    background: var(--color-card);
+    color: var(--color-fg-muted);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  .craft-tab:hover {
+    color: var(--color-fg);
+    border-color: var(--color-edge-strong);
+  }
+  .craft-tab.active {
+    background: var(--color-fg);
+    color: var(--color-bg);
+    border-color: var(--color-fg);
+    font-weight: 600;
+  }
+  .tab-badge {
+    font-size: 0.7rem;
+    margin-left: 0.4rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 9999px;
+    background: rgba(120, 120, 120, 0.15);
+  }
+  .craft-tab.active .tab-badge {
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--color-bg);
+  }
+
+  .craft-tab-link {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-fg-subtle);
+    transition: color 0.2s ease;
+  }
+  .craft-tab-link:hover {
+    color: var(--color-fg);
+  }
+
+  .filter-pill {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    color: var(--color-fg-subtle);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .filter-pill:hover {
+    color: var(--color-fg);
+    background: var(--color-card-strong);
+  }
+  .filter-pill.active {
+    color: var(--color-fg);
+    background: var(--color-card-strong);
+    border-color: var(--color-edge);
+    font-weight: 500;
+  }
+
+  .explore-section {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  .explore-section.hidden-section {
+    display: none;
+  }
+
+  /* Skeleton Shimmer Loading */
+  .img-wrap {
+    position: relative;
+    background: var(--color-card-strong);
+  }
+  .skeleton-shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
+    animation: shimmer 1.6s infinite;
+    pointer-events: none;
+  }
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  .gallery-img {
+    opacity: 0;
+    transition: opacity 0.4s ease-in, transform 0.7s ease-out;
+  }
+  .img-loaded .gallery-img {
+    opacity: 1;
+  }
+  .img-loaded .skeleton-shimmer {
+    display: none;
+  }
+
+  /* Thumbnail active indicator */
+  .thumb-strip-btn.active-thumb {
+    opacity: 1 !important;
+    border-color: var(--color-fg) !important;
+    transform: scale(1.08);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>
+
+<script>
+  // ── Tab Switching Logic ──
+  const craftTabs = document.querySelectorAll<HTMLButtonElement>('.craft-tab');
+  const exploreSections = document.querySelectorAll<HTMLElement>('.explore-section');
+
+  craftTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      craftTabs.forEach((t) => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const target = tab.getAttribute('data-target');
+      exploreSections.forEach((sec) => {
+        const cat = sec.getAttribute('data-category');
+        if (cat === target) {
+          sec.classList.remove('hidden-section');
+        } else {
+          sec.classList.add('hidden-section');
+        }
+      });
+    });
+  });
+
+  // ── Photo Category Filtering ──
+  const photoFilterPills = document.querySelectorAll<HTMLButtonElement>('[data-photo-tag]');
+  const photoCards = document.querySelectorAll<HTMLElement>('[data-photo-item]');
+
+  photoFilterPills.forEach((pill) => {
+    pill.addEventListener('click', () => {
+      photoFilterPills.forEach((p) => p.classList.remove('active'));
+      pill.classList.add('active');
+
+      const tag = pill.getAttribute('data-photo-tag');
+      photoCards.forEach((card) => {
+        const cat = card.getAttribute('data-category');
+        if (tag === 'all' || cat === tag) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // ── Interactive Lightbox & Slide-by-Slide Viewer ──
+  const lightbox = document.getElementById('lightbox-modal');
+  const lbImg = document.getElementById('lightbox-img') as HTMLImageElement;
+  const lbVideo = document.getElementById('lightbox-video') as HTMLVideoElement;
+  const lbTopTitle = document.getElementById('lightbox-top-title');
+  const lbTitle = document.getElementById('lightbox-title');
+  const lbStory = document.getElementById('lightbox-story');
+  const lbLocation = document.getElementById('lightbox-location');
+  const lbYear = document.getElementById('lightbox-year');
+  const lbCamera = document.getElementById('lightbox-camera');
+  const lbLens = document.getElementById('lightbox-lens');
+  const lbSettings = document.getElementById('lightbox-settings');
+  const lbCounter = document.getElementById('lightbox-counter');
+  const lbOpenFull = document.getElementById('lightbox-open-full') as HTMLAnchorElement;
+  const lbClose = document.getElementById('lightbox-close');
+  const lbPrev = document.getElementById('lightbox-prev');
+  const lbNext = document.getElementById('lightbox-next');
+  const thumbStripBtns = document.querySelectorAll<HTMLButtonElement>('.thumb-strip-btn');
+
+  let currentPhotoIdx = 0;
+  const photoItems = Array.from(photoCards);
+
+  function openLightbox(idx: number) {
+    if (!photoItems[idx] || !lightbox) return;
+    currentPhotoIdx = idx;
+    const card = photoItems[idx];
+
+    const fullUrl = card.getAttribute('data-full') || '';
+    const mediaType = card.getAttribute('data-media-type') || 'image';
+    const title = card.getAttribute('data-title') || '';
+    const story = card.getAttribute('data-story') || '';
+    const location = card.getAttribute('data-location') || '';
+    const year = card.getAttribute('data-year') || '2026';
+    const camera = card.getAttribute('data-camera') || '';
+    const lens = card.getAttribute('data-lens') || '';
+    const settings = card.getAttribute('data-settings') || '';
+
+    if (mediaType === 'video') {
+      if (lbImg) lbImg.classList.add('hidden');
+      if (lbVideo) {
+        lbVideo.src = fullUrl;
+        lbVideo.classList.remove('hidden');
+        lbVideo.play().catch(() => {});
+      }
+    } else {
+      if (lbVideo) {
+        lbVideo.pause();
+        lbVideo.src = '';
+        lbVideo.classList.add('hidden');
+      }
+      if (lbImg) {
+        lbImg.classList.remove('hidden');
+        lbImg.src = fullUrl;
+        lbImg.alt = title;
+      }
+    }
+
+    if (lbTopTitle) lbTopTitle.textContent = title;
+    if (lbTitle) lbTitle.textContent = title;
+    if (lbStory) lbStory.textContent = story;
+    if (lbLocation) lbLocation.textContent = location;
+    if (lbYear) lbYear.textContent = year;
+    if (lbCamera) lbCamera.textContent = camera;
+    if (lbLens) lbLens.textContent = lens;
+    if (lbSettings) lbSettings.textContent = settings;
+    if (lbCounter) lbCounter.textContent = `${idx + 1} / ${photoItems.length}`;
+    if (lbOpenFull) lbOpenFull.href = fullUrl;
+
+    // Highlight active thumbnail
+    thumbStripBtns.forEach((btn, bIdx) => {
+      if (bIdx === idx) {
+        btn.classList.add('active-thumb');
+        btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      } else {
+        btn.classList.remove('active-thumb');
+      }
+    });
+
+    lightbox.classList.remove('hidden');
+    lightbox.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    if (!lightbox) return;
+    if (lbVideo) {
+      lbVideo.pause();
+      lbVideo.src = '';
+    }
+    lightbox.classList.remove('flex');
+    lightbox.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  photoCards.forEach((card, idx) => {
+    card.addEventListener('click', () => openLightbox(idx));
+  });
+
+  thumbStripBtns.forEach((btn, idx) => {
+    btn.addEventListener('click', () => openLightbox(idx));
+  });
+
+  lbClose?.addEventListener('click', closeLightbox);
+  lbPrev?.addEventListener('click', () => {
+    const nextIdx = (currentPhotoIdx - 1 + photoItems.length) % photoItems.length;
+    openLightbox(nextIdx);
+  });
+  lbNext?.addEventListener('click', () => {
+    const nextIdx = (currentPhotoIdx + 1) % photoItems.length;
+    openLightbox(nextIdx);
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (lightbox?.classList.contains('flex')) {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') lbPrev?.click();
+      if (e.key === 'ArrowRight') lbNext?.click();
+    }
+  });
+
+  lightbox?.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  // ── Touch Swipe Support on Lightbox ──
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  lightbox?.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  lightbox?.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    if (touchStartX - touchEndX > 50) {
+      lbNext?.click();
+    } else if (touchEndX - touchStartX > 50) {
+      lbPrev?.click();
+    }
+  }, { passive: true });
+
+  // ── Interactive Gravity Particle Canvas ──
+  const canvas = document.getElementById('gravity-canvas') as HTMLCanvasElement;
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let width = (canvas.width = canvas.parentElement?.clientWidth || 400);
+    let height = (canvas.height = canvas.parentElement?.clientHeight || 280);
+
+    window.addEventListener('resize', () => {
+      if (!canvas.parentElement) return;
+      width = canvas.width = canvas.parentElement.clientWidth;
+      height = canvas.height = canvas.parentElement.clientHeight;
+    });
+
+    interface Particle {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      radius: number;
+    }
+
+    const particles: Particle[] = [];
+    const numParticles = 45;
+
+    for (let i = 0; i < numParticles; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 1.2,
+        vy: (Math.random() - 0.5) * 1.2,
+        radius: Math.random() * 2 + 1,
+      });
+    }
+
+    let mouse = { x: -1000, y: -1000, radius: 100 };
+
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      mouse.x = -1000;
+      mouse.y = -1000;
+    });
+
+    document.getElementById('canvas-reset')?.addEventListener('click', () => {
+      particles.forEach((p) => {
+        p.x = Math.random() * width;
+        p.y = Math.random() * height;
+        p.vx = (Math.random() - 0.5) * 1.5;
+        p.vy = (Math.random() - 0.5) * 1.5;
+      });
+    });
+
+    function renderCanvas() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, width, height);
+
+      // Draw web links
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 90) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(255, 255, 255, ${0.25 * (1 - dist / 90)})`;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Update & draw particles
+      particles.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > width) p.vx *= -1;
+        if (p.y < 0 || p.y > height) p.vy *= -1;
+
+        const dx = mouse.x - p.x;
+        const dy = mouse.y - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < mouse.radius) {
+          const angle = Math.atan2(dy, dx);
+          p.x -= Math.cos(angle) * 2;
+          p.y -= Math.sin(angle) * 2;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+        ctx.fill();
+      });
+
+      requestAnimationFrame(renderCanvas);
+    }
+
+    renderCanvas();
+  }
+
+  // ── Web Audio Ambient Soundscapes Synthesizer ──
+  let audioCtx: AudioContext | null = null;
+  let isPlaying = false;
+  let masterGain: GainNode | null = null;
+  let activeNodes: (AudioNode | number)[] = [];
+
+  const toggleBtn = document.getElementById('audio-toggle-btn');
+  const playIcon = document.getElementById('audio-play-icon');
+  const playLabel = document.getElementById('audio-play-label');
+  const volumeSlider = document.getElementById('audio-volume') as HTMLInputElement;
+
+  function initAudio() {
+    if (!audioCtx) {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      audioCtx = new AudioContextClass();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.setValueAtTime(parseFloat(volumeSlider?.value || '0.4'), audioCtx.currentTime);
+      masterGain.connect(audioCtx.destination);
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
+
+  function stopCurrentSound() {
+    activeNodes.forEach((node) => {
+      if (typeof node === 'number') {
+        window.clearInterval(node);
+      } else if (node && 'stop' in node && typeof (node as any).stop === 'function') {
+        try { (node as any).stop(); } catch {}
+      }
+    });
+    activeNodes = [];
+  }
+
+  function startSound(mode: string) {
+    initAudio();
+    if (!audioCtx || !masterGain) return;
+    stopCurrentSound();
+
+    if (mode === 'rain') {
+      const bufferSize = 2 * audioCtx.sampleRate;
+      const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        b3 = 0.86650 * b3 + white * 0.3104856;
+        b4 = 0.55000 * b4 + white * 0.5329522;
+        b5 = -0.7616 * b5 - white * 0.0168980;
+        output[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.06;
+        b6 = white * 0.115926;
+      }
+
+      const whiteNoise = audioCtx.createBufferSource();
+      whiteNoise.buffer = noiseBuffer;
+      whiteNoise.loop = true;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(900, audioCtx.currentTime);
+
+      whiteNoise.connect(filter);
+      filter.connect(masterGain);
+      whiteNoise.start();
+      activeNodes.push(whiteNoise);
+    } else if (mode === 'drone') {
+      const freqs = [110, 164.81, 220, 329.63];
+      freqs.forEach((f, idx) => {
+        if (!audioCtx || !masterGain) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(f, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.06 / (idx + 1), audioCtx.currentTime);
+
+        const lfo = audioCtx.createOscillator();
+        const lfoGain = audioCtx.createGain();
+        lfo.frequency.setValueAtTime(0.1 + idx * 0.05, audioCtx.currentTime);
+        lfoGain.gain.setValueAtTime(2.0, audioCtx.currentTime);
+        lfo.connect(osc.frequency);
+
+        osc.connect(gain);
+        gain.connect(masterGain);
+        osc.start();
+        lfo.start();
+        activeNodes.push(osc, lfo);
+      });
+    } else if (mode === 'brown') {
+      const bufferSize = audioCtx.sampleRate * 2;
+      const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      let lastOut = 0.0;
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        output[i] = (lastOut + (0.02 * white)) / 1.02;
+        lastOut = output[i];
+        output[i] *= 1.8;
+      }
+      const brownNoise = audioCtx.createBufferSource();
+      brownNoise.buffer = noiseBuffer;
+      brownNoise.loop = true;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(450, audioCtx.currentTime);
+
+      brownNoise.connect(filter);
+      filter.connect(masterGain);
+      brownNoise.start();
+      activeNodes.push(brownNoise);
+    }
+  }
+
+  toggleBtn?.addEventListener('click', () => {
+    if (!isPlaying) {
+      const selected = (document.querySelector('input[name="sound-mode"]:checked') as HTMLInputElement)?.value || 'rain';
+      startSound(selected);
+      isPlaying = true;
+      if (playIcon) playIcon.textContent = '⏸';
+      if (playLabel) playLabel.textContent = 'Pause Ambient Sound';
+    } else {
+      stopCurrentSound();
+      isPlaying = false;
+      if (playIcon) playIcon.textContent = '▶';
+      if (playLabel) playLabel.textContent = 'Start Ambient Sound';
+    }
+  });
+
+  document.querySelectorAll('input[name="sound-mode"]').forEach((radio) => {
+    radio.addEventListener('change', (e) => {
+      if (isPlaying) {
+        startSound((e.target as HTMLInputElement).value);
+      }
+    });
+  });
+
+  volumeSlider?.addEventListener('input', (e) => {
+    if (masterGain && audioCtx) {
+      masterGain.gain.setValueAtTime(parseFloat((e.target as HTMLInputElement).value), audioCtx.currentTime);
+    }
+  });
+</script>

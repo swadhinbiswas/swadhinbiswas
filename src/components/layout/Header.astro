@@ -5,18 +5,51 @@ const siteConfig = await getDynamicConfig();
 const pathname = Astro.url.pathname;
 const author = siteConfig.author || "Swadhin Biswas";
 
-const navItems = (siteConfig.navItems || []).map((item) => ({
+const rawNav = siteConfig.navItems || [];
+const rawCreative = siteConfig.creativeNavItems || [];
+
+const defaultNav = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Experience", href: "/experience" },
+  { label: "Skills", href: "/skills" },
+  { label: "Projects", href: "/projects" },
+  { label: "Achievements", href: "/achievements" },
+  { label: "Research", href: "/research" },
+  { label: "Writing", href: "/posts" },
+  { label: "Contact", href: "/contact" },
+];
+
+const defaultCreative = [
+  { label: "Bookshelf", href: "/books" },
+  { label: "Explore", href: "/explore" },
+  { label: "The Workshop", href: "/workshop" },
+];
+
+function getIcon(href: string, label: string): string {
+  if (href === "/") return "home";
+  if (href.startsWith("/about")) return "user";
+  if (href.startsWith("/experience")) return "briefcase";
+  if (/skill/i.test(href)) return "code";
+  if (href.startsWith("/project")) return "folder";
+  if (href.startsWith("/achievement")) return "award";
+  if (href.startsWith("/researc")) return "flask";
+  if (/(post|blog|writing)/i.test(href)) return "book-open";
+  if (/(book|reading|shelf)/i.test(href) || /(book|reading|shelf)/i.test(label)) return "book-open";
+  if (href.startsWith("/contact")) return "mail";
+  if (/(workshop|diy|hardware|maker)/i.test(href) || /(workshop|diy)/i.test(label)) return "wrench";
+  if (/(explore|gallery|photo|creative)/i.test(href) || /(explore|gallery)/i.test(label)) return "compass";
+  return "link";
+}
+
+const navItems = (rawNav.length > 0 ? rawNav : defaultNav).map((item) => ({
   ...item,
-  icon: item.href === "/" ? "home"
-    : item.href.startsWith("/project") ? "folder"
-    : /skill/i.test(item.href) ? "code"
-    : item.href.startsWith("/researc") ? "flask"
-    : /(post|blog|writing)/i.test(item.href) ? "book-open"
-    : item.href.startsWith("/about") ? "user"
-    : item.href.startsWith("/contact") ? "mail"
-    : item.href.startsWith("/experience") ? "briefcase"
-    : /educati/i.test(item.href) ? "book"
-    : "link",
+  icon: getIcon(item.href, item.label),
+}));
+
+const creativeItems = (rawCreative.length > 0 ? rawCreative : defaultCreative).map((item) => ({
+  ...item,
+  icon: getIcon(item.href, item.label),
 }));
 
 const socials = [
@@ -83,22 +116,47 @@ const isActive = (href: string) =>
       >
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           {item.icon === "home" && <><path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/></>}
-          {item.icon === "folder" && <><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></>}
+          {item.icon === "user" && <><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></>}
+          {item.icon === "briefcase" && <><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></>}
           {item.icon === "code" && <><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></>}
+          {item.icon === "folder" && <><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></>}
+          {item.icon === "award" && <><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></>}
           {item.icon === "flask" && <><path d="M9 3h6"/><path d="M10 3v6L4 19a2 2 0 0 0 2 3h12a2 2 0 0 0 2-3l-6-10V3"/><path d="M7 14h10"/></>}
           {item.icon === "book-open" && <><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></>}
-          {item.icon === "user" && <><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></>}
           {item.icon === "mail" && <><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></>}
-          {item.icon === "briefcase" && <><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></>}
-          {item.icon === "book" && <><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></>}
+          {item.icon === "compass" && <><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></>}
+          {item.icon === "wrench" && <><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></>}
           {item.icon === "link" && <><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></>}
         </svg>
         <span>{item.label}</span>
       </a>
     ))}
 
+    {creativeItems.length > 0 && (
+      <>
+        <div class="nav-divider" aria-hidden="true"></div>
+        <p class="nav-section-title">The Workshop & Craft</p>
+        {creativeItems.map((item) => (
+          <a
+            href={item.href}
+            class:list={["nav-item", isActive(item.href) && "active"]}
+            aria-current={isActive(item.href) ? "page" : undefined}
+          >
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              {item.icon === "book-open" && <><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></>}
+              {item.icon === "compass" && <><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></>}
+              {item.icon === "wrench" && <><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></>}
+              {item.icon === "link" && <><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></>}
+            </svg>
+            <span>{item.label}</span>
+          </a>
+        ))}
+      </>
+    )}
+
     {socials.length > 0 && (
       <>
+        <div class="nav-divider" aria-hidden="true"></div>
         <p class="nav-section-title">Elsewhere</p>
         {socials.map((s) => (
           <a href={s.href} target={s.href.startsWith("http") ? "_blank" : undefined} rel={s.href.startsWith("http") ? "noopener noreferrer" : undefined} class="nav-item">
@@ -260,6 +318,12 @@ const isActive = (href: string) =>
   .mobile-menu-toggle:hover { border-color: var(--color-fg-subtle); color: var(--color-fg); }
 
   .sidebar-nav { flex: 1; padding: 0.6rem 0; }
+  .nav-divider {
+    height: 1px;
+    background: var(--color-edge);
+    margin: 0.75rem 1.1rem 0.4rem;
+    opacity: 0.7;
+  }
   .sidebar-footer {
     padding: 1rem 1.1rem;
     border-top: 1px solid var(--color-edge);

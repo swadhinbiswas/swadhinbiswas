@@ -364,3 +364,82 @@ export const uses = sqliteTable('uses', {
 
 export type Use = typeof uses.$inferSelect;
 export type NewUse = typeof uses.$inferInsert;
+
+// Gallery Photos & Media
+export const galleryPhotos = sqliteTable('gallery_photos', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  slug: text('slug').notNull().unique(),
+  title: text('title').notNull(),
+  url: text('url').notNull(),
+  thumb: text('thumb'),
+  mediaType: text('media_type').default('image'), // 'image' | 'video'
+  category: text('category').default('night'), // 'night' | 'nature' | 'street' | 'travel' | 'macro'
+  categoryLabel: text('category_label').default('Night Photography'),
+  location: text('location').default('Bangladesh'),
+  year: text('year').default('2026'),
+  camera: text('camera').default('GCam / LMC 8.4'),
+  lens: text('lens').default('Prime Wide'),
+  aperture: text('aperture').default('ƒ/1.8'),
+  shutter: text('shutter').default('1/120s'),
+  iso: text('iso').default('ISO 200'),
+  focal: text('focal').default('26mm'),
+  story: text('story'),
+  aspect: text('aspect').default('wide'), // 'wide' | 'tall' | 'square'
+  featured: integer('featured', { mode: 'boolean' }).default(false),
+  order: integer('order').default(0),
+  createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
+  updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
+});
+
+export type GalleryPhoto = typeof galleryPhotos.$inferSelect;
+export type NewGalleryPhoto = typeof galleryPhotos.$inferInsert;
+
+// Books & Technical Reading / Audiobooks
+export const books = sqliteTable('books', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  title: text('title').notNull(),
+  author: text('author').notNull(),
+  type: text('type').default('read'), // 'read' | 'listened' | 'both'
+  category: text('category').default('Distributed Systems'),
+  status: text('status').default('completed'), // 'completed' | 'reading' | 'listening' | 'recommended'
+  rating: integer('rating').default(5),
+  url: text('url'),
+  cover: text('cover'),
+  takeaway: text('takeaway'),
+  featured: integer('featured', { mode: 'boolean' }).default(false),
+  order: integer('order').default(0),
+  createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
+  updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
+});
+
+export type Book = typeof books.$inferSelect;
+export type NewBook = typeof books.$inferInsert;
+
+// DIY Workshop & Hardware Projects
+export const workshopProjects = sqliteTable('workshop_projects', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  slug: text('slug').notNull().unique(),
+  title: text('title').notNull(),
+  badge: text('badge').default('Completed'),
+  timeframe: text('timeframe').default('1 weekend'),
+  categoryKey: text('category_key').default('keyboards'), // 'keyboards', 'homelab', 'iot', 'lighting', 'general'
+  category: text('category').default('Hardware / Peripherals'),
+  icon: text('icon').default('cpu'), // 'keyboard', 'server', 'cpu', 'zap', 'tool'
+  summary: text('summary'),
+  image: text('image'), // Image URL
+  video: text('video'), // Video URL (MP4 / CDN)
+  highlights: text('highlights'), // JSON string array
+  bom: text('bom'), // JSON string array of { item, spec }
+  tools: text('tools'), // JSON string array
+  learnings: text('learnings'),
+  featured: integer('featured', { mode: 'boolean' }).default(false),
+  order: integer('order').default(0),
+  createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
+  updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
+});
+
+export type WorkshopProject = typeof workshopProjects.$inferSelect;
+export type NewWorkshopProject = typeof workshopProjects.$inferInsert;
+
+
+

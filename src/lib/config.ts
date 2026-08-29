@@ -63,6 +63,7 @@ export interface DynamicSiteConfig {
   };
 
   navItems: Array<{ label: string; href: string; external?: boolean }>;
+  creativeNavItems?: Array<{ label: string; href: string; external?: boolean }>;
   navMenuItems: Array<{ label: string; href: string; external?: boolean }>;
   socials: Array<{ name: string; url: string; icon: string; footer?: boolean }>;
   experience: Array<{
@@ -287,7 +288,7 @@ async function fetchDynamicConfig(): Promise<DynamicSiteConfig> {
       },
 
       navItems:
-        navData.length > 0
+        navData.length > 0 && navData.some((n) => n.location === "header" || n.location === "both")
           ? navData
               .filter((n) => n.location === "header" || n.location === "both")
               .map((n) => ({
@@ -295,7 +296,31 @@ async function fetchDynamicConfig(): Promise<DynamicSiteConfig> {
                 href: n.href,
                 external: n.external || false,
               }))
-          : [],
+          : [
+              { label: "Home", href: "/" },
+              { label: "About", href: "/about" },
+              { label: "Experience", href: "/experience" },
+              { label: "Skills", href: "/skills" },
+              { label: "Projects", href: "/projects" },
+              { label: "Achievements", href: "/achievements" },
+              { label: "Research", href: "/research" },
+              { label: "Writing", href: "/posts" },
+              { label: "Contact", href: "/contact" },
+            ],
+
+      creativeNavItems:
+        navData.length > 0 && navData.some((n) => n.location === "creative")
+          ? navData
+              .filter((n) => n.location === "creative")
+              .map((n) => ({
+                label: n.label,
+                href: n.href,
+                external: n.external || false,
+              }))
+          : [
+              { label: "Explore", href: "/explore" },
+              { label: "The Workshop", href: "/workshop" },
+            ],
 
       navMenuItems:
         navData.length > 0

@@ -1,0 +1,116 @@
+---
+interface Props {}
+---
+
+<section id="explore" class="section">
+  <div class="container-narrow">
+    <div class="section-head reveal">
+      <div>
+        <div class="flex items-center gap-1.5 mb-1">
+          <span class="text-xs text-[var(--color-accent-2)]">✦</span>
+          <p class="text-eyebrow">Makerspace & Visuals</p>
+        </div>
+        <h2 class="section-title">
+          Explore & Creative Craft
+        </h2>
+      </div>
+      <a href="/explore" class="section-link">
+        Explore full creative vault <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+      <!-- Photography Feature Card -->
+      <a href="/explore" class="panel p-6 group cursor-pointer block hover:border-[var(--color-edge-strong)] transition-all duration-300 reveal">
+        <div class="flex items-center justify-between gap-2 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="p-2 rounded-lg bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg)] flex items-center justify-center">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+            </span>
+            <span class="text-xs font-mono font-semibold uppercase tracking-wider text-[var(--color-fg)]">Field Photography</span>
+          </div>
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg-subtle)]">
+            Visual Notes
+          </span>
+        </div>
+
+        <p class="text-xs sm:text-sm text-[var(--color-fg-muted)] leading-relaxed mb-4">
+          High-contrast street frames, architectural geometry, and atmospheric landscape studies with real camera EXIF metadata.
+        </p>
+
+        <!-- Visual Mini Thumbnails -->
+        <div class="grid grid-cols-3 gap-2 mt-2">
+          <div class="aspect-square rounded-md overflow-hidden bg-[var(--color-card-strong)] relative">
+            <img
+              src="https://cdn.swadhin.cv/photography/Paddma.jpg"
+              alt="Padma River"
+              loading="lazy"
+              decoding="async"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+          <div class="aspect-square rounded-md overflow-hidden bg-[var(--color-card-strong)] relative">
+            <img
+              src="https://cdn.swadhin.cv/photography/20240803_180241_%F0%9F%8C%86Magical%20Night%20by%20Riyan.jpg"
+              alt="Magical Night Twilight"
+              loading="lazy"
+              decoding="async"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+          <div class="aspect-square rounded-md overflow-hidden bg-[var(--color-card-strong)] relative">
+            <img
+              src="https://cdn.swadhin.cv/photography/LMC_20240928_180904_%F0%9F%8C%83Moonlit%20Night%20by%20Riyan%20(lmc8.4).jpg"
+              alt="Moonlit Nightscape"
+              loading="lazy"
+              decoding="async"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+        </div>
+
+        <div class="mt-4 flex items-center justify-between text-xs font-mono text-[var(--color-fg-subtle)] group-hover:text-[var(--color-fg)] transition-colors">
+          <span>Padma River · Moonlit Night</span>
+          <span class="group-hover:translate-x-1 transition-transform">View Gallery →</span>
+        </div>
+      </a>
+
+      <!-- DIY & Hardware Feature Card -->
+      <a href="/workshop" class="panel p-6 group cursor-pointer block hover:border-[var(--color-edge-strong)] transition-all duration-300 reveal reveal-delay-1">
+        <div class="flex items-center justify-between gap-2 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="p-2 rounded-lg bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg)] flex items-center justify-center">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+              </svg>
+            </span>
+            <span class="text-xs font-mono font-semibold uppercase tracking-wider text-[var(--color-fg)]">The Workshop</span>
+          </div>
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg-subtle)]">
+            Hardware & IoT
+          </span>
+        </div>
+
+        <p class="text-xs sm:text-sm text-[var(--color-fg-muted)] leading-relaxed mb-4">
+          Custom Alice mechanical keyboards, 3D-printed silent homelab clusters, and ESP32 environmental sensors with full BOM specs.
+        </p>
+
+        <!-- Mini Tags -->
+        <div class="flex flex-wrap gap-1.5 mt-2">
+          <span class="tag text-[11px]">Alice Split Keyboard (QMK)</span>
+          <span class="tag text-[11px]">3-Node RPi Homelab</span>
+          <span class="tag text-[11px]">ESP32 SCD40 CO2 Sentry</span>
+          <span class="tag text-[11px]">Circadian Studio LED</span>
+        </div>
+
+        <div class="mt-6 flex items-center justify-between text-xs font-mono text-[var(--color-fg-subtle)] group-hover:text-[var(--color-fg)] transition-colors">
+          <span>Soldering · CAD · Firmware</span>
+          <span class="group-hover:translate-x-1 transition-transform">Explore Builds →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
