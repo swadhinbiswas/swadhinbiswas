@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1140" height="172" viewBox="0 0 1140 172" role="img" aria-label="Contributions this year and latest merged commit">
 <rect x="8" y="8" width="1124" height="156" rx="16" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
 <text x="48" y="44" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12" letter-spacing="4" fill="#8b949e">THIS YEAR · CONTRIBUTIONS</text>
-<text x="48" y="108" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="44" font-weight="bold" fill="#4493f8">4,253</text>
+<text x="48" y="108" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="44" font-weight="bold" fill="#4493f8">4,254</text>
 <text x="48" y="134" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5" fill="#8b949e">contributions in 2026</text>
 <rect x="310" y="115" width="13" height="13" rx="2.5" fill="#58a6ff"/>
 <rect x="329" y="95" width="13" height="33" rx="2.5" fill="#58a6ff"/>
@@ -23,5 +23,5 @@
 <text x="708" y="79" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13" fill="#e6edf3">swadhinbiswas/warren</text>
 <text x="606" y="112" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="13.5" fill="#e6edf3">Beautiful, foolproof installer</text>
 <circle cx="612" cy="133" r="3.5" fill="#3fb950"/>
-<text x="624" y="137" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" fill="#8b949e">merged #4 · just now · c66c816</text>
+<text x="624" y="137" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11.5" fill="#8b949e">merged #4 · 2h ago · c66c816</text>
 </svg>
