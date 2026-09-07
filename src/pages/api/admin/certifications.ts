@@ -32,6 +32,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
     const now = new Date().toISOString();
     const result = await db.insert(certifications).values({ name, issuer, year, url, credentialId, order, createdAt: now, updatedAt: now }).returning();
+    await purgeSiteCaches();
     return new Response(JSON.stringify({ success: true, data: result[0] }), {
       status: 201,
       headers: { 'Content-Type': 'application/json' },
@@ -67,6 +68,7 @@ export const PUT: APIRoute = async ({ request }) => {
         headers: { 'Content-Type': 'application/json' },
       });
     }
+    await purgeSiteCaches();
     return new Response(JSON.stringify({ success: true, data: result[0] }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
@@ -83,6 +85,7 @@ export const DELETE: APIRoute = async ({ request }) => {
   try {
     const { id } = await request.json();
     await db.delete(certifications).where(eq(certifications.id, id));
+    await purgeSiteCaches();
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },

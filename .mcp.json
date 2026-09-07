@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "portfolio": {
+      "command": "node",
+      "args": ["mcp/dist/index.js"]
+    }
+  }
+}

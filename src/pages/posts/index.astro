@@ -282,20 +282,33 @@ const schema = {
     overflow: hidden;
   }
   .post-card-img { width: 100%; height: 100%; object-fit: cover; }
+  /* Top scrim so the overlay pill stays legible over any cover photo */
+  .post-card-cover::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3.25rem;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.45), transparent);
+    pointer-events: none;
+  }
   .post-card-featured {
     position: absolute;
     top: 0.6rem;
     right: 0.6rem;
+    z-index: 1;
     padding: 0.2rem 0.55rem;
     border-radius: 999px;
-    background: rgba(10, 10, 10, 0.6);
+    /* Theme-aware chip: near-opaque in both modes (solid fallback first) */
+    background: var(--color-card);
+    background: color-mix(in srgb, var(--color-card) 85%, transparent);
     border: 1px solid var(--color-edge-strong);
     color: var(--color-fg);
     font-family: var(--font-mono);
     font-size: 0.6rem;
     font-weight: 600;
     letter-spacing: 0.03em;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(8px) saturate(1.2);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   }
 
   .post-card-body { padding: 1.1rem 1.25rem 1.2rem; display: flex; flex-direction: column; gap: 0.55rem; flex: 1; }

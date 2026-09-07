@@ -11,7 +11,10 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "deploy": "vercel --prod",
-    "push:env": "bun run scripts/push-env.ts"
+    "push:env": "bun run scripts/push-env.ts",
+    "mcp:build": "npm --prefix mcp run build",
+    "mcp:start": "node mcp/dist/index.js",
+    "mcp:dev": "node mcp/src/index.ts"
   },
   "dependencies": {
     "@astrojs/node": "^9.5.2",

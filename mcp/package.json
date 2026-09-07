@@ -1,0 +1,26 @@
+{
+  "name": "portfolio-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "MCP server (stdio) for reading and editing the portfolio Turso/SQLite database",
+  "bin": {
+    "portfolio-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "dev": "node src/index.ts"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.17.2",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@upstash/redis": "^1.38.0",
+    "dotenv": "^17.4.2",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "typescript": "^5.9.3"
+  }
+}
