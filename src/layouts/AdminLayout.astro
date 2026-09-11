@@ -1,11 +1,76 @@
 ---
 import "../styles/global.css";
+import "../styles/admin.css";
 
 interface Props {
   title?: string;
 }
 
 const { title = "Admin Panel" } = Astro.props;
+const pathname = Astro.url.pathname;
+
+interface NavItem { label: string; href: string; icon: string; section: string }
+
+const nav: NavItem[] = [
+  { label: "Dashboard", href: "/cat", icon: "grid", section: "Overview" },
+
+  { label: "Projects", href: "/cat/projects", icon: "folder", section: "Content" },
+  { label: "Blog", href: "/cat/blog", icon: "edit", section: "Content" },
+  { label: "Books & Reading", href: "/cat/books", icon: "book", section: "Content" },
+  { label: "The Workshop", href: "/cat/workshop", icon: "wrench", section: "Content" },
+  { label: "Publications", href: "/cat/publications", icon: "file", section: "Content" },
+
+  { label: "Experience", href: "/cat/experiences", icon: "briefcase", section: "Career" },
+  { label: "Education", href: "/cat/education", icon: "cap", section: "Career" },
+  { label: "Skills", href: "/cat/skills", icon: "code", section: "Career" },
+  { label: "Achievements", href: "/cat/achievements", icon: "award", section: "Career" },
+  { label: "Certifications", href: "/cat/certifications", icon: "cert", section: "Career" },
+  { label: "Languages", href: "/cat/languages", icon: "globe", section: "Career" },
+
+  { label: "User Profile", href: "/cat/profile", icon: "user", section: "Profile" },
+  { label: "Bio", href: "/cat/bio", icon: "file", section: "Profile" },
+  { label: "Interests", href: "/cat/interests", icon: "target", section: "Profile" },
+  { label: "Testimonials", href: "/cat/testimonials", icon: "quote", section: "Profile" },
+  { label: "Hero Metrics", href: "/cat/hero-metrics", icon: "chart", section: "Profile" },
+  { label: "FAQs", href: "/cat/faqs", icon: "help", section: "Profile" },
+
+  { label: "Site Settings", href: "/cat/settings", icon: "settings", section: "Site" },
+  { label: "Social Links", href: "/cat/socials", icon: "link", section: "Site" },
+  { label: "Navigation", href: "/cat/navigation", icon: "compass", section: "Site" },
+  { label: "Support", href: "/cat/support", icon: "coffee", section: "Site" },
+];
+
+const sections = ["Overview", "Content", "Career", "Profile", "Site"];
+
+const isActive = (href: string) =>
+  href === "/cat" ? pathname === "/cat" || pathname === "/cat/" : pathname.startsWith(href);
+
+function icon(name: string): string {
+  const paths: Record<string, string> = {
+    grid: `<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>`,
+    folder: `<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>`,
+    edit: `<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/>`,
+    book: `<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>`,
+    wrench: `<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>`,
+    file: `<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>`,
+    briefcase: `<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>`,
+    cap: `<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/>`,
+    code: `<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>`,
+    award: `<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>`,
+    cert: `<circle cx="12" cy="8" r="6"/><path d="M9 13.5 8 22l4-2 4 2-1-8.5"/>`,
+    globe: `<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>`,
+    user: `<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>`,
+    target: `<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>`,
+    quote: `<path d="M3 21c3 0 7-1 7-8V5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3"/><path d="M15 21c3 0 7-1 7-8V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3"/>`,
+    chart: `<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>`,
+    help: `<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>`,
+    settings: `<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>`,
+    link: `<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>`,
+    compass: `<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>`,
+    coffee: `<path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>`,
+  };
+  return paths[name] || paths.grid;
+}
 ---
 
 <!doctype html>
@@ -16,180 +81,133 @@ const { title = "Admin Panel" } = Astro.props;
     <meta name="robots" content="noindex, nofollow" />
     <title>{title} | Admin</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem("theme");
+          if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {}
+      })();
+    </script>
   </head>
-  <body class="min-h-screen bg-[#050510] text-white font-mono">
-    <!-- Background -->
-    <div
-      class="fixed inset-0 z-[-1] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-[#050510] to-[#050510]"
-    >
-    </div>
+  <body class="admin-theme min-h-screen">
+    <div class="admin-scrim" data-scrim data-open="false"></div>
 
     <div class="flex min-h-screen">
       <!-- Sidebar -->
-      <aside
-        class="w-64 glass-panel border-r border-white/10 p-4 flex flex-col"
-      >
-        <div class="mb-8">
-          <a href="/cat" class="text-xl font-bold text-neon-cyan">Admin Panel</a
-          >
-          <p class="text-xs text-gray-500 mt-1">Portfolio CMS</p>
+      <aside class="admin-sidebar w-[17rem] shrink-0 flex flex-col" data-sidebar data-open="false">
+        <div class="flex items-center gap-3 px-4 py-4 border-b border-[var(--color-edge)]">
+          <a href="/cat" class="flex items-center gap-3 min-w-0" aria-label="Admin dashboard">
+            <span class="inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius)] bg-[var(--color-fg)] text-[var(--color-bg)] font-mono text-xs font-bold">SB</span>
+            <span class="min-w-0">
+              <strong class="block text-sm font-bold tracking-tight">Admin Panel</strong>
+              <span class="block font-mono text-[0.62rem] text-[var(--color-fg-subtle)]">Portfolio CMS</span>
+            </span>
+          </a>
         </div>
 
-        <nav class="space-y-1 flex-1">
-          <a
-            href="/cat"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">📊</span> Dashboard
-          </a>
-          <a
-            href="/cat/profile"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">👤</span> User Profile
-          </a>
-          <a
-            href="/cat/settings"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">⚙️</span> Site Settings
-          </a>
-          <a
-            href="/cat/socials"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">🔗</span> Social Links
-          </a>
-          <a
-            href="/cat/navigation"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">🧭</span> Navigation
-          </a>
-          <a
-            href="/cat/blog"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">✍️</span> Blog
-          </a>
-          <a
-            href="/cat/experiences"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">💼</span> Experience
-          </a>
-          <a
-            href="/cat/projects"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">📁</span> Projects
-          </a>
-          <a
-            href="/cat/skills"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">🛠️</span> Skills
-          </a>
-          <a
-            href="/cat/bio"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">📝</span> Bio
-          </a>
-          <a
-            href="/cat/education"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">🎓</span> Education
-          </a>
-          <a
-            href="/cat/books"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">📚</span> Books & Reading
-          </a>
-          <a
-            href="/cat/workshop"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">🛠️</span> The Workshop
-          </a>
-          <a
-            href="/cat/publications"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">📄</span> Publications
-          </a>
-          <a
-            href="/cat/testimonials"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">💬</span> Testimonials
-          </a>
-          <a
-            href="/cat/interests"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">🎯</span> Interests
-          </a>
-          <a
-            href="/cat/languages"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">🌍</span> Languages
-          </a>
-          <a
-            href="/cat/achievements"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">🏆</span> Achievements
-          </a>
-          <a
-            href="/cat/certifications"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">📜</span> Certifications
-          </a>
-          <a
-            href="/cat/faqs"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">❓</span> FAQs
-          </a>
-          <a
-            href="/cat/hero-metrics"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">📊</span> Hero Metrics
-          </a>
-          <a
-            href="/cat/support"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
-          >
-            <span class="mr-2">☕</span> Support
-          </a>
+        <nav class="flex-1 overflow-y-auto px-3 py-2" aria-label="Admin navigation">
+          {sections.map((section) => (
+            <div>
+              <p class="admin-nav-title">{section}</p>
+              {nav.filter((n) => n.section === section).map((item) => (
+                <a
+                  href={item.href}
+                  class:list={["admin-nav-item", isActive(item.href) && "is-active"]}
+                  aria-current={isActive(item.href) ? "page" : undefined}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" set:html={icon(item.icon)} />
+                  <span>{item.label}</span>
+                </a>
+              ))}
+            </div>
+          ))}
         </nav>
 
-        <div class="border-t border-white/10 pt-4 mt-4">
-          <a
-            href="/"
-            class="block px-3 py-2 rounded-lg hover:bg-white/5 text-gray-400 hover:text-white transition-colors text-sm"
-          >
-            <span class="mr-2">🌐</span> View Site
+        <div class="border-t border-[var(--color-edge)] p-3 flex flex-col gap-1">
+          <a href="/" target="_blank" rel="noopener" class="admin-nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <span>View site</span>
           </a>
-          <a
-            href="/api/cat/logout"
-            class="block px-3 py-2 rounded-lg hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-colors text-sm"
-          >
-            <span class="mr-2">🚪</span> Logout
+          <button type="button" class="admin-nav-item w-full text-left" data-theme-toggle>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <span data-theme-label>Theme</span>
+          </button>
+          <a href="/api/cat/logout" class="admin-nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            <span>Log out</span>
           </a>
         </div>
       </aside>
 
-      <!-- Main Content -->
-      <main class="flex-1 p-8 overflow-y-auto">
-        <slot />
-      </main>
+      <!-- Main -->
+      <div class="flex-1 min-w-0 flex flex-col">
+        <header class="sticky top-0 z-40 flex items-center gap-3 px-4 sm:px-8 py-3 border-b border-[var(--color-edge)] bg-[var(--color-bg)]/85 backdrop-blur">
+          <button type="button" class="admin-menu-btn admin-btn admin-btn-ghost !px-2.5" aria-label="Open menu" data-menu-toggle>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+          </button>
+          <p class="font-mono text-xs text-[var(--color-fg-subtle)] truncate">
+            <a href="/cat" class="hover:text-[var(--color-fg)] transition-colors">Admin</a>
+            <span aria-hidden="true"> / </span>
+            <span class="text-[var(--color-fg)]">{title}</span>
+          </p>
+          <a href="/" target="_blank" rel="noopener" class="ml-auto inline-flex items-center gap-1.5 font-mono text-xs text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-fg)]">
+            View site
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </header>
+
+        <main class="flex-1 p-4 sm:p-8 overflow-y-auto">
+          <slot />
+        </main>
+      </div>
     </div>
+
+    <script is:inline>
+      // Global toast — available to every admin page as toast(msg, ok)
+      window.toast = function (msg, ok) {
+        if (ok === undefined) ok = true;
+        var el = document.createElement("div");
+        el.className = "admin-toast";
+        el.setAttribute("data-kind", ok ? "ok" : "error");
+        el.textContent = msg;
+        document.body.appendChild(el);
+        setTimeout(function () { el.remove(); }, 3200);
+      };
+      // Alias common names used across pages
+      window.showToast = window.toast;
+
+      (function () {
+        var sidebar = document.querySelector("[data-sidebar]");
+        var scrim = document.querySelector("[data-scrim]");
+        var menuBtn = document.querySelector("[data-menu-toggle]");
+        function close() {
+          sidebar && sidebar.setAttribute("data-open", "false");
+          scrim && scrim.setAttribute("data-open", "false");
+        }
+        menuBtn && menuBtn.addEventListener("click", function () {
+          var open = sidebar.getAttribute("data-open") === "true";
+          sidebar.setAttribute("data-open", open ? "false" : "true");
+          scrim.setAttribute("data-open", open ? "false" : "true");
+        });
+        scrim && scrim.addEventListener("click", close);
+
+        var themeBtn = document.querySelector("[data-theme-toggle]");
+        var themeLabel = document.querySelector("[data-theme-label]");
+        function resolved() {
+          var t = document.documentElement.getAttribute("data-theme");
+          if (t === "light" || t === "dark") return t;
+          return window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        }
+        function paint() { if (themeLabel) themeLabel.textContent = resolved() === "dark" ? "Dark mode" : "Light mode"; }
+        paint();
+        themeBtn && themeBtn.addEventListener("click", function () {
+          var next = resolved() === "dark" ? "light" : "dark";
+          document.documentElement.setAttribute("data-theme", next);
+          try { localStorage.setItem("theme", next); } catch (e) {}
+          paint();
+        });
+      })();
+    </script>
   </body>
 </html>

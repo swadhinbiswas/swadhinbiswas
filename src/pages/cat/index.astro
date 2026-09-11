@@ -1,55 +1,99 @@
 ---
 export const prerender = false;
 import AdminLayout from "../../layouts/AdminLayout.astro";
-import { db, skills, projects, experiences, bioContent } from "../../db";
+import {
+  db, skills, projects, experiences, bioContent, posts, books,
+  publications, achievements, certifications, testimonials, faqs,
+} from "../../db";
 import { count } from "drizzle-orm";
 
-const [skillsCount, projectsCount, experiencesCount, bioCount] = await Promise.all([
-  db.select({ count: count() }).from(skills),
-  db.select({ count: count() }).from(projects),
-  db.select({ count: count() }).from(experiences),
-  db.select({ count: count() }).from(bioContent),
+async function safeCount(table: any): Promise<number> {
+  try {
+    const r = await db.select({ count: count() }).from(table);
+    return Number(r[0]?.count || 0);
+  } catch {
+    return 0;
+  }
+}
+
+const [
+  skillsCount, projectsCount, experiencesCount, bioCount, postsCount, booksCount,
+  pubCount, achCount, certCount, testiCount, faqCount,
+] = await Promise.all([
+  safeCount(skills), safeCount(projects), safeCount(experiences), safeCount(bioContent),
+  safeCount(posts), safeCount(books), safeCount(publications), safeCount(achievements),
+  safeCount(certifications), safeCount(testimonials), safeCount(faqs),
 ]);
+
+const stats = [
+  { label: "Projects", value: projectsCount, href: "/cat/projects" },
+  { label: "Experience", value: experiencesCount, href: "/cat/experiences" },
+  { label: "Skills", value: skillsCount, href: "/cat/skills" },
+  { label: "Posts", value: postsCount, href: "/cat/blog" },
+  { label: "Books", value: booksCount, href: "/cat/books" },
+  { label: "Publications", value: pubCount, href: "/cat/publications" },
+];
+
+const quickLinks = [
+  { label: "Site Settings", desc: "Author, email, CV, SEO", href: "/cat/settings", icon: "⚙" },
+  { label: "Projects", desc: "Case studies & tech stack", href: "/cat/projects", icon: "▤" },
+  { label: "Bio Content", desc: "Short, long, story, summary", href: "/cat/bio", icon: "✎" },
+  { label: "Social Links", desc: "GitHub, LinkedIn, X, YouTube", href: "/cat/socials", icon: "⌘" },
+  { label: "Navigation", desc: "Menu items & order", href: "/cat/navigation", icon: "☰" },
+  { label: "Testimonials", desc: "Quotes shown on home", href: "/cat/testimonials", icon: "❝" },
+];
+
+const otherCounts = [
+  { label: "Achievements", value: achCount, href: "/cat/achievements" },
+  { label: "Certifications", value: certCount, href: "/cat/certifications" },
+  { label: "Testimonials", value: testiCount, href: "/cat/testimonials" },
+  { label: "FAQs", value: faqCount, href: "/cat/faqs" },
+  { label: "Bio entries", value: bioCount, href: "/cat/bio" },
+];
 ---
 
 <AdminLayout title="Dashboard">
-  <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
-  
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-    <a href="/cat/skills" class="block p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
-      <p class="text-gray-400 text-sm">Skills</p>
-      <p class="text-3xl font-bold text-neon-cyan mt-1">{skillsCount[0]?.count || 0}</p>
-    </a>
-    <a href="/cat/projects" class="block p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
-      <p class="text-gray-400 text-sm">Projects</p>
-      <p class="text-3xl font-bold text-neon-cyan mt-1">{projectsCount[0]?.count || 0}</p>
-    </a>
-    <a href="/cat/experiences" class="block p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
-      <p class="text-gray-400 text-sm">Experiences</p>
-      <p class="text-3xl font-bold text-neon-cyan mt-1">{experiencesCount[0]?.count || 0}</p>
-    </a>
-    <a href="/cat/bio" class="block p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
-      <p class="text-gray-400 text-sm">Bio Entries</p>
-      <p class="text-3xl font-bold text-neon-cyan mt-1">{bioCount[0]?.count || 0}</p>
-    </a>
-  </div>
+  <div class="max-w-5xl">
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold tracking-tight">Dashboard</h1>
+      <p class="mt-1 text-sm text-[var(--color-fg-muted)]">
+        Everything on your public site is driven by this database. Changes go live within a few minutes.
+      </p>
+    </div>
 
-  <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-    <a href="/cat/settings" class="block p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
-      <p class="text-lg font-semibold">⚙️ Site Settings</p>
-      <p class="text-sm text-gray-400 mt-1">Author, email, CV URL, timezone, SEO</p>
-    </a>
-    <a href="/cat/navigation" class="block p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
-      <p class="text-lg font-semibold">🧭 Navigation</p>
-      <p class="text-sm text-gray-400 mt-1">Manage menu items</p>
-    </a>
-    <a href="/cat/socials" class="block p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
-      <p class="text-lg font-semibold">🔗 Social Links</p>
-      <p class="text-sm text-gray-400 mt-1">GitHub, LinkedIn, Twitter</p>
-    </a>
-    <a href="/cat/bio" class="block p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
-      <p class="text-lg font-semibold">📝 Bio Content</p>
-      <p class="text-sm text-gray-400 mt-1">Short, long, story, summary</p>
-    </a>
+    <!-- Primary stats -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      {stats.map((s) => (
+        <a href={s.href} class="admin-card p-4 transition-colors hover:border-[var(--color-fg-subtle)]">
+          <p class="font-mono text-[0.62rem] uppercase tracking-[0.1em] text-[var(--color-fg-subtle)]">{s.label}</p>
+          <p class="mt-1.5 text-3xl font-extrabold tracking-tight tabular-nums">{s.value}</p>
+        </a>
+      ))}
+    </div>
+
+    <!-- Quick actions -->
+    <h2 class="mt-10 mb-3 font-mono text-[0.66rem] uppercase tracking-[0.16em] text-[var(--color-fg-subtle)]">Manage content</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      {quickLinks.map((q) => (
+        <a href={q.href} class="admin-card p-4 flex items-start gap-3 transition-colors hover:border-[var(--color-fg-subtle)]">
+          <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius)] border border-[var(--color-edge)] bg-[var(--color-bg-2)] text-[var(--color-fg)]">{q.icon}</span>
+          <span class="min-w-0">
+            <strong class="block text-sm font-semibold">{q.label}</strong>
+            <span class="mt-0.5 block text-xs text-[var(--color-fg-muted)]">{q.desc}</span>
+          </span>
+        </a>
+      ))}
+    </div>
+
+    <!-- Secondary counts -->
+    <h2 class="mt-10 mb-3 font-mono text-[0.66rem] uppercase tracking-[0.16em] text-[var(--color-fg-subtle)]">More</h2>
+    <div class="admin-card divide-y divide-[var(--color-edge)]">
+      {otherCounts.map((o) => (
+        <a href={o.href} class="flex items-center justify-between px-4 py-3 text-sm transition-colors hover:bg-[var(--color-bg-2)]">
+          <span class="text-[var(--color-fg-muted)]">{o.label}</span>
+          <span class="font-mono font-semibold tabular-nums">{o.value}</span>
+        </a>
+      ))}
+    </div>
   </div>
 </AdminLayout>

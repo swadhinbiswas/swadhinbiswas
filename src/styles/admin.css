@@ -1,0 +1,245 @@
+/* =========================================================================
+   Admin panel theme — monochrome, light/dark aware.
+   Imported only by AdminLayout.astro. Reinterprets the legacy utility
+   classes used across /cat pages to the Ink & Paper design tokens so the
+   whole CMS matches the public site without rewriting every page.
+   ========================================================================= */
+
+/* ── Semantic components ── */
+.admin-card {
+  border: 1px solid var(--color-edge);
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+}
+
+.admin-input {
+  width: 100%;
+  background: var(--color-bg-2);
+  border: 1px solid var(--color-edge);
+  border-radius: var(--radius);
+  padding: 0.55rem 0.75rem;
+  color: var(--color-fg);
+  font-size: 0.9rem;
+  font-family: var(--font-sans);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.admin-input::placeholder { color: var(--color-fg-subtle); }
+.admin-input:focus {
+  outline: none;
+  border-color: var(--color-fg-subtle);
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+.admin-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-fg-subtle);
+  margin-bottom: 0.4rem;
+}
+
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  font-size: 0.82rem;
+  line-height: 1;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  transition: all 0.18s ease;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.admin-btn-primary { background: var(--color-fg); color: var(--color-bg); }
+.admin-btn-primary:hover { opacity: 0.87; }
+.admin-btn-ghost {
+  background: var(--color-bg-2);
+  color: var(--color-fg);
+  border-color: var(--color-edge);
+}
+.admin-btn-ghost:hover { border-color: var(--color-fg-subtle); }
+.admin-btn-danger {
+  background: transparent;
+  color: var(--color-fg-muted);
+  border-color: var(--color-edge);
+}
+.admin-btn-danger:hover { color: var(--color-fg); border-color: var(--color-fg); }
+
+.admin-modal {
+  background: var(--color-card);
+  border: 1px solid var(--color-edge);
+  border-radius: var(--radius-lg);
+}
+
+/* ── Global toast (provided by AdminLayout) ── */
+.admin-toast {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-edge-strong);
+  background: var(--color-card);
+  color: var(--color-fg);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.4);
+  animation: admin-toast-in 0.22s ease;
+}
+.admin-toast::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--color-fg);
+  flex-shrink: 0;
+}
+.admin-toast[data-kind="error"] { border-color: var(--color-fg); }
+.admin-toast[data-kind="error"]::before { background: var(--color-fg); }
+@keyframes admin-toast-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================================================
+   Legacy utility remap — unlayered, so it wins over Tailwind's @layer
+   utilities. Scoped to .admin-theme so it never touches the public site.
+   ========================================================================= */
+.admin-theme {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+}
+
+/* Text */
+.admin-theme .text-white { color: var(--color-fg); }
+.admin-theme .text-black { color: var(--color-bg); }
+.admin-theme .text-gray-300,
+.admin-theme .text-gray-400 { color: var(--color-fg-muted); }
+.admin-theme .text-gray-500 { color: var(--color-fg-subtle); }
+.admin-theme .text-neon-cyan,
+.admin-theme .text-cyan-300,
+.admin-theme .text-cyan-400,
+.admin-theme .text-cyan-500 { color: var(--color-fg); }
+.admin-theme .text-red-300,
+.admin-theme .text-red-400,
+.admin-theme .text-yellow-400,
+.admin-theme .text-yellow-500,
+.admin-theme .text-green-400 { color: var(--color-fg-muted); }
+.admin-theme .hover\:text-white:hover { color: var(--color-fg); }
+
+/* Surfaces */
+.admin-theme .bg-white\/5 { background: var(--color-card); }
+.admin-theme .bg-white\/10 { background: var(--color-bg-2); }
+.admin-theme .bg-white\/20 { background: var(--color-edge); }
+.admin-theme .bg-\[\#111\] { background: var(--color-card); }
+.admin-theme .bg-\[\#050510\] { background: var(--color-bg); }
+.admin-theme .bg-cyan-500,
+.admin-theme .bg-cyan-400 { background: var(--color-fg); }
+.admin-theme .bg-cyan-400\/5,
+.admin-theme .bg-cyan-400\/10 { background: var(--color-bg-2); }
+.admin-theme .bg-yellow-400\/10,
+.admin-theme .bg-yellow-500\/20,
+.admin-theme .bg-yellow-500\/30,
+.admin-theme .bg-red-500\/20,
+.admin-theme .bg-red-500\/30,
+.admin-theme .bg-green-500\/20 { background: var(--color-bg-2); }
+
+/* Borders */
+.admin-theme .border-white\/5,
+.admin-theme .border-white\/10 { border-color: var(--color-edge); }
+.admin-theme .border-white\/20 { border-color: var(--color-edge-strong); }
+.admin-theme .border-cyan-400\/20,
+.admin-theme .border-cyan-400\/30 { border-color: var(--color-edge-strong); }
+.admin-theme .border-red-500\/30,
+.admin-theme .border-green-500\/30 { border-color: var(--color-edge-strong); }
+
+/* Hover / focus states */
+.admin-theme .hover\:bg-white\/5:hover { background: var(--color-bg-2); }
+.admin-theme .hover\:bg-white\/10:hover { background: var(--color-card-strong); }
+.admin-theme .hover\:bg-white\/20:hover { background: var(--color-edge); }
+.admin-theme .hover\:bg-cyan-400:hover { opacity: 0.85; }
+.admin-theme .hover\:bg-red-500\/20:hover,
+.admin-theme .hover\:bg-red-500\/30:hover,
+.admin-theme .hover\:bg-yellow-500\/20:hover,
+.admin-theme .hover\:bg-yellow-500\/30:hover { background: var(--color-card-strong); }
+.admin-theme .hover\:text-red-300:hover,
+.admin-theme .hover\:text-red-400:hover { color: var(--color-fg); }
+.admin-theme .hover\:border-white\/20:hover { border-color: var(--color-edge-strong); }
+.admin-theme .focus\:border-cyan-400:focus { border-color: var(--color-fg-subtle); }
+
+/* Inputs that used a dark fill */
+.admin-theme .bg-black\/40 { background: var(--color-bg-2); }
+
+/* Sidebar / shell */
+.admin-sidebar {
+  background: var(--color-bg);
+  border-right: 1px solid var(--color-edge);
+}
+.admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: var(--radius);
+  color: var(--color-fg-muted);
+  font-size: 0.86rem;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+.admin-nav-item:hover { background: var(--color-bg-2); color: var(--color-fg); }
+.admin-nav-item.is-active {
+  background: var(--color-bg-2);
+  color: var(--color-fg);
+  font-weight: 600;
+  box-shadow: inset 2px 0 0 var(--color-fg);
+}
+.admin-nav-item svg { width: 1rem; height: 1rem; flex-shrink: 0; color: var(--color-fg-subtle); }
+.admin-nav-item.is-active svg { color: var(--color-fg); }
+.admin-nav-title {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-fg-subtle);
+  padding: 0 0.7rem;
+  margin: 1.1rem 0 0.35rem;
+}
+
+/* Mobile off-canvas */
+@media (max-width: 900px) {
+  .admin-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: 17rem;
+    z-index: 60;
+    transform: translateX(-100%);
+    transition: transform 0.24s ease;
+    overflow-y: auto;
+  }
+  .admin-sidebar[data-open="true"] { transform: translateX(0); }
+  .admin-scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .admin-scrim[data-open="true"] { opacity: 1; pointer-events: auto; }
+}
+@media (min-width: 901px) {
+  .admin-menu-btn { display: none; }
+  .admin-scrim { display: none; }
+}

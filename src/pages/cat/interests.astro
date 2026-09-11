@@ -103,13 +103,6 @@ const interestRows = await db.select().from(interests).orderBy(asc(interests.ord
 </AdminLayout>
 
 <script>
-  function toast(msg: string, ok = true) {
-    const el = document.createElement("div");
-    el.className = `fixed top-4 right-4 px-4 py-2 rounded-lg text-sm z-50 ${ok ? "bg-green-500/20 text-green-400 border border-green-500/30" : "bg-red-500/20 text-red-400 border border-red-500/30"}`;
-    el.textContent = msg;
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 3000);
-  }
 
   document.getElementById("create-form")?.addEventListener("submit", async (e) => {
     e.preventDefault();
