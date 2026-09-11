@@ -31,7 +31,7 @@ const {
   modifiedTime,
   authorName,
   keywords,
-  themeColor = "#0A0A12",
+  themeColor = "#0A0A0B",
   wide = false,
 } = Astro.props;
 
@@ -163,7 +163,7 @@ const baseSchema = {
     <meta name="generator" content={Astro.generator} />
     <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content={themeColor} media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#FAFAFA" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
 
     <!-- Theme bootstrap — set data-theme before first paint to avoid FOUC -->
     <script is:inline>
@@ -269,7 +269,7 @@ const baseSchema = {
   <body>
     <a
       href="#main"
-      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-[var(--color-accent)] focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-white"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-[var(--color-fg)] focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-[var(--color-bg)]"
     >
       Skip to content
     </a>

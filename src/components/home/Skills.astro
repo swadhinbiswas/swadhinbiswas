@@ -144,43 +144,49 @@ const totalCore = all.filter((s) => s.tier === "core").length;
 
 <style>
   .section-sub {
-    margin-top: 0.45rem;
+    margin-top: 0.5rem;
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
     font-family: var(--font-mono);
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     color: var(--color-fg-subtle);
   }
   .dot-core {
     display: inline-block;
-    width: 0.5rem;
-    height: 0.5rem;
+    width: 0.42rem;
+    height: 0.42rem;
     border-radius: 999px;
-    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-cyan));
+    background: var(--color-fg);
   }
 
   .skill-clusters {
     display: flex;
     flex-direction: column;
-    gap: 1.1rem;
+    gap: 0;
   }
+  .skill-cluster {
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--color-edge);
+  }
+  .skill-cluster:first-child { border-top: 0; padding-top: 0; }
   .cluster-head {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    margin-bottom: 0.7rem;
+    margin-bottom: 0.85rem;
   }
   .cluster-name {
-    font-family: var(--font-display);
-    font-size: 0.92rem;
-    font-weight: 700;
-    color: var(--color-fg);
-    letter-spacing: -0.01em;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-fg-subtle);
   }
   .cluster-count {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     color: var(--color-fg-subtle);
   }
   .cluster-tiles {
@@ -192,16 +198,16 @@ const totalCore = all.filter((s) => s.tier === "core").length;
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    padding: 0.4rem 0.7rem;
+    padding: 0.42rem 0.75rem;
     border: 1px solid var(--color-edge);
     background: var(--color-card);
-    border-radius: 999px;
+    border-radius: var(--radius);
     transition: border-color 0.2s ease, transform 0.2s ease;
   }
-  .skill-tile:hover { border-color: var(--color-accent-2); transform: translateY(-1px); }
+  .skill-tile:hover { border-color: var(--color-fg-subtle); transform: translateY(-1px); }
   .skill-tile.core {
     border-color: var(--color-edge-strong);
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--color-card-strong);
   }
   .skill-tile-icon {
     display: inline-flex;
@@ -211,17 +217,19 @@ const totalCore = all.filter((s) => s.tier === "core").length;
     justify-content: center;
     flex-shrink: 0;
   }
-  .skill-tile-img { width: 18px; height: 18px; object-fit: contain; }
+  .skill-tile-img { width: 18px; height: 18px; object-fit: contain; filter: grayscale(1); opacity: 0.8; transition: filter 0.25s ease, opacity 0.25s ease; }
+  .skill-tile:hover .skill-tile-img { filter: grayscale(0); opacity: 1; }
   .skill-tile-initials {
     font-family: var(--font-mono);
     font-size: 0.55rem;
     font-weight: 700;
-    color: var(--color-accent-2);
+    color: var(--color-fg-subtle);
     letter-spacing: 0.05em;
   }
   .skill-tile-name {
     font-size: 0.78rem;
     color: var(--color-fg-muted);
   }
+  .skill-tile.core .skill-tile-name { color: var(--color-fg); }
   .skill-tile:hover .skill-tile-name { color: var(--color-fg); }
 </style>

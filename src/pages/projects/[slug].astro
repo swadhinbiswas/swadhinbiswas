@@ -12,6 +12,7 @@ import { getProjectCategories, categoryLabel } from "../../lib/projects";
 import { getProjects } from "../../lib/loaders";
 import { opt } from "../../lib/image";
 import { thesvgIconUrl } from "../../lib/icons";
+import ContentEnhancers from "../../components/ContentEnhancers.astro";
 
 const { slug } = Astro.params;
 if (!slug) return Astro.redirect("/404");
@@ -157,19 +158,14 @@ const relatedProjects = (await getProjects())
     <meta name="twitter:image" content={twitterImage} />
     <script type="application/ld+json" set:html={JSON.stringify(schema)} />
     <meta property="article:published_time" content={publishedIso} />
-    {features.hasMermaid && <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js" />}
-    {features.hasPlotly && <script src="https://cdn.jsdelivr.net/npm/plotly.js@3.3.1/dist/plotly.min.js" />}
-    {features.hasCharts && <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js" />}
-    {features.hasMermaid && (
-      <script is:inline>
-        document.addEventListener("DOMContentLoaded", function () {
-          if (typeof mermaid === "undefined") return;
-          mermaid.initialize({ startOnLoad: true, theme: "dark", themeVariables: { primaryColor: "#FFFFFF", primaryTextColor: "#F4F4F5", primaryBorderColor: "#27272A", lineColor: "#A1A1AA", secondaryColor: "#141414", tertiaryColor: "#1A1A1A" } });
-          mermaid.run({ querySelector: ".mermaid" });
-        });
-      </script>
-    )}
   </Fragment>
+  <ContentEnhancers
+    slot="head"
+    mermaid={features.hasMermaid}
+    plotly={features.hasPlotly}
+    charts={features.hasCharts}
+    embeds={features.hasEmbeds}
+  />
 
   <article>
     <!-- Hero -->
@@ -453,72 +449,6 @@ const relatedProjects = (await getProjects())
   </article>
 </BaseLayout>
 
-<script>
-  (function initProjectCharts() {
-    function initAll() {
-      initPlotly();
-      initCharts();
-      initEmbeds();
-    }
-
-    function initPlotly() {
-      if (typeof Plotly === "undefined") return;
-      document.querySelectorAll(".plotly-container").forEach((el) => {
-        try {
-          const config = JSON.parse(decodeURIComponent(el.dataset.config));
-          Plotly.newPlot(el, config.data || [], config.layout || {}, {
-            responsive: true,
-            displayModeBar: false,
-            paper_bgcolor: "transparent",
-            plot_bgcolor: "transparent",
-            font: { color: "#A1A1AA" },
-          });
-        } catch (e) { console.error("Plotly error", e); }
-      });
-    }
-
-    function initCharts() {
-      if (typeof Chart === "undefined") return;
-      document.querySelectorAll(".chart-container").forEach((el) => {
-        try {
-          const config = JSON.parse(decodeURIComponent(el.dataset.config));
-          const canvas = document.createElement("canvas");
-          el.innerHTML = "";
-          el.appendChild(canvas);
-          new Chart(canvas, config);
-        } catch (e) { console.error("Chart error", e); }
-      });
-    }
-
-    function initEmbeds() {
-      document.querySelectorAll(".embed-link").forEach((el) => {
-        if (el.dataset.embedLoaded) return;
-        el.dataset.embedLoaded = "true";
-        const slug = el.dataset.embedSlug;
-        const container = document.createElement("div");
-        container.className = "embedded-post loading";
-        container.innerHTML = '<p class="text-sm text-[var(--color-fg-subtle)]">Loading embedded post…</p>';
-        el.parentNode?.replaceChild(container, el);
-        fetch(`/api/embed/${slug}`)
-          .then((r) => r.text())
-          .then((html) => {
-            container.className = "embedded-post";
-            container.innerHTML = html;
-          })
-          .catch(() => {
-            container.innerHTML = `<a href="/posts/${slug}" class="text-[var(--color-accent)] underline">View post: ${slug.replace(/-/g, " ")}</a>`;
-          });
-      });
-    }
-
-    document.addEventListener("astro:page-load", initAll);
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", initAll);
-    } else {
-      initAll();
-    }
-  })();
-</script>
 
 <style>
   /* ── Hero ── */
@@ -582,11 +512,8 @@ const relatedProjects = (await getProjects())
     justify-content: center;
     padding: 1.5rem;
     border: 1px solid var(--color-edge);
-    border-radius: 18px;
-    background:
-      repeating-linear-gradient(315deg, var(--pattern-fg) 0, var(--pattern-fg) 1px, transparent 1px, transparent 10px),
-      var(--color-card);
-    box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.5);
+    border-radius: var(--radius-lg);
+    background: var(--color-card);
   }
   @media (min-width: 720px) {
     .hero-art-frame { width: min(260px, 30vw); padding: 1.75rem; }
@@ -598,7 +525,10 @@ const relatedProjects = (await getProjects())
     width: 100%;
     height: 100%;
     object-fit: contain;
+    filter: grayscale(1);
+    transition: filter 0.4s ease;
   }
+  .hero-art:hover .hero-art-frame img { filter: grayscale(0); }
 
   /* ── Stats strip ── */
   .stats-grid {
@@ -609,8 +539,8 @@ const relatedProjects = (await getProjects())
   }
   .stat-card {
     border: 1px solid var(--color-edge);
-    background: linear-gradient(180deg, var(--color-card) 0%, var(--color-card-strong) 100%);
-    border-radius: 14px;
+    background: var(--color-card);
+    border-radius: var(--radius);
     padding: 0.9rem 1rem;
     transition: border-color 0.2s ease, transform 0.2s ease;
     min-width: 0;
@@ -644,6 +574,8 @@ const relatedProjects = (await getProjects())
   @media (min-width: 900px) {
     .body-grid { grid-template-columns: minmax(0, 1fr) 264px; gap: 2.75rem; }
   }
+  /* Keep prose measure readable in the wide layout */
+  .body-content .prose-content { max-width: 72ch; }
 
   .side-sticky {
     display: grid;
@@ -729,7 +661,8 @@ const relatedProjects = (await getProjects())
     height: 1.15rem;
     flex-shrink: 0;
   }
-  .tech-icon img { width: 16px; height: 16px; object-fit: contain; }
+  .tech-icon img { width: 16px; height: 16px; object-fit: contain; filter: grayscale(1); opacity: 0.85; transition: filter 0.25s ease; }
+  .tech-item:hover .tech-icon img { filter: grayscale(0); }
   .tech-dot {
     width: 5px;
     height: 5px;

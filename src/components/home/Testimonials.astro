@@ -10,7 +10,6 @@ const testimonials = siteConfig.testimonials || [];
     <div class="container-narrow">
       <div class="section-head reveal">
         <div>
-          <p class="text-eyebrow">Testimonials</p>
           <h2 class="section-title">What people say</h2>
         </div>
       </div>
@@ -37,25 +36,25 @@ const testimonials = siteConfig.testimonials || [];
   .testimonial-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 0.75rem;
+    gap: 1rem;
   }
   @media (min-width: 700px) { .testimonial-grid { grid-template-columns: 1fr 1fr; } }
-  .quote-mark { color: var(--color-fg-subtle); opacity: 0.4; margin-bottom: 0.6rem; }
+  .quote-mark { color: var(--color-fg-subtle); opacity: 0.35; margin-bottom: 0.75rem; }
   .testimonial-quote {
     color: var(--color-fg-muted);
     font-size: 0.95rem;
-    line-height: 1.7;
+    line-height: 1.75;
     font-style: italic;
   }
   .testimonial-meta {
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
-    margin-top: 1rem;
-    padding-top: 0.8rem;
-    border-top: 1px dashed var(--color-edge);
+    margin-top: 1.1rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--color-edge);
     font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: 0.76rem;
   }
   .testimonial-meta strong { color: var(--color-fg); font-weight: 600; }
   .testimonial-meta span { color: var(--color-fg-subtle); }

@@ -6,111 +6,178 @@ interface Props {}
   <div class="container-narrow">
     <div class="section-head reveal">
       <div>
-        <div class="flex items-center gap-1.5 mb-1">
-          <span class="text-xs text-[var(--color-accent-2)]">✦</span>
-          <p class="text-eyebrow">Makerspace & Visuals</p>
-        </div>
-        <h2 class="section-title">
-          Explore & Creative Craft
-        </h2>
+        <p class="text-eyebrow">Makerspace & visuals</p>
+        <h2 class="section-title">Explore & creative craft</h2>
       </div>
-      <a href="/explore" class="section-link">
-        Explore full creative vault <span class="arrow" aria-hidden="true">→</span>
-      </a>
+      <a href="/explore" class="section-link">Creative vault →</a>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+    <div class="explore-grid">
       <!-- Photography Feature Card -->
-      <a href="/explore" class="panel p-6 group cursor-pointer block hover:border-[var(--color-edge-strong)] transition-all duration-300 reveal">
-        <div class="flex items-center justify-between gap-2 mb-4">
-          <div class="flex items-center gap-2">
-            <span class="p-2 rounded-lg bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg)] flex items-center justify-center">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                <circle cx="12" cy="13" r="4"/>
-              </svg>
-            </span>
-            <span class="text-xs font-mono font-semibold uppercase tracking-wider text-[var(--color-fg)]">Field Photography</span>
-          </div>
-          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg-subtle)]">
-            Visual Notes
+      <a href="/explore" class="explore-card reveal">
+        <div class="explore-head">
+          <span class="explore-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
           </span>
+          <span class="explore-name">Field photography</span>
+          <span class="explore-tag">Visual notes</span>
         </div>
 
-        <p class="text-xs sm:text-sm text-[var(--color-fg-muted)] leading-relaxed mb-4">
+        <p class="explore-desc">
           High-contrast street frames, architectural geometry, and atmospheric landscape studies with real camera EXIF metadata.
         </p>
 
-        <!-- Visual Mini Thumbnails -->
-        <div class="grid grid-cols-3 gap-2 mt-2">
-          <div class="aspect-square rounded-md overflow-hidden bg-[var(--color-card-strong)] relative">
-            <img
-              src="https://cdn.swadhin.cv/photography/Paddma.jpg"
-              alt="Padma River"
-              loading="lazy"
-              decoding="async"
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
+        <div class="explore-thumbs">
+          <div class="explore-thumb">
+            <img src="https://cdn.swadhin.cv/photography/Paddma.jpg" alt="Padma River" loading="lazy" decoding="async" />
           </div>
-          <div class="aspect-square rounded-md overflow-hidden bg-[var(--color-card-strong)] relative">
-            <img
-              src="https://cdn.swadhin.cv/photography/20240803_180241_%F0%9F%8C%86Magical%20Night%20by%20Riyan.jpg"
-              alt="Magical Night Twilight"
-              loading="lazy"
-              decoding="async"
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
+          <div class="explore-thumb">
+            <img src="https://cdn.swadhin.cv/photography/20240803_180241_%F0%9F%8C%86Magical%20Night%20by%20Riyan.jpg" alt="Magical Night Twilight" loading="lazy" decoding="async" />
           </div>
-          <div class="aspect-square rounded-md overflow-hidden bg-[var(--color-card-strong)] relative">
-            <img
-              src="https://cdn.swadhin.cv/photography/LMC_20240928_180904_%F0%9F%8C%83Moonlit%20Night%20by%20Riyan%20(lmc8.4).jpg"
-              alt="Moonlit Nightscape"
-              loading="lazy"
-              decoding="async"
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
+          <div class="explore-thumb">
+            <img src="https://cdn.swadhin.cv/photography/LMC_20240928_180904_%F0%9F%8C%83Moonlit%20Night%20by%20Riyan%20(lmc8.4).jpg" alt="Moonlit Nightscape" loading="lazy" decoding="async" />
           </div>
         </div>
 
-        <div class="mt-4 flex items-center justify-between text-xs font-mono text-[var(--color-fg-subtle)] group-hover:text-[var(--color-fg)] transition-colors">
+        <div class="explore-foot">
           <span>Padma River · Moonlit Night</span>
-          <span class="group-hover:translate-x-1 transition-transform">View Gallery →</span>
+          <span class="explore-cta">View gallery →</span>
         </div>
       </a>
 
       <!-- DIY & Hardware Feature Card -->
-      <a href="/workshop" class="panel p-6 group cursor-pointer block hover:border-[var(--color-edge-strong)] transition-all duration-300 reveal reveal-delay-1">
-        <div class="flex items-center justify-between gap-2 mb-4">
-          <div class="flex items-center gap-2">
-            <span class="p-2 rounded-lg bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg)] flex items-center justify-center">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-              </svg>
-            </span>
-            <span class="text-xs font-mono font-semibold uppercase tracking-wider text-[var(--color-fg)]">The Workshop</span>
-          </div>
-          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg-subtle)]">
-            Hardware & IoT
+      <a href="/workshop" class="explore-card reveal reveal-delay-1">
+        <div class="explore-head">
+          <span class="explore-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
           </span>
+          <span class="explore-name">The workshop</span>
+          <span class="explore-tag">Hardware & IoT</span>
         </div>
 
-        <p class="text-xs sm:text-sm text-[var(--color-fg-muted)] leading-relaxed mb-4">
+        <p class="explore-desc">
           Custom Alice mechanical keyboards, 3D-printed silent homelab clusters, and ESP32 environmental sensors with full BOM specs.
         </p>
 
-        <!-- Mini Tags -->
-        <div class="flex flex-wrap gap-1.5 mt-2">
-          <span class="tag text-[11px]">Alice Split Keyboard (QMK)</span>
-          <span class="tag text-[11px]">3-Node RPi Homelab</span>
-          <span class="tag text-[11px]">ESP32 SCD40 CO2 Sentry</span>
-          <span class="tag text-[11px]">Circadian Studio LED</span>
+        <div class="explore-tags">
+          <span class="tag">Alice Split Keyboard (QMK)</span>
+          <span class="tag">3-Node RPi Homelab</span>
+          <span class="tag">ESP32 SCD40 CO2 Sentry</span>
+          <span class="tag">Circadian Studio LED</span>
         </div>
 
-        <div class="mt-6 flex items-center justify-between text-xs font-mono text-[var(--color-fg-subtle)] group-hover:text-[var(--color-fg)] transition-colors">
+        <div class="explore-foot">
           <span>Soldering · CAD · Firmware</span>
-          <span class="group-hover:translate-x-1 transition-transform">Explore Builds →</span>
+          <span class="explore-cta">Explore builds →</span>
         </div>
       </a>
     </div>
   </div>
 </section>
+
+<style>
+  .explore-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  @media (min-width: 760px) { .explore-grid { grid-template-columns: 1fr 1fr; } }
+
+  .explore-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+    border: 1px solid var(--color-edge);
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    transition: border-color 0.25s ease, transform 0.25s ease;
+  }
+  .explore-card:hover { border-color: var(--color-fg-subtle); transform: translateY(-2px); }
+
+  .explore-head {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .explore-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: var(--radius);
+    background: var(--color-card-strong);
+    border: 1px solid var(--color-edge);
+    color: var(--color-fg);
+    flex-shrink: 0;
+  }
+  .explore-name {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-fg);
+  }
+  .explore-tag {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-fg-subtle);
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--color-edge);
+    border-radius: 999px;
+  }
+
+  .explore-desc {
+    color: var(--color-fg-muted);
+    font-size: 0.86rem;
+    line-height: 1.65;
+  }
+
+  .explore-thumbs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-top: auto;
+  }
+  .explore-thumb {
+    aspect-ratio: 1;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--color-bg-2);
+    border: 1px solid var(--color-edge);
+  }
+  .explore-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1);
+    transition: filter 0.4s ease, transform 0.5s ease;
+  }
+  .explore-card:hover .explore-thumb img { filter: grayscale(0); transform: scale(1.05); }
+
+  .explore-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: auto; }
+
+  .explore-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-edge);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--color-fg-subtle);
+  }
+  .explore-cta { transition: transform 0.2s ease, color 0.2s ease; }
+  .explore-card:hover .explore-cta { color: var(--color-fg); transform: translateX(2px); }
+</style>

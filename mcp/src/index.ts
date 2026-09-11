@@ -24,9 +24,11 @@ import { Redis } from "@upstash/redis";
 import { z } from "zod";
 
 // Load env from several likely locations (dotenv never overrides existing vars).
-loadDotenv();
-loadDotenv({ path: new URL("../../.env", import.meta.url) }); // repo root (dist or src)
-loadDotenv({ path: new URL("../.env", import.meta.url) }); // mcp/.env
+// `quiet: true` is essential: this is a stdio JSON-RPC server, so dotenv's
+// tips must not be written to stdout or they corrupt the protocol stream.
+loadDotenv({ quiet: true });
+loadDotenv({ path: new URL("../../.env", import.meta.url), quiet: true }); // repo root (dist or src)
+loadDotenv({ path: new URL("../.env", import.meta.url), quiet: true }); // mcp/.env
 
 // ---------------------------------------------------------------------------
 // Auth — shared-secret token required on EVERY tool call.

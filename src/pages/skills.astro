@@ -233,7 +233,7 @@ const categoryLabel = (category: string) =>
 
   .skill-card-core {
     border-color: var(--color-edge-strong);
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--color-bg-2);
   }
 
   .skill-card-header {
@@ -265,8 +265,11 @@ const categoryLabel = (category: string) =>
     width: 28px;
     height: 28px;
     object-fit: contain;
-    filter: brightness(1.1);
+    filter: grayscale(1);
+    opacity: 0.85;
+    transition: filter 0.25s ease, opacity 0.25s ease;
   }
+  .skill-card:hover .skill-icon { filter: grayscale(0); opacity: 1; }
 
   .skill-initials {
     font-family: var(--font-mono);
@@ -293,7 +296,7 @@ const categoryLabel = (category: string) =>
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--color-fg);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--color-card-strong);
     padding: 0.1rem 0.45rem;
     border-radius: 4px;
     line-height: 1.4;
@@ -339,7 +342,7 @@ const categoryLabel = (category: string) =>
     font-size: 0.6rem;
     font-weight: 500;
     color: var(--color-fg-subtle);
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--color-bg-2);
     border: 1px solid var(--color-edge);
     border-radius: 6px;
     white-space: nowrap;
@@ -349,7 +352,7 @@ const categoryLabel = (category: string) =>
   .skill-project-tag:hover {
     color: var(--color-fg);
     border-color: var(--color-edge-strong);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--color-card-strong);
   }
 
   @media (max-width: 640px) {

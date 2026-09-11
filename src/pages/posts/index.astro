@@ -256,17 +256,16 @@ const schema = {
     display: flex;
     flex-direction: column;
     border: 1px solid var(--color-edge);
-    background: linear-gradient(180deg, var(--color-card) 0%, var(--color-card-strong) 100%);
-    border-radius: 16px;
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
     overflow: hidden;
     text-decoration: none;
     color: inherit;
-    transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+    transition: border-color 0.25s ease, transform 0.25s ease;
   }
   .post-card:hover {
-    border-color: var(--color-edge-strong);
+    border-color: var(--color-fg-subtle);
     transform: translateY(-2px);
-    box-shadow: 0 16px 40px -16px rgba(0, 0, 0, 0.4);
   }
 
   .post-card-cover {
@@ -275,13 +274,12 @@ const schema = {
     align-items: center;
     justify-content: center;
     aspect-ratio: 16 / 8;
-    background:
-      repeating-linear-gradient(315deg, rgba(255, 255, 255, 0.02) 0, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 10px),
-      var(--color-bg-2);
+    background: var(--color-bg-2);
     border-bottom: 1px solid var(--color-edge);
     overflow: hidden;
   }
-  .post-card-img { width: 100%; height: 100%; object-fit: cover; }
+  .post-card-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); transition: filter 0.4s ease, transform 0.5s ease; }
+  .post-card:hover .post-card-img { filter: grayscale(0); transform: scale(1.02); }
   /* Top scrim so the overlay pill stays legible over any cover photo */
   .post-card-cover::after {
     content: "";

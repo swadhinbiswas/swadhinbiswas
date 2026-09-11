@@ -4,14 +4,7 @@ import { env } from "../../lib/env";
 
 const siteConfig = await getDynamicConfig();
 const author = siteConfig.author || env.siteName;
-const [firstName, ...rest] = author.split(" ");
-const lastName = rest.join(" ");
-const initials = (firstName?.[0] || "") + (lastName?.[0] || "");
 const shortBio = siteConfig.bio?.short || "";
-const longBio = siteConfig.bio?.long || "";
-// Tagline is the short bio; the blurb is the long bio (only when it differs)
-const heroTagline = shortBio;
-const heroBlurb = longBio && longBio !== shortBio ? longBio : "";
 const focusLabel = siteConfig.bio?.focusLabel || "Current directive";
 const locationLine = [siteConfig.location, siteConfig.timezone]
   .filter(Boolean)
@@ -20,17 +13,16 @@ const locationLine = [siteConfig.location, siteConfig.timezone]
 const heroMetrics = siteConfig.heroMetrics || [];
 const availability = siteConfig.bio?.availability || "";
 
-// Terminal chrome is derived from the site URL — never hardcoded
 const hostPart = (() => {
   try { return new URL(siteConfig.url).hostname.split(".")[0] || "swadhin"; }
   catch { return "swadhin"; }
 })();
 const terminalTitle = `guest@${hostPart}-desktop:~`;
 const termLines = [
-  siteConfig.bio?.currentFocus && { cmd: "current_focus", out: siteConfig.bio.currentFocus, emerald: false },
-  siteConfig.bio?.currentlyBuilding && { cmd: "currently_building", out: siteConfig.bio.currentlyBuilding, emerald: false },
-  siteConfig.bio?.seeking && { cmd: "seeking", out: siteConfig.bio.seeking, emerald: true },
-].filter(Boolean) as { cmd: string; out: string; emerald: boolean }[];
+  siteConfig.bio?.currentFocus && { cmd: "current_focus", out: siteConfig.bio.currentFocus, emphasis: false },
+  siteConfig.bio?.currentlyBuilding && { cmd: "currently_building", out: siteConfig.bio.currentlyBuilding, emphasis: false },
+  siteConfig.bio?.seeking && { cmd: "seeking", out: siteConfig.bio.seeking, emphasis: true },
+].filter(Boolean) as { cmd: string; out: string; emphasis: boolean }[];
 ---
 
 <section class="hero">
@@ -38,15 +30,12 @@ const termLines = [
     <div class="hero-portrait reveal">
       <div class="portrait-frame">
         <img src={siteConfig.profileImage || "/profile.jpg"} alt={author} class="portrait" loading="eager" decoding="async" fetchpriority="high" width="160" height="160" />
-        <span class="portrait-ring" aria-hidden="true"></span>
       </div>
     </div>
 
     <div class="hero-content reveal reveal-delay-1">
       <p class="hero-eyebrow">{focusLabel}</p>
-      <h1 class="hero-name">
-        <span class="hero-name-glow">{author}</span>
-      </h1>
+      <h1 class="hero-name">{author}</h1>
       <div class="hero-status">
         {availability && (
           <span class="status-pill" aria-label="Availability">
@@ -54,218 +43,152 @@ const termLines = [
             {availability}
           </span>
         )}
+        {locationLine && <span class="hero-location">{locationLine}</span>}
       </div>
-      <p class="hero-tagline">{heroTagline}</p>
-    </div>
-  </div>
+      {shortBio && <p class="hero-tagline">{shortBio}</p>}
 
-  <div class="hero-body reveal reveal-delay-2">
-    {heroBlurb && <p class="hero-blurb">{heroBlurb}</p>}
-    <div class="hero-actions">
-      <a href="/projects" class="btn btn-primary">View projects</a>
-      {siteConfig.cvUrl && (
-        <a href={siteConfig.cvUrl} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-          </svg>
-          Download CV
+      <div class="hero-actions">
+        <a href="/projects" class="btn btn-primary">
+          View projects
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
         </a>
-      )}
-      {siteConfig.email && (
-        <a href={`mailto:${siteConfig.email}`} class="btn btn-outline">Let's collaborate</a>
-      )}
-      {siteConfig.meetingUrl && (
-        <a href={siteConfig.meetingUrl} target="_blank" rel="noopener noreferrer" class="btn btn-outline">Book a call</a>
-      )}
-    </div>
-
-    <div class="hero-links">
-      {locationLine && <span class="hero-link-pill">{locationLine}</span>}
-      {siteConfig.links?.github && (
-        <a class="hero-link" href={siteConfig.links.github} target="_blank" rel="noopener noreferrer">GitHub</a>
-      )}
-      {siteConfig.links?.linkedin && (
-        <a class="hero-link" href={siteConfig.links.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
-      )}
-      {siteConfig.links?.twitter && (
-        <a class="hero-link" href={siteConfig.links.twitter} target="_blank" rel="noopener noreferrer">X</a>
-      )}
+        {siteConfig.cvUrl && (
+          <a href={siteConfig.cvUrl} target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Download CV
+          </a>
+        )}
+        {siteConfig.email && (
+          <a href={`mailto:${siteConfig.email}`} class="btn btn-ghost">Email</a>
+        )}
+        {siteConfig.meetingUrl && (
+          <a href={siteConfig.meetingUrl} target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Book a call</a>
+        )}
+      </div>
     </div>
   </div>
 
   {heroMetrics.length > 0 && (
-    <div class="hero-glance reveal reveal-delay-2">
-      <p class="section-eyebrow">At a Glance</p>
-      <dl class="glance-grid">
-        {heroMetrics.map((m) => (
-          <div class="glance-card">
-            <dt class="glance-label">{m.label}</dt>
-            <dd class="glance-value">{m.value}</dd>
-            <dd class="glance-sub">{m.sub}</dd>
-          </div>
-        ))}
-      </dl>
-    </div>
+    <dl class="glance-grid reveal reveal-delay-2">
+      {heroMetrics.map((m) => (
+        <div class="glance-card">
+          <dt class="glance-label">{m.label}</dt>
+          <dd class="glance-value">{m.value}</dd>
+          <dd class="glance-sub">{m.sub}</dd>
+        </div>
+      ))}
+    </dl>
   )}
 
-  <div class="terminal reveal reveal-delay-3" aria-label="Terminal">
-    <div class="terminal-bar">
-      <span class="terminal-dot red" aria-hidden="true"></span>
-      <span class="terminal-dot yellow" aria-hidden="true"></span>
-      <span class="terminal-dot green" aria-hidden="true"></span>
-      <span class="terminal-title">{terminalTitle}</span>
-      <span class="terminal-spacer"></span>
-    </div>
-    <div class="terminal-body">
-      {termLines.length > 0 ? (
-        termLines.map((line) => (
+  {termLines.length > 0 && (
+    <div class="terminal reveal reveal-delay-3" aria-label="Terminal">
+      <div class="terminal-bar">
+        <span class="terminal-dot" aria-hidden="true"></span>
+        <span class="terminal-dot" aria-hidden="true"></span>
+        <span class="terminal-dot" aria-hidden="true"></span>
+        <span class="terminal-title">{terminalTitle}</span>
+      </div>
+      <div class="terminal-body">
+        {termLines.map((line) => (
           <div class="term-line">
-            <span class="term-prompt">$</span> <span class="term-cmd">{line.cmd}</span>
-            <div class:list={["term-out", line.emerald && "term-out-emerald"]}>{line.out}</div>
+            <span class="term-prompt" aria-hidden="true">$</span> <span class="term-cmd">{line.cmd}</span>
+            <div class:list={["term-out", line.emphasis && "term-out-emphasis"]}>{line.out}</div>
           </div>
-        ))
-      ) : (
-        <div class="term-line">
-          <span class="term-prompt">$</span>
+        ))}
+        <div class="term-line term-line-cursor" aria-hidden="true">
+          <span class="term-prompt">$</span> <span class="term-cursor"></span>
         </div>
-      )}
-      <div class="term-line term-line-cursor" aria-hidden="true">
-        <span class="term-prompt">$</span> <span class="term-cursor"></span>
       </div>
     </div>
-  </div>
+  )}
 </section>
 
 <style>
-  .hero { padding: 0.5rem 0 1.5rem; }
+  .hero { padding: 0.5rem 0 1rem; }
 
   .hero-grid {
     display: grid;
     grid-template-columns: auto 1fr;
-    align-items: center;
+    align-items: start;
     gap: 2.5rem;
   }
   @media (max-width: 720px) {
-    .hero-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+    .hero-grid { grid-template-columns: 1fr; gap: 1.5rem; }
   }
 
   /* Portrait */
-  .hero-portrait { display: flex; justify-content: center; }
+  .hero-portrait { display: flex; justify-content: flex-start; }
   .portrait-frame {
     position: relative;
-    width: 160px;
-    height: 160px;
+    width: 156px;
+    height: 156px;
     flex-shrink: 0;
   }
   @media (max-width: 720px) {
-    .portrait-frame { width: 120px; height: 120px; }
+    .portrait-frame { width: 112px; height: 112px; }
   }
   .portrait {
     width: 100%;
     height: 100%;
-    border-radius: 999px;
+    border-radius: var(--radius-lg);
     object-fit: cover;
-    background: var(--color-card);
-    border: 3px solid var(--color-edge);
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 12px 32px -8px rgba(0, 0, 0, 0.5);
-    position: relative;
-    z-index: 1;
+    background: var(--color-card-strong);
+    border: 1px solid var(--color-edge-strong);
+    filter: grayscale(1) contrast(1.03);
+    transition: filter 0.4s ease;
   }
-  .portrait-ring {
-    position: absolute;
-    inset: -6px;
-    border-radius: 999px;
-    background: conic-gradient(from 0deg, #FFFFFF, #71717A, #FFFFFF);
-    z-index: 0;
-    opacity: 0.55;
-    filter: blur(8px);
-    animation: ring-spin 8s linear infinite;
-  }
-  @keyframes ring-spin { to { transform: rotate(360deg); } }
+  .portrait:hover { filter: grayscale(0) contrast(1); }
 
   /* Hero text */
   .hero-eyebrow {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
-    font-weight: 600;
+    font-size: 0.68rem;
+    font-weight: 500;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--color-accent);
+    color: var(--color-fg-subtle);
   }
   .hero-name {
-    margin-top: 0.5rem;
+    margin-top: 0.55rem;
     font-family: var(--font-display);
-    font-size: clamp(2.25rem, 4.6vw, 3.5rem);
+    font-size: clamp(2.35rem, 5vw, 3.65rem);
     font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -0.025em;
-  }
-  .hero-name-glow {
-    background: linear-gradient(135deg, #FFFFFF 0%, #D4D4D8 50%, #A1A1AA 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    /* Solid fallback for browsers without background-clip:text */
+    line-height: 1.0;
+    letter-spacing: -0.04em;
     color: var(--color-fg);
+    text-wrap: balance;
   }
-  @media (prefers-color-scheme: light) {
-    :root:not([data-theme="dark"]) .hero-name-glow {
-      background: linear-gradient(135deg, #18181B 0%, #3F3F46 50%, #52525B 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-  }
-  :root[data-theme="light"] .hero-name-glow {
-    background: linear-gradient(135deg, #18181B 0%, #3F3F46 50%, #52525B 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .hero-status { margin-top: 0.85rem; }
-  .status-pill {
-    display: inline-flex;
+  .hero-status {
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.35rem 0.85rem;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--color-edge);
-    color: var(--color-fg-muted);
+    gap: 0.75rem;
+    margin-top: 1.1rem;
+  }
+  .hero-location {
     font-family: var(--font-mono);
     font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+    letter-spacing: 0.03em;
   }
   .status-dot {
-    width: 0.5rem;
-    height: 0.5rem;
+    width: 0.42rem;
+    height: 0.42rem;
     border-radius: 999px;
     background: var(--color-fg);
     animation: status-pulse 2s ease-in-out infinite;
   }
-  @keyframes status-pulse {
-    0%, 100% { opacity: 1; }
-    50%      { opacity: 0.4; }
-  }
 
   .hero-tagline {
-    margin-top: 1rem;
-    max-width: 60ch;
-    color: var(--color-fg);
-    font-size: clamp(1.05rem, 1.5vw, 1.2rem);
-    font-weight: 600;
-    line-height: 1.55;
-  }
-
-  /* Body block */
-  .hero-body { margin-top: 1.75rem; max-width: 60ch; }
-  .hero-blurb {
+    margin-top: 1.25rem;
+    max-width: 58ch;
     color: var(--color-fg-muted);
-    font-size: 0.95rem;
-    line-height: 1.7;
+    font-size: clamp(1.02rem, 1.4vw, 1.18rem);
+    font-weight: 450;
+    line-height: 1.55;
+    letter-spacing: -0.005em;
   }
 
   /* Buttons */
@@ -273,117 +196,91 @@ const termLines = [
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem;
-    margin-top: 1.5rem;
-  }
-  .hero-actions .btn-primary {
-    box-shadow: 0 6px 24px -8px rgba(0, 0, 0, 0.4);
+    margin-top: 1.75rem;
   }
 
-  /* Small text row */
-  .hero-links {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.4rem 0.9rem;
-    margin-top: 1.5rem;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--color-fg-subtle);
-  }
-  .hero-link-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.1rem 0;
-  }
-  .hero-link {
-    color: var(--color-fg-subtle);
-    transition: color 0.18s ease;
-  }
-  .hero-link:hover { color: var(--color-accent-2); }
-
-  /* At a Glance */
-  .hero-glance { margin-top: 2.5rem; }
+  /* At a Glance — compact stat strip */
   .glance-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.85rem;
-    margin-top: 0.85rem;
+    gap: 0;
+    margin-top: 2.75rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--color-edge);
   }
-  @media (min-width: 720px) { .glance-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (min-width: 720px) { .glance-grid { grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); } }
   .glance-card {
-    border: 1px solid var(--color-edge);
-    background: linear-gradient(180deg, var(--color-card) 0%, var(--color-card-strong) 100%);
-    border-radius: 14px;
-    padding: 1rem 1.1rem;
-    transition: border-color 0.2s ease, transform 0.2s ease;
+    padding: 0 1.1rem 1.1rem 0;
   }
-  .glance-card:hover { border-color: var(--color-edge-strong); transform: translateY(-1px); }
+  @media (min-width: 720px) {
+    .glance-card { border-left: 1px solid var(--color-edge); padding-left: 1.5rem; padding-right: 1.5rem; }
+    .glance-card:first-child { border-left: 0; padding-left: 0; }
+  }
   .glance-label {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.64rem;
     color: var(--color-fg-subtle);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.09em;
   }
   .glance-value {
-    margin-top: 0.45rem;
-    font-family: var(--font-mono);
-    font-size: 1.7rem;
-    font-weight: 700;
+    margin-top: 0.55rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 3vw, 2.4rem);
+    font-weight: 800;
     color: var(--color-fg);
-    letter-spacing: -0.02em;
-    line-height: 1.1;
+    letter-spacing: -0.045em;
+    line-height: 1;
   }
   .glance-sub {
-    margin-top: 0.35rem;
+    margin-top: 0.5rem;
     font-size: 0.72rem;
     color: var(--color-fg-muted);
     line-height: 1.45;
+    max-width: 24ch;
   }
 
   /* Terminal card */
   .terminal {
-    margin-top: 1.25rem;
+    margin-top: 2rem;
     border: 1px solid var(--color-edge);
-    background: #07070D;
-    border-radius: 14px;
+    background: var(--color-bg-2);
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.6);
   }
   .terminal-bar {
     display: flex;
     align-items: center;
-    gap: 0.45rem;
-    padding: 0.65rem 0.9rem;
-    background: #111118;
+    gap: 0.4rem;
+    padding: 0.6rem 0.9rem;
+    background: var(--color-card-strong);
     border-bottom: 1px solid var(--color-edge);
   }
-  .terminal-dot { width: 0.7rem; height: 0.7rem; border-radius: 999px; }
-  .terminal-dot.red    { background: rgba(239, 68, 68, 0.85); }
-  .terminal-dot.yellow { background: rgba(245, 158, 11, 0.85); }
-  .terminal-dot.green  { background: rgba(16, 185, 129, 0.85); }
+  .terminal-dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 999px;
+    background: var(--color-edge-strong);
+  }
   .terminal-title {
-    margin-left: 0.5rem;
-    flex: 1;
-    text-align: center;
+    margin-left: 0.6rem;
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     color: var(--color-fg-subtle);
   }
-  .terminal-spacer { width: 2.6rem; flex-shrink: 0; }
   .terminal-body {
-    padding: 1rem 1.1rem 1.1rem;
+    padding: 1.1rem 1.15rem 1.25rem;
     font-family: var(--font-mono);
     font-size: 0.78rem;
-    line-height: 1.55;
+    line-height: 1.6;
     color: var(--color-fg-muted);
   }
   .term-line + .term-line { margin-top: 1.1rem; }
   .term-line-cursor { margin-top: 1.1rem; }
-  .term-prompt { color: #10B981; font-weight: 600; margin-right: 0.35rem; }
-  .term-cmd { color: var(--color-fg); font-weight: 500; }
-  .term-out { margin-top: 0.25rem; color: var(--color-fg-muted); padding-left: 0; }
-  .term-out-emerald { margin-top: 0.25rem; color: #10B981; font-weight: 500; padding-left: 0; }
+  .term-prompt { color: var(--color-fg-subtle); font-weight: 600; margin-right: 0.35rem; }
+  .term-cmd { color: var(--color-fg); font-weight: 600; }
+  .term-out { margin-top: 0.3rem; color: var(--color-fg-muted); }
+  .term-out-emphasis { margin-top: 0.3rem; color: var(--color-fg); font-weight: 500; }
   .term-cursor {
     display: inline-block;
     width: 0.55em;
@@ -400,12 +297,4 @@ const termLines = [
   @media (prefers-reduced-motion: reduce) {
     .term-cursor { animation: none; opacity: 1; }
   }
-
-  .panel-link {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--color-fg-muted);
-    transition: color 0.18s ease;
-  }
-  .panel-link:hover { color: var(--color-accent-2); }
 </style>

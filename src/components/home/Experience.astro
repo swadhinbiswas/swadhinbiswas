@@ -13,8 +13,7 @@ interface Experience {
 }
 
 const experiencesList = (await getExperiences()) as Experience[];
-const highlights = experiencesList.slice(0, 3);
-
+const highlights = experiencesList.slice(0, 4);
 
 function formatDate(s?: string) {
   if (!s) return "Present";
@@ -47,79 +46,91 @@ function hostname(url?: string) {
         Experience will appear here once added from the admin panel.
       </div>
     ) : (
-      <div class="panel panel-accent">
-        <ol class="exp-list reveal reveal-delay-1">
-          {highlights.map((exp) => (
-            <li class="exp-row">
-              <div class="exp-dot" aria-hidden="true"></div>
-              <div class="exp-body">
-                <div class="exp-head">
-                  <h3 class="exp-title">
-                    {exp.role}
-                    {exp.company && <span class="exp-company"> · {exp.company}</span>}
-                  </h3>
-                  <time class="exp-dates">{formatDate(exp.startDate)} — {formatDate(exp.endDate)}</time>
-                </div>
-                {exp.details && <p class="exp-details">{exp.details}</p>}
-                {(exp.companyDescription || exp.url) && (
-                  <div class="exp-meta">
-                    {exp.companyDescription && <span class="exp-about">{exp.companyDescription}</span>}
-                    {exp.url && (
-                      <a class="exp-link" href={exp.url} target="_blank" rel="noopener noreferrer">
-                        {hostname(exp.url)} ↗
-                      </a>
-                    )}
-                  </div>
-                )}
+      <ol class="exp-list reveal reveal-delay-1">
+        {highlights.map((exp) => (
+          <li class="exp-row">
+            <div class="exp-marker" aria-hidden="true">
+              <span class="exp-marker-dot"></span>
+            </div>
+            <div class="exp-body">
+              <div class="exp-head">
+                <h3 class="exp-title">
+                  {exp.role}
+                  {exp.company && <span class="exp-company"> · {exp.company}</span>}
+                </h3>
+                <time class="exp-dates">{formatDate(exp.startDate)} — {formatDate(exp.endDate)}</time>
               </div>
-            </li>
-          ))}
-        </ol>
-      </div>
+              {exp.details && <p class="exp-details">{exp.details}</p>}
+              {(exp.companyDescription || exp.url) && (
+                <div class="exp-meta">
+                  {exp.companyDescription && <span class="exp-about">{exp.companyDescription}</span>}
+                  {exp.url && (
+                    <a class="exp-link" href={exp.url} target="_blank" rel="noopener noreferrer">
+                      {hostname(exp.url)} ↗
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
     )}
   </div>
 </section>
 
 <style>
-  .exp-list { list-style: none; margin: 0; padding: 0.4rem 0; }
+  .exp-list { list-style: none; margin: 0; padding: 0; }
   .exp-row {
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 1rem;
-    padding: 1.05rem 1.25rem;
+    gap: 1.25rem;
+    padding: 1.35rem 0;
     border-top: 1px solid var(--color-edge);
-    transition: background-color 0.2s ease;
   }
-  .exp-row:hover { background: rgba(255, 255, 255, 0.02); }
-  @media (prefers-color-scheme: light) {
-    :root:not([data-theme="dark"]) .exp-row:hover { background: rgba(0, 0, 0, 0.02); }
-  }
-  html[data-theme="light"] .exp-row:hover { background: rgba(0, 0, 0, 0.02); }
-  .exp-row:first-child { border-top: 0; }
+  .exp-row:first-child { border-top: 0; padding-top: 0; }
 
-  .exp-dot {
-    margin-top: 0.45rem;
+  .exp-marker {
+    position: relative;
+    width: 0.9rem;
+    display: flex;
+    justify-content: center;
+    padding-top: 0.4rem;
+  }
+  .exp-marker::before {
+    content: "";
+    position: absolute;
+    top: 1.4rem;
+    bottom: -1.35rem;
+    width: 1px;
+    background: var(--color-edge);
+  }
+  .exp-row:last-child .exp-marker::before { display: none; }
+  .exp-marker-dot {
     width: 0.6rem;
     height: 0.6rem;
     border-radius: 999px;
-    background: var(--color-fg);
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+    background: var(--color-bg);
+    border: 1.5px solid var(--color-fg-subtle);
     flex-shrink: 0;
+    z-index: 1;
+    transition: border-color 0.2s ease, background 0.2s ease;
   }
+  .exp-row:hover .exp-marker-dot { border-color: var(--color-fg); background: var(--color-fg); }
 
   .exp-head {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
     justify-content: space-between;
-    gap: 0.5rem 1rem;
+    gap: 0.4rem 1rem;
   }
   .exp-title {
     font-family: var(--font-display);
-    font-size: 1rem;
+    font-size: 1.02rem;
     font-weight: 700;
     color: var(--color-fg);
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
     line-height: 1.4;
   }
   .exp-company { color: var(--color-fg-muted); font-weight: 500; }
@@ -130,12 +141,12 @@ function hostname(url?: string) {
     white-space: nowrap;
   }
   .exp-details {
-    margin-top: 0.4rem;
+    margin-top: 0.5rem;
     color: var(--color-fg-muted);
-    font-size: 0.87rem;
-    line-height: 1.6;
+    font-size: 0.88rem;
+    line-height: 1.65;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
@@ -144,7 +155,7 @@ function hostname(url?: string) {
     flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem 1rem;
-    margin-top: 0.5rem;
+    margin-top: 0.6rem;
   }
   .exp-about {
     font-size: 0.78rem;

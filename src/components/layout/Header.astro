@@ -5,6 +5,10 @@ const siteConfig = await getDynamicConfig();
 const pathname = Astro.url.pathname;
 const author = siteConfig.author || "Swadhin Biswas";
 
+const nameParts = author.split(" ");
+const initials = nameParts.map((p) => p[0]).join("").slice(0, 2).toUpperCase();
+const role = siteConfig.bio?.intro || "Data / Backend Engineer";
+
 const rawNav = siteConfig.navItems || [];
 const rawCreative = siteConfig.creativeNavItems || [];
 
@@ -67,35 +71,10 @@ const isActive = (href: string) =>
 <aside class="shell-sidebar" data-open="false">
   <div class="sidebar-header">
     <a href="/" class="brand" aria-label={`${author} — home`}>
-      <span class="brand-mark cat-wrap" aria-hidden="true">
-        <svg class="cat-icon" viewBox="0 0 64 64" width="32" height="32">
-          <!-- Cat ears -->
-          <path d="M14 28 L18 10 L26 22 Z" fill="#F97316" opacity="0.9"/>
-          <path d="M50 28 L46 10 L38 22 Z" fill="#F97316" opacity="0.9"/>
-          <!-- Inner ears -->
-          <path d="M17 26 L19.5 14 L24 22 Z" fill="#FB923C" opacity="0.5"/>
-          <path d="M47 26 L44.5 14 L40 22 Z" fill="#FB923C" opacity="0.5"/>
-          <!-- Head -->
-          <ellipse cx="32" cy="36" rx="18" ry="16" fill="#F97316"/>
-          <!-- Eyes -->
-          <ellipse class="cat-eye left-eye" cx="24" cy="34" rx="3.5" ry="4" fill="#0A0A0A"/>
-          <ellipse class="cat-eye right-eye" cx="40" cy="34" rx="3.5" ry="4" fill="#0A0A0A"/>
-          <ellipse class="cat-pupil left-pupil" cx="24" cy="34" rx="1.5" ry="3" fill="#F4F4F5"/>
-          <ellipse class="cat-pupil right-pupil" cx="40" cy="34" rx="1.5" ry="3" fill="#F4F4F5"/>
-          <!-- Nose -->
-          <path d="M30 40 L32 42 L34 40 Z" fill="#0A0A0A" opacity="0.5"/>
-          <!-- Mouth -->
-          <path d="M32 42 Q28 46 25 44" fill="none" stroke="#0A0A0A" stroke-width="1" opacity="0.35"/>
-          <path d="M32 42 Q36 46 39 44" fill="none" stroke="#0A0A0A" stroke-width="1" opacity="0.35"/>
-          <!-- Whiskers -->
-          <line x1="6" y1="36" x2="20" y2="38" stroke="#0A0A0A" stroke-width="0.8" opacity="0.25"/>
-          <line x1="6" y1="40" x2="20" y2="40" stroke="#0A0A0A" stroke-width="0.8" opacity="0.25"/>
-          <line x1="44" y1="38" x2="58" y2="36" stroke="#0A0A0A" stroke-width="0.8" opacity="0.25"/>
-          <line x1="44" y1="40" x2="58" y2="40" stroke="#0A0A0A" stroke-width="0.8" opacity="0.25"/>
-        </svg>
-      </span>
+      <span class="brand-mark" aria-hidden="true">{initials}</span>
       <span class="brand-text">
         <strong>{author}</strong>
+        <span>{role}</span>
       </span>
     </a>
     <button class="mobile-menu-toggle" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="sidebar-nav" data-menu-toggle>
@@ -108,6 +87,7 @@ const isActive = (href: string) =>
   </div>
 
   <nav class="sidebar-nav" id="sidebar-nav" aria-label="Primary navigation">
+    <p class="nav-section-title nav-first">Menu</p>
     {navItems.map((item) => (
       <a
         href={item.href}
@@ -134,8 +114,7 @@ const isActive = (href: string) =>
 
     {creativeItems.length > 0 && (
       <>
-        <div class="nav-divider" aria-hidden="true"></div>
-        <p class="nav-section-title">The Workshop & Craft</p>
+        <p class="nav-section-title">Craft</p>
         {creativeItems.map((item) => (
           <a
             href={item.href}
@@ -156,7 +135,6 @@ const isActive = (href: string) =>
 
     {socials.length > 0 && (
       <>
-        <div class="nav-divider" aria-hidden="true"></div>
         <p class="nav-section-title">Elsewhere</p>
         {socials.map((s) => (
           <a href={s.href} target={s.href.startsWith("http") ? "_blank" : undefined} rel={s.href.startsWith("http") ? "noopener noreferrer" : undefined} class="nav-item">
@@ -175,7 +153,13 @@ const isActive = (href: string) =>
   </nav>
 
   <div class="sidebar-footer">
-    {siteConfig.sidebarTagline && <p>{siteConfig.sidebarTagline}</p>}
+    {siteConfig.bio?.availability && (
+      <span class="sidebar-status">
+        <span class="sidebar-status-dot" aria-hidden="true"></span>
+        {siteConfig.bio.availability}
+      </span>
+    )}
+    {siteConfig.sidebarTagline && <p class="sidebar-tagline">{siteConfig.sidebarTagline}</p>}
     <button type="button" class="theme-toggle" aria-label="Toggle dark mode" data-theme-toggle>
       <svg class="theme-icon theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
@@ -226,7 +210,7 @@ const isActive = (href: string) =>
     display: flex;
     align-items: center;
     gap: 0.7rem;
-    padding: 1.1rem 1.1rem 1rem;
+    padding: 1.25rem 1.1rem;
     border-bottom: 1px solid var(--color-edge);
   }
 
@@ -241,66 +225,39 @@ const isActive = (href: string) =>
   }
   .brand-mark {
     display: inline-flex;
-    width: 2.2rem;
-    height: 2.2rem;
+    width: 2.3rem;
+    height: 2.3rem;
     align-items: center;
     justify-content: center;
-    border-radius: 10px;
-    background: rgba(249, 115, 22, 0.08);
+    border-radius: var(--radius);
+    background: var(--color-fg);
+    color: var(--color-bg);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
     flex-shrink: 0;
-    transition: transform 0.3s ease;
-    color: var(--color-fg);
-    overflow: hidden;
-  }
-  .brand:hover .brand-mark { transform: rotate(-5deg) scale(1.05); }
-
-  /* Cat animation */
-  .cat-icon { width: 28px; height: 28px; }
-  .cat-eye { animation: cat-blink 4s ease-in-out infinite; }
-  .left-eye { animation-delay: 0s; }
-  .right-eye { animation-delay: 0.05s; }
-  @keyframes cat-blink {
-    0%, 92%, 100% { ry: 4; }
-    95% { ry: 0.5; }
-  }
-  .cat-pupil { animation: cat-look 6s ease-in-out infinite; }
-  .left-pupil { animation-delay: 0s; }
-  .right-pupil { animation-delay: 0.05s; }
-  @keyframes cat-look {
-    0%, 40%, 100% { cx: 24; }
-    45%, 55% { cx: 22; }
-    60%, 90% { cx: 26; }
-  }
-  .right-pupil {
-    animation-name: cat-look-r;
-  }
-  @keyframes cat-look-r {
-    0%, 40%, 100% { cx: 40; }
-    45%, 55% { cx: 38; }
-    60%, 90% { cx: 42; }
-  }
-  .cat-wrap { animation: cat-float 3s ease-in-out infinite; }
-  @keyframes cat-float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-2px); }
   }
 
-  .brand-text { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+  .brand-text { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
   .brand-text strong {
     font-family: var(--font-display);
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     font-weight: 700;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
   .brand-text span {
-    margin-top: 0.1rem;
+    margin-top: 0.12rem;
     color: var(--color-fg-subtle);
     font-family: var(--font-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.04em;
+    font-size: 0.62rem;
+    letter-spacing: 0.02em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .mobile-menu-toggle {
@@ -310,31 +267,52 @@ const isActive = (href: string) =>
     align-items: center;
     justify-content: center;
     border: 1px solid var(--color-edge);
-    border-radius: 8px;
+    border-radius: var(--radius);
     background: var(--color-card);
     color: var(--color-fg);
     transition: all 0.2s ease;
   }
-  .mobile-menu-toggle:hover { border-color: var(--color-fg-subtle); color: var(--color-fg); }
+  .mobile-menu-toggle:hover { border-color: var(--color-fg); }
 
-  .sidebar-nav { flex: 1; padding: 0.6rem 0; }
-  .nav-divider {
-    height: 1px;
-    background: var(--color-edge);
-    margin: 0.75rem 1.1rem 0.4rem;
-    opacity: 0.7;
-  }
+  .sidebar-nav { flex: 1; padding: 0.75rem 0 1rem; }
+  .nav-first { margin-top: 0; }
+
   .sidebar-footer {
     padding: 1rem 1.1rem;
     border-top: 1px solid var(--color-edge);
     color: var(--color-fg-subtle);
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     line-height: 1.6;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.7rem;
   }
+  .sidebar-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    align-self: flex-start;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--color-edge);
+    border-radius: 999px;
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.62rem;
+  }
+  .sidebar-status-dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 999px;
+    background: var(--color-fg);
+    animation: status-pulse 2s ease-in-out infinite;
+  }
+  @keyframes status-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+  .sidebar-tagline { opacity: 0.8; }
 
   .theme-toggle {
     display: inline-flex;
@@ -344,16 +322,16 @@ const isActive = (href: string) =>
     align-self: flex-start;
     padding: 0.4rem 0.8rem;
     border: 1px solid var(--color-edge);
-    border-radius: 999px;
+    border-radius: var(--radius);
     background: var(--color-card);
     color: var(--color-fg-muted);
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: 500;
     transition: all 0.2s ease;
   }
   .theme-toggle:hover {
-    border-color: var(--color-edge-strong);
+    border-color: var(--color-fg);
     color: var(--color-fg);
   }
   .theme-icon-moon { display: none; }
@@ -366,5 +344,6 @@ const isActive = (href: string) =>
 
   @media (max-width: 768px) {
     .mobile-menu-toggle { display: inline-flex; }
+    .sidebar-header { padding: 1rem; }
   }
 </style>

@@ -82,7 +82,6 @@ function formatDate(dateStr: string) {
   <div class="container-narrow">
     <div class="section-head reveal">
       <div>
-        <p class="text-eyebrow">Blog</p>
         <h2 class="section-title">
           Recent writing
           {merged.length > 0 && <span class="count-badge">{merged.length}</span>}
@@ -96,7 +95,6 @@ function formatDate(dateStr: string) {
         Articles will appear here once published on the blog.
       </p>
     ) : (
-      <div class="panel panel-accent">
       <ul class="post-list reveal reveal-delay-1">
         {merged.map((post) => (
           <li>
@@ -130,29 +128,28 @@ function formatDate(dateStr: string) {
           </li>
         ))}
       </ul>
-      </div>
     )}
   </div>
 </section>
 
 <style>
-  .post-list { list-style: none; margin: 0; padding: 0.5rem 0; display: flex; flex-direction: column; }
-  .post-list > li + li { border-top: 1px dashed var(--color-edge); }
+  .post-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .post-list > li + li { border-top: 1px solid var(--color-edge); }
   .post-row {
     display: grid;
     grid-template-columns: 5.5rem auto 1fr auto;
-    gap: 0.75rem;
+    gap: 0.9rem;
     align-items: start;
-    padding: 0.9rem 1.1rem;
+    padding: 1.1rem 0;
     text-decoration: none;
     color: inherit;
-    transition: background-color 0.2s ease;
+    transition: opacity 0.2s ease;
   }
-  .post-row:hover { background: rgba(255, 255, 255, 0.02); }
+  .post-row:hover { opacity: 0.75; }
   .post-cover-wrap {
     width: 3rem;
     height: 3rem;
-    border-radius: 6px;
+    border-radius: var(--radius);
     overflow: hidden;
     flex-shrink: 0;
     border: 1px solid var(--color-edge);
@@ -162,18 +159,20 @@ function formatDate(dateStr: string) {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    filter: grayscale(1);
   }
   .post-date {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     color: var(--color-fg-subtle);
     padding-top: 0.2rem;
     white-space: nowrap;
   }
   .post-title {
     font-family: var(--font-display);
-    font-size: 0.98rem;
+    font-size: 1rem;
     font-weight: 700;
+    letter-spacing: -0.01em;
     color: var(--color-fg);
     line-height: 1.4;
   }
@@ -187,11 +186,16 @@ function formatDate(dateStr: string) {
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  .post-cats { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.5rem; }
+  .post-cats { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.55rem; }
   .post-arrow {
     color: var(--color-fg-subtle);
     align-self: center;
     transition: color 0.2s ease, transform 0.2s ease;
   }
-  .post-row:hover .post-arrow { color: var(--color-accent-2); transform: translateX(2px); }
+  .post-row:hover .post-arrow { color: var(--color-fg); transform: translateX(2px); }
+
+  @media (max-width: 560px) {
+    .post-row { grid-template-columns: auto 1fr auto; }
+    .post-date { display: none; }
+  }
 </style>

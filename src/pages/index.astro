@@ -10,9 +10,7 @@ import JsonLd from "../components/seo/JsonLd.astro";
 import Hero from "../components/home/Hero.astro";
 import FeaturedProjects from "../components/home/FeaturedProjects.astro";
 import Skills from "../components/home/Skills.astro";
-import Summary from "../components/home/Summary.astro";
 import Experience from "../components/home/Experience.astro";
-import Recruiters from "../components/home/Recruiters.astro";
 import Faq from "../components/home/Faq.astro";
 import Testimonials from "../components/home/Testimonials.astro";
 import Writing from "../components/home/Writing.astro";
@@ -68,13 +66,11 @@ const schema = {
 
   <Hero />
   <FeaturedProjects />
-  <Skills />
-  <Summary />
   <Experience />
-  <ExploreTeaser />
-  <Recruiters />
-  <Faq />
+  <Skills />
   <Testimonials />
   <Writing />
+  <ExploreTeaser />
+  <Faq />
   <Contact />
 </BaseLayout>

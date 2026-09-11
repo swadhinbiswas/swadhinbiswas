@@ -6,23 +6,10 @@ import { opt } from "../../lib/image";
 const allProjects = await getProjects();
 const categories = await getProjectCategories();
 
-function categoryIcon(cat?: string | null): string {
-  switch (cat) {
-    case "data-engineering":
-      return `<path d="M32 12 L48 22 L48 42 L32 52 L16 42 L16 22 Z M16 22 L32 32 L48 22 M32 32 L32 52"/>`;
-    case "web":
-      return `<rect x="14" y="18" width="36" height="8" rx="2"/><rect x="14" y="30" width="36" height="8" rx="2"/><rect x="14" y="42" width="36" height="8" rx="2"/><circle cx="20" cy="22" r="1.5"/><circle cx="20" cy="34" r="1.5"/><circle cx="20" cy="46" r="1.5"/>`;
-    case "cli-tools":
-      return `<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/><polyline points="20 21 14 15 20 9"/>`;
-    case "ai-ml":
-      return `<circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>`;
-    case "devops":
-      return `<rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>`;
-    case "research":
-      return `<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>`;
-    default:
-      return `<path d="M14 18 L32 12 L50 18 L50 38 L32 44 L14 38 Z"/><path d="M14 18 L32 24 L50 18 M32 24 L32 44"/>`;
-  }
+function initials(name: string): string {
+  const parts = name.trim().split(/[\s-]+/).filter(Boolean);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[1][0]).toUpperCase();
 }
 
 const visible = allProjects.slice(0, 6);
@@ -50,32 +37,23 @@ const visible = allProjects.slice(0, 6);
       </div>
     ) : (
       <div class="projects-grid">
-        {visible.map((p) => {
+        {visible.map((p, i) => {
           const cat = categoryBySlug(categories, p.category);
           return (
-            <a href={`/projects/${p.slug}/`} class="project-card reveal">
+            <a href={`/projects/${p.slug}/`} class:list={["project-card", "reveal", i === 0 && "project-card--wide"]}>
               <div class="project-card-art" aria-hidden="true">
                 {p.image ? (
                   <img src={opt(p.image, 720)} alt={p.name} class="project-card-img" loading="lazy" decoding="async" width="720" height="360" />
                 ) : (
-                  <svg viewBox="0 0 64 64" width="56" height="56" fill="none" class="project-card-glyph">
-                    <defs>
-                      <linearGradient id={`g-${p.id}`} x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#FFFFFF"/>
-                        <stop offset="60%" stop-color="#A1A1AA"/>
-                        <stop offset="100%" stop-color="#52525B"/>
-                      </linearGradient>
-                    </defs>
-                    <rect width="64" height="64" rx="12" fill="#0F0F18" stroke={`url(#g-${p.id})`} stroke-width="1.25" opacity="0.95"/>
-                    <g stroke={`url(#g-${p.id})`} stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" fill="none" set:html={categoryIcon(p.category)}>
-                    </g>
-                  </svg>
+                  <span class="project-card-glyph">{initials(p.name)}</span>
                 )}
                 <span class="project-card-cat">{cat?.label || "Project"}</span>
-                {p.featured && <span class="project-card-star" title="Featured">★</span>}
               </div>
               <div class="project-card-body">
-                <h3 class="project-card-title">{p.name}</h3>
+                <h3 class="project-card-title">
+                  {p.name}
+                  <svg class="project-card-arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                </h3>
                 {p.description && <p class="project-card-desc">{p.description}</p>}
                 {p.tags.length > 0 && (
                   <div class="project-card-tags">
@@ -85,8 +63,7 @@ const visible = allProjects.slice(0, 6);
                 <div class="project-card-meta">
                   {p.url && <span class="meta-badge">Live</span>}
                   {p.github && <span class="meta-badge">Source</span>}
-                  {p.stars != null && p.stars > 0 && <span class="meta-badge meta-badge-stars">★ {p.stars.toLocaleString()}</span>}
-                  <span class="project-card-arrow">Read case study →</span>
+                  {p.stars != null && p.stars > 0 && <span class="meta-badge">★ {p.stars.toLocaleString()}</span>}
                 </div>
               </div>
             </a>
@@ -109,17 +86,38 @@ const visible = allProjects.slice(0, 6);
     display: flex;
     flex-direction: column;
     border: 1px solid var(--color-edge);
-    background: linear-gradient(180deg, var(--color-card) 0%, var(--color-card-strong) 100%);
-    border-radius: 16px;
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
     overflow: hidden;
     text-decoration: none;
     color: inherit;
-    transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+    transition: border-color 0.25s ease, transform 0.25s ease;
   }
   .project-card:hover {
-    border-color: var(--color-edge-strong);
+    border-color: var(--color-fg-subtle);
     transform: translateY(-2px);
-    box-shadow: 0 16px 40px -16px rgba(0, 0, 0, 0.4);
+  }
+
+  /* First project spans the grid as a wide feature */
+  @media (min-width: 700px) {
+    .project-card--wide {
+      grid-column: 1 / -1;
+      flex-direction: row;
+    }
+    .project-card--wide .project-card-art {
+      width: 46%;
+      flex-shrink: 0;
+      aspect-ratio: auto;
+      border-bottom: 0;
+      border-right: 1px solid var(--color-edge);
+    }
+    .project-card--wide .project-card-body {
+      justify-content: center;
+      padding: 1.75rem 1.85rem;
+      gap: 0.8rem;
+    }
+    .project-card--wide .project-card-title { font-size: 1.4rem; }
+    .project-card--wide .project-card-desc { -webkit-line-clamp: 4; font-size: 0.92rem; }
   }
 
   .project-card-art {
@@ -128,131 +126,99 @@ const visible = allProjects.slice(0, 6);
     align-items: center;
     justify-content: center;
     aspect-ratio: 16 / 8;
-    background:
-      repeating-linear-gradient(
-        315deg,
-        rgba(255, 255, 255, 0.02) 0,
-        rgba(255, 255, 255, 0.02) 1px,
-        transparent 1px,
-        transparent 10px
-      ),
-      var(--color-bg-2);
+    background: var(--color-bg-2);
     border-bottom: 1px solid var(--color-edge);
     overflow: hidden;
-  }
-  @media (prefers-color-scheme: light) {
-    :root:not([data-theme="dark"]) .project-card-art {
-      background:
-        repeating-linear-gradient(315deg, rgba(0, 0, 0, 0.02) 0, rgba(0, 0, 0, 0.02) 1px, transparent 1px, transparent 10px),
-        var(--color-bg-2);
-    }
-  }
-  html[data-theme="light"] .project-card-art {
-    background:
-      repeating-linear-gradient(315deg, rgba(0, 0, 0, 0.02) 0, rgba(0, 0, 0, 0.02) 1px, transparent 1px, transparent 10px),
-      var(--color-bg-2);
+    color: var(--color-fg-subtle);
   }
   .project-card-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    filter: grayscale(1);
+    transition: filter 0.4s ease, transform 0.5s ease;
   }
-  /* Top scrim so overlay controls stay legible over any cover photo */
+  .project-card:hover .project-card-img { filter: grayscale(0); transform: scale(1.02); }
   .project-card-art::after {
     content: "";
     position: absolute;
     inset: 0 0 auto 0;
-    height: 3.25rem;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.45), transparent);
+    height: 3rem;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.28), transparent);
     pointer-events: none;
   }
   .project-card-cat {
     position: absolute;
-    top: 0.6rem;
-    left: 0.6rem;
+    top: 0.7rem;
+    left: 0.7rem;
     z-index: 1;
-    padding: 0.2rem 0.55rem;
+    padding: 0.2rem 0.6rem;
     border-radius: 999px;
-    /* Theme-aware chip: near-opaque in both modes (solid fallback first) */
     background: var(--color-card);
-    background: color-mix(in srgb, var(--color-card) 85%, transparent);
     border: 1px solid var(--color-edge-strong);
     color: var(--color-fg);
     font-family: var(--font-mono);
     font-size: 0.6rem;
     font-weight: 600;
-    letter-spacing: 0.03em;
-    backdrop-filter: blur(8px) saturate(1.2);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
-  .project-card-star {
-    position: absolute;
-    top: 0.6rem;
-    right: 0.6rem;
-    z-index: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.6rem;
-    height: 1.6rem;
-    border-radius: 999px;
-    background: var(--color-card);
-    background: color-mix(in srgb, var(--color-card) 85%, transparent);
-    border: 1px solid var(--color-edge-strong);
-    color: var(--color-fg);
-    font-size: 0.8rem;
-    line-height: 1;
-    backdrop-filter: blur(8px) saturate(1.2);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  }
-  .project-card-glyph { opacity: 0.9; }
-
-  .project-card-body { padding: 1.1rem 1.25rem 1.25rem; display: flex; flex-direction: column; gap: 0.6rem; }
-  .project-card-title {
+  .project-card-glyph {
     font-family: var(--font-display);
-    font-size: 1.1rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    color: var(--color-fg);
-    line-height: 1.3;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--color-fg-subtle);
+    opacity: 0.7;
+    user-select: none;
   }
+
+  .project-card-body { padding: 1.15rem 1.25rem 1.25rem; display: flex; flex-direction: column; gap: 0.65rem; flex: 1; }
+  .project-card-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1.12rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-fg);
+    line-height: 1.25;
+  }
+  .project-card-arrow {
+    color: var(--color-fg-subtle);
+    flex-shrink: 0;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+  .project-card:hover .project-card-arrow { transform: translateX(3px); color: var(--color-fg); }
   .project-card-desc {
     color: var(--color-fg-muted);
-    font-size: 0.875rem;
+    font-size: 0.86rem;
     line-height: 1.6;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  .project-card-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .project-card-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: auto; }
   .project-card-meta {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.3rem;
-    padding-top: 0.8rem;
-    border-top: 1px dashed var(--color-edge);
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--color-fg-subtle);
+    gap: 0.4rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--color-edge);
   }
   .meta-badge {
     font-family: var(--font-mono);
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     font-weight: 500;
     color: var(--color-fg-subtle);
-    padding: 0.15rem 0.45rem;
+    padding: 0.16rem 0.45rem;
     border: 1px solid var(--color-edge);
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.02);
+    border-radius: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
-  .meta-badge-stars { color: var(--color-accent-2); }
-  .project-card-arrow {
-    margin-left: auto;
-    color: var(--color-fg-subtle);
-    transition: transform 0.2s ease, color 0.2s ease;
-  }
-  .project-card:hover .project-card-arrow { transform: translateX(2px); color: var(--color-fg); }
 </style>

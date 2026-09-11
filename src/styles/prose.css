@@ -20,33 +20,31 @@
 .prose-content h3 { font-size: 1.25rem; }
 .prose-content p { margin: 1.25rem 0; }
 .prose-content a {
-  color: var(--color-accent);
+  color: var(--color-fg);
   text-decoration: underline;
-  text-decoration-style: wavy;
-  text-decoration-color: var(--color-accent-2, var(--color-edge-strong));
+  text-decoration-color: var(--color-edge-strong);
   text-underline-offset: 4px;
   transition: all 0.2s ease;
 }
 .prose-content a:hover {
-  color: var(--color-fg);
-  text-decoration-color: var(--color-accent);
+  text-decoration-color: var(--color-fg);
 }
 .prose-content ul, .prose-content ol { padding-left: 1.5rem; margin: 1.25rem 0; }
 .prose-content li { margin: 0.5rem 0; }
-.prose-content li::marker { color: var(--color-accent); }
+.prose-content li::marker { color: var(--color-fg-subtle); }
 .prose-content code {
-  background-color: rgba(199, 146, 234, 0.1);
+  background-color: var(--color-bg-2);
   border: 1px solid var(--color-edge);
   padding: 0.15rem 0.4rem;
   border-radius: 6px;
   font-size: 0.875em;
-  color: var(--color-accent);
+  color: var(--color-fg);
   font-family: var(--font-mono);
 }
 .prose-content pre {
-  background-color: var(--color-card);
-  border: 2px solid var(--color-edge);
-  border-radius: 12px;
+  background-color: var(--color-bg-2);
+  border: 1px solid var(--color-edge);
+  border-radius: var(--radius-lg);
   padding: 1.25rem;
   overflow-x: auto;
   margin: 1.5rem 0;
@@ -58,13 +56,13 @@
   color: var(--color-fg-muted);
 }
 .prose-content blockquote {
-  border-left: 3px solid var(--color-accent);
-  padding: 1rem 1.25rem;
+  border-left: 2px solid var(--color-edge-strong);
+  padding: 0.75rem 1.25rem;
   margin: 1.5rem 0;
-  color: var(--color-fg);
+  color: var(--color-fg-muted);
   font-style: italic;
-  background: rgba(199, 146, 234, 0.04);
-  border-radius: 0 8px 8px 0;
+  background: var(--color-bg-2);
+  border-radius: 0 var(--radius) var(--radius) 0;
 }
 .prose-content table {
   width: 100%;
@@ -77,17 +75,17 @@
   text-align: left;
 }
 .prose-content th { color: var(--color-fg); font-weight: 700; }
-.prose-content img { border-radius: 12px; margin: 1.5rem 0; border: 2px solid var(--color-edge); }
+.prose-content img { border-radius: var(--radius-lg); margin: 1.5rem 0; border: 1px solid var(--color-edge); }
 .prose-content hr {
   border: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--color-edge-strong), transparent);
+  background: var(--color-edge);
   margin: 2rem 0;
 }
 .prose-content .mermaid {
   background: var(--color-card);
   border: 1px solid var(--color-edge);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   padding: 1.5rem;
   margin: 1.5rem 0;
   overflow-x: auto;
@@ -103,12 +101,12 @@
 
 /* Obsidian-style Callouts */
 .prose-content .callout {
-  border: 1px solid var(--callout-color, var(--color-edge));
-  border-left-width: 4px;
-  border-radius: 10px;
+  border: 1px solid var(--color-edge);
+  border-left: 3px solid var(--color-fg-subtle);
+  border-radius: var(--radius);
   padding: 1rem 1.25rem;
   margin: 1.5rem 0;
-  background: color-mix(in srgb, var(--callout-color, var(--color-accent)) 6%, var(--color-base));
+  background: var(--color-bg-2);
 }
 .prose-content .callout-title {
   display: flex;
@@ -116,7 +114,7 @@
   gap: 0.5rem;
   font-weight: 700;
   font-size: 0.95rem;
-  color: var(--callout-color, var(--color-fg));
+  color: var(--color-fg);
   margin-bottom: 0.5rem;
   font-style: normal;
 }

@@ -8,6 +8,16 @@ const author = siteConfig.author || env.siteName;
 const socials = (siteConfig.socials || []).filter((s) =>
   ["github", "linkedin", "twitter", "scholar", "email", "youtube"].includes(s.icon)
 );
+const links = [
+  siteConfig.links?.github ? { label: "GitHub", href: siteConfig.links.github } : null,
+  siteConfig.links?.linkedin ? { label: "LinkedIn", href: siteConfig.links.linkedin } : null,
+  siteConfig.links?.twitter ? { label: "X", href: siteConfig.links.twitter } : null,
+  siteConfig.email ? { label: "Email", href: `mailto:${siteConfig.email}` } : null,
+].filter(Boolean) as { label: string; href: string }[];
+
+const resolvedLinks = links.length > 0
+  ? links
+  : socials.map((s) => ({ label: s.name, href: s.url }));
 ---
 
 <footer class="site-footer">
@@ -16,22 +26,16 @@ const socials = (siteConfig.socials || []).filter((s) =>
       <p class="footer-copyright">© {year} {author}</p>
       {siteConfig.footerTagline && <p class="footer-tagline">{siteConfig.footerTagline}</p>}
     </div>
-    {socials.length > 0 && (
+    {resolvedLinks.length > 0 && (
       <nav class="footer-nav" aria-label="Footer">
-        {socials.map((s) => (
+        {resolvedLinks.map((s) => (
           <a
-            href={s.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={s.name}
+            href={s.href}
+            target={s.href.startsWith("http") ? "_blank" : undefined}
+            rel={s.href.startsWith("http") ? "noopener noreferrer" : undefined}
             class="footer-link"
           >
-            {s.icon === "github" && "GitHub"}
-            {s.icon === "linkedin" && "LinkedIn"}
-            {s.icon === "twitter" && "X"}
-            {s.icon === "scholar" && "Scholar"}
-            {s.icon === "email" && "Email"}
-            {s.icon === "youtube" && "YouTube"}
+            {s.label}
           </a>
         ))}
       </nav>
@@ -46,7 +50,7 @@ const socials = (siteConfig.socials || []).filter((s) =>
     margin-top: 4rem;
   }
   .footer-inner {
-    max-width: 760px;
+    max-width: 820px;
     margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
@@ -58,20 +62,16 @@ const socials = (siteConfig.socials || []).filter((s) =>
     font-family: var(--font-mono);
     font-size: 0.7rem;
     color: var(--color-fg-subtle);
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
   }
   .footer-tagline {
-    margin-top: 0.25rem;
+    margin-top: 0.3rem;
     font-family: var(--font-mono);
     font-size: 0.65rem;
     color: var(--color-fg-subtle);
-    opacity: 0.7;
+    opacity: 0.75;
   }
-  .footer-nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.25rem;
-  }
+  .footer-nav { display: flex; flex-wrap: wrap; gap: 1.25rem; }
   .footer-link {
     font-family: var(--font-mono);
     font-size: 0.7rem;

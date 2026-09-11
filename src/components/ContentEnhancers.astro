@@ -1,0 +1,130 @@
+---
+/**
+ * ContentEnhancers — lazily loads diagram/chart libraries only when the
+ * rendered markdown actually contains them, and re-themes them for light/dark.
+ *
+ * Astro hoists static `<script src="...">` into the client bundle (loading the
+ * library on every page and breaking mermaid's ESM wrapper), so we inject the
+ * CDN scripts at runtime instead, gated on the presence of the matching node.
+ */
+interface Props {
+  mermaid?: boolean;
+  plotly?: boolean;
+  charts?: boolean;
+  embeds?: boolean;
+}
+const { mermaid = false, plotly = false, charts = false, embeds = false } = Astro.props;
+---
+
+<script is:inline define:vars={{ mermaid, plotly, charts, embeds }}>
+  (function () {
+    function prefersDark() {
+      var t = document.documentElement.getAttribute("data-theme");
+      if (t === "light" || t === "dark") return t === "dark";
+      return window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)").matches : true;
+    }
+
+    function loadScript(src) {
+      return new Promise(function (resolve, reject) {
+        var existing = document.querySelector('script[data-enhancer="' + src + '"]');
+        if (existing) { existing.addEventListener("load", resolve); if (existing.dataset.loaded) resolve(); return; }
+        var s = document.createElement("script");
+        s.src = src;
+        s.async = true;
+        s.dataset.enhancer = src;
+        s.addEventListener("load", function () { s.dataset.loaded = "1"; resolve(); });
+        s.addEventListener("error", reject);
+        document.head.appendChild(s);
+      });
+    }
+
+    function initMermaid() {
+      var nodes = document.querySelectorAll(".mermaid");
+      if (!nodes.length || nodes[0].dataset.rendered) return;
+      import("https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs")
+        .then(function (mod) {
+          var mermaid = mod.default || mod;
+          var dark = prefersDark();
+          mermaid.initialize({
+            startOnLoad: false,
+            theme: dark ? "dark" : "neutral",
+            themeVariables: dark
+              ? { primaryColor: "#1A1A1A", primaryTextColor: "#F6F6F4", primaryBorderColor: "#3F3F46", lineColor: "#A1A1AA", secondaryColor: "#141414", tertiaryColor: "#111113", fontFamily: "JetBrainsMono, monospace" }
+              : { primaryColor: "#F4F4F2", primaryTextColor: "#0A0A0B", primaryBorderColor: "#CBCBC6", lineColor: "#71717A", secondaryColor: "#FFFFFF", tertiaryColor: "#F6F6F4", fontFamily: "JetBrainsMono, monospace" },
+          });
+          nodes.forEach(function (n) { n.dataset.rendered = "1"; });
+          mermaid.run({ nodes: Array.prototype.slice.call(nodes) });
+        })
+        .catch(function (e) { console.error("Mermaid error", e); });
+    }
+
+    function initPlotly() {
+      var nodes = document.querySelectorAll(".plotly-container:not([data-done])");
+      if (!nodes.length) return;
+      loadScript("https://cdn.jsdelivr.net/npm/plotly.js@3.3.1/dist/plotly.min.js").then(function () {
+        var dark = prefersDark();
+        nodes.forEach(function (el) {
+          el.dataset.done = "1";
+          try {
+            var cfg = JSON.parse(decodeURIComponent(el.dataset.config));
+            var layout = Object.assign({}, cfg.layout || {}, {
+              paper_bgcolor: "transparent",
+              plot_bgcolor: "transparent",
+              font: { color: dark ? "#A6A6AD" : "#52525B" },
+            });
+            Plotly.newPlot(el, cfg.data || [], layout, { responsive: true, displayModeBar: false });
+          } catch (e) { console.error("Plotly error", e); }
+        });
+      }).catch(function (e) { console.error("Plotly load error", e); });
+    }
+
+    function initCharts() {
+      var nodes = document.querySelectorAll(".chart-container:not([data-done])");
+      if (!nodes.length) return;
+      loadScript("https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js").then(function () {
+        var dark = prefersDark();
+        Chart.defaults.color = dark ? "#A6A6AD" : "#52525B";
+        Chart.defaults.borderColor = dark ? "#232327" : "#E5E5E2";
+        nodes.forEach(function (el) {
+          el.dataset.done = "1";
+          try {
+            var cfg = JSON.parse(decodeURIComponent(el.dataset.config));
+            var canvas = document.createElement("canvas");
+            el.innerHTML = "";
+            el.appendChild(canvas);
+            new Chart(canvas, cfg);
+          } catch (e) { console.error("Chart error", e); }
+        });
+      }).catch(function (e) { console.error("Chart load error", e); });
+    }
+
+    function initEmbeds() {
+      document.querySelectorAll(".embed-link").forEach(function (el) {
+        if (el.dataset.embedLoaded) return;
+        el.dataset.embedLoaded = "1";
+        var slug = el.dataset.embedSlug;
+        var container = document.createElement("div");
+        container.className = "embedded-post loading";
+        container.innerHTML = '<p class="text-sm text-[var(--color-fg-subtle)]">Loading embedded post…</p>';
+        el.parentNode && el.parentNode.replaceChild(container, el);
+        fetch("/api/embed/" + slug)
+          .then(function (r) { return r.text(); })
+          .then(function (html) { container.className = "embedded-post"; container.innerHTML = html; })
+          .catch(function () {
+            container.innerHTML = '<a href="/posts/' + slug + '" class="text-[var(--color-fg)] underline">View post: ' + slug.replace(/-/g, " ") + "</a>";
+          });
+      });
+    }
+
+    function initAll() {
+      if (mermaid) initMermaid();
+      if (plotly) initPlotly();
+      if (charts) initCharts();
+      if (embeds) initEmbeds();
+    }
+
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initAll);
+    else initAll();
+    document.addEventListener("astro:page-load", initAll);
+  })();
+</script>

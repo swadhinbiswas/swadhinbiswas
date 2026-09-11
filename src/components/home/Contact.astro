@@ -1,20 +1,39 @@
 ---
 import { getDynamicConfig } from "../../lib/config";
+import { getLanguages } from "../../lib/loaders";
 
 const siteConfig = await getDynamicConfig();
 const email = siteConfig.email || "";
+
+const languageRows = await getLanguages();
+const levelLabels: Record<string, string> = {
+  native: "Native",
+  fluent: "Fluent",
+  working: "Working",
+  learning: "Learning",
+};
+const languagesText = languageRows.length > 0
+  ? (languageRows as any[]).map((l) => `${l.name} (${levelLabels[l.level] || l.level})`).join(" · ")
+  : siteConfig.englishLevel;
+
+const facts = [
+  siteConfig.workAuthorization && { label: "Work authorization", value: siteConfig.workAuthorization },
+  siteConfig.relocationTargets && { label: "Relocation", value: siteConfig.relocationTargets },
+  siteConfig.noticePeriod && { label: "Notice period", value: siteConfig.noticePeriod },
+  languagesText && { label: "Languages", value: languagesText },
+].filter(Boolean) as { label: string; value: string }[];
 ---
 
 <section id="contact" class="section">
   <div class="container-narrow">
     <div class="section-head reveal">
       <div>
-        <p class="text-eyebrow">Contact</p>
+        <p class="text-eyebrow">Get in touch</p>
         <h2 class="section-title">Let's build something useful</h2>
       </div>
     </div>
 
-    <div class="panel p-6 sm:p-7 reveal reveal-delay-1">
+    <div class="contact-panel reveal reveal-delay-1">
       {siteConfig.contactBlurb && <p class="contact-blurb">{siteConfig.contactBlurb}</p>}
 
       {email ? (
@@ -27,12 +46,33 @@ const email = siteConfig.email || "";
         <p class="italic text-sm text-[var(--color-fg-muted)]">No email configured yet.</p>
       )}
 
-      {siteConfig.meetingUrl && (
-        <a href={siteConfig.meetingUrl} target="_blank" rel="noopener noreferrer" class="contact-book btn btn-outline mt-5">
-          Book a call
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        </a>
+      {facts.length > 0 && (
+        <dl class="contact-facts">
+          {facts.map((f) => (
+            <div class="contact-fact">
+              <dt class="contact-fact-label">{f.label}</dt>
+              <dd class="contact-fact-value">{f.value}</dd>
+            </div>
+          ))}
+        </dl>
       )}
+
+      <div class="contact-actions">
+        {siteConfig.cvUrl && (
+          <a href={siteConfig.cvUrl} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+            Download CV
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+          </a>
+        )}
+        {siteConfig.meetingUrl && (
+          <a href={siteConfig.meetingUrl} target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+            Book a call
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        )}
+      </div>
 
       <div class="contact-links">
         {siteConfig.links?.github && (
@@ -50,30 +90,37 @@ const email = siteConfig.email || "";
 </section>
 
 <style>
+  .contact-panel {
+    border: 1px solid var(--color-edge);
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+  }
   .contact-blurb {
     color: var(--color-fg-muted);
     font-size: 1rem;
-    line-height: 1.7;
+    line-height: 1.75;
+    max-width: 60ch;
   }
   .contact-mail {
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-top: 1.25rem;
-    padding: 1rem 1.1rem;
-    border: 1px solid var(--color-edge);
+    margin-top: 1.5rem;
+    padding: 1.1rem 1.25rem;
+    border: 1px solid var(--color-edge-strong);
     background: var(--color-bg-2);
-    border-radius: 12px;
+    border-radius: var(--radius);
     text-decoration: none;
     color: inherit;
     transition: border-color 0.2s ease;
   }
-  .contact-mail:hover { border-color: var(--color-edge-strong); }
+  .contact-mail:hover { border-color: var(--color-fg); }
   .contact-mail-label {
     font-family: var(--font-mono);
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     color: var(--color-fg-subtle);
     flex-shrink: 0;
   }
@@ -87,18 +134,51 @@ const email = siteConfig.email || "";
     margin-left: auto;
     color: var(--color-fg-subtle);
     font-size: 1.1rem;
+    transition: transform 0.2s ease, color 0.2s ease;
   }
-  .contact-book { text-decoration: none; }
+  .contact-mail:hover .contact-mail-arrow { color: var(--color-fg); transform: translateX(3px); }
+
+  .contact-facts {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.9rem 2rem;
+    margin: 1.75rem 0 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-edge);
+  }
+  @media (min-width: 620px) { .contact-facts { grid-template-columns: repeat(2, 1fr); } }
+  .contact-fact-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+  }
+  .contact-fact-value {
+    margin-top: 0.35rem;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--color-fg);
+    line-height: 1.5;
+  }
+
+  .contact-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.75rem;
+  }
   .contact-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.1rem;
-    margin-top: 1.25rem;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
     padding-top: 1.25rem;
-    border-top: 1px dashed var(--color-edge);
+    border-top: 1px solid var(--color-edge);
     font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--color-fg-subtle);
+    font-size: 0.76rem;
+    color: var(--color-fg-muted);
   }
   .contact-links a { transition: color 0.2s ease; }
   .contact-links a:hover { color: var(--color-fg); }

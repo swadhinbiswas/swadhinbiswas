@@ -7,6 +7,7 @@ import { renderMarkdown } from "../../lib/markdown";
 import "katex/dist/katex.min.css";
 import "highlight.js/styles/github-dark.css";
 import { getDynamicConfig } from "../../lib/config";
+import ContentEnhancers from "../../components/ContentEnhancers.astro";
 
 const { slug } = Astro.params;
 if (!slug) return Astro.redirect("/404");
@@ -67,10 +68,14 @@ const formatDate = (date: any) =>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(schema)} />
     <meta property="article:published_time" content={publishedIso} />
-    {features.hasMermaid && <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js" />}
-    {features.hasPlotly && <script src="https://cdn.jsdelivr.net/npm/plotly.js@3.3.1/dist/plotly.min.js" />}
-    {features.hasCharts && <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js" />}
   </Fragment>
+  <ContentEnhancers
+    slot="head"
+    mermaid={features.hasMermaid}
+    plotly={features.hasPlotly}
+    charts={features.hasCharts}
+    embeds={features.hasEmbeds}
+  />
 
   <article>
     <section class="screen-line-after">

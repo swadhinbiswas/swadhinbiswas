@@ -2,9 +2,8 @@
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getDynamicConfig } from "../lib/config";
-import { db, experiences, education, publications, skills, achievements, interests, certifications, projects, bioContent, siteSettings } from "../db";
-import { thesvgIconUrl, skillInitials, strokeIcon } from "../lib/icons";
-import { getLanguages, getBooks } from "../lib/loaders";
+import { db, education, achievements, interests, certifications, bioContent, siteSettings } from "../db";
+import { strokeIcon } from "../lib/icons";
 import JsonLd from "../components/seo/JsonLd.astro";
 import { env } from "../lib/env";
 
@@ -15,28 +14,14 @@ async function safe<T>(q: Promise<T>, fallback: T): Promise<T> {
   try { return await q; } catch { return fallback; }
 }
 
-const [experiencesList, educationList, publicationsList, skillsList, achievementsList, interestsList, certificationsList, projectsRows, bioData, settingsData] = await Promise.all([
-  safe(db.select().from(experiences).orderBy(experiences.startDate), [] as any[]),
+const [educationList, achievementsList, interestsList, certificationsList, bioData, settingsData] = await Promise.all([
   safe(db.select().from(education).orderBy(education.order), [] as any[]),
-  safe(db.select().from(publications).orderBy(publications.order), [] as any[]),
-  safe(db.select().from(skills).orderBy(skills.order), [] as any[]),
   safe(db.select().from(achievements).orderBy(achievements.order), [] as any[]),
   safe(db.select().from(interests).orderBy(interests.order), [] as any[]),
   safe(db.select().from(certifications).orderBy(certifications.order), [] as any[]),
-  safe(db.select().from(projects).orderBy(projects.order), [] as any[]),
   safe(db.select().from(bioContent), [] as any[]),
   safe(db.select().from(siteSettings), [] as any[]),
 ]);
-const projectsCount = projectsRows.length;
-const languagesList = await getLanguages();
-const booksList = await getBooks();
-
-const levelMeta: Record<string, { label: string; pct: number }> = {
-  native: { label: "Native", pct: 100 },
-  fluent: { label: "Fluent", pct: 88 },
-  working: { label: "Working", pct: 70 },
-  learning: { label: "Learning", pct: 45 },
-};
 
 const bio: Record<string, string> = {};
 for (const b of bioData as any[]) bio[b.key] = b.value;
@@ -44,13 +29,10 @@ const settings: Record<string, string> = {};
 for (const s of settingsData as any[]) settings[s.key] = s.value;
 
 const author = settings.author || siteConfig.author;
-const location = settings.location || siteConfig.location;
-const profileImage = settings.profile_image || "/profile.jpg";
-const bioLong = bio.long || siteConfig.bio?.long || "";
+const bioIntro = settings.intro || bio.intro || siteConfig.bio?.intro || "";
 const bioStory = bio.story || siteConfig.bio?.story || "";
 const bioQuote = bio.quote || siteConfig.bio?.quote || "";
 const bioFunFact = bio.funFact || siteConfig.bio?.funFact || "";
-const languages = settings.languages || siteConfig.languages || "";
 const aboutCtaTitle = settings.about_cta_title || "Let's build something useful";
 
 function formatDate(s?: string) {
@@ -60,25 +42,12 @@ function formatDate(s?: string) {
   return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
 }
 
-// ── About stats (computed from DB — distinct from the hero glance cards) ──
-function tenureYears(start?: string, end?: string): number {
-  if (!start) return 0;
-  const s = new Date(start).getTime();
-  if (isNaN(s)) return 0;
-  const e = end ? new Date(end).getTime() : Date.now();
-  return Math.max(0, (e - s) / (365.25 * 24 * 3600 * 1000));
-}
-const combinedYears = experiencesList.reduce((acc, e) => acc + tenureYears(e.startDate, e.endDate), 0);
-const companyCount = [...new Set((experiencesList as any[]).map((e) => e.company).filter(Boolean))].length;
-const hasAcquisition = (experiencesList as any[]).some((e) => /acquired/i.test(String(e.details || "") + String(e.companyDescription || "") + String(e.learnings || "") + String(e.company || "")));
-const aboutStats = [
-  combinedYears >= 1 ? { label: "Years combined", value: `${Math.round(combinedYears * 10) / 10}` } : null,
-  { label: "Companies", value: String(companyCount) },
-  hasAcquisition ? { label: "Acquisition", value: "1" } : null,
-  { label: "Skills", value: String(skillsList.length) },
-  { label: "Projects", value: String(projectsCount) },
-  { label: "Publications", value: String(publicationsList.length) },
-].filter(Boolean) as { label: string; value: string }[];
+const exploreLinks = [
+  { label: "Work history", href: "/experience" },
+  { label: "Full stack", href: "/skills" },
+  { label: "Selected projects", href: "/projects" },
+  { label: "Publications", href: "/research" },
+].filter((l) => l.href);
 
 const schema = {
   "@context": "https://schema.org",
@@ -95,7 +64,7 @@ const schema = {
       "@id": `${siteUrl}/about/#webpage`,
       "url": `${siteUrl}/about`,
       "name": `About ${author}`,
-      "description": `Background, experience, education, and skills of ${author}.`,
+      "description": `Background, education, certifications, and interests of ${author}.`,
       "isPartOf": { "@id": `${siteUrl}/#website` },
       "mainEntity": { "@id": `${siteUrl}/#person` }
     }
@@ -103,112 +72,86 @@ const schema = {
 };
 ---
 
-<BaseLayout title="About" description={`About ${author} — Background, Experience, Education & Research.`}>
+<BaseLayout title="About" description={`About ${author} — story, education, certifications, and interests.`}>
   <JsonLd slot="head" schema={schema} />
 
-  <section class="screen-line-after">
-    <div class="container-narrow py-12 sm:py-16">
-      <div class="about-grid reveal">
-        <div class="about-portrait">
-          <div class="portrait-frame">
-            <img src={profileImage} alt={author} class="portrait" width="160" height="160" loading="eager" decoding="async" fetchpriority="high" />
-            <span class="portrait-ring" aria-hidden="true"></span>
-          </div>
-        </div>
-        <div>
-          <p class="text-eyebrow">About</p>
-          <h1 class="text-display mt-3 text-3xl sm:text-4xl">
-            <span class="text-aurora">{author}</span>
-          </h1>
-          <p class="mt-3 text-mono text-xs text-[var(--color-fg-subtle)]">
-            {[location, settings.timezone || siteConfig.timezone, languages].filter(Boolean).join(" · ")}
-          </p>
-          {bioLong && <p class="about-bio mt-5 max-w-prose">{bioLong}</p>}
-        </div>
-      </div>
+  <!-- Story -->
+  <section class="section">
+    <div class="container-narrow">
+      <p class="text-eyebrow reveal">About</p>
+      {bioIntro && <h1 class="about-heading reveal">{bioIntro}</h1>}
+      {bioStory && <p class="about-story reveal reveal-delay-1">{bioStory}</p>}
 
       {bioQuote && (
-        <blockquote class="mt-8 border-l-2 border-[var(--color-fg-subtle)] pl-4 text-base italic text-[var(--color-fg-muted)] reveal reveal-delay-1">
-          "{bioQuote}"
+        <blockquote class="about-quote reveal reveal-delay-2">
+          <span class="about-quote-mark" aria-hidden="true">“</span>
+          {bioQuote}
         </blockquote>
       )}
 
-      {aboutStats.length > 0 && (
-        <dl class="about-stats reveal reveal-delay-2">
-          {aboutStats.map((st) => (
-            <div class="about-stat">
-              <dt class="about-stat-label">{st.label}</dt>
-              <dd class="about-stat-value">{st.value}</dd>
-            </div>
+      {exploreLinks.length > 0 && (
+        <nav class="about-explore reveal reveal-delay-2" aria-label="Explore more">
+          {exploreLinks.map((l) => (
+            <a href={l.href} class="about-explore-link">{l.label}<span aria-hidden="true">→</span></a>
           ))}
-        </dl>
+        </nav>
       )}
     </div>
   </section>
 
-  {achievementsList.length > 0 && (
-    <section class="screen-line-after">
-      <div class="container-narrow py-12 sm:py-16">
+  <!-- Education -->
+  {educationList.length > 0 && (
+    <section class="section">
+      <div class="container-narrow">
         <div class="section-head reveal">
           <div>
-            <p class="text-eyebrow">Milestones</p>
-            <h2 class="panel-title mt-1">Achievements<span class="count-badge">{achievementsList.length}</span></h2>
+            <p class="text-eyebrow">Education</p>
+            <h2 class="section-title">Academic background</h2>
           </div>
-          <a href="/achievements" class="section-link">All achievements →</a>
         </div>
-        <div class="ach-grid">
-          {(achievementsList as any[]).map((a) => (
-            <a
-              href={`/achievements/${a.slug || "index"}/`}
-              class="panel p-5 ach-card reveal"
-            >
-              <span class="ach-icon" aria-hidden="true">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" set:html={strokeIcon(a.icon)} />
-              </span>
+        <div class="panel">
+          {(educationList as any[]).map((edu) => (
+            <div class="row-card">
+              <div class="row-card-logo" aria-hidden="true">{edu.institution.charAt(0).toUpperCase()}</div>
               <div class="min-w-0 flex-1">
-                <div class="flex flex-wrap items-baseline justify-between gap-2">
-                  <h3 class="ach-name">{a.name}</h3>
-                  {a.year && <span class="ach-year">{a.year}</span>}
-                </div>
-                {a.description && <p class="ach-desc">{a.description}</p>}
-                <div class="mt-2 flex flex-wrap items-center gap-3">
-                  <span class="ach-cta">
-                    How it happened
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-                  </span>
-                  {a.url && (
-                    <span class="ach-proof" aria-hidden="true">Proof ↗</span>
-                  )}
-                </div>
+                <h3 class="row-card-title">{edu.institution}</h3>
+                {edu.degree && <p class="row-card-meta">{edu.degree}</p>}
+                {edu.details && <p class="edu-details">{edu.details}</p>}
               </div>
-            </a>
+              <div class="edu-dates">
+                {formatDate(edu.startDate)} — {edu.endDate ? formatDate(edu.endDate) : "Present"}
+              </div>
+            </div>
           ))}
         </div>
       </div>
     </section>
   )}
 
+  <!-- Certifications -->
   {certificationsList.length > 0 && (
-    <section class="screen-line-after">
-      <div class="container-narrow py-12 sm:py-16">
-        <h2 class="panel-title mb-6 reveal">Certifications<span class="count-badge">{certificationsList.length}</span></h2>
+    <section class="section">
+      <div class="container-narrow">
+        <div class="section-head reveal">
+          <div>
+            <p class="text-eyebrow">Credentials</p>
+            <h2 class="section-title">Certifications</h2>
+          </div>
+        </div>
         <div class="panel">
           {(certificationsList as any[]).map((cert) => (
-            <div class="row-card group">
-              <div class="row-card-logo" aria-hidden="true">{cert.issuer.charAt(0).toUpperCase()}</div>
+            <div class="row-card">
+              <div class="row-card-logo" aria-hidden="true">{(cert.issuer || "·").charAt(0).toUpperCase()}</div>
               <div class="min-w-0 flex-1">
                 <h3 class="row-card-title">{cert.name}</h3>
                 <p class="row-card-meta">
                   {cert.issuer}
                   {cert.year && ` · ${cert.year}`}
-                  {cert.credentialId && ` · ID: ${cert.credentialId}`}
                 </p>
               </div>
               <div class="row-card-actions">
                 {cert.url && (
-                  <a href={cert.url} target="_blank" rel="noopener noreferrer" class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)] transition-colors hover:text-[var(--color-fg)]">
-                    Verify ↗
-                  </a>
+                  <a href={cert.url} target="_blank" rel="noopener noreferrer" class="verify-link">Verify ↗</a>
                 )}
               </div>
             </div>
@@ -218,176 +161,29 @@ const schema = {
     </section>
   )}
 
-  {bioStory && (
-    <section class="screen-line-after">
-      <div class="container-narrow py-12 sm:py-16">
-        <p class="text-eyebrow reveal">Story</p>
-        <div class="mt-4 prose-mono max-w-prose reveal reveal-delay-1">
-          <p>{bioStory}</p>
-        </div>
-        {bioFunFact && (
-          <p class="mt-6 text-mono text-xs text-[var(--color-fg-subtle)] reveal reveal-delay-2">Fun fact: {bioFunFact}</p>
-        )}
-      </div>
-    </section>
-  )}
-
-  {experiencesList.length > 0 && (
-    <section class="screen-line-after">
-      <div class="container-narrow py-12 sm:py-16">
+  <!-- Milestones -->
+  {achievementsList.length > 0 && (
+    <section class="section">
+      <div class="container-narrow">
         <div class="section-head reveal">
           <div>
-            <p class="text-eyebrow">Work history</p>
-            <h2 class="panel-title mt-1">Experience<span class="count-badge">{experiencesList.length}</span></h2>
+            <p class="text-eyebrow">Milestones</p>
+            <h2 class="section-title">Achievements</h2>
           </div>
-          <a href="/experience" class="section-link">Full timeline →</a>
+          <a href="/achievements" class="section-link">All achievements →</a>
         </div>
-        <div class="panel">
-          {([...experiencesList] as any[]).reverse().map((exp) => {
-            const responsibilities = (() => { try { return JSON.parse(exp.responsibilities || "[]"); } catch { return []; } })();
-            const learnings = (() => { try { return JSON.parse(exp.learnings || "[]"); } catch { return []; } })();
-            return (
-            <div class="exp-card">
-              <button class="exp-card-trigger group" onclick={`this.closest('.exp-card').classList.toggle('expanded')`} type="button" aria-expanded="false">
-                <div class="exp-card-header">
-                  <div class="exp-card-logo" aria-hidden="true">
-                    {exp.logoUrl ? (
-                      <img src={exp.logoUrl} alt="" class="w-full h-full object-contain rounded" />
-                    ) : (
-                      exp.company?.charAt(0)?.toUpperCase() || "?"
-                    )}
-                  </div>
-                  <div class="min-w-0 flex-1 text-left">
-                    <h3 class="row-card-title">
-                      {exp.role}
-                      <span class="text-[var(--color-fg-muted)]"> · {exp.company}</span>
-                    </h3>
-                    <div class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)] mt-0.5">
-                      {formatDate(exp.startDate)} — {formatDate(exp.endDate)}
-                      {(() => { const t = tenureYears(exp.startDate, exp.endDate); return t >= 1 ? ` · ${Math.round(t * 10) / 10} yrs` : ""; })()}
-                    </div>
-                  </div>
-                  <div class="exp-card-chevron">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                  </div>
+        <div class="ach-grid">
+          {(achievementsList as any[]).map((a) => (
+            <a href={`/achievements/${a.slug || "index"}/`} class="panel ach-card reveal">
+              <span class="ach-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" set:html={strokeIcon(a.icon)} />
+              </span>
+              <div class="min-w-0 flex-1">
+                <div class="ach-head">
+                  <h3 class="ach-name">{a.name}</h3>
+                  {a.year && <span class="ach-year">{a.year}</span>}
                 </div>
-              </button>
-              <div class="exp-card-body">
-                {exp.companyDescription && (
-                  <p class="exp-card-company-desc">{exp.companyDescription}</p>
-                )}
-                {exp.details && (
-                  <p class="exp-card-details">{exp.details}</p>
-                )}
-                {responsibilities.length > 0 && (
-                  <div class="exp-card-section">
-                    <span class="exp-card-section-icon">▹</span>
-                    <div>
-                      <p class="exp-card-section-label">Key Responsibilities</p>
-                      <ul class="exp-card-list">
-                        {responsibilities.map((r: string) => (
-                          <li class="exp-card-list-item">
-                            <span class="exp-card-bullet" aria-hidden="true">▹</span>
-                            <span>{r}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                )}
-                {learnings.length > 0 && (
-                  <div class="exp-card-section">
-                    <span class="exp-card-section-icon learn">✦</span>
-                    <div>
-                      <p class="exp-card-section-label">Key Learnings</p>
-                      <ul class="exp-card-list learn-list">
-                        {learnings.map((l: string) => (
-                          <li class="exp-card-list-item">
-                            <span class="exp-card-bullet learn-bullet" aria-hidden="true">✦</span>
-                            <span>{l}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                )}
-                {exp.url && (
-                  <a href={exp.url} target="_blank" rel="noopener noreferrer" class="exp-card-link">
-                    {(() => { try { return new URL(exp.url).hostname; } catch { return exp.url; } })()} ↗
-                  </a>
-                )}
-              </div>
-            </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  )}
-
-  {educationList.length > 0 && (
-    <section class="screen-line-after">
-      <div class="container-narrow py-12 sm:py-16">
-        <h2 class="panel-title mb-6 reveal">Education<span class="count-badge">{educationList.length}</span></h2>
-        <div class="panel">
-          {(educationList as any[]).map((edu) => (
-            <div class="row-card group">
-              <div class="row-card-logo" aria-hidden="true">
-                {edu.institution.charAt(0).toUpperCase()}
-              </div>
-              <div class="min-w-0 flex-1">
-                <h3 class="row-card-title">{edu.institution}</h3>
-                {edu.degree && <p class="row-card-meta">{edu.degree}</p>}
-                {edu.details && (
-                  <p class="prose-mono mt-1 line-clamp-2">{edu.details}</p>
-                )}
-              </div>
-              <div class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)]">
-                {formatDate(edu.startDate)} — {formatDate(edu.endDate)}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )}
-
-  {publicationsList.length > 0 && (
-    <section class="screen-line-after">
-      <div class="container-narrow py-12 sm:py-16">
-        <div class="section-head reveal">
-          <div>
-            <p class="text-eyebrow">Research</p>
-            <h2 class="panel-title mt-1">Publications<span class="count-badge">{publicationsList.length}</span></h2>
-          </div>
-          <a href="/research" class="section-link">All publications →</a>
-        </div>
-        <div class="panel">
-          {(publicationsList as any[]).map((pub) => (
-            <a
-              href={pub.url || "#"}
-              target={pub.url ? "_blank" : undefined}
-              rel={pub.url ? "noopener noreferrer" : undefined}
-              class="row-card group"
-            >
-              <div class="text-mono text-[10px] uppercase tracking-wider text-[var(--color-fg-subtle)] w-14 flex-shrink-0 pt-1">
-                {formatDate(pub.date)}
-              </div>
-              <div class="min-w-0 flex-1">
-                <h3 class="row-card-title">{pub.title}</h3>
-                {pub.venue && <p class="row-card-meta">{pub.venue}</p>}
-                {pub.description && (
-                  <p class="prose-mono mt-1 line-clamp-2">{pub.description}</p>
-                )}
-              </div>
-              <div class="row-card-actions">
-                {pub.url && (
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                    <polyline points="15 3 21 3 21 9"/>
-                    <line x1="10" y1="14" x2="21" y2="3"/>
-                  </svg>
-                )}
+                {a.description && <p class="ach-desc">{a.description}</p>}
               </div>
             </a>
           ))}
@@ -396,39 +192,19 @@ const schema = {
     </section>
   )}
 
-  {skillsList.length > 0 && (
-    <section class="screen-line-after">
-      <div class="container-narrow py-12 sm:py-16">
+  <!-- Beyond work -->
+  {interestsList.length > 0 && (
+    <section class="section">
+      <div class="container-narrow">
         <div class="section-head reveal">
           <div>
-            <p class="text-eyebrow">Capabilities</p>
-            <h2 class="panel-title mt-1">Stack<span class="count-badge">{skillsList.length}</span></h2>
+            <p class="text-eyebrow">Beyond work</p>
+            <h2 class="section-title">Interests</h2>
           </div>
-          <a href="/skills" class="section-link">Full stack →</a>
         </div>
-        <div class="flex flex-wrap gap-2 reveal">
-          {(skillsList as any[]).map((s) => {
-            const iconUrl = thesvgIconUrl(s.name);
-            return iconUrl ? (
-              <span class="icon-chip" title={s.name}>
-                <img src={iconUrl} alt={s.name} class="icon-chip-img" loading="lazy" />
-              </span>
-            ) : (
-              <span class="icon-chip" title={s.name}>{skillInitials(s.name)}</span>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  )}
-
-  {interestsList.length > 0 && (
-    <section class="screen-line-after">
-      <div class="container-narrow py-12 sm:py-16">
-        <h2 class="panel-title mb-6 reveal">Interests<span class="count-badge">{interestsList.length}</span></h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="interests-grid">
           {(interestsList as any[]).map((it) => (
-            <div class="panel p-4 interest-card reveal">
+            <div class="panel interest-card reveal">
               <span class="interest-icon" aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" set:html={strokeIcon(it.icon)} />
               </span>
@@ -440,200 +216,25 @@ const schema = {
           ))}
         </div>
 
-        <div class="mt-4 p-4 rounded-xl bg-[var(--color-card)] border border-[var(--color-edge)] flex flex-wrap items-center justify-between gap-3 reveal">
-          <div class="flex items-center gap-3">
-            <div class="flex items-center gap-1.5 p-2 rounded-lg bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg)]">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-            </div>
-            <div>
-              <p class="text-xs font-mono font-medium text-[var(--color-fg)]">Explore Photography & Maker Workshop</p>
-              <p class="text-xs text-[var(--color-fg-muted)]">Check out original field frames, custom mechanical keyboards, and homelab builds.</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-2">
-            <a href="/explore" class="text-xs font-mono font-medium px-3 py-1.5 rounded-lg bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg)] hover:border-[var(--color-edge-strong)] transition-colors">
-              Explore Gallery →
-            </a>
-            <a href="/workshop" class="text-xs font-mono font-semibold px-3 py-1.5 rounded-lg bg-[var(--color-fg)] text-[var(--color-bg)] hover:opacity-90 transition-opacity">
-              The Workshop →
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-  )}
-
-  {booksList.length > 0 && (
-    <section class="screen-line-after" id="bookshelf">
-      <div class="container-narrow py-12 sm:py-16">
-        <div class="section-head reveal">
-          <div>
-            <div class="flex items-center gap-2">
-              <p class="text-eyebrow">Continuous Learning</p>
-              <span class="count-badge">{booksList.length} titles</span>
-            </div>
-            <h2 class="panel-title mt-1">Technical Reading & Audiobooks</h2>
-            <p class="prose-mono text-xs text-[var(--color-fg-subtle)] mt-1">
-              Foundational literature on distributed systems, database internals, and software engineering.
-            </p>
-          </div>
-
-          <!-- Format Filter Pills -->
-          <div class="flex flex-wrap items-center gap-1.5" id="book-filters">
-            <button type="button" class="book-filter-pill active" data-book-tag="all">
-              All ({booksList.length})
-            </button>
-            <button type="button" class="book-filter-pill" data-book-tag="read">
-              Books (Read)
-            </button>
-            <button type="button" class="book-filter-pill" data-book-tag="listened">
-              Audiobooks (Listened)
-            </button>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6" id="book-grid">
-          {(booksList as any[]).map((b) => (
-            <div
-              class="book-card panel p-5 flex flex-col justify-between reveal transition-all duration-300 hover:border-[var(--color-edge-strong)]"
-              data-book-card
-              data-type={b.type}
-            >
-              <div>
-                <div class="flex items-center justify-between gap-2 border-b border-[var(--color-edge)] pb-3 mb-3">
-                  <div class="flex items-center gap-2">
-                    <span class="p-1.5 rounded-md bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg)]">
-                      {b.type === 'listened' ? (
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
-                          <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
-                        </svg>
-                      ) : b.type === 'both' ? (
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                          <path d="M12 6v6"/>
-                        </svg>
-                      ) : (
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                        </svg>
-                      )}
-                    </span>
-                    <span class="text-[11px] font-mono text-[var(--color-fg-subtle)]">
-                      {b.type === 'listened' ? "Audiobook" : b.type === 'both' ? "Read & Audio" : "Book"}
-                    </span>
-                  </div>
-
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-accent-2)]">
-                    {b.category || "Architecture"}
-                  </span>
-                </div>
-
-                <h3 class="text-sm sm:text-base font-bold text-[var(--color-fg)] leading-snug tracking-tight">
-                  {b.title}
-                </h3>
-                <p class="text-xs font-mono text-[var(--color-fg-subtle)] mt-1">
-                  by {b.author}
-                </p>
-
-                {b.takeaway && (
-                  <div class="mt-3 p-3 rounded-lg bg-[var(--color-card-strong)]/60 border border-[var(--color-edge)]/60">
-                    <p class="text-[11px] text-[var(--color-fg-muted)] leading-relaxed italic">
-                      "{b.takeaway}"
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              <div class="mt-4 pt-3 border-t border-[var(--color-edge)] flex items-center justify-between text-xs font-mono">
-                <div class="flex items-center gap-1 text-[var(--color-fg-subtle)]">
-                  <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span class="text-[11px]">Completed</span>
-                </div>
-                {b.url && (
-                  <a
-                    href={b.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-[11px] text-[var(--color-fg-subtle)] hover:text-[var(--color-fg)] flex items-center gap-1 transition-colors"
-                  >
-                    <span>Reference</span>
-                    <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                  </a>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )}
-
-  {languagesList.length > 0 && (
-    <section class="screen-line-after">
-      <div class="container-narrow py-12 sm:py-16">
-        <h2 class="panel-title mb-6 reveal">Languages<span class="count-badge">{languagesList.length}</span></h2>
-        <div class="panel">
-          {(languagesList as any[]).map((l) => {
-            const meta = levelMeta[l.level] || levelMeta.learning!;
-            return (
-              <div class="row-card group">
-                <div class="lang-name-col" aria-hidden="true">
-                  <span class="lang-initials">{l.name.charAt(0).toUpperCase()}</span>
-                </div>
-                <div class="min-w-0 flex-1">
-                  <div class="flex flex-wrap items-center gap-2">
-                    <h3 class="row-card-title">{l.name}</h3>
-                    <span class="lang-level">{meta.label}</span>
-                  </div>
-                  {l.note && <p class="row-card-meta">{l.note}</p>}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  )}
-
-  <section class="screen-line-after">
-    <div class="container-narrow py-12 sm:py-16">
-      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 reveal">
-        <div>
-          <p class="text-eyebrow">Based in</p>
-          <p class="mt-1.5 text-sm text-[var(--color-fg)]">{location || "—"}</p>
-        </div>
-        <div>
-          <p class="text-eyebrow">Relocation</p>
-          <p class="mt-1.5 text-sm text-[var(--color-fg)]">{siteConfig.relocationTargets || "—"}</p>
-        </div>
-        <div>
-          <p class="text-eyebrow">English</p>
-          <p class="mt-1.5 text-sm text-[var(--color-fg)]">{siteConfig.englishLevel || "—"}</p>
-        </div>
-        <div>
-          <p class="text-eyebrow">Email</p>
-          <p class="mt-1.5">
-            <a href={`mailto:${siteConfig.email}`} class="text-sm text-[var(--color-fg-subtle)] hover:underline">
-              {siteConfig.email || "—"}
-            </a>
+        {bioFunFact && (
+          <p class="fun-fact reveal">
+            <span class="fun-fact-label">Fun fact</span>
+            {bioFunFact}
           </p>
-        </div>
+        )}
       </div>
-    </div>
-  </section>
+    </section>
+  )}
 
-  <section class="screen-line-after">
-    <div class="container-narrow pb-12 sm:pb-16">
-      <div class="panel p-6 sm:p-8 text-center reveal">
-        <h2 class="panel-title">{aboutCtaTitle}</h2>
-        <p class="mt-3 mx-auto max-w-prose text-sm text-[var(--color-fg-muted)] leading-relaxed">
-          {siteConfig.contactBlurb || "Open to senior data and backend engineering opportunities."}
+  <!-- CTA -->
+  <section class="section">
+    <div class="container-narrow">
+      <div class="about-cta reveal">
+        <h2 class="about-cta-title">{aboutCtaTitle}</h2>
+        <p class="about-cta-text">
+          {siteConfig.contactBlurb || "Open to data and backend engineering opportunities."}
         </p>
-        <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+        <div class="about-cta-actions">
           <a href="/contact" class="btn btn-primary">Get in touch →</a>
           {siteConfig.cvUrl && (
             <a href={siteConfig.cvUrl} target="_blank" rel="noopener noreferrer" class="btn btn-outline">Download CV</a>
@@ -645,114 +246,87 @@ const schema = {
 </BaseLayout>
 
 <style>
-  .lang-name-col {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 10px;
-    background: var(--color-card);
-    border: 1px solid var(--color-edge);
-    flex-shrink: 0;
+  .about-heading {
+    margin-top: 1rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3.4vw, 2.75rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.12;
+    color: var(--color-fg);
+    max-width: 24ch;
   }
-  .lang-initials {
+  .about-story {
+    margin-top: 1.75rem;
+    max-width: 68ch;
+    color: var(--color-fg-muted);
+    font-size: 1.0625rem;
+    line-height: 1.8;
+  }
+  .about-quote {
+    position: relative;
+    margin-top: 2.5rem;
+    padding: 1.5rem 1.75rem;
+    border: 1px solid var(--color-edge);
+    border-radius: var(--radius-lg);
+    background: var(--color-card);
+    color: var(--color-fg);
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+  }
+  .about-quote-mark {
+    display: block;
+    font-size: 2.5rem;
+    line-height: 0.5;
+    color: var(--color-fg-subtle);
+    margin-bottom: 0.75rem;
+  }
+
+  .about-explore {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-edge);
+  }
+  .about-explore-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--color-fg-subtle);
-  }
-  .lang-level {
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-accent-2);
-    border: 1px solid var(--color-edge);
-    border-radius: 999px;
-    padding: 0.1rem 0.55rem;
-    white-space: nowrap;
-  }
-
-  .about-grid {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: start;
-    gap: 2rem;
-  }
-  @media (max-width: 720px) {
-    .about-grid { grid-template-columns: 1fr; gap: 1.25rem; }
-  }
-  .about-portrait { display: flex; justify-content: center; }
-  .portrait-frame {
-    position: relative;
-    width: 160px;
-    height: 160px;
-    flex-shrink: 0;
-  }
-  @media (max-width: 720px) { .portrait-frame { width: 120px; height: 120px; } }
-  .portrait {
-    width: 100%;
-    height: 100%;
-    border-radius: 999px;
-    object-fit: cover;
-    background: var(--color-card);
-    border: 3px solid var(--color-edge);
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 12px 32px -8px rgba(0, 0, 0, 0.5);
-    position: relative;
-    z-index: 1;
-  }
-  .portrait-ring {
-    position: absolute;
-    inset: -6px;
-    border-radius: 999px;
-    background: conic-gradient(from 0deg, #FFFFFF, #71717A, #FFFFFF);
-    z-index: 0;
-    opacity: 0.55;
-    filter: blur(8px);
-    animation: ring-spin 8s linear infinite;
-  }
-  @keyframes ring-spin { to { transform: rotate(360deg); } }
-
-  .about-bio {
     color: var(--color-fg-muted);
-    font-size: 1rem;
-    line-height: 1.75;
+    transition: color 0.2s ease, gap 0.2s ease;
   }
+  .about-explore-link:hover { color: var(--color-fg); gap: 0.7rem; }
 
-  .about-stats {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.7rem;
-    margin-top: 2rem;
+  .edu-details {
+    margin-top: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--color-fg-muted);
+    line-height: 1.6;
+    max-width: 62ch;
   }
-  @media (min-width: 640px) { .about-stats { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
-  .about-stat {
-    border: 1px solid var(--color-edge);
-    background: var(--color-card);
-    border-radius: 12px;
-    padding: 0.8rem 0.9rem;
-    transition: border-color 0.2s ease, transform 0.2s ease;
-  }
-  .about-stat:hover { border-color: var(--color-edge-strong); transform: translateY(-1px); }
-  .about-stat-label {
+  .edu-dates {
     font-family: var(--font-mono);
-    font-size: 0.62rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 0.7rem;
     color: var(--color-fg-subtle);
+    white-space: nowrap;
+    padding-top: 0.15rem;
   }
-  .about-stat-value {
-    margin-top: 0.3rem;
-    font-family: var(--font-display);
-    font-size: 1.35rem;
-    font-weight: 700;
-    color: var(--color-fg);
-    letter-spacing: -0.02em;
-    line-height: 1.1;
+  .verify-link {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-fg-subtle);
+    transition: color 0.2s ease;
   }
+  .verify-link:hover { color: var(--color-fg); }
 
   .ach-grid {
     display: grid;
@@ -764,300 +338,118 @@ const schema = {
     display: flex;
     gap: 1rem;
     align-items: flex-start;
+    padding: 1.25rem;
     text-decoration: none;
     transition: border-color 0.2s ease, transform 0.2s ease;
   }
-  .ach-card:hover { border-color: var(--color-edge-strong); transform: translateY(-2px); }
+  .ach-card:hover { border-color: var(--color-fg-subtle); transform: translateY(-2px); }
   .ach-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 2.5rem;
     height: 2.5rem;
-    border-radius: 12px;
+    border-radius: var(--radius);
     background: var(--color-bg-2);
     border: 1px solid var(--color-edge);
-    font-size: 1.15rem;
+    color: var(--color-fg-muted);
     flex-shrink: 0;
-    color: var(--color-accent-2);
+  }
+  .ach-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
   }
   .ach-name {
     font-family: var(--font-display);
     font-size: 0.98rem;
     font-weight: 700;
+    letter-spacing: -0.01em;
     color: var(--color-fg);
   }
-  .ach-year {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    color: var(--color-fg-subtle);
-  }
-  .ach-desc {
-    margin-top: 0.3rem;
-    font-size: 0.85rem;
-    color: var(--color-fg-muted);
-    line-height: 1.55;
-  }
-  .ach-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--color-accent-2);
-  }
-  .ach-card:hover .ach-cta svg { transform: translateX(2px); }
-  .ach-proof {
-    display: inline-flex;
-    align-items: center;
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    color: var(--color-fg-subtle);
-    border: 1px solid var(--color-edge);
-    border-radius: 999px;
-    padding: 0.15rem 0.55rem;
-  }
+  .ach-year { font-family: var(--font-mono); font-size: 0.68rem; color: var(--color-fg-subtle); }
+  .ach-desc { margin-top: 0.35rem; font-size: 0.85rem; color: var(--color-fg-muted); line-height: 1.55; }
 
+  .interests-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  @media (min-width: 640px) { .interests-grid { grid-template-columns: repeat(2, 1fr); } }
   .interest-card {
     display: flex;
     gap: 0.9rem;
     align-items: flex-start;
+    padding: 1.1rem 1.25rem;
   }
   .interest-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 12px;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: var(--radius);
     background: var(--color-bg-2);
     border: 1px solid var(--color-edge);
-    color: var(--color-accent-2);
+    color: var(--color-fg-muted);
     flex-shrink: 0;
   }
   .interest-name {
     font-family: var(--font-display);
     font-size: 0.95rem;
     font-weight: 700;
+    letter-spacing: -0.01em;
     color: var(--color-fg);
   }
-  .interest-desc {
-    margin-top: 0.25rem;
-    font-size: 0.82rem;
-    color: var(--color-fg-muted);
-    line-height: 1.55;
-  }
+  .interest-desc { margin-top: 0.3rem; font-size: 0.84rem; color: var(--color-fg-muted); line-height: 1.55; }
 
-  .icon-chip {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 8px;
-    background: var(--color-card);
-    border: 1px solid var(--color-edge);
-    overflow: hidden;
-    transition: border-color 0.2s ease, transform 0.2s ease;
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    font-weight: 700;
-    color: var(--color-fg-subtle);
-    letter-spacing: 0.05em;
-  }
-  .icon-chip:hover {
-    border-color: var(--color-edge-strong);
-    transform: scale(1.05);
-  }
-  .icon-chip-img {
-    width: 20px;
-    height: 20px;
-    object-fit: contain;
-  }
-
-  /* --- Expandable Experience Cards --- */
-  .exp-card {
-    border-bottom: 1px solid var(--color-edge);
-  }
-  .exp-card:last-child { border-bottom: none; }
-
-  .exp-card-trigger {
-    width: 100%;
-    background: none;
-    border: none;
-    color: inherit;
-    cursor: pointer;
-    padding: 1rem 1.25rem;
-    text-align: left;
-    transition: background 0.2s ease;
-  }
-  .exp-card-trigger:hover {
-    background: rgba(255, 255, 255, 0.02);
-  }
-  @media (prefers-color-scheme: light) {
-    :root:not([data-theme="dark"]) .exp-card-trigger:hover { background: rgba(0, 0, 0, 0.02); }
-  }
-  html[data-theme="light"] .exp-card-trigger:hover { background: rgba(0, 0, 0, 0.02); }
-
-  .exp-card-header {
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-  }
-
-  .exp-card-logo {
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 8px;
-    background: var(--color-card);
-    border: 1px solid var(--color-edge);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .fun-fact {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-edge);
     font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--color-fg-subtle);
-    flex-shrink: 0;
-    overflow: hidden;
-  }
-
-  .exp-card-chevron {
-    color: var(--color-fg-subtle);
-    transition: transform 0.3s ease;
-    flex-shrink: 0;
-  }
-  .expanded .exp-card-chevron {
-    transform: rotate(180deg);
-  }
-
-  .exp-card-body {
-    display: none;
-    padding: 0 1.25rem 1.25rem;
-    animation: exp-slide-down 0.25s ease;
-  }
-  .expanded .exp-card-body {
-    display: block;
-  }
-
-  @keyframes exp-slide-down {
-    from { opacity: 0; transform: translateY(-8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .exp-card-company-desc {
-    font-size: 0.88rem;
-    color: var(--color-fg-subtle);
-    font-style: italic;
-    line-height: 1.5;
-    margin-bottom: 0.75rem;
-  }
-
-  .exp-card-details {
-    font-size: 0.9rem;
     color: var(--color-fg-muted);
-    line-height: 1.65;
-    margin-bottom: 0.75rem;
+    line-height: 1.6;
   }
-
-  .exp-card-section {
-    display: flex;
-    gap: 0.6rem;
-    align-items: flex-start;
-    margin-top: 0.75rem;
-  }
-  .exp-card-section-icon {
-    font-size: 0.85rem;
-    color: var(--color-accent);
-    line-height: 1.5;
-    flex-shrink: 0;
-  }
-  .exp-card-section-icon.learn { color: #f9e2af; }
-  @media (prefers-color-scheme: light) {
-    :root:not([data-theme="dark"]) .exp-card-section-icon.learn { color: #8a6d1f; }
-  }
-  html[data-theme="light"] .exp-card-section-icon.learn { color: #8a6d1f; }
-
-  .exp-card-section-label {
+  .fun-fact-label {
+    display: inline-block;
+    margin-right: 0.6rem;
     font-family: var(--font-mono);
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     font-weight: 600;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--color-fg-subtle);
-    margin-bottom: 0.3rem;
   }
 
-  .exp-card-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
+  .about-cta {
+    border: 1px solid var(--color-edge);
+    border-radius: var(--radius-lg);
+    background: var(--color-card);
+    padding: 2.5rem 1.75rem;
+    text-align: center;
   }
-  .exp-card-list-item {
-    display: flex;
-    gap: 0.55rem;
-    font-size: 0.85rem;
+  .about-cta-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--color-fg);
+  }
+  .about-cta-text {
+    margin: 0.75rem auto 0;
+    max-width: 52ch;
+    font-size: 0.92rem;
     color: var(--color-fg-muted);
-    line-height: 1.55;
-  }
-  .exp-card-list.learn-list .exp-card-list-item {
-    color: var(--color-fg-subtle);
-  }
-  .exp-card-bullet {
-    color: var(--color-accent);
-    font-size: 0.7rem;
     line-height: 1.7;
-    flex-shrink: 0;
   }
-  .exp-card-bullet.learn-bullet { color: #f9e2af; }
-  @media (prefers-color-scheme: light) {
-    :root:not([data-theme="dark"]) .exp-card-bullet.learn-bullet { color: #8a6d1f; }
-  }
-  html[data-theme="light"] .exp-card-bullet.learn-bullet { color: #8a6d1f; }
-
-  .book-filter-pill {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    padding: 0.25rem 0.65rem;
-    border-radius: 6px;
-    border: 1px solid transparent;
-    color: var(--color-fg-subtle);
-    background: transparent;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-  .book-filter-pill:hover {
-    color: var(--color-fg);
-    background: var(--color-card-strong);
-  }
-  .book-filter-pill.active {
-    color: var(--color-fg);
-    background: var(--color-card-strong);
-    border-color: var(--color-edge);
-    font-weight: 600;
+  .about-cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
   }
 </style>
-
-<script>
-  const bookFilterPills = document.querySelectorAll<HTMLButtonElement>('[data-book-tag]');
-  const bookCards = document.querySelectorAll<HTMLElement>('[data-book-card]');
-
-  bookFilterPills.forEach((pill) => {
-    pill.addEventListener('click', () => {
-      bookFilterPills.forEach((p) => p.classList.remove('active'));
-      pill.classList.add('active');
-
-      const tag = pill.getAttribute('data-book-tag');
-      bookCards.forEach((card) => {
-        const type = card.getAttribute('data-type');
-        if (tag === 'all' || type === tag || (tag === 'read' && type === 'both') || (tag === 'listened' && type === 'both')) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    });
-  });
-</script>
