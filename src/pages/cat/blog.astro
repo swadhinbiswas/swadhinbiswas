@@ -13,7 +13,7 @@ const rows = await db.select().from(posts).orderBy(desc(posts.publishedAt));
     <button onclick="document.getElementById('add-form').classList.toggle('hidden')" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-lg transition-colors text-sm">+ Add Post</button>
   </div>
   <p class="text-sm text-gray-400 mb-4">
-    Add a post that links to your article (e.g. blog.swadhin.cv, Medium, Dev.to) — or write it here with markdown. Drafts stay hidden. Posts from blog.swadhin.cv are also fetched automatically.
+    Add a post that links to your article (blog.swadhin.cv, Medium, Dev.to), or write it here with markdown. Drafts stay hidden. Posts from blog.swadhin.cv are also fetched automatically.
   </p>
 
   <div id="add-form" class="hidden mb-6 p-4 rounded-xl border border-cyan-400/30 bg-cyan-400/5">
@@ -25,7 +25,7 @@ const rows = await db.select().from(posts).orderBy(desc(posts.publishedAt));
           <input type="text" name="title" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
         </div>
         <div>
-          <label class="block text-sm text-gray-400 mb-1">Slug (optional — auto from title)</label>
+          <label class="block text-sm text-gray-400 mb-1">Slug (optional, auto from title)</label>
           <input type="text" name="slug" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400" placeholder="my-article" />
         </div>
         <div>
@@ -52,7 +52,7 @@ const rows = await db.select().from(posts).orderBy(desc(posts.publishedAt));
         </label>
       </div>
       <div>
-        <label class="block text-sm text-gray-400 mb-1">Content (Markdown — used when no external link)</label>
+        <label class="block text-sm text-gray-400 mb-1">Content (Markdown, used when there's no external link)</label>
         <textarea name="content" rows="8" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 font-mono text-sm" placeholder="# My article&#10;&#10;Write the full post here if it's not hosted elsewhere..."></textarea>
       </div>
       <div class="flex gap-3">

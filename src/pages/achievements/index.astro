@@ -52,7 +52,7 @@ const schema = {
       "@type": "CollectionPage",
       "@id": `${siteUrl}/achievements/#webpage`,
       url: `${siteUrl}/achievements`,
-      name: `Achievements — ${siteConfig.author}`,
+      name: `Achievements | ${siteConfig.author}`,
       description: "Milestones and results, with the story of how each one was achieved.",
       isPartOf: { "@id": `${siteUrl}/#website` },
       mainEntity: { "@id": `${siteUrl}/#person` },
@@ -61,7 +61,7 @@ const schema = {
 };
 ---
 
-<BaseLayout title="Achievements" description={`Milestones and results achieved by ${siteConfig.author} — with the story behind each one.`}>
+<BaseLayout title="Achievements" description={`Milestones and results from ${siteConfig.author}, with the story behind each one.`}>
   <JsonLd slot="head" schema={schema} />
 
   <section class="screen-line-after">
@@ -70,7 +70,7 @@ const schema = {
         <p class="text-eyebrow">Achievements</p>
         <h1 class="text-display mt-3 text-3xl sm:text-4xl text-aurora">Milestones & results</h1>
         <p class="prose-mono mt-4 max-w-prose">
-          Not just badges — each achievement links to the story of how it was done: the work, the trade-offs, and the measurable outcome.
+          Each achievement links to the story behind it: the work, the trade-offs, and the results.
         </p>
       </div>
     </div>

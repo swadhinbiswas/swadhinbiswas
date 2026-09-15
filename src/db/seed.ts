@@ -223,7 +223,7 @@ async function seed() {
         status: 'completed',
         rating: 5,
         url: 'https://dataintensive.net/',
-        takeaway: 'The definitive masterclass on replication, partitioning, distributed transactions, and stream processing architectures.',
+        takeaway: 'The book that shaped how I think about distributed data. Consensus, Raft and Paxos leader election, linearizability versus serializability, and Kafka\'s stream-table duality are the parts I still use.',
         featured: true,
         order: 1
       },
@@ -235,7 +235,7 @@ async function seed() {
         status: 'completed',
         rating: 5,
         url: 'https://www.databass.dev/',
-        takeaway: 'Deep engineering dive into B-Trees, LSM-Trees, Write-Ahead Logs (WAL), and distributed consensus algorithms.',
+        takeaway: 'A close look at how storage engines are built. It made B-trees versus LSM-trees (SSTables, MemTables, compaction), page cache buffering, write-ahead logs, and replication topologies click for me.',
         featured: true,
         order: 2
       },
@@ -247,7 +247,7 @@ async function seed() {
         status: 'completed',
         rating: 5,
         url: 'https://sre.google/sre-book/table-of-contents/',
-        takeaway: 'Practical approaches to SLOs, error budgets, blameless postmortems, and distributed systems automation at scale.',
+        takeaway: 'Where I picked up error budgets, SLOs, and blameless postmortems. The main idea, that operations is an engineering problem rather than a matter of hoping, is why I take monitoring seriously.',
         featured: true,
         order: 3
       },
@@ -259,7 +259,7 @@ async function seed() {
         status: 'completed',
         rating: 5,
         url: 'https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/',
-        takeaway: 'Timeless principles on tracer bullets, orthogonality, defensive coding, and continuous intellectual investment.',
+        takeaway: 'Practical habits more than theory: fix the broken windows, keep investing in your knowledge, use tracer bullets, and keep systems decoupled.',
         featured: false,
         order: 4
       },
@@ -271,7 +271,7 @@ async function seed() {
         status: 'completed',
         rating: 5,
         url: 'https://staffeng.com/book',
-        takeaway: 'Frameworks for setting technical direction, sponsorship, cross-team alignment, and high-leverage architectural execution.',
+        takeaway: 'About doing technical work beyond your own code: writing architecture RFCs people actually read, getting teams aligned, mentoring, and carrying initiatives that span quarters.',
         featured: false,
         order: 5
       },
@@ -283,7 +283,7 @@ async function seed() {
         status: 'completed',
         rating: 5,
         url: 'https://samnewman.io/books/building_microservices_2nd_edition/',
-        takeaway: 'Decoupling services, event-driven integration patterns, distributed tracing, and evolutionary database design.',
+        takeaway: 'A sensible counterweight to microservice enthusiasm. I got the most out of the chapters on evolving a database (the strangler fig pattern), choreography versus orchestration, and where to draw tracing boundaries.',
         featured: false,
         order: 6
       }
@@ -304,14 +304,14 @@ async function seed() {
         categoryKey: 'keyboards',
         category: 'Hardware / Peripherals',
         icon: 'keyboard',
-        summary: 'A bespoke ergonomic mechanical keyboard built from scratch with custom-machined FR4 plates, hand-lubed switches, and QMK/VIA programmable firmware.',
+        summary: 'A mechanical keyboard built from scratch: custom-cut FR4 plates, hand-lubed switches, and QMK/VIA firmware.',
         image: '',
         video: '',
         highlights: JSON.stringify([
-          'Ergonomic angled Alice layout to reduce wrist pronation during 10+ hour coding sessions',
-          'Hand-lubricated Gateron Oil King linear switches with Krytox 205g0 and GPL 105 for buttery smooth actuation',
-          'Custom poured silicone dampener inside CNC anodized aluminum casing eliminating hollow case resonance',
-          'Powered by Raspberry Pi RP2040 microcontroller with custom layer keymaps (Vim navigation on CapsLock)'
+          'Angled Alice layout, chosen to keep my wrists from pronating during long coding sessions',
+          'Gateron Oil King linears, hand-lubed with Krytox 205g0 and GPL 105',
+          'Poured silicone dampener inside the anodized aluminum case to kill the hollow sound',
+          'Runs on an RP2040 with custom layers, including Vim navigation on CapsLock'
         ]),
         bom: JSON.stringify([
           { item: 'Microcontroller', spec: 'Raspberry Pi RP2040 (Zero)' },
@@ -321,7 +321,7 @@ async function seed() {
           { item: 'Plate & Foam', spec: 'Custom laser-cut FR4 + Poron Gasket Strips' }
         ]),
         tools: JSON.stringify(['Soldering Iron (TS100)', 'Krytox 205g0', 'Switch Opener', 'Multimeter', 'QMK CLI']),
-        learnings: 'Achieving true acoustic thock requires strict tolerance matching between switch housings, plate stiffness, and gasket compression.',
+        learnings: 'Getting the sound right came down to tolerance matching: switch housings, plate stiffness, and gasket compression all have to agree.',
         featured: true,
         order: 1
       },
@@ -333,14 +333,14 @@ async function seed() {
         categoryKey: 'homelab',
         category: 'Infrastructure / Homelab',
         icon: 'server',
-        summary: 'An ultra-compact, silent 3-node mini server cluster housed in a custom 3D-printed rack running lightweight Kubernetes (K3s), Tailscale mesh VPN, and local LLM inference.',
+        summary: 'A silent three-node mini server cluster in a custom 3D-printed rack. It runs K3s, a Tailscale mesh, and local LLM inference.',
         image: '',
         video: '',
         highlights: JSON.stringify([
-          'Custom PETG modular 3D-printed rack with integrated cable management and magnetic front dust filter',
-          'Zero-RPM silent Noctua 5V cooling channels keeping SoC temperatures under 48°C under full multi-core load',
-          '100% NVMe SSD storage over dedicated USB 3.0 UASP bridges delivering 420 MB/s sustained sequential I/O',
-          'Automated GitOps deployment via ArgoCD hosting local DNS, Home Assistant, WireGuard, and Docker containers'
+          'Modular PETG rack I designed and printed, with cable management and a magnetic dust filter',
+          'Noctua 5V fans on custom cooling channels keep SoC temperatures under 48C even at full multi-core load',
+          'All-NVMe storage over UASP bridges, about 420 MB/s sustained sequential I/O',
+          'ArgoCD handles GitOps deployments for local DNS, Home Assistant, WireGuard, and the container workloads'
         ]),
         bom: JSON.stringify([
           { item: 'Compute Nodes', spec: '3x Raspberry Pi 4B (8GB RAM each, 24GB total)' },
@@ -350,7 +350,7 @@ async function seed() {
           { item: 'Chassis', spec: 'Custom designed PETG 3D Printed Stack' }
         ]),
         tools: JSON.stringify(['Bambu Lab 3D Printer (PETG)', 'Crimping Tool (RJ45)', 'Digital Caliper', 'Ansible']),
-        learnings: 'Designing custom ventilation ducts in CAD beforehand prevents hot air recycling between densely stacked SBC boards.',
+        learnings: 'Drawing the ventilation ducts in CAD before printing kept hot air from recirculating between the stacked boards.',
         featured: true,
         order: 2
       },
@@ -362,14 +362,14 @@ async function seed() {
         categoryKey: 'iot',
         category: 'IoT / Embedded',
         icon: 'cpu',
-        summary: 'An ultra-low-power environmental desk monitor using Photoacoustic NDIR CO2 sensing and a paper-like e-Paper display to prevent cognitive fatigue during deep focus.',
+        summary: 'A low-power desk monitor that reads CO2 with a photoacoustic NDIR sensor and shows it on e-paper, so I can tell when the room needs air.',
         image: '',
         video: '',
         highlights: JSON.stringify([
-          'Sensirion SCD40 Photoacoustic sensor measuring accurate ppm CO2, temperature, and relative humidity',
-          '2.9" black-and-white e-Paper display with zero backlighting glare that remains legible under direct sunlight',
-          'Deep-sleep firmware cycle waking every 5 minutes, achieving months of battery life on a single 18650 cell',
-          'Seamless MQTT integration publishing real-time telemetry into Home Assistant and Grafana dashboards'
+          'Sensirion SCD40 measures CO2 in ppm, plus temperature and relative humidity',
+          '2.9-inch black-and-white e-paper display with no backlight, still readable in direct sun',
+          'The firmware sleeps and wakes every five minutes, which stretches a single 18650 cell to months',
+          'Publishes telemetry over MQTT into Home Assistant and Grafana'
         ]),
         bom: JSON.stringify([
           { item: 'Processor', spec: 'ESP32-S3 Mini Module (Wi-Fi + BLE)' },
@@ -379,7 +379,7 @@ async function seed() {
           { item: 'Case', spec: 'Handcrafted Solid Walnut & Frosted Smoked Acrylic' }
         ]),
         tools: JSON.stringify(['Soldering Station', 'ESP-IDF / PlatformIO', 'Oscilloscope', 'Laser Cutter']),
-        learnings: 'CO2 levels above 1000 ppm measurably reduce cognitive sharpness; having a real-time e-paper indicator directly prompts natural room ventilation.',
+        learnings: 'CO2 above 1000 ppm measurably dulls my focus. Seeing the number on the desk is enough to make me open a window.',
         featured: true,
         order: 3
       },
@@ -391,14 +391,14 @@ async function seed() {
         categoryKey: 'lighting',
         category: 'Smart Lighting / Firmware',
         icon: 'zap',
-        summary: 'A high-CRI (95+) addressable bias lighting system running custom WLED firmware, automatically synchronizing color temperature with natural solar circadian rhythm.',
+        summary: 'Addressable bias lighting with CRI 95+ LEDs and custom WLED firmware, with a color temperature that follows the sun through the day.',
         image: '',
         video: '',
         highlights: JSON.stringify([
-          'High Color Rendering Index (CRI 95+) LED diodes minimizing eye strain during late night development sessions',
-          '45° angled matte black aluminum extrusion channel with heavy frosted diffuser eliminating visible LED hot spots',
-          'Local HomeKit & Home Assistant integration with hardware rotary encoder for physical stepless dimming',
-          'Custom sound-reactive visualizer mode using an integrated MEMS microphone (INMP441) for music sessions'
+          'CRI 95+ LEDs, easier on the eyes during late-night sessions',
+          '45-degree aluminum channel with a frosted diffuser, so there are no visible hotspots',
+          'Works locally with HomeKit and Home Assistant, with a rotary encoder for smooth physical dimming',
+          'A MEMS microphone (INMP441) drives a sound-reactive mode for music'
         ]),
         bom: JSON.stringify([
           { item: 'LED Strip', spec: 'WS2812B 60 LED/m (High CRI 95+, 5V)' },
@@ -408,7 +408,7 @@ async function seed() {
           { item: 'Audio Sensor', spec: 'INMP441 I2S Digital MEMS Microphone' }
         ]),
         tools: JSON.stringify(['Wire Strippers', 'Heat Gun', 'Multimeter', 'WLED Web Flasher']),
-        learnings: 'Level shifting the 3.3V ESP32 data signal to 5.0V with a 74AHCT125 IC prevents high-frequency flickering over long wire runs.',
+        learnings: 'The 3.3V ESP32 data line needs a 74AHCT125 level shifter to reach 5V, otherwise long wire runs flicker at high frequencies.',
         featured: false,
         order: 4
       }
@@ -446,7 +446,7 @@ async function seed() {
         url: '',
         startDate: '2023-01-01',
         endDate: '2025-11-01',
-        details: 'Data Engineer & Tech Lead (Boringrats, acquired Nov 2025 — acquirer name under NDA. Co-founder available as reference upon request). Scaled infrastructure to 1M+ active users. Currently building OPNCODEHUB, an open-source ecosystem democratizing developer tools. Architecting robust data pipelines and production ML systems.',
+        details: 'Co-founded BoringRats and grew it to 1M+ active users. Built the real-time event ingestion pipelines, the analytics warehouse, and the MLOps workflows, along with the backend systems and infrastructure the product ran on. The company was acquired in November 2025; the acquirer is under NDA and my co-founder is available as a reference.',
         order: 100,
         createdAt: now,
         updatedAt: now,
@@ -530,34 +530,34 @@ console.log('🛠️ Seeding skills...');
     const achievementsData = [
       {
         name: 'Scaled to 1M+ users', slug: 'scaled-to-1m-users', icon: 'trophy', year: '2025',
-        description: 'Co-founded BoringRats and scaled infrastructure to 1M+ active users — acquired Nov 2025.',
+        description: 'Co-founded BoringRats and scaled its infrastructure to 1M+ active users. Acquired in November 2025.',
         url: 'https://www.linkedin.com/in/swadhinbiswas/',
-        story: 'I co-founded BoringRats and owned the backend and data infrastructure end to end — from the first monolith to a horizontally scaled system serving 1M+ active users.\n\n**What I built:**\n- Event-driven architecture on Kafka with idempotent consumers\n- Real-time analytics pipeline (Airflow + Spark) with sub-minute freshness\n- API layer tuned with Redis caching — p99 latency under 250ms\n- Zero-downtime deploy pipeline with canary releases\n\n**The hard part:** the growth curve was a hockey stick. What worked at 10K users broke at 100K.',
-        outcome: '**Results:**\n- 1M+ active users\n- p99 API latency under 250ms at peak\n- 99.9%+ uptime through the growth phase\n- Company acquired November 2025',
+        story: 'I co-founded BoringRats and owned the backend and data infrastructure from the first monolith to a horizontally scaled system serving 1M+ active users.\n\n- Event-driven architecture on Kafka with idempotent consumers, so messages were neither lost nor processed twice\n- Real-time analytics pipeline (Airflow and Spark) feeding product decisions with sub-minute freshness\n- Read-heavy API layer tuned with Redis caching and connection pooling, holding p99 latency under 250ms\n- Zero-downtime deploys with canary releases, so shipping never interrupted users\n\nThe hard part was the growth curve. What worked at 10K users broke at 100K, and I spent months on capacity planning, backpressure, and database read-path optimization. Designing for ten times the load you have today stopped feeling like overkill.',
+        outcome: '- 1M+ active users served on the platform\n- p99 API latency under 250ms at peak\n- 99.9%+ uptime through the growth phase\n- Infrastructure cost stayed flat while traffic grew 10x\n- The company was acquired in November 2025',
         order: 1,
       },
       {
         name: 'Startup acquired', slug: 'startup-acquired', icon: 'award', year: '2025',
-        description: 'BoringRats acquired November 2025. Acquirer name under NDA — co-founder available as a reference.',
+        description: 'BoringRats was acquired in November 2025. The acquirer\'s name is under NDA, and my co-founder is available as a reference.',
         url: 'https://www.linkedin.com/in/swadhinbiswas/',
-        story: 'BoringRats was acquired in November 2025 after years of compounding growth. The acquirer name is under NDA — my co-founder is available as a reference upon request.\n\n**The journey:**\n- Bootstrapped the product with a small team; I handled all backend, data, and infrastructure\n- Built the technical foundation that made the acquisition possible\n- Kept shipping through due diligence — the platform never missed a beat',
-        outcome: '**Results:**\n- Successful acquisition, November 2025\n- Team and product continuity through the transition\n- 1M+ user infrastructure handed over cleanly',
+        story: 'BoringRats was acquired in November 2025 after several years of growth. The acquirer\'s name is under NDA, and my co-founder can act as a reference.\n\n- The product was bootstrapped with a small team, and I handled backend, data, and infrastructure\n- The technical foundation mattered in the acquisition: architecture that scaled, steady uptime, and product decisions backed by data\n- We kept shipping through due diligence and never missed a release\n\nWhat I took from it: buyers pay for reliability and steady engineering more than for how clever the code is.',
+        outcome: '- The acquisition closed in November 2025\n- The team and product continued through the transition\n- The infrastructure serving 1M+ users was handed over cleanly',
         order: 2,
       },
       {
         name: 'Production ML systems', slug: 'production-ml-systems', icon: 'cpu', year: '2024',
         description: '3+ years building high-throughput data pipelines and production ML infrastructure.',
         url: 'https://github.com/swadhinbiswas',
-        story: 'Three-plus years of building high-throughput data pipelines and production ML infrastructure — the layer between raw data and product decisions.\n\n**Systems I operate in production:**\n- Streaming pipelines (Kafka, Flink) processing millions of events daily\n- Batch orchestration (Airflow, dbt) keeping warehouse models fresh\n- ML serving infrastructure: feature stores, model registries, low-latency inference\n- Monitoring and alerting (Prometheus, Grafana) with real SLOs',
-        outcome: '**Results:**\n- Sub-minute data freshness for product analytics\n- Warehouse models covered by automated tests\n- Inference endpoints with p99 latency under 100ms\n- Alerting that caught issues before users did',
+        story: 'Three-plus years building high-throughput data pipelines and the production ML infrastructure that sits between raw data and product decisions.\n\n- Streaming pipelines (Kafka, Flink) processing millions of events a day\n- Batch orchestration (Airflow, dbt) keeping warehouse models fresh and tested\n- ML serving: feature stores, model registries, and low-latency inference endpoints\n- Monitoring and alerting with Prometheus and Grafana, with SLOs we actually page on',
+        outcome: '- Data freshness for product analytics stayed under a minute\n- Warehouse models had automated test coverage\n- Inference endpoints held p99 latency under 100ms\n- Alerting caught issues before users noticed them',
         order: 3,
       },
       {
         name: 'Open source ecosystem', slug: 'open-source-ecosystem', icon: 'github', year: '2025',
-        description: 'Building OPNCODEHUB — an open-source ecosystem democratizing developer tools.',
+        description: 'Building OpencodeHub, an open-source project aimed at making professional-grade developer tools available to anyone.',
         url: 'https://opencodehub.space',
-        story: 'OPNCODEHUB is my open-source project: an ecosystem of developer tools designed to make professional-grade tooling accessible to everyone.\n\n**How it came together:**\n- Identified the gap: powerful developer tools are often fragmented or locked behind platforms\n- Built the core tooling in the open from day one\n- Engaged the community through issues, PRs, and documentation',
-        outcome: '**Results:**\n- Public open-source repository with active development\n- Community engagement through issues and contributions\n- Part of a broader mission: democratizing developer tooling',
+        story: 'OpencodeHub is my open-source project: a set of developer tools meant to make professional-grade tooling available to anyone.\n\n- The gap I saw: powerful developer tools tend to be fragmented or locked behind paid platforms\n- I built the core tooling in the open from day one, using TypeScript and Node.js, with most of the attention on the CLI\n- The community side runs through issues, pull requests, and documentation written for people rather than for a spec\n\nThe repository is public and still under active development.',
+        outcome: '- The repository is public and in active development\n- People engage through issues and contributions\n- Part of a longer goal: making developer tooling available outside closed platforms',
         order: 4,
       },
     ];
@@ -570,25 +570,25 @@ console.log('🛠️ Seeding skills...');
     console.log('📊 Seeding hero metrics...');
     const heroMetricsData = [
       {
-        label: "Users Impacted",
+        label: "Users reached",
         value: "1M+",
-        sub: "Boringrats: built, scaled, acquired",
+        sub: "On Boringrats before acquisition",
         order: 0,
       },
       {
-        label: "Acquired '25",
-        value: "1×",
-        sub: "Acquired Nov 2025 — acquirer name under NDA. Co-founder available as reference upon request.",
+        label: "Acquisition",
+        value: "2025",
+        sub: "Boringrats, November 2025",
         order: 1,
       },
       {
-        label: "Production Systems",
+        label: "Production work",
         value: "3+ yrs",
-        sub: "Data pipelines & ML infra",
+        sub: "Data pipelines and ML infrastructure",
         order: 2,
       },
       {
-        label: "Open Source",
+        label: "Open source",
         value: "12+ repos",
         sub: "Active contributor",
         order: 3,
@@ -613,16 +613,16 @@ console.log('🛠️ Seeding skills...');
       { key: 'summary', value: siteConfig.bio.summary || '' },
       {
         key: 'intro',
-        value: `I'm ${siteConfig.author} (স্বাধীন বিশ্বাস), which means "Freedom" in Bengali. I'm a passionate Backend Engineer and AI Systems Architect based in ${siteConfig.location}.`
+        value: `Backend engineer and co-founder. I build high-throughput data pipelines and production ML systems.`
       },
       {
         key: 'story',
-        value: "With a deep love for problem-solving and building systems that scale, I've dedicated my career to creating backend infrastructure and AI solutions that help people express and share their ideas more effectively. I believe every problem has a solution – you just need to find the right algorithm."
+        value: "I build data pipelines and the MLOps layer around machine learning systems, mostly so raw data turns into something reliable enough to make decisions with. At Boringrats I was the data and backend engineer and a co-founder, and I built the infrastructure that carried the product to 1M+ active users before the company was acquired. These days I split my time between low-latency, cost-efficient data platforms and OpencodeHub, an open-source project for developer tooling. I'm working toward relocating to the EU (Germany, the Netherlands, or Austria)."
       },
-      { key: 'currentFocus', value: siteConfig.bio.currentFocus || 'Data Engineering · MLOps · AI Systems · Open Source' },
-      { key: 'currentlyBuilding', value: siteConfig.bio.currentlyBuilding || 'OpencodeHub — Open-source developer tools and ecosystems' },
-      { key: 'seeking', value: siteConfig.bio.seeking || 'EU Relocation · Germany · Netherlands · Austria' },
-      { key: 'availability', value: siteConfig.bio.availability || 'Open to Mid-level Data/Backend Roles' },
+      { key: 'currentFocus', value: siteConfig.bio.currentFocus || 'Data engineering, MLOps, AI systems, and open source.' },
+      { key: 'currentlyBuilding', value: siteConfig.bio.currentlyBuilding || 'OpencodeHub, an open-source developer platform.' },
+      { key: 'seeking', value: siteConfig.bio.seeking || 'Relocation to Germany, the Netherlands, or Austria.' },
+      { key: 'availability', value: siteConfig.bio.availability || 'Open to mid-level data and backend roles' },
     ];
 
     for (const bio of bioData) {
@@ -641,7 +641,7 @@ console.log('🛠️ Seeding skills...');
       degree: "B.Sc. in Computer Science and Engineering",
       startDate: "2023-01-01", // Approximate start
       endDate: "2026-04-01", // Expected graduation
-      details: "Relevant Coursework: Data Structures, Algorithms, Database Systems, Machine Learning, Software Engineering",
+      details: "Coursework included data structures, algorithms, database systems, machine learning, and software engineering.",
       order: 0,
       createdAt: now,
       updatedAt: now,
@@ -655,7 +655,7 @@ console.log('🛠️ Seeding skills...');
       venue: "arXiv",
       url: "https://arxiv.org", // Placeholder
       date: "2024-01-01", // Approximate
-      description: "Research on self-supervised ASR for Bengali dialects.",
+      description: "First author. The paper proposes a combined denoising and domain-adaptation framework for self-supervised Bengali dialectal ASR, aimed at low-resource speech recognition across regional dialects.",
       order: 0,
       createdAt: now,
       updatedAt: now,
@@ -665,7 +665,7 @@ console.log('🛠️ Seeding skills...');
       venue: "Zenodo (DOI: 10.5281/zenodo.18655966)",
       url: "https://zenodo.org/records/18655966",
       date: "2026-02-16",
-      description: "homomorphic_request — comprehensive benchmark dataset for Paillier-based homomorphic encryption in privacy-preserving REST API gateways under realistic conditions. Covers concurrency scaling, batch variation, homomorphic overhead, burst traffic, and fault injection with per-request telemetry. Reproducible Go harness. Affiliation: Daffodil International University. DOI: 10.5281/zenodo.18655966",
+      description: "The homomorphic_request benchmark dataset for Paillier-based homomorphic encryption in privacy-preserving REST API gateways. It covers concurrency scaling, batch variation, homomorphic overhead, burst traffic, and fault injection, with per-request telemetry and a reproducible Go harness. Daffodil International University. DOI: 10.5281/zenodo.18655966",
       order: 1,
       createdAt: now,
       updatedAt: now,
@@ -675,11 +675,11 @@ console.log('🛠️ Seeding skills...');
     // 11. Interests
     console.log('🎭 Seeding interests...');
     const interestsData = [
-      { name: "Open Source", category: "Tech", icon: "github", description: "Active contributor to backend systems and ML deployment tools." },
-      { name: "Movies", category: "Hobby", icon: "film", description: "Enjoying cinema and storytelling." },
-      { name: "Anime", category: "Hobby", icon: "tv", description: "Avid anime watcher." },
-      { name: "Tech Exploration", category: "Tech", icon: "rocket", description: "Exploring new technologies and frameworks." },
-      { name: "Food", category: "Hobby", icon: "utensils", description: "A pure biriyani lover." }
+      { name: "Open Source", category: "Tech", icon: "github", description: "I contribute to backend and ML deployment tools." },
+      { name: "Movies", category: "Hobby", icon: "film", description: "I like cinema and a good story." },
+      { name: "Anime", category: "Hobby", icon: "tv", description: "I watch a lot of anime." },
+      { name: "Tech Exploration", category: "Tech", icon: "rocket", description: "Trying out new tools and frameworks." },
+      { name: "Food", category: "Hobby", icon: "utensils", description: "Biriyani, mostly." }
     ];
 
     for (let i = 0; i < interestsData.length; i++) {
@@ -716,13 +716,13 @@ console.log('🛠️ Seeding skills...');
     // 14. Project Categories (DB-driven taxonomy)
     console.log('🗂️ Seeding project categories...');
     const categoriesData = [
-      { slug: 'data-engineering', label: 'Data Engineering', short: 'Pipelines, warehouses & streaming', description: 'Data pipelines, warehouses, streaming, orchestration and analytics infrastructure.', order: 1 },
-      { slug: 'web', label: 'Web', short: 'Apps, platforms & APIs', description: 'Production web applications, APIs, real-time platforms and developer experiences.', order: 2 },
-      { slug: 'cli-tools', label: 'CLI Tools', short: 'Terminal-first developer tools', description: 'Command-line tools, automations and terminal-first developer utilities.', order: 3 },
-      { slug: 'ai-ml', label: 'AI / ML', short: 'Models, MLOps & applied AI', description: 'Applied machine learning, deep learning systems and MLOps infrastructure.', order: 4 },
-      { slug: 'devops', label: 'DevOps & Cloud', short: 'Infrastructure, IaC & observability', description: 'Infrastructure as code, Kubernetes, CI/CD, monitoring and cloud architecture.', order: 5 },
-      { slug: 'open-source', label: 'Open Source', short: 'Public tools & ecosystems', description: 'Open source software, community tooling and public ecosystems.', order: 6 },
-      { slug: 'research', label: 'Research', short: 'Papers, benchmarks & prototypes', description: 'Research systems, benchmarks, and applied academic prototypes.', order: 7 },
+      { slug: 'data-engineering', label: 'Data Engineering', short: 'Pipelines, warehouses and streaming', description: 'Pipelines, warehouses, streaming, orchestration, and the analytics layer.', order: 1 },
+      { slug: 'web', label: 'Web', short: 'Apps, platforms and APIs', description: 'Web applications, APIs, and real-time platforms.', order: 2 },
+      { slug: 'cli-tools', label: 'CLI Tools', short: 'Terminal-first developer tools', description: 'Command-line tools and terminal-first utilities.', order: 3 },
+      { slug: 'ai-ml', label: 'AI / ML', short: 'Models, MLOps and applied AI', description: 'Applied machine learning and MLOps infrastructure.', order: 4 },
+      { slug: 'devops', label: 'DevOps & Cloud', short: 'Infrastructure, IaC and observability', description: 'Infrastructure as code, Kubernetes, CI/CD, monitoring, and cloud architecture.', order: 5 },
+      { slug: 'open-source', label: 'Open Source', short: 'Public tools and ecosystems', description: 'Open source software and public tooling.', order: 6 },
+      { slug: 'research', label: 'Research', short: 'Papers, benchmarks and prototypes', description: 'Research systems, benchmarks, and applied prototypes.', order: 7 },
     ];
     for (let i = 0; i < categoriesData.length; i++) {
       const c = categoriesData[i];
@@ -763,10 +763,10 @@ console.log('🛠️ Seeding skills...');
     // 16b. FAQs
     console.log('❓ Seeding FAQs...');
     const faqsData = [
-      { question: 'What roles is Swadhin open to?', answer: 'Mid-level to senior Data Engineering and Backend Engineering roles — with a focus on production data infrastructure, MLOps, and distributed systems.', order: 1 },
-      { question: 'Is Swadhin available to relocate to the EU?', answer: 'Yes — he is actively seeking EU relocation (Germany, Netherlands, Austria) and is open to fully remote roles across the EU.', order: 2 },
+      { question: 'What roles is Swadhin open to?', answer: 'Mid-level data engineering and backend engineering roles, focused on production data infrastructure, MLOps, and distributed systems.', order: 1 },
+      { question: 'Is Swadhin available to relocate to the EU?', answer: 'Yes. He is looking to relocate to Germany, the Netherlands, or Austria, and is open to fully remote roles across the EU.', order: 2 },
       { question: 'What is the notice period?', answer: '30 days.', order: 3 },
-      { question: 'Does Swadhin need visa sponsorship?', answer: 'Yes — relocation to the EU would require visa sponsorship from the employer.', order: 4 },
+      { question: 'Does Swadhin need visa sponsorship?', answer: 'Yes. Relocating to the EU would require visa sponsorship from the employer.', order: 4 },
     ];
     for (const f of faqsData) {
       await db.insert(faqs).values({ ...f, createdAt: now, updatedAt: now });
@@ -776,10 +776,10 @@ console.log('🛠️ Seeding skills...');
     // 16c. Languages
     console.log('🌍 Seeding languages...');
     const languagesData = [
-      { name: 'English', level: 'fluent', note: 'Professional working proficiency (C1) — daily engineering language', order: 1 },
-      { name: 'Bengali', level: 'native', note: 'Native speaker (mother tongue)', order: 2 },
-      { name: 'German', level: 'learning', note: 'Currently learning — for EU relocation (Germany)', order: 3 },
-      { name: 'Hindi', level: 'working', note: 'Speaking and understanding — conversational', order: 4 },
+      { name: 'English', level: 'fluent', note: 'Professional working proficiency (C1). It\'s the language I work in every day.', order: 1 },
+      { name: 'Bengali', level: 'native', note: 'Native speaker.', order: 2 },
+      { name: 'German', level: 'learning', note: 'Currently learning, for the move to Germany.', order: 3 },
+      { name: 'Hindi', level: 'working', note: 'Conversational speaking and understanding.', order: 4 },
     ];
     for (const l of languagesData) {
       await db.insert(languages).values({ ...l, createdAt: now, updatedAt: now });
@@ -789,16 +789,16 @@ console.log('🛠️ Seeding skills...');
     // 17. Site text (DB-driven copy — no hardcoded strings in components)
     console.log('✍️ Seeding site text...');
     const siteText = [
-      { key: 'sidebar_tagline', value: 'Data engineering. Backend systems. Handmade web.' },
-      { key: 'footer_tagline', value: 'Built with Astro · Deployed on Vercel · Carbon-aware' },
-      { key: 'contact_blurb', value: "Best way to reach me is email. I'm interested in backend systems, AI product work, research tooling, and serious technical collaborations." },
-      { key: 'uses_philosophy', value: 'I believe in using the right tool for the job — not the trendiest one. Simplicity beats complexity. Reliability beats novelty. And the best code is the code you don\'t have to write.\n\nMy setup prioritizes keyboard-driven workflows, minimalism, and reproducibility.' },
+      { key: 'sidebar_tagline', value: 'Data engineering, backend systems, and the occasional hand-built website.' },
+      { key: 'footer_tagline', value: 'Built with Astro, deployed on Vercel, carbon-aware.' },
+      { key: 'contact_blurb', value: "Email is the best way to reach me. I'm interested in backend systems, data engineering, AI product work, research tooling, and technical collaborations that are worth the time." },
+      { key: 'uses_philosophy', value: 'I pick tools that fit the job rather than whatever is trending, and I\'d rather run something simple and reliable than something new. The best code is usually the code you don\'t have to write.\n\nMy setup leans on keyboard-driven workflows and keeps things reproducible.' },
       { key: 'notice_period', value: '30 days' },
       { key: 'work_authorization', value: 'Open to relocation; requires work visa sponsorship in the EU' },
       { key: 'relocation_targets', value: 'Germany · Netherlands · Austria · Remote EU' },
-      { key: 'english_level', value: 'English — professional working proficiency (C1)' },
+      { key: 'english_level', value: 'English (professional working proficiency, C1)' },
       { key: 'meeting_url', value: 'https://cal.com/swadhinbiswas' },
-      { key: 'availability_hours', value: 'Available 8am–12pm CET daily for calls' },
+      { key: 'availability_hours', value: 'Available 8am to 12pm CET daily for calls' },
     ];
     for (const s of siteText) {
       await db.insert(siteSettings).values({ key: s.key, value: s.value, createdAt: now, updatedAt: now }).onConflictDoNothing();
@@ -815,4 +815,3 @@ console.log('🛠️ Seeding skills...');
 }
 
 seed();
-   

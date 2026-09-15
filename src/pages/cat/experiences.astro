@@ -62,7 +62,7 @@ const expRows = await db.select().from(experiences).orderBy(asc(experiences.orde
         </div>
       </div>
       <div>
-        <label class="block text-sm text-gray-400 mb-1">Details <span class="text-gray-500">(extra markdown content — optional)</span></label>
+        <label class="block text-sm text-gray-400 mb-1">Details <span class="text-gray-500">(extra markdown content, optional)</span></label>
         <textarea name="details" rows="3" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400 font-mono text-sm"></textarea>
       </div>
       <div class="flex gap-3">
@@ -92,7 +92,7 @@ const expRows = await db.select().from(experiences).orderBy(asc(experiences.orde
               <div class="min-w-0">
                 <h3 class="font-semibold text-white">{exp.role}</h3>
                 <p class="text-cyan-400 text-sm">{exp.company}</p>
-                <p class="text-gray-500 text-xs mt-1">{exp.startDate} — {exp.endDate || "Present"}</p>
+                <p class="text-gray-500 text-xs mt-1">{exp.startDate} to {exp.endDate || "Present"}</p>
                 {exp.companyDescription && <p class="text-gray-400 text-xs mt-1 italic">{exp.companyDescription}</p>}
               </div>
             </div>

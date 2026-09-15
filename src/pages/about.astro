@@ -72,7 +72,7 @@ const schema = {
 };
 ---
 
-<BaseLayout title="About" description={`About ${author} — story, education, certifications, and interests.`}>
+<BaseLayout title="About" description={`About ${author}: story, education, certifications, and interests.`}>
   <JsonLd slot="head" schema={schema} />
 
   <!-- Story -->
@@ -119,7 +119,7 @@ const schema = {
                 {edu.details && <p class="edu-details">{edu.details}</p>}
               </div>
               <div class="edu-dates">
-                {formatDate(edu.startDate)} — {edu.endDate ? formatDate(edu.endDate) : "Present"}
+                {formatDate(edu.startDate)} to {edu.endDate ? formatDate(edu.endDate) : "Present"}
               </div>
             </div>
           ))}

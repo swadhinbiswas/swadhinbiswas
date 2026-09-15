@@ -40,7 +40,7 @@ function formatDate(dateStr: string) {
                 <p class="edu-school">{edu.institution}</p>
               </div>
               <time class="edu-dates">
-                {formatDate(edu.startDate)} — {edu.endDate ? formatDate(edu.endDate) : "Present"}
+                {formatDate(edu.startDate)} to {edu.endDate ? formatDate(edu.endDate) : "Present"}
               </time>
             </div>
             {edu.details && <p class="edu-details">{edu.details}</p>}

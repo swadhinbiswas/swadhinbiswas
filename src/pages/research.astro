@@ -23,7 +23,7 @@ const allProjects = await getProjects();
 const caseStudies = allProjects.filter((p) => p.category === "research");
 
 function formatDate(s?: string) {
-  if (!s) return "—";
+  if (!s) return "N/A";
   const d = new Date(s);
   if (isNaN(d.getTime())) return s;
   return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
@@ -69,7 +69,7 @@ const schema = {
         <p class="text-eyebrow">Research</p>
         <h1 class="text-display mt-3 text-3xl sm:text-4xl text-aurora">Selected publications</h1>
         <p class="prose-mono mt-4 max-w-prose">
-          Preprints, open benchmark datasets, and applied research artifacts in AI systems, data infrastructure, and privacy-preserving computation.
+          Preprints, benchmark datasets, and applied work in AI systems, data infrastructure, and privacy-preserving computation.
         </p>
       </div>
     </div>
@@ -123,7 +123,7 @@ const schema = {
           <p class="text-eyebrow">Experiments</p>
           <h2 class="text-display mt-3 text-2xl sm:text-3xl">Engineering case studies</h2>
           <p class="prose-mono mt-4 max-w-prose">
-            Benchmarks, prototypes, and write-ups from my own experiments. Source and data are public on GitHub.
+            Benchmarks, prototypes, and write-ups from my own experiments. The code and data are on GitHub.
           </p>
         </div>
         <div class="mt-8 panel">

@@ -43,8 +43,8 @@ const [siteConfig, eduPromise, certPromise] = await Promise.all([
 
 const author = authorName || siteConfig.author || env.siteName;
 const fullTitle = title
-  ? `${title} — ${author}`
-  : `${author} — Portfolio, Engineering & Writing`;
+  ? `${title} | ${author}`
+  : `${author} | Portfolio, Engineering & Writing`;
 const pageDescription =
   description || siteConfig.description || env.siteDescription;
 const ogImage = image || `${siteConfig.url || env.siteUrl}/og-image.png`;
@@ -204,8 +204,8 @@ const baseSchema = {
     <link rel="preload" href="/profile.jpg" as="image" type="image/jpeg" />
 
     <!-- Feeds -->
-    <link rel="alternate" type="application/rss+xml" title={`${author} — RSS`} href="/rss.xml" />
-    <link rel="alternate" type="application/rss+xml" title={`${author} — Google News`} href="/google-news.xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${author} | RSS`} href="/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${author} | Google News`} href="/google-news.xml" />
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap-index.xml" />
 
     <!-- Open Graph -->

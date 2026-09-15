@@ -43,7 +43,7 @@ function hostname(url?: string) {
 
     {highlights.length === 0 ? (
       <div class="panel p-6 text-sm text-[var(--color-fg-muted)] reveal">
-        Experience will appear here once added from the admin panel.
+        Experience appears here once it's added from the admin panel.
       </div>
     ) : (
       <ol class="exp-list reveal reveal-delay-1">
@@ -58,7 +58,7 @@ function hostname(url?: string) {
                   {exp.role}
                   {exp.company && <span class="exp-company"> · {exp.company}</span>}
                 </h3>
-                <time class="exp-dates">{formatDate(exp.startDate)} — {formatDate(exp.endDate)}</time>
+                <time class="exp-dates">{formatDate(exp.startDate)} to {formatDate(exp.endDate)}</time>
               </div>
               {exp.details && <p class="exp-details">{exp.details}</p>}
               {(exp.companyDescription || exp.url) && (

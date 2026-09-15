@@ -37,8 +37,8 @@ function parseList(val: unknown): string[] {
 ---
 
 <BaseLayout
-  title="CV — Printable"
-  description={`Printable CV of ${author} — ${title}.`}
+  title="CV: Printable"
+  description={`Printable CV of ${author}: ${title}.`}
   noindex
 >
   <section class="screen-line-after">
@@ -83,7 +83,7 @@ function parseList(val: unknown): string[] {
               <div class="cv-entry">
                 <div class="cv-entry-head">
                   <h3 class="cv-entry-title">{exp.role} · {exp.company}</h3>
-                  <span class="cv-entry-date">{formatDate(exp.startDate)} — {formatDate(exp.endDate)}</span>
+                  <span class="cv-entry-date">{formatDate(exp.startDate)} to {formatDate(exp.endDate)}</span>
                 </div>
                 {exp.details && <p class="cv-entry-desc">{exp.details}</p>}
                 {parseList(exp.responsibilities).length > 0 && (
@@ -125,7 +125,7 @@ function parseList(val: unknown): string[] {
               <div class="cv-entry">
                 <div class="cv-entry-head">
                   <h3 class="cv-entry-title">{edu.degree} · {edu.institution}</h3>
-                  <span class="cv-entry-date">{formatDate(edu.startDate)} — {formatDate(edu.endDate)}</span>
+                  <span class="cv-entry-date">{formatDate(edu.startDate)} to {formatDate(edu.endDate)}</span>
                 </div>
               </div>
             ))}
@@ -137,7 +137,7 @@ function parseList(val: unknown): string[] {
             <h2 class="cv-h">Certifications</h2>
             <ul class="cv-bullets">
               {certs.map((c: any) => (
-                <li>{c.name} — {c.issuer}{c.year ? ` (${c.year})` : ""}</li>
+                <li>{c.name}, {c.issuer}{c.year ? ` (${c.year})` : ""}</li>
               ))}
             </ul>
           </section>

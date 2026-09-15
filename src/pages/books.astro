@@ -43,7 +43,7 @@ const schema = {
       "@type": "CollectionPage",
       "@id": `${siteUrl}/books/#webpage`,
       "url": `${siteUrl}/books`,
-      "name": `Technical Bookshelf & Audiobooks — ${author}`,
+      "name": `Technical Bookshelf & Audiobooks | ${author}`,
       "description": `A curated technical library and audiobooks on distributed systems, database internals, and software engineering read by ${author}.`,
       "isPartOf": { "@id": `${siteUrl}/#website` },
       "mainEntity": { "@id": `${siteUrl}/#person` }
@@ -53,8 +53,8 @@ const schema = {
 ---
 
 <BaseLayout
-  title="The Bookshelf — Technical Reading & Audiobooks"
-  description={`Curated technical reading list, database internals, distributed systems canon, and engineering takeaways by ${author}.`}
+  title="The Bookshelf: Technical Reading & Audiobooks"
+  description={`Technical reading list and audiobooks on distributed systems, database internals, and engineering, with takeaways by ${author}.`}
 >
   <JsonLd slot="head" schema={schema} />
 
@@ -69,13 +69,13 @@ const schema = {
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
             </svg>
           </span>
-          <p class="text-eyebrow">Continuous Learning & Architectural Canon</p>
+          <p class="text-eyebrow">Reading & Audiobooks</p>
         </div>
         <h1 class="text-display text-3xl sm:text-4xl lg:text-5xl text-aurora">
           The Bookshelf
         </h1>
         <p class="prose-mono mt-4 max-w-2xl text-[var(--color-fg-muted)] leading-relaxed">
-          Foundational books and technical audiobooks that shaped my mental models on distributed systems, storage engine internals, fault tolerance, and high-leverage engineering leadership.
+          Books that shaped how I think about distributed systems, storage engines, reliability, and engineering leadership.
         </p>
       </div>
 
@@ -99,7 +99,7 @@ const schema = {
         </div>
 
         <span class="text-xs font-mono text-[var(--color-fg-subtle)]">
-          {booksList.length} Curated Masterclasses
+          {booksList.length} titles
         </span>
       </div>
     </div>

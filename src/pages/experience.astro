@@ -48,7 +48,7 @@ const schema = {
     },
     {
       "@type": "ItemList",
-      "name": `Work Experience — ${author}`,
+      "name": `Work Experience | ${author}`,
       "itemListElement": experiencesList.map((e, i) => ({
         "@type": "ListItem",
         "position": i + 1,
@@ -65,7 +65,7 @@ const schema = {
 };
 ---
 
-<BaseLayout title="Experience" description={`Work history, roles, and responsibilities of ${author} — data engineering, backend systems, and MLOps.`}>
+<BaseLayout title="Experience"   description={`Work history of ${author}: data engineering, backend systems, and MLOps.`}>
   <JsonLd slot="head" schema={schema} />
 
   <section class="screen-line-after">
@@ -74,7 +74,7 @@ const schema = {
         <p class="text-eyebrow">Experience</p>
         <h1 class="text-display mt-3 text-3xl sm:text-4xl text-aurora">Work history</h1>
         <p class="prose-mono mt-4 max-w-prose">
-          Production systems, teams, and outcomes. Each role below includes responsibilities and what I learned.
+          What I worked on, what I owned, and what I took away from each role.
         </p>
 
         {experiencesList.length > 0 && (
@@ -121,7 +121,7 @@ const schema = {
                         {exp.company && <span class="timeline-company"> · {exp.company}</span>}
                       </h2>
                       <time class="timeline-date">
-                        {formatDate(exp.startDate)} — {formatDate(exp.endDate)}
+                        {formatDate(exp.startDate)} to {formatDate(exp.endDate)}
                         {(() => { const y = yearsOf(exp.startDate, exp.endDate); return y ? ` · ${y}` : ""; })()}
                       </time>
                     </div>

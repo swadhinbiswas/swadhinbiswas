@@ -25,8 +25,8 @@ const schema = {
       "@type": "CollectionPage",
       "@id": `${siteUrl}/explore/#webpage`,
       "url": `${siteUrl}/explore`,
-      "name": `Explore & Photography Gallery — ${author}`,
-      "description": `Original photography gallery, visual field notes, and interactive digital experiments by ${author}.`,
+      "name": `Explore & Photography Gallery | ${author}`,
+      "description": `Photography taken by ${author}, plus a few interactive experiments.`,
       "isPartOf": { "@id": `${siteUrl}/#website` },
       "mainEntity": { "@id": `${siteUrl}/#person` }
     }
@@ -36,7 +36,7 @@ const schema = {
 
 <BaseLayout
   title="Explore & Photography Gallery"
-  description={`Original field photography, nightscapes, natural horizons, and interactive digital experiments by ${author}.`}
+  description={`Field photography, night skies, landscapes, and interactive experiments by ${author}.`}
 >
   <JsonLd slot="head" schema={schema} />
 
@@ -57,7 +57,7 @@ const schema = {
           Explore & Photography
         </h1>
         <p class="prose-mono mt-4 max-w-2xl text-[var(--color-fg-muted)] leading-relaxed">
-          A visual collection of original field photography, atmospheric nightscapes, nature studies, and interactive audio-visual playgrounds.
+          Photographs I've taken over the years, plus a couple of interactive toys built into the page.
         </p>
       </div>
 
@@ -99,7 +99,7 @@ const schema = {
           </div>
           <h2 class="section-title mt-1">Field photography & frames</h2>
           <p class="prose-mono text-xs text-[var(--color-fg-subtle)] mt-1">
-            Original captures from travels, nightscapes, and natural horizons. Click any frame for slide-by-slide modal preview.
+            Shots from travels and late nights. Click a frame to open it.
           </p>
         </div>
 
@@ -200,7 +200,7 @@ const schema = {
           </div>
           <h2 class="section-title mt-1">Digital playground & ambient audio</h2>
           <p class="prose-mono text-xs text-[var(--color-fg-subtle)] mt-1">
-            Real-time generative physics particle canvas and in-browser Web Audio soundscape synthesizer.
+            A real-time particle canvas and an in-browser Web Audio synthesizer.
           </p>
         </div>
       </div>
@@ -217,7 +217,7 @@ const schema = {
               <span class="text-[10px] font-mono text-[var(--color-fg-subtle)]">Interact with Cursor / Tap</span>
             </div>
             <p class="text-xs text-[var(--color-fg-muted)] mb-3">
-              Move your mouse or drag your finger across the canvas to distort magnetic gravitational nodes and trigger particle webs.
+              Move the mouse or drag a finger to pull at the nodes and stir up the particle web.
             </p>
           </div>
 
@@ -247,7 +247,7 @@ const schema = {
               <span class="text-[10px] font-mono text-[var(--color-fg-subtle)]">Web Audio API</span>
             </div>
             <p class="text-xs text-[var(--color-fg-muted)] mb-4">
-              Zero audio downloads. Procedurally synthesized ambient background textures designed for deep flow-state coding.
+              No audio files. Everything is synthesized in the browser.
             </p>
 
             <!-- Soundscape Selection -->
@@ -324,10 +324,10 @@ const schema = {
           </span>
           <div>
             <h3 class="text-base sm:text-lg font-bold text-[var(--color-fg)] group-hover:text-[var(--color-accent-2)] transition-colors">
-              Looking for DIY Hardware & Physical Builds?
+              Looking for hardware projects?
             </h3>
             <p class="text-xs text-[var(--color-fg-muted)] mt-0.5">
-              Explore custom Alice mechanical keyboards, 3-Node silent homelab clusters, and ESP32 environmental sentries.
+              A custom keyboard, a silent homelab cluster, and an ESP32 sensor build.
             </p>
           </div>
         </div>

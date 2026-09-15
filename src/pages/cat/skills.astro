@@ -70,7 +70,7 @@ skillRows.forEach(s => {
               <div class:list={["w-2 h-2 rounded-full", s.tier === "core" ? "bg-cyan-400" : "bg-gray-600"]}></div>
               <div class="flex-1">
                 <span class="text-white">{s.name}</span>
-                {s.description && <span class="text-gray-500 text-xs ml-2">— {s.description}</span>}
+                {s.description && <span class="text-gray-500 text-xs ml-2">· {s.description}</span>}
               </div>
               <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button data-edit={JSON.stringify(s)} class="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs hover:bg-yellow-500/30">Edit</button>

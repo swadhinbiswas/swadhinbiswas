@@ -85,7 +85,7 @@ import "../../styles/admin.css";
             error!.classList.remove("hidden");
           }
         } catch {
-          error!.textContent = "Connection error — try again.";
+          error!.textContent = "Connection error. Try again.";
           error!.classList.remove("hidden");
         } finally {
           if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Sign in"; }

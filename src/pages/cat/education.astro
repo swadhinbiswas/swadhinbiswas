@@ -56,7 +56,7 @@ const eduRows = await db.select().from(education).orderBy(asc(education.order));
           <div class="flex-1">
             <h3 class="font-semibold">{e.degree}</h3>
             <p class="text-cyan-400 text-sm">{e.institution}</p>
-            <p class="text-gray-500 text-xs mt-1">{e.startDate} — {e.endDate || "Present"}</p>
+            <p class="text-gray-500 text-xs mt-1">{e.startDate} to {e.endDate || "Present"}</p>
             {e.details && <p class="text-gray-300 text-sm mt-2">{e.details}</p>}
           </div>
           <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
