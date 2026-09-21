@@ -5,7 +5,10 @@ import { getDynamicConfig } from "../lib/config";
 import { env } from "../lib/env";
 
 const siteConfig = await getDynamicConfig();
-const email = siteConfig.email || env.email;
+const primaryEmail = siteConfig.email || env.email;
+const emails = (siteConfig.emails && siteConfig.emails.length > 0)
+  ? siteConfig.emails
+  : (primaryEmail ? [{ address: primaryEmail, href: `mailto:${primaryEmail}` }] : []);
 const socials = (siteConfig.socials || []).filter((s) =>
   ["github", "linkedin", "twitter", "scholar"].includes(s.icon)
 );
@@ -31,13 +34,19 @@ const socials = (siteConfig.socials || []).filter((s) =>
           <p class="text-eyebrow">Email</p>
         </div>
         <div class="md:col-span-9 reveal reveal-delay-1">
-          {email ? (
-            <a
-              href={`mailto:${email}`}
-              class="text-mono break-all text-base text-[var(--color-accent)] transition-colors hover:text-[var(--color-fg-muted)]"
-            >
-              {email} →
-            </a>
+          {emails.length > 0 ? (
+            <ul class="email-list">
+              {emails.map((e) => (
+                <li key={e.address}>
+                  <a
+                    href={e.href}
+                    class="text-mono break-all text-base text-[var(--color-accent)] transition-colors hover:text-[var(--color-fg-muted)]"
+                  >
+                    {e.address} →
+                  </a>
+                </li>
+              ))}
+            </ul>
           ) : (
             <p class="prose-mono italic">No email configured yet.</p>
           )}
@@ -138,6 +147,14 @@ const socials = (siteConfig.socials || []).filter((s) =>
 </BaseLayout>
 
 <style is:global>
+  .email-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
   .form-input {
     width: 100%;
     background-color: var(--color-card);

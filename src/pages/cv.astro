@@ -8,6 +8,10 @@ import { db, certifications } from "../db";
 import { asc } from "drizzle-orm";
 
 const siteConfig = await getDynamicConfig();
+const primaryEmail = siteConfig.email || "";
+const emails = (siteConfig.emails && siteConfig.emails.length > 0)
+  ? siteConfig.emails
+  : (primaryEmail ? [{ address: primaryEmail, href: `mailto:${primaryEmail}` }] : []);
 const author = siteConfig.author || "Swadhin Biswas";
 const title = siteConfig.bio?.intro || "Data / Backend Engineer";
 
@@ -63,7 +67,12 @@ function parseList(val: unknown): string[] {
           <p class="cv-title">{title}</p>
           <p class="cv-contact">
             {siteConfig.location && <span>{siteConfig.location.split(",")[0]}</span>}
-            {siteConfig.email && <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>}
+            {emails.map((e, i) => (
+              <>
+                {i > 0 && <span> · </span>}
+                <a href={e.href}>{e.address}</a>
+              </>
+            ))}
             {siteConfig.links?.github && <span>{siteConfig.links.github.replace("https://", "")}</span>}
             {siteConfig.links?.linkedin && <span>{siteConfig.links.linkedin.replace("https://", "")}</span>}
           </p>

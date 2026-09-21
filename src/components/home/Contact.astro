@@ -3,7 +3,10 @@ import { getDynamicConfig } from "../../lib/config";
 import { getLanguages } from "../../lib/loaders";
 
 const siteConfig = await getDynamicConfig();
-const email = siteConfig.email || "";
+const primaryEmail = siteConfig.email || "";
+const emails = (siteConfig.emails && siteConfig.emails.length > 0)
+  ? siteConfig.emails
+  : (primaryEmail ? [{ address: primaryEmail, href: `mailto:${primaryEmail}` }] : []);
 
 const languageRows = await getLanguages();
 const levelLabels: Record<string, string> = {
@@ -36,12 +39,16 @@ const facts = [
     <div class="contact-panel reveal reveal-delay-1">
       {siteConfig.contactBlurb && <p class="contact-blurb">{siteConfig.contactBlurb}</p>}
 
-      {email ? (
-        <a class="contact-mail" href={`mailto:${email}`}>
-          <span class="contact-mail-label">Email</span>
-          <span class="contact-mail-value">{email}</span>
-          <span class="contact-mail-arrow" aria-hidden="true">→</span>
-        </a>
+      {emails.length > 0 ? (
+        <div class="contact-mails">
+          {emails.map((e) => (
+            <a class="contact-mail" href={e.href}>
+              <span class="contact-mail-label">Email</span>
+              <span class="contact-mail-value">{e.address}</span>
+              <span class="contact-mail-arrow" aria-hidden="true">→</span>
+            </a>
+          ))}
+        </div>
       ) : (
         <p class="italic text-sm text-[var(--color-fg-muted)]">No email configured yet.</p>
       )}
@@ -106,7 +113,6 @@ const facts = [
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-top: 1.5rem;
     padding: 1.1rem 1.25rem;
     border: 1px solid var(--color-edge-strong);
     background: var(--color-bg-2);
@@ -114,6 +120,12 @@ const facts = [
     text-decoration: none;
     color: inherit;
     transition: border-color 0.2s ease;
+  }
+  .contact-mails {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
   }
   .contact-mail:hover { border-color: var(--color-fg); }
   .contact-mail-label {

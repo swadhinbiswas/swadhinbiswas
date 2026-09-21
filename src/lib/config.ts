@@ -22,6 +22,7 @@ export interface DynamicSiteConfig {
   cvUrl?: string;
   author: string;
   email: string;
+  emails: Array<{ address: string; href: string }>;
   location: string;
   timezone: string;
   profileImage: string;
@@ -130,6 +131,22 @@ function parseLocation(raw: string): { city: string; country: string } {
     city: parts[0] || "",
     country: parts.slice(1).join(", ") || "",
   };
+}
+
+/**
+ * All contact inboxes: the primary address first, then alternates.
+ * Every entry opens a compose to the primary inbox so mail lands in one place.
+ */
+function buildEmails(primary: string, ...alts: Array<string | undefined>): Array<{ address: string; href: string }> {
+  const seen = new Set<string>();
+  const out: Array<{ address: string; href: string }> = [];
+  for (const address of [primary, ...alts]) {
+    const a = (address || "").trim();
+    if (!a || seen.has(a.toLowerCase())) continue;
+    seen.add(a.toLowerCase());
+    out.push({ address: a, href: `mailto:${primary.trim() || a}` });
+  }
+  return out;
 }
 
 export async function getDynamicConfig(): Promise<DynamicSiteConfig> {
@@ -252,6 +269,7 @@ async function fetchDynamicConfig(): Promise<DynamicSiteConfig> {
       cvUrl: settings.cv_url || "",
       author: settings.author || env.siteName,
       email: settings.email || env.email,
+      emails: buildEmails(settings.email || env.email, settings.email_alt_1, settings.email_alt_2),
       location: settings.location || env.location,
       timezone: settings.timezone || env.timezone,
       profileImage: cleanValue(settings.profile_image),
@@ -433,6 +451,7 @@ async function fetchDynamicConfig(): Promise<DynamicSiteConfig> {
       cvUrl: "",
       author: env.siteName,
       email: env.email,
+      emails: buildEmails(env.email),
       location: env.location,
       timezone: env.timezone,
       profileImage: "",
