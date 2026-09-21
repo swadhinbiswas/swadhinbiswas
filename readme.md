@@ -83,6 +83,17 @@ Coursework: data structures, algorithms, database systems, machine learning, sof
 - <a href="https://www.swadhin.cv/projects/aegisvision/"><strong>AegisVision</strong></a>: multi-camera AI surveillance and behavioural monitoring system · Python, real-time detection
 <!-- FEATURED:END -->
 
+### Research
+
+- **A Unified Denoising and Adaptation Framework for Self-Supervised Bengali Dialectal ASR** - first author, with Imran and Tuhin Sheikh · [arXiv:2509.00988](https://arxiv.org/abs/2509.00988) · [PDF](https://arxiv.org/pdf/2509.00988)
+  WavLM-based framework with two-stage fine-tuning for noise-robust dialectal recognition. Tested across dialects from clean audio to low signal-to-noise ratios, it beats fine-tuned wav2vec 2.0 and multilingual Whisper.
+- **Aurora (ART): A Modular Reasoning Architecture for Reliable and Efficient Neural Systems** - lead author · [paper](https://github.com/swadhinbiswas/Aurora/blob/main/paper/paper.md) · [DOI](https://doi.org/10.5281/zenodo.22067754)
+  Six-stage transformer with an explicit uncertainty channel: GSM8K 47.2% → 55.6%, confidently wrong answers 19.8% → 2.9%.
+- **An Empirical Benchmark Dataset for Paillier-Based Privacy-Preserving REST API Gateways** - [Zenodo DOI](https://doi.org/10.5281/zenodo.18655966)
+  Per-request telemetry benchmark for homomorphic encryption overhead in REST API gateways.
+
+Full list with abstracts: [swadhin.cv/research](https://swadhin.cv/research)
+
 <!--
   projects - auto-generated from the PROJECTS list in today.py.
 
@@ -95,8 +106,8 @@ Coursework: data structures, algorithms, database systems, machine learning, sof
 -->
 
 <!--
-  stack - curated from portfolio skills (thesvg.org). Edit by hand.
-  Icons via thesvg.org (cdn.jsdelivr.net/gh/glincker/thesvg). Add/remove an <a> line per tech.
+  stack - text keyword lines + link to the full visual wall on the site.
+  Edit by hand. The icon wall lives at swadhin.cv/skills now.
 -->
 <!-- STACK:START -->
 ### Stack
@@ -107,66 +118,6 @@ Coursework: data structures, algorithms, database systems, machine learning, sof
 
 <p align="center">
   <sub>Data Engineering · Cloud · Databases · AI · Backend - <a href="https://swadhin.cv/skills">full stack →</a></sub>
-</p>
-
-<p align="center">
-  <strong>Languages</strong><br/>
-  <a href="https://swadhin.cv/skills" title="Python"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/python/default.svg" width="42" height="42" alt="python" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Go"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/go/default.svg" width="42" height="42" alt="go" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Rust"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/rust/default.svg" width="42" height="42" alt="rust" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="TypeScript"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/typescript/default.svg" width="42" height="42" alt="typescript" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="SQL"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/mysql/default.svg" width="42" height="42" alt="sql" loading="lazy" /></a>
-</p>
-
-<p align="center">
-  <strong>Databases</strong><br/>
-  <a href="https://swadhin.cv/skills" title="DuckDB"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/duckdb/default.svg" width="42" height="42" alt="duckdb" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="ClickHouse"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/clickhouse/default.svg" width="42" height="42" alt="clickhouse" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="PostgreSQL"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/postgresql/default.svg" width="42" height="42" alt="postgresql" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="MySQL"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/mysql/default.svg" width="42" height="42" alt="mysql" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Redis"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/redis/default.svg" width="42" height="42" alt="redis" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="MongoDB"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/mongodb/default.svg" width="42" height="42" alt="mongodb" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Qdrant"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/qdrant/light.svg" width="42" height="42" alt="qdrant" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Weaviate"><img src="https://swadhin.cv/icons/weaviate.svg" width="42" height="42" alt="weaviate" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Pinecone"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/pinecone/default.svg" width="42" height="42" alt="pinecone" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Chroma"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/chroma/default.svg" width="42" height="42" alt="chroma" loading="lazy" /></a>
-</p>
-
-<p align="center">
-  <strong>Data Engineering</strong><br/>
-  <a href="https://swadhin.cv/skills" title="Apache Spark"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/spark/default.svg" width="42" height="42" alt="apache spark" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Kafka"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/apache-kafka/dark.svg" width="42" height="42" alt="kafka" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Apache Airflow"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/apache-airflow/default.svg" width="42" height="42" alt="apache airflow" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="dbt"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/dbt/default.svg" width="42" height="42" alt="dbt" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Airbyte"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/airbyte/default.svg" width="42" height="42" alt="airbyte" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="AWS Glue"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/aws-aws-glue/default.svg" width="42" height="42" alt="aws glue" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="AWS Redshift"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/aws-amazon-redshift/default.svg" width="42" height="42" alt="aws redshift" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="AWS Athena"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/aws-amazon-athena/default.svg" width="42" height="42" alt="aws athena" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Azure Data Factory"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/azure-data-factories/default.svg" width="42" height="42" alt="azure data factory" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Dagster"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/dagster/default.svg" width="42" height="42" alt="dagster" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Apache Flink"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/apache-flink/default.svg" width="42" height="42" alt="apache flink" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Prefect"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/prefect/default.svg" width="42" height="42" alt="prefect" loading="lazy" /></a>
-</p>
-
-<p align="center">
-  <strong>MLOps & ML</strong><br/>
-  <a href="https://swadhin.cv/skills" title="PyTorch"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/pytorch/default.svg" width="42" height="42" alt="pytorch" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="TensorFlow"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/tensorflow/default.svg" width="42" height="42" alt="tensorflow" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Hugging Face"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/huggingface/default.svg" width="42" height="42" alt="hugging face" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="LangChain"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/langchain/default.svg" width="42" height="42" alt="langchain" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="OpenAI API"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/openai/default.svg" width="42" height="42" alt="openai api" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Computer Vision"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/opencv/default.svg" width="42" height="42" alt="computer vision" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Machine Learning"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/tensorflow/default.svg" width="42" height="42" alt="machine learning" loading="lazy" /></a>
-</p>
-
-<p align="center">
-  <strong>Backend</strong><br/>
-  <a href="https://swadhin.cv/skills" title="FastAPI"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/fastapi/default.svg" width="42" height="42" alt="fastapi" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Django"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/django/default.svg" width="42" height="42" alt="django" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Hono"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/hono/default.svg" width="42" height="42" alt="hono" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Elysia"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/elysiajs/default.svg" width="42" height="42" alt="elysia" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Node.js"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/nodejs/default.svg" width="42" height="42" alt="node.js" loading="lazy" /></a>
-  <a href="https://swadhin.cv/skills" title="Encore.ts"><img src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/encore/default.svg" width="42" height="42" alt="encore.ts" loading="lazy" /></a>
 </p>
 
 <!-- STACK:END -->
