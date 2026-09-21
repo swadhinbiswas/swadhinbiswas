@@ -18,7 +18,7 @@
 
 ### About
 
-Data and backend engineer with **5+ years** building streaming pipelines, lakehouses and the services around them. I work mostly in **Python**, **Go** and **TypeScript**, and I prefer systems that keep running when nobody is watching: Kafka ingestion, dbt warehouses on DuckDB, GDPR-native erasure, schema-contract gates in CI.
+Data and backend engineer with **2+ years** building streaming pipelines, lakehouses and the services around them. I work mostly in **Python**, **Go** and **TypeScript**, and I prefer systems that keep running when nobody is watching: Kafka ingestion, dbt warehouses on DuckDB, GDPR-native erasure, schema-contract gates in CI.
 
 Currently building [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub), a self-hosted Git platform with CI and merge queues, and [AegisVision](https://github.com/swadhinbiswas/AegisVision), a multi-camera AI surveillance system. Latest research: [Aurora](https://github.com/swadhinbiswas/Aurora), a modular reasoning architecture with a JOSS paper.
 
