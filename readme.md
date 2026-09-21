@@ -26,10 +26,12 @@ Currently building [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub), 
 
 **Languages:** English (Professional, daily working language) · Bengali (native) · Hindi (conversational) · German (currently learning).
 
+**Email:** [swadhinbiswas.dev@gmail.com](mailto:swadhinbiswas.dev@gmail.com) · [swadhinbiswas.cse@gmail.com](mailto:swadhinbiswas.dev@gmail.com) · [eu@swadhin.cv](mailto:swadhinbiswas.dev@gmail.com)
+
 <p align="center">
   <a href="https://swadhin.cv"><b>Portfolio</b></a> ·
   <a href="https://cal.com/swadhinbiswas"><b>Book a call</b></a> ·
-  <a href="mailto:swadhinbiswas.cse@gmail.com">Email</a> ·
+  <a href="mailto:swadhinbiswas.dev@gmail.com">Email</a> ·
   <a href="https://www.linkedin.com/in/swadhinbiswas">LinkedIn</a> ·
   <a href="https://x.com/swadin_sh">X</a>
 </p>
@@ -42,7 +44,6 @@ Currently building [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub), 
 - **[eurostream](https://www.swadhin.cv/projects/eurostream/)**: GDPR-native lakehouse whose six-layer Article 17 erasure runs in 66.95 ms mean against a 60 s statutory window
 - **[opengrammar](https://www.swadhin.cv/projects/opengrammar/)**: privacy-first Grammarly alternative at 124★, offline engine plus five deploy targets
 - **[OpencodeHub](https://www.swadhin.cv/projects/opencodehub/)**: self-hosted Git platform with CI, stacked PRs and merge queues, **668 tests**
-- **100+ public repositories** and a four-year contribution history
 
 <!--
   experience - EDIT BY HAND. today.py never touches this block.
@@ -57,14 +58,9 @@ Currently building [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub), 
 
 **2023-2025: Founder, Open Source Community Platform (BoringRats)** - discovery, learning paths and real-world guidance - Blog + Discord + Telegram - **1M+ combined users** - *Acquired (NDA)*
 
-**2021-2025: Freelance - Backend & MLOps Engineer** - 100+ open-source contracts, backend systems and MLOps pipelines
+**2021-2023: Freelance - Backend & Automation Engineer** - 100+ paid jobs across open source, freelance contracts and client work: backend systems, automation and pipelines
 
 <!-- EXPERIENCE:END -->
-
-### Education
-
-**B.Sc. in Computer Science and Engineering** - [Daffodil International University](https://daffodilvarsity.edu.bd/), Dhaka (2023 - 2026)
-Coursework: data structures, algorithms, database systems, machine learning, software engineering.
 
 <!--
   featured projects - EDIT BY HAND. today.py never touches this block.
@@ -163,7 +159,7 @@ MACHINE-LEARNING                                  <a href="https://github.com/sw
 - Portfolio: [@swadhin.cv](https://swadhin.cv)
 - Book a call: [cal.com/swadhinbiswas](https://cal.com/swadhinbiswas)
 - LinkedIn: [@swadhinbiswas](https://www.linkedin.com/in/swadhinbiswas)
-- Email: [swadhinbiswas.cse@gmail.com](mailto:swadhinbiswas.cse@gmail.com) · [connect@swadhin.cv](mailto:connect@swadhin.cv)
+- Email: [swadhinbiswas.dev@gmail.com](mailto:swadhinbiswas.dev@gmail.com) · [swadhinbiswas.cse@gmail.com](mailto:swadhinbiswas.dev@gmail.com) · [eu@swadhin.cv](mailto:swadhinbiswas.dev@gmail.com)
 - X: [@swadin_sh](https://x.com/swadin_sh)
 - YouTube: [@BitsWar](https://www.youtube.com/@BitsWar)
 
