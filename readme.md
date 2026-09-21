@@ -176,8 +176,8 @@ Coursework: data structures, algorithms, database systems, machine learning, sof
 
 <pre>
 DATA ENGINEERING                                RESEARCH                                        
-  <a href="https://github.com/swadhinbiswas/eu-air-traffic">eu-air-traffic</a> live EU airspace pipeline      <a href="https://github.com/swadhinbiswas/contexa">contexa</a>        versioned llm agent memory     
-  <a href="https://github.com/swadhinbiswas/eurostream">eurostream</a>     gdpr-native streaming lakehouse   <a href="https://github.com/swadhinbiswas/DOOMSDAYCS">DOOMSDAYCS</a>     offline cs encyclopedia        
+  <a href="https://github.com/swadhinbiswas/eu-air-traffic">eu-air-traffic</a> live EU airspace pipeline        <a href="https://github.com/swadhinbiswas/contexa">contexa</a>        versioned llm agent memory     
+  <a href="https://github.com/swadhinbiswas/eurostream">eurostream</a>     gdpr-native streaming lakehouse  <a href="https://github.com/swadhinbiswas/DOOMSDAYCS">DOOMSDAYCS</a>     offline cs encyclopedia        
                                                   <a href="https://github.com/swadhinbiswas/FAANG-Playbook">FAANG-Playbook</a> 1,400+ leetcode problems       
 DEVOPS                                                                                          
   <a href="https://github.com/swadhinbiswas/OpencodeHub">OpencodeHub</a>    git platform w/ ci pipelines   TOOLS                                           
