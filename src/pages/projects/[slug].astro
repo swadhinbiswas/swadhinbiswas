@@ -103,9 +103,12 @@ const schema = {
 
 const stars = project.stars || 0;
 
-// Strip a leading H1 that duplicates the project title (content usually opens with "# Name")
-const h1Pattern = new RegExp(`^\\s*<h1[^>]*>\\s*(?:[^<]|<[^/])*?${project.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}[\\s\\S]*?</h1>`, "i");
-contentHtml = contentHtml.replace(h1Pattern, "").trimStart();
+// Strip a leading H1 that duplicates the project title (content usually opens
+// with "# Name"; rehype-autolink-headings wraps a link span inside the heading)
+const leadingH1 = contentHtml.match(/^\s*<h1[^>]*>([\s\S]*?)<\/h1>/i);
+if (leadingH1 && leadingH1[1].replace(/<[^>]*>/g, "").trim().toLowerCase() === project.name.trim().toLowerCase()) {
+  contentHtml = contentHtml.slice(leadingH1[0].length).trimStart();
+}
 
 // Build an on-this-page TOC from the H2s (rehype-slug adds the ids)
 interface TocItem { id: string; text: string }
