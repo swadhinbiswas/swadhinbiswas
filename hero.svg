@@ -2,8 +2,8 @@
 <rect x="8" y="8" width="1124" height="276" rx="16" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
 <text x="570.0" y="72" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="32" font-weight="bold" fill="#e6edf3">Hello, I am Swadhin Biswas</text>
 <g transform="translate(847.6,82)"><g><text x="0" y="10" font-size="28" text-anchor="middle">👋</text><animateTransform attributeName="transform" type="rotate" values="-18;18;-18" dur="1.3s" repeatCount="indefinite"/></g></g>
-<text x="570.0" y="110" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">MLOps &amp; DATA ENGINEER · Python · Spark · Kubernetes</text>
-<text x="570.0" y="132" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">Pipeline Automation · Open to EU Relocation</text>
+<text x="570.0" y="110" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">DATA &amp; BACKEND ENGINEER · Python · Kafka · Go</text>
+<text x="570.0" y="132" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14" font-weight="bold" fill="#e6edf3">Streaming Pipelines · Lakehouses · GDPR · Cloud</text>
 <text x="570.0" y="154" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12" letter-spacing="1.5" fill="#8b949e">Based in Dhaka, BD  ·  Willing to relocate EU  ·  Available immediately</text>
 <line x1="44" y1="166" x2="438.7" y2="166" stroke="#30363d" stroke-width="1"/>
 <line x1="701.3" y1="166" x2="1096" y2="166" stroke="#30363d" stroke-width="1"/>

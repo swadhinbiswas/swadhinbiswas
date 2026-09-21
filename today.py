@@ -1036,8 +1036,8 @@ HERO_NAME = "SWADHIN"
 
 # Static taglines under the hero name — plain text, no typing animation
 TAGLINES = [
-    "MLOps & DATA ENGINEER · Python · Spark · Kubernetes",
-    "Pipeline Automation · Open to EU Relocation",
+    "DATA & BACKEND ENGINEER · Python · Kafka · Go",
+    "Streaming Pipelines · Lakehouses · GDPR · Cloud",
 ]
 
 # Shorter display names for the languages panel
@@ -1081,8 +1081,8 @@ PROJECTS = {
         ("HiFiLinux", "audiophile audio for linux"),
     ],
     "DATA ENGINEERING": [
-        ("air-traffic", "european flight data pipeline"),
-        ("eurostream", "eu data streaming pipeline"),
+        ("eu-air-traffic", "live EU airspace pipeline"),
+        ("eurostream", "gdpr-native streaming lakehouse"),
     ],
     "BACKEND": [
         ("JustAPI", "zero-copy rust web framework"),
