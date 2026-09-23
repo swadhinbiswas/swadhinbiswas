@@ -47,35 +47,6 @@ interface Props {}
           <span class="explore-cta">View gallery →</span>
         </div>
       </a>
-
-      <!-- DIY & Hardware Feature Card -->
-      <a href="/workshop" class="explore-card reveal reveal-delay-1">
-        <div class="explore-head">
-          <span class="explore-icon" aria-hidden="true">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-            </svg>
-          </span>
-          <span class="explore-name">The workshop</span>
-          <span class="explore-tag">Hardware & IoT</span>
-        </div>
-
-        <p class="explore-desc">
-          A custom keyboard, a silent 3D-printed homelab cluster, and ESP32 sensors, with parts lists.
-        </p>
-
-        <div class="explore-tags">
-          <span class="tag">Alice Split Keyboard (QMK)</span>
-          <span class="tag">3-Node RPi Homelab</span>
-          <span class="tag">ESP32 SCD40 CO2 Sentry</span>
-          <span class="tag">Circadian Studio LED</span>
-        </div>
-
-        <div class="explore-foot">
-          <span>Soldering · CAD · Firmware</span>
-          <span class="explore-cta">Explore builds →</span>
-        </div>
-      </a>
     </div>
   </div>
 </section>
@@ -86,7 +57,6 @@ interface Props {}
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  @media (min-width: 760px) { .explore-grid { grid-template-columns: 1fr 1fr; } }
 
   .explore-card {
     display: flex;

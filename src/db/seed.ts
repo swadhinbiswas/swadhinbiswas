@@ -27,7 +27,6 @@ import {
   languages,
   galleryPhotos,
   books,
-  workshopProjects,
 } from './schema';
 
 import { defaultPhotosList } from '../lib/photos';
@@ -293,130 +292,6 @@ async function seed() {
     }
     console.log(`  ✅ Inserted ${initialBooks.length} technical books & audiobooks`);
 
-    // 3e. DIY Workshop & Hardware Projects
-    console.log('🛠️ Seeding workshop & DIY projects...');
-    const initialBuilds = [
-      {
-        slug: 'alice-split-keyboard',
-        title: 'Custom 65% Alice Ergonomic Mechanical Keyboard',
-        badge: 'Completed / Daily Driver',
-        timeframe: '3 weekends',
-        categoryKey: 'keyboards',
-        category: 'Hardware / Peripherals',
-        icon: 'keyboard',
-        summary: 'A mechanical keyboard built from scratch: custom-cut FR4 plates, hand-lubed switches, and QMK/VIA firmware.',
-        image: '',
-        video: '',
-        highlights: JSON.stringify([
-          'Angled Alice layout, chosen to keep my wrists from pronating during long coding sessions',
-          'Gateron Oil King linears, hand-lubed with Krytox 205g0 and GPL 105',
-          'Poured silicone dampener inside the anodized aluminum case to kill the hollow sound',
-          'Runs on an RP2040 with custom layers, including Vim navigation on CapsLock'
-        ]),
-        bom: JSON.stringify([
-          { item: 'Microcontroller', spec: 'Raspberry Pi RP2040 (Zero)' },
-          { item: 'Switches', spec: 'Gateron Oil King Linears (55g actuation)' },
-          { item: 'Keycaps', spec: 'PBT Dye-Sub Chalk Profile' },
-          { item: 'Stabilizers', spec: 'TX AP Screw-in V4 Stabilizers' },
-          { item: 'Plate & Foam', spec: 'Custom laser-cut FR4 + Poron Gasket Strips' }
-        ]),
-        tools: JSON.stringify(['Soldering Iron (TS100)', 'Krytox 205g0', 'Switch Opener', 'Multimeter', 'QMK CLI']),
-        learnings: 'Getting the sound right came down to tolerance matching: switch housings, plate stiffness, and gasket compression all have to agree.',
-        featured: true,
-        order: 1
-      },
-      {
-        slug: 'silent-homelab-cluster',
-        title: 'Zero-Noise 3-Node Homelab Cluster & Private Cloud',
-        badge: 'Hardware Active (99.9% Uptime)',
-        timeframe: '2 weeks',
-        categoryKey: 'homelab',
-        category: 'Infrastructure / Homelab',
-        icon: 'server',
-        summary: 'A silent three-node mini server cluster in a custom 3D-printed rack. It runs K3s, a Tailscale mesh, and local LLM inference.',
-        image: '',
-        video: '',
-        highlights: JSON.stringify([
-          'Modular PETG rack I designed and printed, with cable management and a magnetic dust filter',
-          'Noctua 5V fans on custom cooling channels keep SoC temperatures under 48C even at full multi-core load',
-          'All-NVMe storage over UASP bridges, about 420 MB/s sustained sequential I/O',
-          'ArgoCD handles GitOps deployments for local DNS, Home Assistant, WireGuard, and the container workloads'
-        ]),
-        bom: JSON.stringify([
-          { item: 'Compute Nodes', spec: '3x Raspberry Pi 4B (8GB RAM each, 24GB total)' },
-          { item: 'Storage', spec: '3x Kingston 1TB NVMe M.2 + Sabrent Aluminum Enclosures' },
-          { item: 'Cooling', spec: '2x Noctua NF-A4x10 5V Low-Noise PWM Fans' },
-          { item: 'Networking', spec: 'Netgear 5-Port Gigabit Managed Switch (VLAN configured)' },
-          { item: 'Chassis', spec: 'Custom designed PETG 3D Printed Stack' }
-        ]),
-        tools: JSON.stringify(['Bambu Lab 3D Printer (PETG)', 'Crimping Tool (RJ45)', 'Digital Caliper', 'Ansible']),
-        learnings: 'Drawing the ventilation ducts in CAD before printing kept hot air from recirculating between the stacked boards.',
-        featured: true,
-        order: 2
-      },
-      {
-        slug: 'esp32-co2-sentry',
-        title: 'ESP32 Micro-Climate & True NDIR CO2 Sentry',
-        badge: 'Deployed in Studio',
-        timeframe: '4 days',
-        categoryKey: 'iot',
-        category: 'IoT / Embedded',
-        icon: 'cpu',
-        summary: 'A low-power desk monitor that reads CO2 with a photoacoustic NDIR sensor and shows it on e-paper, so I can tell when the room needs air.',
-        image: '',
-        video: '',
-        highlights: JSON.stringify([
-          'Sensirion SCD40 measures CO2 in ppm, plus temperature and relative humidity',
-          '2.9-inch black-and-white e-paper display with no backlight, still readable in direct sun',
-          'The firmware sleeps and wakes every five minutes, which stretches a single 18650 cell to months',
-          'Publishes telemetry over MQTT into Home Assistant and Grafana'
-        ]),
-        bom: JSON.stringify([
-          { item: 'Processor', spec: 'ESP32-S3 Mini Module (Wi-Fi + BLE)' },
-          { item: 'CO2 Sensor', spec: 'Sensirion SCD40 True NDIR Photoacoustic' },
-          { item: 'Display', spec: 'Waveshare 2.9" SPI e-Paper Module' },
-          { item: 'Power', spec: 'Panasonic 18650 3400mAh Li-ion + TP4056 USB-C' },
-          { item: 'Case', spec: 'Handcrafted Solid Walnut & Frosted Smoked Acrylic' }
-        ]),
-        tools: JSON.stringify(['Soldering Station', 'ESP-IDF / PlatformIO', 'Oscilloscope', 'Laser Cutter']),
-        learnings: 'CO2 above 1000 ppm measurably dulls my focus. Seeing the number on the desk is enough to make me open a window.',
-        featured: true,
-        order: 3
-      },
-      {
-        slug: 'circadian-smart-lighting',
-        title: 'Studio Bias Luminescence & Circadian Smart Lighting',
-        badge: 'Active Daily',
-        timeframe: '1 weekend',
-        categoryKey: 'lighting',
-        category: 'Smart Lighting / Firmware',
-        icon: 'zap',
-        summary: 'Addressable bias lighting with CRI 95+ LEDs and custom WLED firmware, with a color temperature that follows the sun through the day.',
-        image: '',
-        video: '',
-        highlights: JSON.stringify([
-          'CRI 95+ LEDs, easier on the eyes during late-night sessions',
-          '45-degree aluminum channel with a frosted diffuser, so there are no visible hotspots',
-          'Works locally with HomeKit and Home Assistant, with a rotary encoder for smooth physical dimming',
-          'A MEMS microphone (INMP441) drives a sound-reactive mode for music'
-        ]),
-        bom: JSON.stringify([
-          { item: 'LED Strip', spec: 'WS2812B 60 LED/m (High CRI 95+, 5V)' },
-          { item: 'MCU', spec: 'ESP32-WROOM-32 with Logic Level Shifter (74AHCT125)' },
-          { item: 'Power Supply', spec: 'Mean Well 5V 10A LRS-50 Switching PSU' },
-          { item: 'Diffuser', spec: 'Black Anodized V-Slot Extrusion Channel (2m)' },
-          { item: 'Audio Sensor', spec: 'INMP441 I2S Digital MEMS Microphone' }
-        ]),
-        tools: JSON.stringify(['Wire Strippers', 'Heat Gun', 'Multimeter', 'WLED Web Flasher']),
-        learnings: 'The 3.3V ESP32 data line needs a 74AHCT125 level shifter to reach 5V, otherwise long wire runs flicker at high frequencies.',
-        featured: false,
-        order: 4
-      }
-    ];
-    for (const b of initialBuilds) {
-      await db.insert(workshopProjects).values({ ...b, createdAt: now, updatedAt: now });
-    }
-    console.log(`  ✅ Inserted ${initialBuilds.length} workshop projects`);
 
     // 4. Experiences
     console.log('💼 Seeding experiences...');

@@ -415,31 +415,5 @@ export const books = sqliteTable('books', {
 export type Book = typeof books.$inferSelect;
 export type NewBook = typeof books.$inferInsert;
 
-// DIY Workshop & Hardware Projects
-export const workshopProjects = sqliteTable('workshop_projects', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  slug: text('slug').notNull().unique(),
-  title: text('title').notNull(),
-  badge: text('badge').default('Completed'),
-  timeframe: text('timeframe').default('1 weekend'),
-  categoryKey: text('category_key').default('keyboards'), // 'keyboards', 'homelab', 'iot', 'lighting', 'general'
-  category: text('category').default('Hardware / Peripherals'),
-  icon: text('icon').default('cpu'), // 'keyboard', 'server', 'cpu', 'zap', 'tool'
-  summary: text('summary'),
-  image: text('image'), // Image URL
-  video: text('video'), // Video URL (MP4 / CDN)
-  highlights: text('highlights'), // JSON string array
-  bom: text('bom'), // JSON string array of { item, spec }
-  tools: text('tools'), // JSON string array
-  learnings: text('learnings'),
-  featured: integer('featured', { mode: 'boolean' }).default(false),
-  order: integer('order').default(0),
-  createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
-  updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
-});
-
-export type WorkshopProject = typeof workshopProjects.$inferSelect;
-export type NewWorkshopProject = typeof workshopProjects.$inferInsert;
-
 
 

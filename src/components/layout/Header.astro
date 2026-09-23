@@ -27,7 +27,6 @@ const defaultNav = [
 const defaultCreative = [
   { label: "Bookshelf", href: "/books" },
   { label: "Explore", href: "/explore" },
-  { label: "The Workshop", href: "/workshop" },
 ];
 
 function getIcon(href: string, label: string): string {
@@ -41,7 +40,6 @@ function getIcon(href: string, label: string): string {
   if (/(post|blog|writing)/i.test(href)) return "book-open";
   if (/(book|reading|shelf)/i.test(href) || /(book|reading|shelf)/i.test(label)) return "book-open";
   if (href.startsWith("/contact")) return "mail";
-  if (/(workshop|diy|hardware|maker)/i.test(href) || /(workshop|diy)/i.test(label)) return "wrench";
   if (/(explore|gallery|photo|creative)/i.test(href) || /(explore|gallery)/i.test(label)) return "compass";
   return "link";
 }

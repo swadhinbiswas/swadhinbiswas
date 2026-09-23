@@ -335,10 +335,7 @@ async function fetchDynamicConfig(): Promise<DynamicSiteConfig> {
                 href: n.href,
                 external: n.external || false,
               }))
-          : [
-              { label: "Explore", href: "/explore" },
-              { label: "The Workshop", href: "/workshop" },
-            ],
+          : [{ label: "Explore", href: "/explore" }],
 
       navMenuItems:
         navData.length > 0
