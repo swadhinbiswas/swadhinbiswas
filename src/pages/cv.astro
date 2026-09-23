@@ -1,10 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 
-// Static CV. Source of truth: cv/swadhin-biswas-cv.tex (compiled to
-// public/swadhin-biswas-cv.pdf). Keep the two in sync when editing.
-const pdfPath = "/swadhin-biswas-cv.pdf";
-
+// Static CV. Source of truth: cv/swadhin-biswas-cv.tex (also compiled to
+// public/swadhin-biswas-cv.pdf, kept as a file but not linked from the UI).
 const name = "Swadhin Biswas";
 const headline = "Data Engineer · Databricks, AWS, Spark, Kafka, dbt, Python";
 const location = "Dhaka, Bangladesh · Remote · Open to relocation";
@@ -148,15 +146,6 @@ const education = {
     <div class="container-narrow py-10">
       <div class="flex flex-wrap items-center justify-between gap-3 print-hidden">
         <p class="text-eyebrow">CV</p>
-        <div class="flex items-center gap-2">
-          <a href={pdfPath} download class="btn btn-outline">Download PDF</a>
-          <button onclick="window.print()" class="btn btn-primary">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
-            </svg>
-            Save as PDF
-          </button>
-        </div>
       </div>
     </div>
   </section>
