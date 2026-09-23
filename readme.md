@@ -34,7 +34,7 @@
 - **Location:** Dhaka, Bangladesh; ready to relocate to Germany, the Netherlands, or Austria, or work remotely across the EU
 - **Visa:** needs sponsorship · **Availability:** immediate
 - **Education:** B.Sc. Computer Science and Engineering, Daffodil International University, 2023 to 2026
-- **Core stack:** Python, Go, Kafka, Spark, dbt, DuckDB, PostgreSQL, Docker, AWS and GCP
+- **Core stack:** Python, Go, Rust, Kafka, Spark, Databricks, dbt, DuckDB, PostgreSQL, Docker, AWS, Azure and GCP
 
 ### About
 
@@ -145,7 +145,7 @@ Full list with abstracts: [swadhin.cv/research](https://swadhin.cv/research)
 <!-- STACK:START -->
 ### Stack
 
-**Core:** Python · Go · Rust · TypeScript · SQL · Kafka · Spark · Airflow · dbt · DuckDB · PostgreSQL · Redis · FastAPI · Django · Docker · AWS (Glue, Redshift, Athena) · GCP (Dataflow, Dataproc) · PyTorch
+**Core:** Python · Go · Rust · TypeScript · SQL · Kafka · Spark · Databricks · Airflow · dbt · DuckDB · PostgreSQL · Redis · FastAPI · Django · Docker · AWS (Glue, Redshift, Athena) · Azure (Data Factory) · GCP (Dataflow, Dataproc) · PyTorch
 
 **Working knowledge:** ClickHouse · Kubernetes · Terraform · Airbyte · Dagster · Prometheus · LangChain · OpenAI / local LLM APIs
 
