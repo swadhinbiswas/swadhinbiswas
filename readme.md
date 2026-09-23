@@ -23,7 +23,7 @@
   <a href="https://cal.com/swadhinbiswas"><b>Book a call</b></a> ·
   <a href="mailto:swadhinbiswas.dev@gmail.com">Email</a> ·
   <a href="https://www.linkedin.com/in/swadhinbiswas">LinkedIn</a> ·
-  <a href="https://x.com/swadin_sh">X</a>
+  <a href="https://x.com/swadhin_sh">X</a>
 </p>
 
 ### At a glance
@@ -199,7 +199,7 @@ MACHINE-LEARNING                                  <a href="https://github.com/sw
 - Book a call: [cal.com/swadhinbiswas](https://cal.com/swadhinbiswas)
 - LinkedIn: [@swadhinbiswas](https://www.linkedin.com/in/swadhinbiswas)
 - Email: [swadhinbiswas.dev@gmail.com](mailto:swadhinbiswas.dev@gmail.com) · [swadhinbiswas.cse@gmail.com](mailto:swadhinbiswas.cse@gmail.com) · [eu@swadhin.cv](mailto:eu@swadhin.cv)
-- X: [@swadin_sh](https://x.com/swadin_sh)
+- X: [@swadhin_sh](https://x.com/swadhin_sh)
 - YouTube: [@BitsWar](https://www.youtube.com/@BitsWar)
 
 <p align="center">
