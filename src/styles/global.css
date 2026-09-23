@@ -8,10 +8,9 @@
    ========================================================================= */
 
 @theme {
-  --font-sans: "InterVariable", ui-sans-serif, system-ui, -apple-system,
-    "Segoe UI", Roboto, sans-serif;
-  --font-display: "InterVariable", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-mono: "JetBrainsMono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-sans: "FiraCode", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-display: "FiraCode", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-mono: "FiraCode", ui-monospace, "SF Mono", Menlo, monospace;
 
   /* ── Ink & paper (dark mode default) ── */
   --color-bg: #0A0A0B;
@@ -123,6 +122,14 @@
   font-display: swap;
   src: url("/fonts/InterVariable.woff2") format("woff2-variations"),
        url("/fonts/InterVariable.woff2") format("woff2");
+}
+@font-face {
+  font-family: "FiraCode";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("/fonts/FiraCode.woff2") format("woff2-variations"),
+       url("/fonts/FiraCode.woff2") format("woff2");
 }
 @font-face {
   font-family: "JetBrainsMono";

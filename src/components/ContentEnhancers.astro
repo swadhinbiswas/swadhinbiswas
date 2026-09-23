@@ -49,8 +49,8 @@ const { mermaid = false, plotly = false, charts = false, embeds = false } = Astr
             startOnLoad: false,
             theme: dark ? "dark" : "neutral",
             themeVariables: dark
-              ? { primaryColor: "#1A1A1A", primaryTextColor: "#F6F6F4", primaryBorderColor: "#3F3F46", lineColor: "#A1A1AA", secondaryColor: "#141414", tertiaryColor: "#111113", fontFamily: "JetBrainsMono, monospace" }
-              : { primaryColor: "#F4F4F2", primaryTextColor: "#0A0A0B", primaryBorderColor: "#CBCBC6", lineColor: "#71717A", secondaryColor: "#FFFFFF", tertiaryColor: "#F6F6F4", fontFamily: "JetBrainsMono, monospace" },
+              ? { primaryColor: "#1A1A1A", primaryTextColor: "#F6F6F4", primaryBorderColor: "#3F3F46", lineColor: "#A1A1AA", secondaryColor: "#141414", tertiaryColor: "#111113", fontFamily: "FiraCode, monospace" }
+              : { primaryColor: "#F4F4F2", primaryTextColor: "#0A0A0B", primaryBorderColor: "#CBCBC6", lineColor: "#71717A", secondaryColor: "#FFFFFF", tertiaryColor: "#F6F6F4", fontFamily: "FiraCode, monospace" },
           });
           nodes.forEach(function (n) { n.dataset.rendered = "1"; });
           mermaid.run({ nodes: Array.prototype.slice.call(nodes) });

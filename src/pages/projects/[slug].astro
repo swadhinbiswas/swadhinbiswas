@@ -403,6 +403,29 @@ const relatedProjects = (await getProjects())
         </div>
       </div>
     </section>
+
+    <!-- Architecture & screenshots -->
+    {gallery.length > 0 && (
+      <section class="screen-line-after">
+        <div class="py-8 sm:py-10">
+          <p class="text-eyebrow reveal">Architecture &amp; screenshots</p>
+          <div class="gallery-grid mt-5">
+            {gallery.map((item: any) => {
+              const src = typeof item === "string" ? item : item?.src || item?.url || "";
+              const caption = typeof item === "string" ? "" : item?.caption || item?.alt || "";
+              if (!src) return null;
+              return (
+                <figure class="gallery-item reveal">
+                  <img src={src} alt={caption || project.name} loading="lazy" decoding="async" />
+                  {caption && <figcaption>{caption}</figcaption>}
+                </figure>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    )}
+
     <!-- Prev / Next navigation -->
     {(prev || next) && (
       <section class="screen-line-after">
@@ -712,6 +735,38 @@ const relatedProjects = (await getProjects())
   .prose-story { font-size: 0.95rem; }
   .prose-story h1, .prose-story h2 { font-size: 1.15rem; margin-top: 1.5rem; }
   .prose-story h3 { font-size: 1rem; }
+
+  /* ── Architecture & screenshots gallery ── */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  @media (min-width: 860px) {
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .gallery-item {
+    margin: 0;
+    border: 1px solid var(--color-edge);
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+  }
+  .gallery-item:hover { border-color: var(--color-edge-strong); }
+  .gallery-item img {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: var(--color-bg-2);
+  }
+  .gallery-item figcaption {
+    padding: 0.6rem 0.9rem;
+    border-top: 1px solid var(--color-edge);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-fg-subtle);
+  }
 
   /* Prose tables overflow safely on small screens */
   :global(.prose-content table) {
