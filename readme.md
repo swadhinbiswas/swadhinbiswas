@@ -16,9 +16,9 @@
 
 <!-- TODAY:END -->
 
-## Swadhin Biswas
+<h1 align="center">Swadhin Biswas</h1>
 
-**Data & Backend Engineer** — I build streaming pipelines, lakehouses, and the services around them.
+<p align="center"><strong>Data &amp; Backend Engineer</strong> — I build streaming pipelines, lakehouses, and the services around them.</p>
 
 <p align="center">
   <a href="https://swadhin.cv"><b>Portfolio</b></a> ·
