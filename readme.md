@@ -163,22 +163,22 @@ Full list with abstracts: [swadhin.cv/research](https://swadhin.cv/research)
 <pre>
 DATA ENGINEERING                                RESEARCH                                        
   <a href="https://github.com/swadhinbiswas/eu-air-traffic">eu-air-traffic</a> live EU airspace pipeline        <a href="https://github.com/swadhinbiswas/contexa">contexa</a>        versioned llm agent memory     
-  <a href="https://github.com/swadhinbiswas/eurostream">eurostream</a>     gdpr-native streaming lakehouse  <a href="https://github.com/swadhinbiswas/DOOMSDAYCS">DOOMSDAYCS</a>     offline cs encyclopedia        
-                                                  <a href="https://github.com/swadhinbiswas/FAANG-Playbook">FAANG-Playbook</a> 1,400+ leetcode problems       
-DEVOPS                                                                                          
-  <a href="https://github.com/swadhinbiswas/OpencodeHub">OpencodeHub</a>    git platform w/ ci pipelines   TOOLS                                           
-  <a href="https://github.com/swadhinbiswas/gvx">gvx</a>            the pnpm of python               <a href="https://github.com/swadhinbiswas/veet">veet</a>           universal app uninstaller      
-  <a href="https://github.com/swadhinbiswas/HiFiLinux">HiFiLinux</a>      audiophile audio for linux       <a href="https://github.com/swadhinbiswas/lsf">lsf</a>            ls with nerd-font icons        
-                                                  <a href="https://github.com/swadhinbiswas/fetchx">fetchx</a>         neofetch rewritten in rust     
-BACKEND                                           <a href="https://github.com/swadhinbiswas/Ghost">Ghost</a>          free &amp; open coding tool    
-  <a href="https://github.com/swadhinbiswas/JustAPI">JustAPI</a>        zero-copy rust web framework     <a href="https://github.com/swadhinbiswas/ZenDownload">ZenDownload</a>    download anything, one place   
-                                                  <a href="https://github.com/swadhinbiswas/vscode-android">vscode-android</a> a real ide for android         
-MACHINE-LEARNING                                  <a href="https://github.com/swadhinbiswas/warren">warren</a>         rootless cli runtime           
-  <a href="https://github.com/swadhinbiswas/Aurora">Aurora</a>         modular reasoning architecture                                                 
-  <a href="https://github.com/swadhinbiswas/AegisVision">AegisVision</a>    multi-camera ai surveillance   OTHERS                                          
-  <a href="https://github.com/swadhinbiswas/Ecoguard">Ecoguard</a>       self-hosted llm inference gw     <a href="https://github.com/swadhinbiswas/linuxy">linuxy</a>         one-click appimage runner      
-  <a href="https://github.com/swadhinbiswas/opengrammar">opengrammar</a>    open-source grammarly alt        <a href="https://github.com/swadhinbiswas/de-omarchy">de-omarchy</a>     modern desktop, no omarchy     
-                                                  <a href="https://github.com/swadhinbiswas/Mervelas">Mervelas</a>       ai coding cli built on bun     
+  <a href="https://github.com/swadhinbiswas/TerraSentinel">TerraSentinel</a>  databricks satellite anomaly     <a href="https://github.com/swadhinbiswas/DOOMSDAYCS">DOOMSDAYCS</a>     offline cs encyclopedia        
+  <a href="https://github.com/swadhinbiswas/eurostream">eurostream</a>     gdpr-native streaming lakehouse  <a href="https://github.com/swadhinbiswas/FAANG-Playbook">FAANG-Playbook</a> 1,400+ leetcode problems       
+                                                                                                
+DEVOPS                                          TOOLS                                           
+  <a href="https://github.com/swadhinbiswas/OpencodeHub">OpencodeHub</a>    git platform w/ ci pipelines     <a href="https://github.com/swadhinbiswas/veet">veet</a>           universal app uninstaller      
+  <a href="https://github.com/swadhinbiswas/gvx">gvx</a>            the pnpm of python               <a href="https://github.com/swadhinbiswas/lsf">lsf</a>            ls with nerd-font icons        
+  <a href="https://github.com/swadhinbiswas/HiFiLinux">HiFiLinux</a>      audiophile audio for linux       <a href="https://github.com/swadhinbiswas/fetchx">fetchx</a>         neofetch rewritten in rust     
+                                                  <a href="https://github.com/swadhinbiswas/Ghost">Ghost</a>          free &amp; open coding tool    
+BACKEND                                           <a href="https://github.com/swadhinbiswas/ZenDownload">ZenDownload</a>    download anything, one place   
+  <a href="https://github.com/swadhinbiswas/JustAPI">JustAPI</a>        zero-copy rust web framework     <a href="https://github.com/swadhinbiswas/vscode-android">vscode-android</a> a real ide for android         
+                                                  <a href="https://github.com/swadhinbiswas/warren">warren</a>         rootless cli runtime           
+MACHINE-LEARNING                                                                                
+  <a href="https://github.com/swadhinbiswas/Aurora">Aurora</a>         modular reasoning architecture OTHERS                                          
+  <a href="https://github.com/swadhinbiswas/AegisVision">AegisVision</a>    multi-camera ai surveillance     <a href="https://github.com/swadhinbiswas/linuxy">linuxy</a>         one-click appimage runner      
+  <a href="https://github.com/swadhinbiswas/Ecoguard">Ecoguard</a>       self-hosted llm inference gw     <a href="https://github.com/swadhinbiswas/de-omarchy">de-omarchy</a>     modern desktop, no omarchy     
+  <a href="https://github.com/swadhinbiswas/opengrammar">opengrammar</a>    open-source grammarly alt        <a href="https://github.com/swadhinbiswas/Mervelas">Mervelas</a>       ai coding cli built on bun     
                                                   <a href="https://github.com/swadhinbiswas/VidoLib">VidoLib</a>        lag-free media engine          
                                                   <a href="https://github.com/swadhinbiswas/moonshell">moonshell</a>      personal qml linux rice        
 </pre>
