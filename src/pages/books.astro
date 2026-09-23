@@ -43,8 +43,8 @@ const schema = {
       "@type": "CollectionPage",
       "@id": `${siteUrl}/books/#webpage`,
       "url": `${siteUrl}/books`,
-      "name": `Technical Bookshelf & Audiobooks | ${author}`,
-      "description": `A curated technical library and audiobooks on distributed systems, database internals, and software engineering read by ${author}.`,
+      "name": `The Bookshelf: Reading & Audiobooks | ${author}`,
+      "description": `A curated shelf of engineering books, world classics and Bengali literature read by ${author}, with short takeaways.`,
       "isPartOf": { "@id": `${siteUrl}/#website` },
       "mainEntity": { "@id": `${siteUrl}/#person` }
     }
@@ -53,8 +53,8 @@ const schema = {
 ---
 
 <BaseLayout
-  title="The Bookshelf: Technical Reading & Audiobooks"
-  description={`Technical reading list and audiobooks on distributed systems, database internals, and engineering, with takeaways by ${author}.`}
+  title="The Bookshelf: Reading & Audiobooks"
+  description={`Books and audiobooks I've read — engineering, world classics and Bengali literature — with short takeaways by ${author}.`}
 >
   <JsonLd slot="head" schema={schema} />
 
@@ -75,7 +75,7 @@ const schema = {
           The Bookshelf
         </h1>
         <p class="prose-mono mt-4 max-w-2xl text-[var(--color-fg-muted)] leading-relaxed">
-          Books that shaped how I think about distributed systems, storage engines, reliability, and engineering leadership.
+          Books that shaped how I think: engineering and data, plus the fiction and Bengali classics I keep coming back to.
         </p>
       </div>
 
@@ -220,7 +220,7 @@ const schema = {
                       </div>
                       <div class="flex items-center gap-1.5 mb-1.5">
                         <span class="text-[10px] font-mono uppercase tracking-wider font-semibold text-[var(--color-accent-2)]">
-                          Architectural Insight & Key Takeaway
+                          Key takeaway
                         </span>
                       </div>
                       <p class="text-xs sm:text-sm text-[var(--color-fg-muted)] leading-relaxed italic relative z-10">
