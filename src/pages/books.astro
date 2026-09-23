@@ -16,7 +16,7 @@ const booksList = rawBooks.map((b) => ({
   title: b.title,
   author: b.author,
   type: b.type || "read",
-  category: b.category || "Distributed Systems",
+  category: b.category || "Non-fiction",
   status: b.status || "completed",
   rating: b.rating || 5,
   cover: b.cover || null,
@@ -26,8 +26,53 @@ const booksList = rawBooks.map((b) => ({
   order: b.order || 0,
 }));
 
-// Unique categories for filter pills
-const categories = [...new Set(booksList.map((b) => b.category).filter(Boolean))];
+// Genres, in a deliberate reading order
+const genreOrder = [
+  "Engineering",
+  "Non-fiction",
+  "Bengali Classics",
+  "Bengali Fiction",
+  "Classics",
+  "Fantasy",
+  "Detective",
+  "Adventure",
+  "Science Fiction",
+  "Poetry",
+];
+const genres = [...new Set(booksList.map((b) => b.category))]
+  .sort((a, b) => {
+    const ia = genreOrder.indexOf(a);
+    const ib = genreOrder.indexOf(b);
+    return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+  });
+const countByGenre = booksList.reduce<Record<string, number>>((acc, b) => {
+  acc[b.category] = (acc[b.category] || 0) + 1;
+  return acc;
+}, {});
+const readCount = booksList.filter((b) => b.type === "read" || b.type === "both").length;
+const audioCount = booksList.filter((b) => b.type === "listened" || b.type === "both").length;
+
+// Bengali audio-story channels worth following
+const channels = [
+  {
+    name: "Real Mir",
+    url: "https://www.youtube.com/@realmir",
+    tag: "Narration",
+    desc: "Bengali story narration and audio fiction.",
+  },
+  {
+    name: "Mirchi Bangla",
+    url: "https://www.youtube.com/@MirchiBangla",
+    tag: "Horror · Detective",
+    desc: "Bengali audio stories — horror, detective and historical — plus Sunday Suspense.",
+  },
+  {
+    name: "The Story Halt",
+    url: "https://www.youtube.com/@TheStoryHalt",
+    tag: "Detective · Adventure",
+    desc: "Full-length Bengali audio stories, including detective and adventure serials.",
+  },
+];
 
 const schema = {
   "@context": "https://schema.org",
@@ -36,8 +81,8 @@ const schema = {
       "@type": "BreadcrumbList",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "Home", "item": `${siteUrl}/` },
-        { "@type": "ListItem", "position": 2, "name": "Bookshelf", "item": `${siteUrl}/books` }
-      ]
+        { "@type": "ListItem", "position": 2, "name": "Bookshelf", "item": `${siteUrl}/books` },
+      ],
     },
     {
       "@type": "CollectionPage",
@@ -46,9 +91,9 @@ const schema = {
       "name": `The Bookshelf: Reading & Audiobooks | ${author}`,
       "description": `A curated shelf of engineering books, world classics and Bengali literature read by ${author}, with short takeaways.`,
       "isPartOf": { "@id": `${siteUrl}/#website` },
-      "mainEntity": { "@id": `${siteUrl}/#person` }
-    }
-  ]
+      "mainEntity": { "@id": `${siteUrl}/#person` },
+    },
+  ],
 };
 ---
 
@@ -58,9 +103,9 @@ const schema = {
 >
   <JsonLd slot="head" schema={schema} />
 
-  <!-- Hero Section -->
+  <!-- Hero -->
   <section class="screen-line-after">
-    <div class="container-narrow py-12 sm:py-16">
+    <div class="container-narrow py-12 sm:py-14">
       <div class="reveal">
         <div class="flex items-center gap-2 mb-3">
           <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg)]">
@@ -69,192 +114,79 @@ const schema = {
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
             </svg>
           </span>
-          <p class="text-eyebrow">Reading & Audiobooks</p>
+          <p class="text-eyebrow">Reading &amp; Audiobooks</p>
         </div>
-        <h1 class="text-display text-3xl sm:text-4xl lg:text-5xl text-aurora">
-          The Bookshelf
-        </h1>
+        <h1 class="text-display text-3xl sm:text-4xl lg:text-5xl text-aurora">The Bookshelf</h1>
         <p class="prose-mono mt-4 max-w-2xl text-[var(--color-fg-muted)] leading-relaxed">
-          Books that shaped how I think: engineering and data, plus the fiction and Bengali classics I keep coming back to.
+          Books that shaped how I think: engineering and data, world classics, and the Bengali fiction I grew up on. Hover a cover for the one-line takeaway.
         </p>
       </div>
 
-      <!-- Category Filter Pills -->
+      <!-- Filters -->
       <div class="mt-8 flex flex-wrap items-center justify-between gap-3 border-b border-[var(--color-edge)] pb-4 reveal">
         <div class="flex flex-wrap items-center gap-1.5" id="bookshelf-filters">
           <button type="button" class="book-filter-pill active" data-book-tag="all">
-            All Titles ({booksList.length})
+            All ({booksList.length})
           </button>
           <button type="button" class="book-filter-pill" data-book-tag="read">
-            Books (Read)
+            Books ({readCount})
           </button>
           <button type="button" class="book-filter-pill" data-book-tag="listened">
-            Audiobooks (Listened)
+            Audio ({audioCount})
           </button>
-          {categories.map((cat) => (
-            <button type="button" class="book-filter-pill" data-book-cat={cat}>
-              {cat}
+          {genres.map((g) => (
+            <button type="button" class="book-filter-pill" data-book-cat={g}>
+              {g} ({countByGenre[g]})
             </button>
           ))}
         </div>
-
-        <span class="text-xs font-mono text-[var(--color-fg-subtle)]">
-          {booksList.length} titles
-        </span>
       </div>
     </div>
   </section>
 
-  <!-- Books Grid -->
+  <!-- Grid -->
   <section class="screen-line-after">
-    <div class="container-narrow py-12 sm:py-16">
-      <div class="grid grid-cols-1 gap-8" id="bookshelf-grid">
+    <div class="container-narrow py-10 sm:py-12">
+      <div class="books-grid" id="bookshelf-grid">
         {booksList.map((b) => (
           <article
-            class="book-card-full panel p-6 sm:p-7 reveal transition-all duration-300 hover:border-[var(--color-edge-strong)]"
+            class="book-tile reveal"
             data-book-item
             data-type={b.type}
             data-category={b.category}
           >
-            <div class="flex flex-col md:flex-row items-start gap-6 sm:gap-8">
-              <!-- Left: 3D Poster Cover Image -->
-              <div class="shrink-0 w-full md:w-44 flex justify-center">
-                <div class="book-poster-frame relative group/poster">
-                  <div class="w-36 sm:w-44 aspect-[2/3] rounded-lg overflow-hidden bg-[var(--color-card-strong)] border border-[var(--color-edge)] relative transition-transform duration-500 ease-out group-hover/poster:scale-[1.03] group-hover/poster:-translate-y-1">
-                    {b.cover ? (
-                      <img
-                        src={b.cover}
-                        alt={`${b.title} cover`}
-                        loading="lazy"
-                        decoding="async"
-                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                        class="w-full h-full object-cover grayscale"
-                      />
-                    ) : null}
-
-                    <!-- Fallback Minimal Typographic Cover (Shown if no cover or on error) -->
-                    <div class={`w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-950 p-4 flex flex-col justify-between ${b.cover ? 'hidden' : 'flex'}`}>
-                      <div class="flex items-center gap-1">
-                        <svg class="w-3.5 h-3.5 text-[var(--color-fg-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                        </svg>
-                        <span class="text-[9px] font-mono uppercase tracking-wider text-zinc-400">Canonical</span>
-                      </div>
-                      <div>
-                        <h4 class="text-xs font-bold text-white leading-snug line-clamp-3">{b.title}</h4>
-                        <p class="text-[10px] font-mono text-zinc-400 mt-1">{b.author}</p>
-                      </div>
-                    </div>
-
-                    <!-- Realistic spine shadow overlay -->
-                    <div class="absolute inset-y-0 left-0 w-3 bg-gradient-to-r from-black/50 via-black/20 to-transparent pointer-events-none"></div>
-                    <div class="absolute inset-0 ring-1 ring-inset ring-white/10 pointer-events-none rounded-lg"></div>
-                  </div>
-                </div>
+            <div class:list={["book-tile-cover", !b.cover && "no-cover"]}>
+              {b.cover && (
+                <img
+                  src={b.cover}
+                  alt={`${b.title} cover`}
+                  loading="lazy"
+                  decoding="async"
+                  onerror="this.parentElement.classList.add('no-cover')"
+                />
+              )}
+              <div class="book-tile-fallback">
+                <svg class="book-tile-fallback-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                <span class="book-tile-fallback-title">{b.title}</span>
+                <span class="book-tile-fallback-author">{b.author}</span>
               </div>
-
-              <!-- Right: Detailed Content & Fancy Commentary -->
-              <div class="flex-1 min-w-0 flex flex-col justify-between">
-                <div>
-                  <!-- Top Badges & Rating -->
-                  <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--color-edge)] pb-3 mb-3">
-                    <div class="flex flex-wrap items-center gap-2">
-                      <span class="inline-flex items-center gap-1 text-[11px] font-mono px-2.5 py-0.5 rounded-md bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg)]">
-                        {b.type === 'listened' ? (
-                          <>
-                            <svg class="w-3 h-3 text-[var(--color-fg-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                              <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
-                              <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
-                            </svg>
-                            <span>Audiobook</span>
-                          </>
-                        ) : b.type === 'both' ? (
-                          <>
-                            <svg class="w-3 h-3 text-[var(--color-fg-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                              <path d="M12 6v6"/>
-                            </svg>
-                            <span>Read & Audio</span>
-                          </>
-                        ) : (
-                          <>
-                            <svg class="w-3 h-3 text-[var(--color-fg-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                            </svg>
-                            <span>Book</span>
-                          </>
-                        )}
-                      </span>
-
-                      <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-accent-2)]">
-                        {b.category}
-                      </span>
-                    </div>
-
-                    <!-- 5 Stars Rating -->
-                    <div class="flex items-center gap-0.5 text-[var(--color-fg)]" title={`Rating: ${b.rating}/5`}>
-                      {Array.from({ length: b.rating }).map(() => (
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                        </svg>
-                      ))}
-                    </div>
-                  </div>
-
-                  <!-- Book Title & Author -->
-                  <h2 class="text-lg sm:text-xl font-bold text-[var(--color-fg)] tracking-tight">
-                    {b.title}
-                  </h2>
-                  <p class="text-xs sm:text-sm font-mono text-[var(--color-fg-subtle)] mt-1">
-                    by <span class="text-[var(--color-fg)] font-medium">{b.author}</span>
-                  </p>
-
-                  <!-- Fancy Editorial Commentary Box -->
-                  {b.takeaway && (
-                    <div class="mt-4 p-4 rounded-xl bg-[var(--color-card-strong)]/70 border border-[var(--color-edge)] relative overflow-hidden">
-                      <div class="absolute top-2 right-3 text-3xl font-serif text-[var(--color-edge-strong)] select-none opacity-40 leading-none">
-                        “
-                      </div>
-                      <div class="flex items-center gap-1.5 mb-1.5">
-                        <span class="text-[10px] font-mono uppercase tracking-wider font-semibold text-[var(--color-accent-2)]">
-                          Key takeaway
-                        </span>
-                      </div>
-                      <p class="text-xs sm:text-sm text-[var(--color-fg-muted)] leading-relaxed italic relative z-10">
-                        "{b.takeaway}"
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                <!-- Bottom Status & Link -->
-                <div class="mt-5 pt-3 border-t border-[var(--color-edge)] flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
-                  <div class="flex items-center gap-1.5 text-[var(--color-fg)]">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                      <polyline points="20 6 9 17 4 12"/>
-                    </svg>
-                    <span class="text-[11px] font-semibold uppercase tracking-wider">Completed</span>
-                  </div>
-
-                  {b.url && (
-                    <a
-                      href={b.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-xs font-mono font-medium px-3 py-1.5 rounded-lg bg-[var(--color-card-strong)] border border-[var(--color-edge)] text-[var(--color-fg)] hover:border-[var(--color-edge-strong)] flex items-center gap-1.5 transition-colors"
-                    >
-                      <span>Publisher & Reference</span>
-                      <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                        <polyline points="15 3 21 3 21 9"/>
-                        <line x1="10" y1="14" x2="21" y2="3"/>
-                      </svg>
-                    </a>
-                  )}
-                </div>
+              {b.takeaway && <div class="book-tile-note">{b.takeaway}</div>}
+            </div>
+            <div class="book-tile-body">
+              <h3 class="book-tile-title">
+                {b.url ? (
+                  <a href={b.url} target="_blank" rel="noopener noreferrer">{b.title}</a>
+                ) : (
+                  b.title
+                )}
+              </h3>
+              <p class="book-tile-author">{b.author}</p>
+              <div class="book-tile-meta">
+                <span class="book-tile-stars" title={`${b.rating} / 5`}>
+                  {"★".repeat(b.rating)}
+                  <span class="book-tile-stars-dim">{"☆".repeat(5 - b.rating)}</span>
+                </span>
+                <span class="book-tile-genre">{b.category}</span>
               </div>
             </div>
           </article>
@@ -263,7 +195,37 @@ const schema = {
     </div>
   </section>
 
-  <!-- Cross-link Callouts -->
+  <!-- Listen: Bengali audio stories -->
+  <section class="screen-line-after">
+    <div class="container-narrow py-10 sm:py-12">
+      <div class="reveal">
+        <p class="text-eyebrow">Listen</p>
+        <h2 class="panel-title mt-1">Bengali audio stories I follow</h2>
+        <p class="prose-mono text-sm text-[var(--color-fg-muted)] mt-2 max-w-2xl">
+          When I'd rather listen than read, these are the channels narrating Bengali fiction.
+        </p>
+      </div>
+      <div class="channel-grid mt-6">
+        {channels.map((c) => (
+          <a href={c.url} target="_blank" rel="noopener noreferrer" class="channel-card reveal">
+            <span class="channel-play" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </span>
+            <div class="channel-body">
+              <div class="channel-head">
+                <h3 class="channel-name">{c.name}</h3>
+                <span class="channel-tag">{c.tag}</span>
+              </div>
+              <p class="channel-desc">{c.desc}</p>
+              <span class="channel-link">Watch on YouTube →</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Cross-link -->
   <section class="screen-line-after">
     <div class="container-narrow py-10 sm:py-12">
       <div class="grid grid-cols-1 gap-4">
@@ -277,7 +239,7 @@ const schema = {
             </span>
             <div>
               <h4 class="text-sm font-bold text-[var(--color-fg)] group-hover:text-[var(--color-accent-2)] transition-colors">Explore Gallery</h4>
-              <p class="text-[11px] text-[var(--color-fg-muted)]">Field photography & soundscapes</p>
+              <p class="text-[11px] text-[var(--color-fg-muted)]">Field photography &amp; soundscapes</p>
             </div>
           </div>
           <span class="text-xs font-mono text-[var(--color-fg-subtle)] group-hover:translate-x-1 transition-transform">→</span>
@@ -290,8 +252,8 @@ const schema = {
 <style>
   .book-filter-pill {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
-    padding: 0.3rem 0.75rem;
+    font-size: 0.72rem;
+    padding: 0.3rem 0.7rem;
     border-radius: 6px;
     border: 1px solid transparent;
     color: var(--color-fg-subtle);
@@ -299,16 +261,167 @@ const schema = {
     cursor: pointer;
     transition: all 0.15s ease;
   }
-  .book-filter-pill:hover {
-    color: var(--color-fg);
-    background: var(--color-card-strong);
-  }
+  .book-filter-pill:hover { color: var(--color-fg); background: var(--color-card-strong); }
   .book-filter-pill.active {
     color: var(--color-fg);
     background: var(--color-card-strong);
     border-color: var(--color-edge);
     font-weight: 600;
   }
+
+  /* ── Compact grid ── */
+  .books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+    gap: 1.5rem 1.15rem;
+  }
+  @media (max-width: 420px) {
+    .books-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem 0.9rem; }
+  }
+
+  .book-tile { display: flex; flex-direction: column; min-width: 0; }
+
+  .book-tile-cover {
+    position: relative;
+    aspect-ratio: 2 / 3;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--color-card-strong);
+    border: 1px solid var(--color-edge);
+    box-shadow: 0 10px 24px -18px rgba(0, 0, 0, 0.9);
+    transition: transform 0.3s ease, border-color 0.25s ease;
+  }
+  .book-tile:hover .book-tile-cover { transform: translateY(-3px); border-color: var(--color-edge-strong); }
+  .book-tile-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1);
+    transition: filter 0.35s ease;
+  }
+  .book-tile:hover .book-tile-cover img { filter: grayscale(0); }
+  /* spine shadow */
+  .book-tile-cover::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 9px;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.55), transparent);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .book-tile-cover.no-cover img { display: none; }
+  .book-tile-cover:not(.no-cover) .book-tile-fallback { display: none; }
+  .book-tile-fallback {
+    position: absolute;
+    inset: 0;
+    padding: 0.9rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.4rem;
+    background: linear-gradient(150deg, #1b1b1f, #0b0b0d);
+    color: #f2f2ef;
+  }
+  .book-tile-fallback-icon { color: #6b6b73; }
+  .book-tile-fallback-title { font-size: 0.82rem; font-weight: 700; line-height: 1.3; }
+  .book-tile-fallback-author { font-family: var(--font-mono); font-size: 0.62rem; color: #8b8b93; }
+
+  /* hover takeaway */
+  .book-tile-note {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    padding: 0.8rem;
+    display: flex;
+    align-items: center;
+    background: rgba(8, 8, 10, 0.9);
+    color: #ececec;
+    font-size: 0.7rem;
+    line-height: 1.5;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    overflow: auto;
+  }
+  .book-tile:hover .book-tile-note { opacity: 1; }
+
+  .book-tile-body { padding: 0.6rem 0.15rem 0; display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+  .book-tile-title { font-family: var(--font-display); font-size: 0.82rem; font-weight: 700; line-height: 1.3; color: var(--color-fg); }
+  .book-tile-title a { color: inherit; text-decoration: none; }
+  .book-tile-title a:hover { color: var(--color-accent-2); }
+  .book-tile-author {
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    color: var(--color-fg-subtle);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .book-tile-meta { display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; margin-top: 0.15rem; }
+  .book-tile-stars { font-size: 0.62rem; color: var(--color-accent-2); letter-spacing: 0.02em; }
+  .book-tile-stars-dim { color: var(--color-edge-strong); }
+  .book-tile-genre {
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-fg-subtle);
+    border: 1px solid var(--color-edge);
+    border-radius: 5px;
+    padding: 0.1rem 0.35rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60%;
+  }
+
+  /* ── Audio channels ── */
+  .channel-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  @media (min-width: 760px) { .channel-grid { grid-template-columns: repeat(3, 1fr); } }
+  .channel-card {
+    display: flex;
+    gap: 0.9rem;
+    padding: 1.1rem 1.15rem;
+    border: 1px solid var(--color-edge);
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .channel-card:hover { border-color: var(--color-edge-strong); transform: translateY(-2px); }
+  .channel-play {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.3rem;
+    height: 2.3rem;
+    flex-shrink: 0;
+    border-radius: 999px;
+    border: 1px solid var(--color-edge-strong);
+    background: var(--color-bg-2);
+    color: var(--color-fg);
+  }
+  .channel-body { min-width: 0; display: flex; flex-direction: column; gap: 0.25rem; }
+  .channel-head { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+  .channel-name { font-family: var(--font-display); font-size: 0.98rem; font-weight: 700; color: var(--color-fg); }
+  .channel-tag {
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-fg-subtle);
+    border: 1px solid var(--color-edge);
+    border-radius: 5px;
+    padding: 0.1rem 0.35rem;
+  }
+  .channel-desc { font-size: 0.8rem; color: var(--color-fg-muted); line-height: 1.55; }
+  .channel-link { font-family: var(--font-mono); font-size: 0.66rem; color: var(--color-accent-2); margin-top: 0.15rem; }
 </style>
 
 <script>
@@ -327,15 +440,12 @@ const schema = {
         const itemType = card.getAttribute('data-type');
         const itemCat = card.getAttribute('data-category');
 
-        if (tag === 'all') {
-          card.style.display = 'block';
-        } else if (tag === 'read') {
-          card.style.display = (itemType === 'read' || itemType === 'both') ? 'block' : 'none';
-        } else if (tag === 'listened') {
-          card.style.display = (itemType === 'listened' || itemType === 'both') ? 'block' : 'none';
-        } else if (cat) {
-          card.style.display = itemCat === cat ? 'block' : 'none';
-        }
+        let show = true;
+        if (tag === 'read') show = itemType === 'read' || itemType === 'both';
+        else if (tag === 'listened') show = itemType === 'listened' || itemType === 'both';
+        else if (cat) show = itemCat === cat;
+
+        card.style.display = show ? 'flex' : 'none';
       });
     });
   });
