@@ -52,7 +52,7 @@ if (existing.rows.length > 0) {
   const nextOrder = Number(max.rows[0].max_order) + 1;
   await client.execute({
     sql: 'INSERT INTO skills (name, category, tier, "order", created_at, updated_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)',
-    args: ["Databricks", "tool", "core", nextOrder],
+    args: ["Databricks", "data engineering", "core", nextOrder],
   });
   log(`  added Databricks (category=tool, tier=core, order=${nextOrder}).`);
 }
