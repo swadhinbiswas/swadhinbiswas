@@ -16,29 +16,45 @@
 
 <!-- TODAY:END -->
 
-### About
+## Swadhin Biswas
 
-Data and backend engineer with **2+ years** building streaming pipelines, lakehouses and the services around them. I work mostly in **Python**, **Go** and **TypeScript**, and I prefer systems that keep running when nobody is watching: Kafka ingestion, dbt warehouses on DuckDB, GDPR-native erasure, schema-contract gates in CI.
-
-Currently building [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub), a self-hosted Git platform with CI and merge queues, and [AegisVision](https://github.com/swadhinbiswas/AegisVision), a multi-camera AI surveillance system. Latest research: [Aurora](https://github.com/swadhinbiswas/Aurora), a modular reasoning architecture with a JOSS paper.
-
-**Open to:** Data Engineer · Backend Engineer · Analytics Engineer · mid-level · Germany, Netherlands, Austria, EU remote · relocation with visa sponsorship · available immediately.
-
-**Languages:** English (Professional, daily working language) · Bengali (native) · Hindi (conversational) · German (currently learning).
-
-**Email:** [swadhinbiswas.dev@gmail.com](mailto:swadhinbiswas.dev@gmail.com) · [swadhinbiswas.cse@gmail.com](mailto:swadhinbiswas.dev@gmail.com) · [eu@swadhin.cv](mailto:swadhinbiswas.dev@gmail.com)
+**Data & Backend Engineer** — I build streaming pipelines, lakehouses, and the services around them.
 
 <p align="center">
   <a href="https://swadhin.cv"><b>Portfolio</b></a> ·
+  <a href="https://blog.swadhin.cv"><b>Blog</b></a> ·
+  <a href="https://www.swadhin.cv/cv"><b>CV</b></a> ·
   <a href="https://cal.com/swadhinbiswas"><b>Book a call</b></a> ·
   <a href="mailto:swadhinbiswas.dev@gmail.com">Email</a> ·
   <a href="https://www.linkedin.com/in/swadhinbiswas">LinkedIn</a> ·
   <a href="https://x.com/swadin_sh">X</a>
 </p>
 
+### At a glance
+
+- **Roles:** Data Engineer · Backend Engineer · Analytics Engineer — mid-level
+- **Experience:** 2+ years full-time (2023 – present), plus freelance since 2021
+- **Focus:** streaming pipelines · lakehouses · GDPR-native erasure · CI quality gates
+- **Location:** Dhaka, Bangladesh · relocation-ready (Germany · Netherlands · Austria · EU remote)
+- **Visa:** requires sponsorship · **Availability:** immediate
+- **Education:** B.Sc. Computer Science & Engineering, Daffodil International University (2023 – 2026)
+- **Core stack:** Python · Go · Kafka · Spark · dbt · DuckDB · PostgreSQL · Docker · AWS / GCP
+
+### About
+
+Data and backend engineer with **2+ years** building streaming pipelines, lakehouses and the services around them. I work mostly in **Python**, **Go** and **TypeScript**, and I prefer systems that keep running when nobody is watching: Kafka ingestion, dbt warehouses on DuckDB, GDPR-native erasure, schema-contract gates in CI.
+
+Currently building [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub), a self-hosted Git platform with CI and merge queues, and [AegisVision](https://github.com/swadhinbiswas/AegisVision), a multi-camera AI surveillance system. Latest research: [Aurora](https://github.com/swadhinbiswas/Aurora), a modular reasoning architecture with a JOSS paper.
+
+I also write about backend systems, data engineering and building software from scratch at **[blog.swadhin.cv](https://blog.swadhin.cv)**.
+
+**Languages:** English (Professional, daily working language) · Bengali (native) · Hindi (conversational) · German (currently learning).
+
+**Email:** [swadhinbiswas.dev@gmail.com](mailto:swadhinbiswas.dev@gmail.com) · [swadhinbiswas.cse@gmail.com](mailto:swadhinbiswas.cse@gmail.com) · [eu@swadhin.cv](mailto:eu@swadhin.cv)
+
 ### Highlights
 
-- **1M+ users** on the BoringRats community platform before it was **acquired (NDA)** in 2025
+- **Co-founded BoringRats** and grew it to **1M+ users** on a Python / FastAPI / PostgreSQL backend serving **10K+ req/min at under 100 ms** — **acquired (NDA) in 2025**
 - **JOSS research paper** and archived DOI for [Aurora](https://doi.org/10.5281/zenodo.22067754): GSM8K 47.2% → 55.6%, confidently wrong answers 19.8% → 2.9%
 - **[eu-air-traffic](https://www.swadhin.cv/projects/eu-air-traffic/)**: live EU airspace pipeline on Kafka, dbt and DuckDB, with a public Hugging Face dataset and a [Zenodo DOI](https://doi.org/10.5281/zenodo.22790201)
 - **[eurostream](https://www.swadhin.cv/projects/eurostream/)**: GDPR-native lakehouse whose six-layer Article 17 erasure runs in 66.95 ms mean against a 60 s statutory window
@@ -47,20 +63,30 @@ Currently building [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub), 
 
 <!--
   experience - EDIT BY HAND. today.py never touches this block.
-  Keep it to 3 entries: now + now + previously. One line per role.
+  Newest first, one result-driven line per role. Keep the numbers honest
+  and in sync with swadhin.cv/cv.
 -->
 <!-- EXPERIENCE:START -->
 ### Experience
 
-**2026-Now: Founder & Maintainer at [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub)** - self-hosted Git platform (Gitea-class parity, 668 tests, E2E), Go / TypeScript
+**May 2026 – Now · Founder & Maintainer · [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub)**
+Free self-hosted Git platform: SSH access, CI pipelines, stacked PRs, merge queues and AI-assisted code review. Go + TypeScript, **668 tests**, end-to-end coverage.
 
-**2026-Now: Builder at [AegisVision](https://github.com/swadhinbiswas/AegisVision)** - multi-camera AI surveillance and behavioural monitoring system, Python
+**2026 – Now · Builder · [AegisVision](https://github.com/swadhinbiswas/AegisVision)**
+Multi-camera AI surveillance and behavioural monitoring on commodity hardware: real-time face recognition with anti-spoofing liveness checks. Python.
 
-**2023-2025: Founder, Open Source Community Platform (BoringRats)** - discovery, learning paths and real-world guidance - Blog + Discord + Telegram - **1M+ combined users** - *Acquired (NDA)*
+**Jan 2023 – Nov 2025 · Co-Founder & Lead Data/Backend Engineer · BoringRats** — *Acquired (NDA)*
+Owned all backend architecture from the first version to **1M+ users**: real-time event ingestion, the analytics warehouse and MLOps workflows. Python, FastAPI, PostgreSQL, Redis, Docker, AWS — REST APIs at **10K+ req/min under 100 ms**.
 
-**2021-2023: Freelance - Backend & Automation Engineer** - 100+ paid jobs across open source, freelance contracts and client work: backend systems, automation and pipelines
+**Jan 2021 – Dec 2022 · Freelance Backend & Automation Engineer**
+Shipped **8+ full-stack projects** for SaaS and e-commerce clients in the US and UK. Django + PostgreSQL APIs handling 10K+ requests/day; cut page load times by 40%.
 
 <!-- EXPERIENCE:END -->
+
+### Education
+
+**B.Sc. in Computer Science and Engineering** — Daffodil International University, Dhaka · *Jan 2023 – Apr 2026*
+Coursework: data structures, algorithms, database systems, machine learning, software engineering.
 
 <!--
   featured projects - EDIT BY HAND. today.py never touches this block.
@@ -78,6 +104,23 @@ Currently building [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub), 
 - <a href="https://www.swadhin.cv/projects/opencodehub/"><strong>OpenCodeHub</strong></a>: self-hosted Git platform · CI, stacked PRs, merge queues, AI review · 668 tests
 - <a href="https://www.swadhin.cv/projects/aegisvision/"><strong>AegisVision</strong></a>: multi-camera AI surveillance and behavioural monitoring system · Python, real-time detection
 <!-- FEATURED:END -->
+
+<!--
+writing - EDIT BY HAND, or let today.py refresh it from the blog RSS feed.
+the WRITING block is replaced automatically on every run; the list below
+is the fallback used when the feed is unreachable.
+-->
+<!-- WRITING:START -->
+### Writing
+
+I write about backend systems, data engineering, and building software from scratch at **[blog.swadhin.cv](https://blog.swadhin.cv)**.
+
+- **[Flare: self-hosted webmail for my own domain](https://blog.swadhin.cv/blog/flare-self-hosted-webmail/)** — 21 Sep 2026
+- **[Veet: the Linux uninstaller that cleans what package managers leave behind](https://blog.swadhin.cv/blog/veet-the-linux-uninstaller-that-cleans-what-package-managers-leave-behind/)** — 18 Aug 2026
+- **[JustAPI: a Python web framework with a Rust core — the story, the numbers, and what I actually learned](https://blog.swadhin.cv/blog/just-api-a-python-framework/)** — 08 Aug 2026
+
+<sub>More at [blog.swadhin.cv](https://blog.swadhin.cv) · [RSS](https://blog.swadhin.cv/rss.xml) · [Atom](https://blog.swadhin.cv/atom.xml)</sub>
+<!-- WRITING:END -->
 
 ### Research
 
@@ -156,10 +199,12 @@ MACHINE-LEARNING                                  <a href="https://github.com/sw
 
 ### Connect
 
-- Portfolio: [@swadhin.cv](https://swadhin.cv)
+- Portfolio: [swadhin.cv](https://swadhin.cv)
+- Blog: [blog.swadhin.cv](https://blog.swadhin.cv) · [RSS](https://blog.swadhin.cv/rss.xml)
+- CV (printable): [swadhin.cv/cv](https://www.swadhin.cv/cv)
 - Book a call: [cal.com/swadhinbiswas](https://cal.com/swadhinbiswas)
 - LinkedIn: [@swadhinbiswas](https://www.linkedin.com/in/swadhinbiswas)
-- Email: [swadhinbiswas.dev@gmail.com](mailto:swadhinbiswas.dev@gmail.com) · [swadhinbiswas.cse@gmail.com](mailto:swadhinbiswas.dev@gmail.com) · [eu@swadhin.cv](mailto:swadhinbiswas.dev@gmail.com)
+- Email: [swadhinbiswas.dev@gmail.com](mailto:swadhinbiswas.dev@gmail.com) · [swadhinbiswas.cse@gmail.com](mailto:swadhinbiswas.cse@gmail.com) · [eu@swadhin.cv](mailto:eu@swadhin.cv)
 - X: [@swadin_sh](https://x.com/swadin_sh)
 - YouTube: [@BitsWar](https://www.youtube.com/@BitsWar)
 

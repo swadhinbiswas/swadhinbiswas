@@ -7,6 +7,7 @@ import hashlib
 import math
 
 from dateutil import relativedelta
+from email.utils import parsedate_to_datetime
 import requests
 from lxml import etree
 
@@ -1027,6 +1028,14 @@ HERO_SVG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hero.s
 HERO_SVG_URL = "https://raw.githubusercontent.com/{u}/{u}/main/hero.svg"
 CONTRIBS_SVG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "contribs.svg")
 CONTRIBS_SVG_URL = "https://raw.githubusercontent.com/{u}/{u}/main/contribs.svg"
+
+# Blog — the Writing section is refreshed from the blog's RSS feed each run.
+BLOG_URL = "https://blog.swadhin.cv"
+BLOG_RSS_URL = BLOG_URL + "/rss.xml"
+BLOG_POSTS = 4
+WRITING_START_MARKER = "<!-- WRITING:START -->"
+WRITING_END_MARKER = "<!-- WRITING:END -->"
+
 README_START_MARKER = "<!-- TODAY:START -->"
 README_END_MARKER = "<!-- TODAY:END -->"
 PANEL_WIDTH = 88
@@ -2013,6 +2022,61 @@ def generate_contribs_svg(year_stats, merged):
     return "\n".join(parts)
 
 
+def blog_latest_posts(limit=BLOG_POSTS):
+    """
+    Latest `limit` posts from the blog RSS feed as
+    [{'title', 'link', 'date'}, ...]. Returns [] (never raises) when the feed
+    is unreachable, so a build still falls back to the static list in readme.md.
+    """
+    try:
+        response = requests.get(
+            BLOG_RSS_URL,
+            timeout=15,
+            headers={"User-Agent": "swadhin-readme-bot"},
+        )
+        response.raise_for_status()
+        root = etree.fromstring(response.content)
+    except Exception as error:  # noqa: BLE001 — feed refresh is best-effort
+        print("   blog feed unavailable: {}".format(error))
+        return []
+
+    posts = []
+    for item in root.findall(".//item")[:limit]:
+        title = (item.findtext("title") or "").strip()
+        link = (item.findtext("link") or "").strip()
+        published = (item.findtext("pubDate") or "").strip()
+        if not title or not link:
+            continue
+        try:
+            published = parsedate_to_datetime(published).strftime("%d %b %Y")
+        except (TypeError, ValueError):
+            pass
+        posts.append({"title": title, "link": link, "date": published})
+    return posts
+
+
+def render_writing(posts):
+    """Markdown for the Writing section spliced between the WRITING markers."""
+    lines = [
+        "### Writing",
+        "",
+        "I write about backend systems, data engineering, and building software "
+        "from scratch at **[blog.swadhin.cv]({})**.".format(BLOG_URL),
+        "",
+    ]
+    for post in posts:
+        suffix = " — {}".format(post["date"]) if post.get("date") else ""
+        lines.append("- **[{}]({})**{}".format(post["title"], post["link"], suffix))
+    lines += [
+        "",
+        "<sub>More at [blog.swadhin.cv]({blog}) · [RSS]({rss}) · "
+        "[Atom]({atom})</sub>".format(
+            blog=BLOG_URL, rss=BLOG_RSS_URL, atom=BLOG_URL + "/atom.xml"
+        ),
+    ]
+    return "\n".join(lines)
+
+
 def update_readme_section(start_marker, end_marker, inner_html):
     """Replaces everything between two HTML comment markers in readme.md."""
     with open(README_PATH, "r", encoding="utf-8") as f:
@@ -2121,6 +2185,19 @@ def rebuild_readme(
         ))
     except RuntimeError as error:
         print("⚠️  projects grid skipped: {}".format(error))
+
+    # writing section — latest blog posts, static fallback stays in place
+    try:
+        posts = blog_latest_posts()
+        if posts:
+            update_readme_section(
+                WRITING_START_MARKER, WRITING_END_MARKER, render_writing(posts)
+            )
+            print("writing section refreshed ({} posts)".format(len(posts)))
+        else:
+            print("writing section kept (blog feed unavailable)")
+    except RuntimeError as error:
+        print("⚠️  writing section skipped: {}".format(error))
 
     print("readme.md regenerated (hero.svg + contribs.svg written)")
 
