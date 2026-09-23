@@ -640,7 +640,7 @@ console.log('🛠️ Seeding skills...');
       institution: "Daffodil International University",
       degree: "B.Sc. in Computer Science and Engineering",
       startDate: "2022-04-01", // 4-year B.Sc. programme
-      endDate: "2026-04-01", // Expected graduation
+      endDate: "2026-07-01", // Result published July 2026
       details: "Coursework included data structures, algorithms, database systems, machine learning, and software engineering.",
       order: 0,
       createdAt: now,
