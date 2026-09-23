@@ -40,6 +40,9 @@ env/
 cache/
 shop/
 
+# LaTeX build artifacts (PDF is committed to public/)
+cv/out/
+
 # OS and Editor files
 .DS_Store
 .vscode/

@@ -1,6 +1,7 @@
-// Syncs the facts that live in both readme.md and Turso.
+// Syncs the facts shared between readme.md / cv.astro and Turso.
 //   1. B.Sc. dates: April 2022 to July 2026 (result published July 2026)
 //   2. Databricks in the skills list
+//   3. cv_url so the site-wide "Download CV" buttons point at the PDF
 // Idempotent and safe to run repeatedly.
 // Usage: node scripts/sync-readme-facts.mjs
 import { createClient } from "@libsql/client";
@@ -55,6 +56,19 @@ if (existing.rows.length > 0) {
   });
   log(`  added Databricks (category=tool, tier=core, order=${nextOrder}).`);
 }
+
+// ── 3. CV link (site-wide Download CV buttons) ──────────────────────
+log("── CV link ──");
+const cvUrl = "https://swadhin.cv/swadhin-biswas-cv.pdf";
+await client.execute({
+  sql: "INSERT INTO site_settings (key, value, created_at, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = CURRENT_TIMESTAMP",
+  args: ["cv_url", cvUrl],
+});
+const cvRow = await client.execute({
+  sql: "SELECT value FROM site_settings WHERE key = ?",
+  args: ["cv_url"],
+});
+log(`  cv_url = ${cvRow.rows[0].value}`);
 
 client.close();
 log("done.");

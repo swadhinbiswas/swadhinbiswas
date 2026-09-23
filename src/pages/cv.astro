@@ -1,60 +1,162 @@
 ---
-
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getDynamicConfig } from "../lib/config";
-import { getExperiences, getSkills, getEducation, getProjects, getUses } from "../lib/loaders";
-import { env } from "../lib/env";
-import { db, certifications } from "../db";
-import { asc } from "drizzle-orm";
 
-const siteConfig = await getDynamicConfig();
-const primaryEmail = siteConfig.email || "";
-const emails = (siteConfig.emails && siteConfig.emails.length > 0)
-  ? siteConfig.emails
-  : (primaryEmail ? [{ address: primaryEmail, href: `mailto:${primaryEmail}` }] : []);
-const author = siteConfig.author || "Swadhin Biswas";
-const title = siteConfig.bio?.intro || "Data / Backend Engineer";
+// Static CV. Source of truth: cv/swadhin-biswas-cv.tex (compiled to
+// public/swadhin-biswas-cv.pdf). Keep the two in sync when editing.
+const pdfPath = "/swadhin-biswas-cv.pdf";
 
-const [experiencesList, skillsList, educationList, projectsList] = await Promise.all([
-  getExperiences(),
-  getSkills(),
-  getEducation(),
-  getProjects(),
-]);
+const name = "Swadhin Biswas";
+const headline = "Data Engineer · Databricks, AWS, Spark, Kafka, dbt, Python";
+const location = "Dhaka, Bangladesh · Remote · Open to relocation";
+const contacts = [
+  { label: "swadhinbiswas.dev@gmail.com", href: "mailto:swadhinbiswas.dev@gmail.com" },
+  { label: "+880 1759-877314", href: "tel:+8801759877314" },
+  { label: "linkedin.com/in/swadhinbiswas", href: "https://www.linkedin.com/in/swadhinbiswas/" },
+  { label: "github.com/swadhinbiswas", href: "https://github.com/swadhinbiswas" },
+  { label: "swadhin.cv", href: "https://swadhin.cv" },
+];
 
-const certs = await (async () => {
-  try { return await db.select().from(certifications).orderBy(asc(certifications.order)); } catch { return []; }
-})();
+const summary =
+  "Data Engineer with over 3 years of experience designing production-grade data pipelines, event-driven ingestion systems, and data/ML infrastructure using Python, SQL, Kafka, dbt, DuckDB, Databricks (Spark, Delta Lake, Unity Catalog, MLflow, Workflows), and AWS (Glue, Redshift, Athena). Co-founded BoringRats, scaled it to 1M+ users on donation-funded growth, and led it to an acquisition in 2025. Currently building OpenCodeHub, a self-hosted developer platform, alongside three production lakehouses: EU Air Traffic, a Kafka-to-DuckDB pipeline that refreshes over 2,000 live planes across Europe every 15 minutes; TerraSentinel, a native Databricks satellite anomaly platform with a Unity Catalog warehouse and MLflow registry; and EuroStream, a GDPR-compliant commerce lakehouse with sub-second Article 17 erasure.";
 
-function formatDate(s?: string) {
-  if (!s) return "Present";
-  const d = new Date(s);
-  if (isNaN(d.getTime())) return s;
-  return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
-}
+const experience = [
+  {
+    role: "Founder",
+    company: "OpenCodeHub",
+    dates: "May 2026 to Present",
+    desc: "Open-source, self-hosted alternative to GitHub for source control, CI/CD, code review, and package registries. Solo build, self-hosted and in active daily use; public launch pending.",
+    bullets: [
+      "Self-hosting the platform and using it to manage my own repositories and projects, serving as the primary dogfooding environment ahead of public launch.",
+      "Implementing core backend services for repository management, Git transport protocols, authentication/authorization, and event-driven workflow automation.",
+      "Designing the platform's data layer, including audit trails, usage telemetry, and repository insights, ahead of public launch.",
+      "Owning the full stack solo: architecture, backend, databases, caching, storage, and containerized deployment.",
+    ],
+  },
+  {
+    role: "Co-Founder & Lead Data/Backend Engineer",
+    company: "BoringRats (Acquired)",
+    dates: "Jan 2023 to Nov 2025",
+    desc: "Developer platform and community operated on donation-based funding, with no paid marketing or venture capital.",
+    bullets: [
+      "Co-founded and scaled the platform to 1M+ active users.",
+      "Owned the data and backend stack end to end, building real-time event ingestion pipelines, the analytics warehouse, and production infrastructure.",
+      "Designed and operated MLOps workflows powering the platform's data and ML features, from pipeline development through deployment.",
+      "Led the company through its acquisition in November 2025 under NDA.",
+    ],
+  },
+  {
+    role: "Backend & Automation Engineer",
+    company: "Freelance",
+    dates: "Jan 2021 to Dec 2022",
+    desc: "",
+    bullets: [
+      "Delivered 10+ custom software solutions for international clients, spanning backend systems, data platforms, automation tools, and business applications.",
+      "Designed and maintained PostgreSQL databases, data models, and REST APIs supporting transactional and analytical workloads.",
+      "Built large-scale web scraping and data ingestion systems that collected, processed, and stored data from public websites, APIs, and third-party services.",
+      "Implemented data quality checks, monitoring, scheduling, and automation processes to improve reliability and reduce manual intervention.",
+      "Collaborated directly with clients to translate business requirements into scalable software and data solutions from design through deployment.",
+    ],
+  },
+];
 
-function parseList(val: unknown): string[] {
-  if (!val) return [];
-  if (Array.isArray(val)) return val;
-  try { return JSON.parse(val as string); } catch { return []; }
-}
+const projects = [
+  {
+    name: "EU Air Traffic",
+    tech:
+      "Python, Apache Kafka, dbt, DuckDB, FastAPI, MotherDuck, Turso, AWS (Lambda, S3, Glue, Athena)",
+    desc: "A solo-built, unattended production lakehouse for live and historical European airspace.",
+    links: [
+      { label: "Live Demo", href: "https://airtraffic.eu.cc/" },
+      { label: "Source", href: "https://github.com/swadhinbiswas/eu-air-traffic" },
+    ],
+    bullets: [
+      "Architected a medallion (Bronze/Silver/warehouse) lakehouse behind a 5-topic Kafka event bus, streaming ADS-B positions, OpenSky flight movements, AirLabs schedules, and METAR/TAF weather in real time; refreshes ~2,000 live-tracked aircraft on a 15-minute cadence.",
+      "Built an incremental Silver layer and star-schema DuckDB warehouse with 103 dbt models/tests, deduplicating cross-provider records (OpenSky vs. AirLabs) on callsign/date/endpoint to eliminate double-counted flights.",
+      "Designed a dual-serving architecture (full warehouse on MotherDuck, a scoped read-only copy on Turso with automatic failover when a database hits its quota) and enforced per-provider rate and credit budgets in code, keeping a 2-core VPS collector running unattended. Backed by 120+ pytest tests and an MIT-licensed dataset on Hugging Face with a Zenodo DOI.",
+      "Extended the pipeline onto AWS: a Lambda job exports the Bronze-layer DuckDB history as Parquet into an S3 raw zone, a Glue Crawler catalogs it, and a PySpark Glue ETL job cleans the data and writes curated fact/dimension/aggregate Parquet into a separate S3 curated zone queryable directly through Amazon Athena.",
+      "Provisioned the AWS stack with Terraform, wired GitHub Actions to run dbt tests against it, and set AWS Budget cost alerts with teardown after each demo run, keeping the serverless extension cheap to spin up and validate independently of the always-on collector.",
+    ],
+  },
+  {
+    name: "TerraSentinel",
+    tech:
+      "Python, Databricks, Apache Spark, Delta Lake, Unity Catalog, dbt, DuckDB, MLflow, Hugging Face, Turso",
+    desc: "A $0-cost anomaly-detection platform over free satellite and sensor data, shipped as a hybrid free-tier/Databricks lakehouse rather than a notebook.",
+    links: [
+      { label: "Live Demo", href: "https://terrasentinel-dashboard.pages.dev" },
+      { label: "Source", href: "https://github.com/swadhinbiswas/TerraSentinel" },
+    ],
+    bullets: [
+      "Built a free-tier Bronze/Silver/Gold lake on DuckDB (117 dbt nodes, 7 gold marts) from four public sources (NASA FIRMS fire detections, Sentinel imagery, NOAA/NSIDC sea-ice and SST, ENTSO-E grid load), scheduled on GitHub Actions and served via Turso for edge reads.",
+      "Mirrored it as a Databricks Asset Bundle: six Workflows jobs on Quartz crons CI-tested against the GitHub Actions cadence, declarative Spark/Delta Lake pipelines, and Unity Catalog DDL. It's deployed paused by design, so handover between schedulers is a one-line, side-effect-free flip.",
+      "Trained an unsupervised IsolationForest on 27 strictly causal features with MLflow tracking and a Hugging Face model registry, batch-scoring predictions into the serving tables; validated with a synthetic-anomaly CI fixture and 592 tests, and documented the trade-offs as ADRs.",
+    ],
+  },
+  {
+    name: "EuroStream",
+    tech:
+      "Python, Databricks Asset Bundles, Delta Live Tables, Apache Spark, Delta Lake, Unity Catalog, Kafka, DuckDB, FastAPI, Turso",
+    desc: "A GDPR-native, sovereign medallion lakehouse for European commerce, built to make EU data-protection obligations architectural invariants rather than policy.",
+    links: [
+      { label: "Live Docs", href: "https://eurostream-api.onrender.com/" },
+      { label: "Source", href: "https://github.com/swadhinbiswas/eurostream" },
+    ],
+    bullets: [
+      "Built a Kafka-fed medallion (Bronze/Silver/Gold) lakehouse that enforces GDPR at the ingestion boundary: deterministic salted-SHA-256 pseudonymization at the Silver layer and Unity Catalog grants/tags that keep clear-text PII (IBAN, email, IP) from ever escaping to external query layers.",
+      "Implemented a six-layer Article 17 erasure cascade performing sub-second physical and cryptographic deletion across every storage tier, with a suppression registry that intercepts replayed events and a benchmark job verifying zero ghost records in materialized aggregates.",
+      "Deployed on Databricks as an Asset Bundle (Delta Live Tables Bronze/Silver/Gold pipelines in a dependency-ordered Workflows DAG, with idempotent Delta MERGE ingest) and shipped a DuckDB analytical surface, Turso serving copy, FastAPI read API, and CLI. Covered by 59 tests, strict mypy, and ruff in CI, with a JOSS-format design paper.",
+    ],
+  },
+];
+
+const skills = [
+  { label: "Languages", value: "Python, SQL" },
+  { label: "Frameworks", value: "FastAPI" },
+  {
+    label: "Data Engineering",
+    value:
+      "Apache Kafka, Apache Spark, Databricks (Asset Bundles, Workflows, Delta Live Tables, Unity Catalog), Delta Lake, dbt",
+  },
+  { label: "MLOps", value: "MLflow (tracking & model registry), scikit-learn" },
+  { label: "Databases", value: "PostgreSQL, DuckDB, Turso (libSQL)" },
+  {
+    label: "Cloud & Infrastructure",
+    value: "AWS (Glue, Athena), Cloudflare Pages, Docker, Git, GitHub Actions (CI/CD), Terraform",
+  },
+  {
+    label: "Languages Spoken",
+    value: "English (Fluent) · Bengali (Native) · Hindi (Working) · German (Learning)",
+  },
+];
+
+const education = {
+  degree: "B.Sc. in Computer Science & Engineering",
+  institution: "Daffodil International University",
+  location: "Dhaka, Bangladesh",
+  dates: "Apr 2022 to July 2026",
+  coursework:
+    "Data Structures & Algorithms, Database Management Systems, Operating Systems, Distributed Systems, Computer Networks, Software Engineering",
+};
 ---
 
 <BaseLayout
   title="CV: Printable"
-  description={`Printable CV of ${author}: ${title}.`}
+  description={`Printable CV of ${name}, Data Engineer.`}
   noindex
 >
   <section class="screen-line-after">
     <div class="container-narrow py-10">
       <div class="flex flex-wrap items-center justify-between gap-3 print-hidden">
         <p class="text-eyebrow">CV</p>
-        <button onclick="window.print()" class="btn btn-primary">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
-          </svg>
-          Save as PDF
-        </button>
+        <div class="flex items-center gap-2">
+          <a href={pdfPath} download class="btn btn-outline">Download PDF</a>
+          <button onclick="window.print()" class="btn btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+            </svg>
+            Save as PDF
+          </button>
+        </div>
       </div>
     </div>
   </section>
@@ -63,94 +165,87 @@ function parseList(val: unknown): string[] {
     <div class="container-narrow pb-16">
       <article class="cv-sheet panel p-8 sm:p-10">
         <header class="cv-header">
-          <h1 class="cv-name">{author}</h1>
-          <p class="cv-title">{title}</p>
+          <h1 class="cv-name">{name}</h1>
+          <p class="cv-title">{headline}</p>
+          <p class="cv-location">{location}</p>
           <p class="cv-contact">
-            {siteConfig.location && <span>{siteConfig.location.split(",")[0]}</span>}
-            {emails.map((e, i) => (
-              <>
-                {i > 0 && <span> · </span>}
-                <a href={e.href}>{e.address}</a>
-              </>
+            {contacts.map((c) => (
+              <a href={c.href}>{c.label}</a>
             ))}
-            {siteConfig.links?.github && <span>{siteConfig.links.github.replace("https://", "")}</span>}
-            {siteConfig.links?.linkedin && <span>{siteConfig.links.linkedin.replace("https://", "")}</span>}
           </p>
         </header>
 
-        {siteConfig.bio?.short && (
-          <section class="cv-section">
-            <h2 class="cv-h">Profile</h2>
-            <p class="cv-p">{siteConfig.bio.short}</p>
-          </section>
-        )}
+        <section class="cv-section">
+          <h2 class="cv-h">Summary</h2>
+          <p class="cv-p">{summary}</p>
+        </section>
 
-        {experiencesList.length > 0 && (
-          <section class="cv-section">
-            <h2 class="cv-h">Experience</h2>
-            {experiencesList.map((exp: any) => (
-              <div class="cv-entry">
-                <div class="cv-entry-head">
-                  <h3 class="cv-entry-title">{exp.role} · {exp.company}</h3>
-                  <span class="cv-entry-date">{formatDate(exp.startDate)} to {formatDate(exp.endDate)}</span>
-                </div>
-                {exp.details && <p class="cv-entry-desc">{exp.details}</p>}
-                {parseList(exp.responsibilities).length > 0 && (
-                  <ul class="cv-bullets">
-                    {parseList(exp.responsibilities).slice(0, 4).map((r: string) => <li>{r}</li>)}
-                  </ul>
-                )}
+        <section class="cv-section">
+          <h2 class="cv-h">Experience</h2>
+          {experience.map((exp) => (
+            <div class="cv-entry">
+              <div class="cv-entry-head">
+                <h3 class="cv-entry-title">{exp.role} · {exp.company}</h3>
+                <span class="cv-entry-date">{exp.dates}</span>
               </div>
-            ))}
-          </section>
-        )}
+              {exp.desc && <p class="cv-entry-desc">{exp.desc}</p>}
+              <ul class="cv-bullets">
+                {exp.bullets.map((b) => (
+                  <li>{b}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </section>
 
-        {skillsList.length > 0 && (
-          <section class="cv-section">
-            <h2 class="cv-h">Technical Skills</h2>
-            <p class="cv-p">{(skillsList as any[]).map((s) => s.name).join(" · ")}</p>
-          </section>
-        )}
-
-        {projectsList.length > 0 && (
-          <section class="cv-section">
-            <h2 class="cv-h">Selected Projects</h2>
-            {projectsList.slice(0, 4).map((p: any) => (
-              <div class="cv-entry">
-                <div class="cv-entry-head">
-                  <h3 class="cv-entry-title">{p.name}</h3>
-                  {p.stars > 0 && <span class="cv-entry-date">★ {p.stars.toLocaleString()}</span>}
-                </div>
-                {p.description && <p class="cv-entry-desc">{p.description}</p>}
+        <section class="cv-section">
+          <h2 class="cv-h">Selected Projects</h2>
+          {projects.map((p) => (
+            <div class="cv-entry">
+              <div class="cv-entry-head">
+                <h3 class="cv-entry-title">{p.name}</h3>
+                <span class="cv-entry-date">
+                  {p.links.map((l, i) => (
+                    <span>
+                      {i > 0 && " · "}
+                      <a href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a>
+                    </span>
+                  ))}
+                </span>
               </div>
-            ))}
-          </section>
-        )}
+              <p class="cv-tech">{p.tech}</p>
+              <p class="cv-entry-desc">{p.desc}</p>
+              <ul class="cv-bullets">
+                {p.bullets.map((b) => (
+                  <li>{b}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </section>
 
-        {educationList.length > 0 && (
-          <section class="cv-section">
-            <h2 class="cv-h">Education</h2>
-            {(educationList as any[]).map((edu) => (
-              <div class="cv-entry">
-                <div class="cv-entry-head">
-                  <h3 class="cv-entry-title">{edu.degree} · {edu.institution}</h3>
-                  <span class="cv-entry-date">{formatDate(edu.startDate)} to {formatDate(edu.endDate)}</span>
-                </div>
-              </div>
+        <section class="cv-section">
+          <h2 class="cv-h">Skills</h2>
+          <ul class="cv-skills">
+            {skills.map((s) => (
+              <li>
+                <strong>{s.label}:</strong> {s.value}
+              </li>
             ))}
-          </section>
-        )}
+          </ul>
+        </section>
 
-        {certs.length > 0 && (
-          <section class="cv-section">
-            <h2 class="cv-h">Certifications</h2>
-            <ul class="cv-bullets">
-              {certs.map((c: any) => (
-                <li>{c.name}, {c.issuer}{c.year ? ` (${c.year})` : ""}</li>
-              ))}
-            </ul>
-          </section>
-        )}
+        <section class="cv-section">
+          <h2 class="cv-h">Education</h2>
+          <div class="cv-entry">
+            <div class="cv-entry-head">
+              <h3 class="cv-entry-title">{education.degree} · {education.institution}</h3>
+              <span class="cv-entry-date">{education.dates}</span>
+            </div>
+            <p class="cv-entry-desc">{education.location}</p>
+            <p class="cv-entry-desc">Relevant Coursework: {education.coursework}</p>
+          </div>
+        </section>
       </article>
     </div>
   </section>
@@ -167,6 +262,12 @@ function parseList(val: unknown): string[] {
     color: var(--color-fg);
   }
   .cv-title { margin-top: 0.3rem; font-size: 1rem; color: var(--color-fg-muted); font-weight: 500; }
+  .cv-location {
+    margin-top: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-fg-subtle);
+  }
   .cv-contact {
     display: flex;
     flex-wrap: wrap;
@@ -193,11 +294,20 @@ function parseList(val: unknown): string[] {
   }
   .cv-p { color: var(--color-fg-muted); font-size: 0.9rem; line-height: 1.7; }
 
-  .cv-entry { margin-bottom: 1rem; }
+  .cv-entry { margin-bottom: 1.1rem; }
   .cv-entry-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1rem; }
   .cv-entry-title { font-family: var(--font-display); font-size: 0.98rem; font-weight: 700; color: var(--color-fg); }
   .cv-entry-date { font-family: var(--font-mono); font-size: 0.7rem; color: var(--color-fg-subtle); }
+  .cv-entry-date a { color: inherit; }
+  .cv-entry-date a:hover { color: var(--color-fg); }
   .cv-entry-desc { margin-top: 0.3rem; font-size: 0.85rem; color: var(--color-fg-muted); line-height: 1.6; }
+  .cv-tech {
+    margin-top: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-fg-subtle);
+    line-height: 1.5;
+  }
   .cv-bullets { list-style: none; margin: 0.4rem 0 0; padding: 0; }
   .cv-bullets li {
     position: relative;
@@ -208,8 +318,11 @@ function parseList(val: unknown): string[] {
   }
   .cv-bullets li::before { content: "▹"; position: absolute; left: 0; color: var(--color-fg-subtle); }
 
+  .cv-skills { list-style: none; margin: 0; padding: 0; }
+  .cv-skills li { font-size: 0.85rem; color: var(--color-fg-muted); line-height: 1.7; }
+  .cv-skills strong { color: var(--color-fg); font-weight: 600; }
+
   /* Print: hide chrome, flatten to black on white */
-  .print-hidden { }
   @media print {
     .print-hidden { display: none !important; }
     .shell-sidebar, .site-footer, .screen-line-after:first-of-type { display: none !important; }
@@ -220,7 +333,7 @@ function parseList(val: unknown): string[] {
     .cv-name { color: #000 !important; }
     .cv-title { color: #333 !important; }
     .cv-h { color: #000 !important; border-bottom-color: #999 !important; }
-    .cv-p, .cv-entry-desc, .cv-bullets li, .cv-contact { color: #222 !important; }
+    .cv-p, .cv-entry-desc, .cv-bullets li, .cv-contact, .cv-location, .cv-tech, .cv-skills li { color: #222 !important; }
     .cv-entry-title { color: #000 !important; }
     .cv-entry-date { color: #555 !important; }
     a { color: inherit !important; text-decoration: none !important; }

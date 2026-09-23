@@ -1,0 +1,115 @@
+\documentclass[10.5pt,letterpaper]{article}
+\usepackage{cmap}
+\usepackage[T1]{fontenc}
+\usepackage[margin=0.45in]{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+
+\setlength{\parindent}{0pt}
+\pagenumbering{gobble}
+\hypersetup{colorlinks=true, urlcolor=black, linkcolor=black}
+
+\titleformat{\section}{\normalsize\bfseries\uppercase}{}{0em}{}[\vspace{1pt}\titlerule]
+\titlespacing*{\section}{0pt}{6pt}{3pt}
+\setlist[itemize]{leftmargin=13pt, itemsep=0pt, topsep=1pt, parsep=0pt}
+
+% role{Title}{Org}{Location}{Dates}
+\newcommand{\role}[4]{%
+  \textbf{#1} \hfill #2 \\
+  \textit{#3} \hfill \textit{#4}%
+}
+
+\begin{document}
+
+\begin{center}
+  {\Large \textbf{Swadhin Biswas}}\\[2pt]
+  \small \textbf{Data Engineer} $\cdot$ Databricks, AWS, Spark, Kafka, dbt, Python\\[3pt]
+  Dhaka, Bangladesh $\cdot$ Remote $\cdot$ Open to relocation\\[3pt]
+  \href{mailto:swadhinbiswas.dev@gmail.com}{swadhinbiswas.dev@gmail.com}\,$\cdot$\,
+  \href{tel:+8801759877314}{+880 1759-877314}\,$\cdot$\,
+  \href{https://www.linkedin.com/in/swadhinbiswas/}{linkedin.com/in/swadhinbiswas}\,$\cdot$\,
+  \href{https://github.com/swadhinbiswas}{github.com/swadhinbiswas}\,$\cdot$\,
+  \href{https://swadhin.cv}{swadhin.cv}
+\end{center}
+\vspace{1pt}
+
+\section*{Summary}
+Data Engineer with over 3 years of experience designing production-grade data pipelines, event-driven ingestion systems, and data/ML infrastructure using Python, SQL, Kafka, dbt, DuckDB, Databricks (Spark, Delta Lake, Unity Catalog, MLflow, Workflows), and AWS (Glue, Redshift, Athena). Co-founded BoringRats, scaled it to 1M+ users on donation-funded growth, and led it to an acquisition in 2025. Currently building OpenCodeHub, a self-hosted developer platform, alongside three production lakehouses: EU Air Traffic, a Kafka-to-DuckDB pipeline that refreshes over 2,000 live planes across Europe every 15 minutes; TerraSentinel, a native Databricks satellite anomaly platform with a Unity Catalog warehouse and MLflow registry; and EuroStream, a GDPR-compliant commerce lakehouse with sub-second Article 17 erasure.
+
+
+\section*{Experience}
+\role{Founder}{OpenCodeHub}{Remote}{May 2026 -- Present}
+
+\textit{Open-source, self-hosted alternative to GitHub for source control, CI/CD, code review, and package registries. Solo build, self-hosted and in active daily use; public launch pending.}
+\begin{itemize}
+  \item Self-hosting the platform and using it to manage my own repositories and projects, serving as the primary dogfooding environment ahead of public launch.
+  \item Implementing core backend services for repository management, Git transport protocols, authentication/authorization, and event-driven workflow automation.
+  \item Designing the platform's data layer, including audit trails, usage telemetry, and repository insights, ahead of public launch.
+  \item Owning the full stack solo: architecture, backend, databases, caching, storage, and containerized deployment.
+\end{itemize}
+\vspace{2pt}
+\role{Co-Founder \& Lead Data/Backend Engineer}{BoringRats (Acquired)}{Remote}{Jan 2023 -- Nov 2025}
+
+\textit{Developer platform and community operated on donation-based funding, with no paid marketing or venture capital.}
+\begin{itemize}
+  \item Co-founded and scaled the platform to 1M+ active users.
+  \item Owned the data and backend stack end to end, building real-time event ingestion pipelines, the analytics warehouse, and production infrastructure.
+  \item Designed and operated MLOps workflows powering the platform's data and ML features, from pipeline development through deployment.
+  \item Led the company through its acquisition in November 2025 under NDA.
+\end{itemize}
+\vspace{2pt}
+\role{Backend \& Automation Engineer}{Freelance}{Remote}{Jan 2021 -- Dec 2022}
+\begin{itemize}
+  \item Delivered 10+ custom software solutions for international clients, spanning backend systems, data platforms, automation tools, and business applications.
+  \item Designed and maintained PostgreSQL databases, data models, and REST APIs supporting transactional and analytical workloads.
+  \item Built large-scale web scraping and data ingestion systems that collected, processed, and stored data from public websites, APIs, and third-party services.
+  \item Implemented data quality checks, monitoring, scheduling, and automation processes to improve reliability and reduce manual intervention.
+  \item Collaborated directly with clients to translate business requirements into scalable software and data solutions from design through deployment.
+\end{itemize}
+
+
+\section*{Selected Projects}
+\textbf{EU Air Traffic} \hfill \href{https://airtraffic.eu.cc/}{Live Demo} $\cdot$ \href{https://github.com/swadhinbiswas/eu-air-traffic}{Source} \\
+\textit{Python, Apache Kafka, dbt, DuckDB, FastAPI, MotherDuck, Turso, AWS (Lambda, S3, Glue, Athena)}: a solo-built, unattended production lakehouse for live and historical European airspace.
+\begin{itemize}
+  \item Architected a medallion (Bronze/Silver/warehouse) lakehouse behind a 5-topic Kafka event bus, streaming ADS-B positions, OpenSky flight movements, AirLabs schedules, and METAR/TAF weather in real time; refreshes \textasciitilde2,000 live-tracked aircraft on a 15-minute cadence.
+  \item Built an incremental Silver layer and star-schema DuckDB warehouse with 103 dbt models/tests, deduplicating cross-provider records (OpenSky vs.\ AirLabs) on callsign/date/endpoint to eliminate double-counted flights.
+  \item Designed a dual-serving architecture (full warehouse on MotherDuck, a scoped read-only copy on Turso with automatic failover when a database hits its quota) and enforced per-provider rate and credit budgets in code, keeping a 2-core VPS collector running unattended. Backed by 120+ pytest tests and an MIT-licensed dataset on Hugging Face with a Zenodo DOI.
+  \item Extended the pipeline onto AWS: a Lambda job exports the Bronze-layer DuckDB history as Parquet into an S3 raw zone, a Glue Crawler catalogs it, and a PySpark Glue ETL job cleans the data and writes curated fact/dimension/aggregate Parquet into a separate S3 curated zone queryable directly through Amazon Athena.
+  \item Provisioned the AWS stack with Terraform, wired GitHub Actions to run dbt tests against it, and set AWS Budget cost alerts with teardown after each demo run, keeping the serverless extension cheap to spin up and validate independently of the always-on collector.
+\end{itemize}
+\vspace{2pt}
+\textbf{TerraSentinel} \hfill \href{https://terrasentinel-dashboard.pages.dev}{Live Demo} $\cdot$ \href{https://github.com/swadhinbiswas/TerraSentinel}{Source} \\
+\textit{Python, Databricks, Apache Spark, Delta Lake, Unity Catalog, dbt, DuckDB, MLflow, Hugging Face, Turso}: a \$0-cost anomaly-detection platform over free satellite and sensor data, shipped as a hybrid free-tier/Databricks lakehouse rather than a notebook.
+\begin{itemize}
+  \item Built a free-tier Bronze/Silver/Gold lake on DuckDB (117 dbt nodes, 7 gold marts) from four public sources (NASA FIRMS fire detections, Sentinel imagery, NOAA/NSIDC sea-ice and SST, ENTSO-E grid load), scheduled on GitHub Actions and served via Turso for edge reads.
+  \item Mirrored it as a Databricks Asset Bundle: six Workflows jobs on Quartz crons CI-tested against the GitHub Actions cadence, declarative Spark/Delta Lake pipelines, and Unity Catalog DDL. It's deployed paused by design, so handover between schedulers is a one-line, side-effect-free flip.
+  \item Trained an unsupervised IsolationForest on 27 strictly causal features with MLflow tracking and a Hugging Face model registry, batch-scoring predictions into the serving tables; validated with a synthetic-anomaly CI fixture and 592 tests, and documented the trade-offs as ADRs.
+\end{itemize}
+\vspace{2pt}
+\textbf{EuroStream} \hfill \href{https://eurostream-api.onrender.com/}{Live Docs} $\cdot$ \href{https://github.com/swadhinbiswas/eurostream}{Source} \\
+\textit{Python, Databricks Asset Bundles, Delta Live Tables, Apache Spark, Delta Lake, Unity Catalog, Kafka, DuckDB, FastAPI, Turso}: a GDPR-native, sovereign medallion lakehouse for European commerce, built to make EU data-protection obligations architectural invariants rather than policy.
+\begin{itemize}
+  \item Built a Kafka-fed medallion (Bronze/Silver/Gold) lakehouse that enforces GDPR at the ingestion boundary: deterministic salted-SHA-256 pseudonymization at the Silver layer and Unity Catalog grants/tags that keep clear-text PII (IBAN, email, IP) from ever escaping to external query layers.
+  \item Implemented a six-layer Article 17 erasure cascade performing sub-second physical and cryptographic deletion across every storage tier, with a suppression registry that intercepts replayed events and a benchmark job verifying zero ghost records in materialized aggregates.
+  \item Deployed on Databricks as an Asset Bundle (Delta Live Tables Bronze/Silver/Gold pipelines in a dependency-ordered Workflows DAG, with idempotent Delta MERGE ingest) and shipped a DuckDB analytical surface, Turso serving copy, FastAPI read API, and CLI. Covered by 59 tests, strict mypy, and ruff in CI, with a JOSS-format design paper.
+\end{itemize}
+
+
+\section*{Skills}
+\textbf{Languages:} Python, SQL \\
+\textbf{Frameworks:} FastAPI \\
+\textbf{Data Engineering:} Apache Kafka, Apache Spark, Databricks (Asset Bundles, Workflows, Delta Live Tables, Unity Catalog), Delta Lake, dbt \\
+\textbf{MLOps:} MLflow (tracking \& model registry), scikit-learn \\
+\textbf{Databases:} PostgreSQL, DuckDB, Turso (libSQL) \\
+\textbf{Cloud \& Infrastructure:} AWS (Glue, Athena), Cloudflare Pages, Docker, Git, GitHub Actions (CI/CD), Terraform \\
+\textbf{Languages Spoken:} English (Fluent) $\cdot$ Bengali (Native) $\cdot$ Hindi (Working) $\cdot$ German (Learning)
+
+
+\section*{Education}
+\role{B.Sc. in Computer Science \& Engineering}{Daffodil International University}{Dhaka, Bangladesh}{Apr 2022 -- July 2026}\\[2pt]
+\textit{Relevant Coursework:} Data Structures \& Algorithms, Database Management Systems, Operating Systems, Distributed Systems, Computer Networks, Software Engineering
+
+\end{document}
