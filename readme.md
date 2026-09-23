@@ -109,9 +109,9 @@ is the fallback used when the feed is unreachable.
 I write about backend systems, data engineering, and building software from scratch on my blog, [blog.swadhin.cv](https://blog.swadhin.cv).
 
 - **[Flare: self-hosted webmail for my own domain](https://blog.swadhin.cv/blog/flare-self-hosted-webmail/)** · 21 Sep 2026
-- **[Veet: the Linux uninstaller that cleans what package managers leave behind](https://blog.swadhin.cv/blog/veet-the-linux-uninstaller-that-cleans-what-package-managers-leave-behind/)** · 18 Aug 2026
-- **[JustAPI: a Python web framework with a Rust core — the story, the numbers, and what I actually learned](https://blog.swadhin.cv/blog/just-api-a-python-framework/)** · 08 Aug 2026
-- **[We had 1M users, got acquired, and I still think we made the wrong call](https://blog.swadhin.cv/blog/we-had-1m-users-got-acquired-and-i-still-think-we-made-the-wrong-call/)** · 12 Jun 2026
+- **[A filesystem event log in SQLite](https://blog.swadhin.cv/blog/filesystem-event-log-in-sqlite/)** · 20 Sep 2026
+- **[Treating a directory of TOML as a database](https://blog.swadhin.cv/blog/treating-toml-as-a-database/)** · 13 Sep 2026
+- **[A scholarship ingestion pipeline that dedupes across three sources](https://blog.swadhin.cv/blog/scholarship-ingestion-pipeline/)** · 06 Sep 2026
 
 <sub>More at [blog.swadhin.cv](https://blog.swadhin.cv) · [RSS](https://blog.swadhin.cv/rss.xml) · [Atom](https://blog.swadhin.cv/atom.xml)</sub>
 <!-- WRITING:END -->
