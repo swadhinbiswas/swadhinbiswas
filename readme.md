@@ -33,7 +33,7 @@
 - **Focus:** streaming pipelines, lakehouses, GDPR erasure, CI quality gates
 - **Location:** Dhaka, Bangladesh; ready to relocate to Germany, the Netherlands, or Austria, or work remotely across the EU
 - **Visa:** needs sponsorship · **Availability:** immediate
-- **Education:** B.Sc. Computer Science and Engineering, Daffodil International University, 2023 to 2026
+- **Education:** B.Sc. Computer Science and Engineering, Daffodil International University, 2022 to 2026
 - **Core stack:** Python, Go, Rust, Kafka, Spark, Databricks, dbt, DuckDB, PostgreSQL, Docker, AWS, Azure and GCP
 
 ### About
@@ -79,7 +79,7 @@ I shipped 8+ full-stack projects for SaaS and e-commerce clients in the US and U
 
 ### Education
 
-**B.Sc. in Computer Science and Engineering**, Daffodil International University, Dhaka. January 2023 to April 2026.
+**B.Sc. in Computer Science and Engineering**, Daffodil International University, Dhaka. April 2022 to April 2026.
 Coursework: data structures, algorithms, database systems, machine learning, and software engineering.
 
 <!--

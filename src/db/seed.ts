@@ -639,7 +639,7 @@ console.log('🛠️ Seeding skills...');
     await db.insert(education).values({
       institution: "Daffodil International University",
       degree: "B.Sc. in Computer Science and Engineering",
-      startDate: "2023-01-01", // Approximate start
+      startDate: "2022-04-01", // 4-year B.Sc. programme
       endDate: "2026-04-01", // Expected graduation
       details: "Coursework included data structures, algorithms, database systems, machine learning, and software engineering.",
       order: 0,
