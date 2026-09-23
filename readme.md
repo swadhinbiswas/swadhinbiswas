@@ -29,7 +29,7 @@
 ### At a glance
 
 - **Roles:** Data Engineer, Backend Engineer, or Analytics Engineer (mid-level)
-- **Experience:** 3+ years full-time since 2023, plus freelance work from 2021
+- **Experience:** 5 years in software since 2021, 3+ of them on production data and backend systems
 - **Focus:** streaming pipelines, lakehouses, GDPR erasure, CI quality gates
 - **Location:** Dhaka, Bangladesh; ready to relocate to Germany, the Netherlands, or Austria, or work remotely across the EU
 - **Visa:** needs sponsorship · **Availability:** immediate
