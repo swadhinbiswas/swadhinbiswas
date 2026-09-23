@@ -91,7 +91,9 @@ Coursework: data structures, algorithms, database systems, machine learning, and
 ### Featured projects
 
 - **[eu-air-traffic](https://www.swadhin.cv/projects/eu-air-traffic/)**: live EU airspace pipeline on Kafka, dbt, and DuckDB. Tracks about 2,000 aircraft with a 15-minute lake, and ships a public Hugging Face dataset and a [Zenodo DOI](https://doi.org/10.5281/zenodo.22790201).
+- **[TerraSentinel](https://www.swadhin.cv/projects/terrasentinel/)**: $0 anomaly-detection platform over free satellite and sensor data. Four public sources into a versioned lake, dbt and DuckDB build seven gold marts, an IsolationForest scores anomalies, and a Databricks Asset Bundle mirrors the whole pipeline.
 - **[eurostream](https://www.swadhin.cv/projects/eurostream/)**: GDPR-native streaming lakehouse whose six-layer Article 17 erasure runs in 66.95 ms mean against a 60-second statutory window. Kafka, DuckDB, Turso.
+- **[JustAPI](https://www.swadhin.cv/projects/justapi/)**: Python web framework with a Rust core. 766k req/s hello-world, a 0.48 ms p99, and a 12 MB footprint, published on PyPI.
 - **[Aurora](https://www.swadhin.cv/projects/aurora/)**: modular reasoning architecture with a JOSS paper. GSM8K accuracy 47.2% to 55.6%, confident errors down to 2.9%.
 - **[opengrammar](https://www.swadhin.cv/projects/opengrammar/)**: privacy-first Grammarly alternative with a 156k-word offline engine, five runtimes, and 124 stars.
 - **[OpenCodeHub](https://www.swadhin.cv/projects/opencodehub/)**: self-hosted Git platform with CI, stacked PRs, merge queues, and AI review. 668 tests.

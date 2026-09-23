@@ -1091,6 +1091,7 @@ PROJECTS = {
     ],
     "DATA ENGINEERING": [
         ("eu-air-traffic", "live EU airspace pipeline"),
+        ("TerraSentinel", "databricks satellite anomaly"),
         ("eurostream", "gdpr-native streaming lakehouse"),
     ],
     "BACKEND": [
