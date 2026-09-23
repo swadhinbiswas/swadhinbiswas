@@ -59,6 +59,12 @@ await client.execute({
   sql: "UPDATE books SET category = 'Philosophy' WHERE title = 'Meditations'",
 });
 
+// Custom poster for the Rig Veda (supplied by Swadhin, hosted on the CDN)
+await client.execute({
+  sql: "UPDATE books SET cover = 'https://cdn.swadhin.cv/rigveda.png' WHERE title = 'The Rig Veda'",
+});
+console.log("  set custom poster for The Rig Veda");
+
 const c = await client.execute("SELECT count(*) AS n FROM books");
 console.log(`total ${c.rows[0].n}`);
 client.close();
