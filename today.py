@@ -2176,7 +2176,7 @@ def rebuild_readme(
         update_readme_section(
             PROJECTS_START_MARKER,
             PROJECTS_END_MARKER,
-            "### Projects you might be interested in\n\n<pre>\n"
+            "### More projects\n\n<pre>\n"
             + render_projects_panel()
             + "\n</pre>",
         )

@@ -50,12 +50,10 @@ I write about backend systems, data engineering, and building software from scra
 
 ### Highlights
 
-- **Co-founded BoringRats** and grew it to **1M+ users** on a Python, FastAPI, and PostgreSQL backend that served **10K+ requests per minute at under 100 ms**. The company was **acquired (NDA) in 2025**.
-- **JOSS research paper** and an archived DOI for [Aurora](https://doi.org/10.5281/zenodo.22067754): GSM8K 47.2% → 55.6%, confidently wrong answers 19.8% → 2.9%.
-- **[eu-air-traffic](https://www.swadhin.cv/projects/eu-air-traffic/)**: live EU airspace pipeline on Kafka, dbt, and DuckDB, with a public Hugging Face dataset and a [Zenodo DOI](https://doi.org/10.5281/zenodo.22790201).
-- **[eurostream](https://www.swadhin.cv/projects/eurostream/)**: GDPR lakehouse whose six-layer Article 17 erasure runs in 66.95 ms mean against a 60-second statutory window.
-- **[opengrammar](https://www.swadhin.cv/projects/opengrammar/)**: a privacy-first Grammarly alternative with an offline engine and five deploy targets, at 124 stars.
-- **[OpencodeHub](https://www.swadhin.cv/projects/opencodehub/)**: self-hosted Git platform with CI, stacked PRs, and merge queues, with **668 tests**.
+- Co-founded BoringRats and grew it to **1M+ users** on a Python, FastAPI, and PostgreSQL backend that served **10K+ requests per minute at under 100 ms**. The company was **acquired under NDA in 2025**.
+- Published a **JOSS paper** and archived DOI for [Aurora](https://doi.org/10.5281/zenodo.22067754): GSM8K accuracy rose from 47.2% to 55.6% while confidently wrong answers fell from 19.8% to 2.9%.
+- First author on an [arXiv paper](https://arxiv.org/abs/2509.00988) on noise-robust Bengali dialectal speech recognition.
+- I maintain open-source projects with public releases and datasets, including [opengrammar](https://github.com/swadhinbiswas/opengrammar) at 124 stars and [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub) with 668 tests.
 
 <!--
   experience - EDIT BY HAND. today.py never touches this block.
@@ -86,19 +84,18 @@ Coursework: data structures, algorithms, database systems, machine learning, and
 
 <!--
   featured projects - EDIT BY HAND. today.py never touches this block.
-  Add a row per project: keep the name field ≤ 22 chars and keep the
-  link target correct. The box is 80 glyphs + 8 pad, square corners.
-  Delete or duplicate the example rows below.
+  One bullet per project: link the name to its case study, then a short
+  line with the numbers. Keep it in sync with swadhin.cv/projects.
 -->
 <!-- FEATURED:START -->
 ### Featured projects
 
-- <a href="https://www.swadhin.cv/projects/eu-air-traffic/"><strong>eu-air-traffic</strong></a>: live EU airspace pipeline · Kafka, dbt, DuckDB · ~2,000 aircraft tracked, 15-minute lake, public dataset, DOI
-- <a href="https://www.swadhin.cv/projects/eurostream/"><strong>eurostream</strong></a>: GDPR-native streaming lakehouse · six-layer Art. 17 erasure at 66.95 ms mean · Kafka, DuckDB, Turso
-- <a href="https://www.swadhin.cv/projects/aurora/"><strong>Aurora</strong></a>: modular reasoning architecture · GSM8K 47.2% → 55.6% · confident errors 2.9% · paper + DOI
-- <a href="https://www.swadhin.cv/projects/opengrammar/"><strong>opengrammar</strong></a>: privacy-first Grammarly alternative · 156k-word offline engine, five runtimes · 124★
-- <a href="https://www.swadhin.cv/projects/opencodehub/"><strong>OpenCodeHub</strong></a>: self-hosted Git platform · CI, stacked PRs, merge queues, AI review · 668 tests
-- <a href="https://www.swadhin.cv/projects/aegisvision/"><strong>AegisVision</strong></a>: multi-camera AI surveillance and behavioural monitoring system · Python, real-time detection
+- **[eu-air-traffic](https://www.swadhin.cv/projects/eu-air-traffic/)**: live EU airspace pipeline on Kafka, dbt, and DuckDB. Tracks about 2,000 aircraft with a 15-minute lake, and ships a public Hugging Face dataset and a [Zenodo DOI](https://doi.org/10.5281/zenodo.22790201).
+- **[eurostream](https://www.swadhin.cv/projects/eurostream/)**: GDPR-native streaming lakehouse whose six-layer Article 17 erasure runs in 66.95 ms mean against a 60-second statutory window. Kafka, DuckDB, Turso.
+- **[Aurora](https://www.swadhin.cv/projects/aurora/)**: modular reasoning architecture with a JOSS paper. GSM8K accuracy 47.2% to 55.6%, confident errors down to 2.9%.
+- **[opengrammar](https://www.swadhin.cv/projects/opengrammar/)**: privacy-first Grammarly alternative with a 156k-word offline engine, five runtimes, and 124 stars.
+- **[OpenCodeHub](https://www.swadhin.cv/projects/opencodehub/)**: self-hosted Git platform with CI, stacked PRs, merge queues, and AI review. 668 tests.
+- **[AegisVision](https://www.swadhin.cv/projects/aegisvision/)**: multi-camera AI surveillance and behavioural monitoring in Python, with real-time detection.
 <!-- FEATURED:END -->
 
 <!--
@@ -159,7 +156,7 @@ Full list with abstracts: [swadhin.cv/research](https://swadhin.cv/research)
 <!-- STACK:END -->
 
 <!-- PROJECTS:START -->
-### Projects you might be interested in
+### More projects
 
 <pre>
 DATA ENGINEERING                                RESEARCH                                        
@@ -204,10 +201,6 @@ MACHINE-LEARNING                                  <a href="https://github.com/sw
 - Email: [swadhinbiswas.dev@gmail.com](mailto:swadhinbiswas.dev@gmail.com) · [swadhinbiswas.cse@gmail.com](mailto:swadhinbiswas.cse@gmail.com) · [eu@swadhin.cv](mailto:eu@swadhin.cv)
 - X: [@swadin_sh](https://x.com/swadin_sh)
 - YouTube: [@BitsWar](https://www.youtube.com/@BitsWar)
-
-<p align="center">
-  <sub>Based in Dhaka, BD · Willing to relocate EU · Available immediately</sub>
-</p>
 
 <p align="center">
   <em>off the clock: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg> street-food hunter · <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg> anime marathoner · <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> Mystery & mythology story hunter</em>
