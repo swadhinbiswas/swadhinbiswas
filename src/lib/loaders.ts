@@ -3,7 +3,7 @@
 //  - versioned cache keys (bust stale prod caches on deploy)
 //  - empty results are NEVER cached (a transient DB failure can't poison the cache)
 //  - L1 in-memory (30s) → L2 Redis → L3 DB, always with a safe fallback
-import { db, projects, experiences, education, publications, skills, uses, projectCategories, testimonials, heroMetrics, languages, certifications, galleryPhotos, books } from "../db";
+import { db, projects, experiences, education, publications, skills, uses, projectCategories, testimonials, heroMetrics, languages, galleryPhotos, books } from "../db";
 import { asc, desc } from "drizzle-orm";
 import { getCachedData, setCachedData } from "./redis";
 
@@ -134,10 +134,6 @@ export const getHeroMetrics = makeLoader("hero_metrics", async () => {
 
 export const getLanguages = makeLoader("languages", async () => {
   return db.select().from(languages).orderBy(asc(languages.order));
-});
-
-export const getCertifications = makeLoader("certifications", async () => {
-  return db.select().from(certifications).orderBy(asc(certifications.order));
 });
 
 export const getGalleryPhotos = makeLoader("gallery_photos", async () => {

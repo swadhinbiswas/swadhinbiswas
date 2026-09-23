@@ -3,7 +3,7 @@ export const prerender = false;
 import AdminLayout from "../../layouts/AdminLayout.astro";
 import {
   db, skills, projects, experiences, bioContent, posts, books,
-  publications, achievements, certifications, testimonials, faqs,
+  publications, achievements, testimonials, faqs,
 } from "../../db";
 import { count } from "drizzle-orm";
 
@@ -18,11 +18,11 @@ async function safeCount(table: any): Promise<number> {
 
 const [
   skillsCount, projectsCount, experiencesCount, bioCount, postsCount, booksCount,
-  pubCount, achCount, certCount, testiCount, faqCount,
+  pubCount, achCount, testiCount, faqCount,
 ] = await Promise.all([
   safeCount(skills), safeCount(projects), safeCount(experiences), safeCount(bioContent),
   safeCount(posts), safeCount(books), safeCount(publications), safeCount(achievements),
-  safeCount(certifications), safeCount(testimonials), safeCount(faqs),
+  safeCount(testimonials), safeCount(faqs),
 ]);
 
 const stats = [
@@ -45,7 +45,6 @@ const quickLinks = [
 
 const otherCounts = [
   { label: "Achievements", value: achCount, href: "/cat/achievements" },
-  { label: "Certifications", value: certCount, href: "/cat/certifications" },
   { label: "Testimonials", value: testiCount, href: "/cat/testimonials" },
   { label: "FAQs", value: faqCount, href: "/cat/faqs" },
   { label: "Bio entries", value: bioCount, href: "/cat/bio" },

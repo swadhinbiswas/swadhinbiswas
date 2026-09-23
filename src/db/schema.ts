@@ -265,19 +265,6 @@ export const testimonials = sqliteTable('testimonials', {
   updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
 });
 
-// Certifications (recruiter-friendly proof of expertise)
-export const certifications = sqliteTable('certifications', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  name: text('name').notNull(),
-  issuer: text('issuer').notNull(),
-  year: text('year'),
-  url: text('url'), // Credential / verification link
-  credentialId: text('credential_id'),
-  order: integer('order').default(0),
-  createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
-  updatedAt: text('updated_at').default('CURRENT_TIMESTAMP'),
-});
-
 // FAQs (recruiter questions — powers FAQPage rich results)
 export const faqs = sqliteTable('faqs', {
   id: integer('id').primaryKey({ autoIncrement: true }),

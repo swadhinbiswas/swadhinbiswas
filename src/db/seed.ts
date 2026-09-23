@@ -22,7 +22,6 @@ import {
   heroMetrics,
   projectCategories,
   uses,
-  certifications,
   faqs,
   languages,
   galleryPhotos,
@@ -88,7 +87,6 @@ async function seed() {
     await db.delete(heroMetrics);
     await db.delete(projectCategories);
     await db.delete(uses);
-    await db.delete(certifications);
     await db.delete(faqs);
     await db.delete(languages);
     console.log('  ✅ Data cleared');
@@ -622,20 +620,7 @@ console.log('🛠️ Seeding skills...');
     }
     console.log(`  ✅ Inserted ${usesData.length} uses`);
 
-    // 16. Certifications
-    console.log('🎓 Seeding certifications...');
-    const certificationsData = [
-      { name: 'AWS Certified Solutions Architect', issuer: 'Amazon Web Services', year: '2024', url: 'https://aws.amazon.com/verification', order: 1 },
-      { name: 'dbt Core Certification', issuer: 'dbt Labs', year: '2024', url: 'https://www.credential.net', order: 2 },
-      { name: 'Apache Airflow Fundamentals', issuer: 'Astronomer', year: '2023', url: 'https://www.credential.net', order: 3 },
-      { name: 'Kaggle Expert', issuer: 'Kaggle', year: '2023', url: 'https://www.kaggle.com/swadhinbiswas', order: 4 },
-    ];
-    for (const cert of certificationsData) {
-      await db.insert(certifications).values({ ...cert, createdAt: now, updatedAt: now });
-    }
-    console.log(`  ✅ Inserted ${certificationsData.length} certifications`);
-
-    // 16b. FAQs
+    // 16. FAQs
     console.log('❓ Seeding FAQs...');
     const faqsData = [
       { question: 'What roles is Swadhin open to?', answer: 'Mid-level data engineering and backend engineering roles, focused on production data infrastructure, MLOps, and distributed systems.', order: 1 },

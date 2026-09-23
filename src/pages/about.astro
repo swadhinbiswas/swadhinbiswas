@@ -2,7 +2,7 @@
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getDynamicConfig } from "../lib/config";
-import { db, education, achievements, interests, certifications, bioContent, siteSettings } from "../db";
+import { db, education, achievements, interests, bioContent, siteSettings } from "../db";
 import { strokeIcon } from "../lib/icons";
 import JsonLd from "../components/seo/JsonLd.astro";
 import { env } from "../lib/env";
@@ -14,11 +14,10 @@ async function safe<T>(q: Promise<T>, fallback: T): Promise<T> {
   try { return await q; } catch { return fallback; }
 }
 
-const [educationList, achievementsList, interestsList, certificationsList, bioData, settingsData] = await Promise.all([
+const [educationList, achievementsList, interestsList, bioData, settingsData] = await Promise.all([
   safe(db.select().from(education).orderBy(education.order), [] as any[]),
   safe(db.select().from(achievements).orderBy(achievements.order), [] as any[]),
   safe(db.select().from(interests).orderBy(interests.order), [] as any[]),
-  safe(db.select().from(certifications).orderBy(certifications.order), [] as any[]),
   safe(db.select().from(bioContent), [] as any[]),
   safe(db.select().from(siteSettings), [] as any[]),
 ]);
@@ -64,7 +63,7 @@ const schema = {
       "@id": `${siteUrl}/about/#webpage`,
       "url": `${siteUrl}/about`,
       "name": `About ${author}`,
-      "description": `Background, education, certifications, and interests of ${author}.`,
+      "description": `Background, education, work history, and interests of ${author}.`,
       "isPartOf": { "@id": `${siteUrl}/#website` },
       "mainEntity": { "@id": `${siteUrl}/#person` }
     }
@@ -72,7 +71,7 @@ const schema = {
 };
 ---
 
-<BaseLayout title="About" description={`About ${author}: story, education, certifications, and interests.`}>
+<BaseLayout title="About" description={`About ${author}: story, education, work history, and interests.`}>
   <JsonLd slot="head" schema={schema} />
 
   <!-- Story -->
@@ -120,39 +119,6 @@ const schema = {
               </div>
               <div class="edu-dates">
                 {formatDate(edu.startDate)} to {edu.endDate ? formatDate(edu.endDate) : "Present"}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )}
-
-  <!-- Certifications -->
-  {certificationsList.length > 0 && (
-    <section class="section">
-      <div class="container-narrow">
-        <div class="section-head reveal">
-          <div>
-            <p class="text-eyebrow">Credentials</p>
-            <h2 class="section-title">Certifications</h2>
-          </div>
-        </div>
-        <div class="panel">
-          {(certificationsList as any[]).map((cert) => (
-            <div class="row-card">
-              <div class="row-card-logo" aria-hidden="true">{(cert.issuer || "·").charAt(0).toUpperCase()}</div>
-              <div class="min-w-0 flex-1">
-                <h3 class="row-card-title">{cert.name}</h3>
-                <p class="row-card-meta">
-                  {cert.issuer}
-                  {cert.year && ` · ${cert.year}`}
-                </p>
-              </div>
-              <div class="row-card-actions">
-                {cert.url && (
-                  <a href={cert.url} target="_blank" rel="noopener noreferrer" class="verify-link">Verify ↗</a>
-                )}
               </div>
             </div>
           ))}

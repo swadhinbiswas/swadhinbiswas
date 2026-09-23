@@ -140,7 +140,6 @@ const READ_TABLES = new Set([
   "education",
   "publications",
   "skills",
-  "certifications",
   "achievements",
   "interests",
   "languages",
@@ -169,7 +168,6 @@ const WRITE_TABLES = new Set([
   "education",
   "publications",
   "skills",
-  "certifications",
   "achievements",
   "interests",
   "languages",
@@ -606,7 +604,7 @@ server.tool(
 
 server.tool(
   "portfolio_list_rows",
-  "List rows from any readable table (experiences, skills, certifications, ...).",
+  "List rows from any readable table (experiences, skills, projects, ...).",
   {
     ...authField,
     table: z.string().describe("Table name — see portfolio_list_tables"),
