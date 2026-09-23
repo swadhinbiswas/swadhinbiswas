@@ -2061,11 +2061,11 @@ def render_writing(posts):
         "### Writing",
         "",
         "I write about backend systems, data engineering, and building software "
-        "from scratch at **[blog.swadhin.cv]({})**.".format(BLOG_URL),
+        "from scratch on my blog, [blog.swadhin.cv]({}).".format(BLOG_URL),
         "",
     ]
     for post in posts:
-        suffix = " — {}".format(post["date"]) if post.get("date") else ""
+        suffix = " · {}".format(post["date"]) if post.get("date") else ""
         lines.append("- **[{}]({})**{}".format(post["title"], post["link"], suffix))
     lines += [
         "",
