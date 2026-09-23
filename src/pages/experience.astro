@@ -25,15 +25,20 @@ function parseList(val: unknown): string[] {
   try { return JSON.parse(val as string); } catch { return []; }
 }
 
-function yearsOf(start: string, end?: string) {
+function yearsBetween(start: string, end?: string): number {
   const s = new Date(start).getTime();
-  if (isNaN(s)) return "";
+  if (isNaN(s)) return 0;
   const e = end ? new Date(end).getTime() : Date.now();
-  const y = Math.max(0, (e - s) / (365.25 * 24 * 3600 * 1000));
+  return Math.max(0, (e - s) / (365.25 * 24 * 3600 * 1000));
+}
+
+function yearsOf(start: string, end?: string) {
+  const y = yearsBetween(start, end);
+  if (!y) return "";
   return y >= 1 ? `${y.toFixed(1)} yrs` : `${Math.round(y * 12)} mo`;
 }
 
-const totalYears = experiencesList.reduce((acc, e) => acc + (parseFloat(yearsOf(e.startDate, e.endDate)?.replace(/[^0-9.]/g, "")) || 0), 0);
+const totalYears = experiencesList.reduce((acc, e) => acc + yearsBetween(e.startDate, e.endDate), 0);
 const companies = [...new Set(experiencesList.map((e) => e.company).filter(Boolean))];
 
 const schema = {
