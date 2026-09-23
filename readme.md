@@ -4,7 +4,7 @@
 </p>
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/contribs.svg" width="100%" alt="Swadhin Biswas - contributions this year and latest merged commit"/>
+<img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/contribs.svg" width="100%" alt="Swadhin Biswas - contributions this year"/>
 </p>
 
 <p align="center">

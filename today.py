@@ -41,7 +41,6 @@ QUERY_COUNT = {
     "today_contrib_getter": 0,
     "repo_loc_since": 0,
     "year_contrib_getter": 0,
-    "latest_merged_commit": 0,
     "top_repos_getter": 0,
     "rest_star_total": 0,
 }
@@ -1307,25 +1306,6 @@ def today_contrib_getter():
     }
 
 
-def _time_ago(dt_str):
-    """'2026-08-20T14:03:00Z' -> '2d ago' style relative label (UTC)."""
-    dt = datetime.datetime.strptime(dt_str, "%Y-%m-%dT%H:%M:%SZ").replace(
-        tzinfo=datetime.timezone.utc
-    )
-    delta = datetime.datetime.now(datetime.timezone.utc) - dt
-    days = delta.days
-    if days == 0:
-        hours = delta.seconds // 3600
-        return "just now" if hours == 0 else "{}h ago".format(hours)
-    if days < 7:
-        return "{}d ago".format(days)
-    if days < 30:
-        return "{}w ago".format(days // 7)
-    if days < 365:
-        return "{}mo ago".format(days // 30)
-    return "{}y ago".format(days // 365)
-
-
 def year_contrib_getter():
     """
     This calendar year's contribution stats via GraphQL:
@@ -1366,56 +1346,6 @@ def year_contrib_getter():
             total += count
             months[int(day["date"][5:7]) - 1] += count
     return {"year": now.year, "total": total, "months": months}
-
-
-def latest_merged_commit():
-    """
-    The most recently merged open-source pull request authored by this
-    account, with its merge-commit id:
-    {'sha7', 'oid', 'repo', 'title', 'number', 'url', 'ago'} or None.
-    """
-    query_count("latest_merged_commit")
-    # the username is interpolated in python — graphql variables cannot be
-    # used inside a quoted search string (%-format: no brace escaping)
-    query = """
-    query {
-        search(
-            query: "author:%s is:pr is:merged sort:updated-desc"
-            type: ISSUE
-            first: 10
-        ) {
-            nodes {
-                ... on PullRequest {
-                    number
-                    title
-                    mergedAt
-                    url
-                    mergeCommit {
-                        oid
-                    }
-                    repository {
-                        nameWithOwner
-                    }
-                }
-            }
-        }
-    }""" % USER_NAME
-    request = simple_request(latest_merged_commit.__name__, query, {})
-    nodes = request.json()["data"]["search"]["nodes"]
-    for node in nodes:
-        if not node or not node.get("mergeCommit"):
-            continue
-        oid = node["mergeCommit"]["oid"]
-        return {
-            "sha7": oid[:7],
-            "oid": oid,
-            "repo": node["repository"]["nameWithOwner"],
-            "title": node["title"],
-            "number": node["number"],
-            "url": node["url"],
-            "ago": _time_ago(node["mergedAt"]),
-        }
-    return None
 
 
 def top_repos_getter(limit=5):
@@ -1903,11 +1833,10 @@ def generate_hero_svg(today_stats, alltime, lang_data):
     return "\n".join(parts)
 
 
-def generate_contribs_svg(year_stats, merged):
+def generate_contribs_svg(year_stats):
     """
-    Renders the strip under the hero: this year's contributions (big number +
-    12-month bar chart) on the left, the latest merged open-source pull
-    request with its merge-commit id on the right.
+    Renders the strip under the hero: this year's contributions as a big
+    number with a 12-month bar chart.
     """
     c = COLORS
     svg_w, svg_h = 1140, 172
@@ -1916,7 +1845,7 @@ def generate_contribs_svg(year_stats, merged):
     parts = [
         '<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
         'viewBox="0 0 {w} {h}" role="img" '
-        'aria-label="Contributions this year and latest merged commit">'.format(
+        'aria-label="Contributions this year">'.format(
             w=svg_w, h=svg_h
         ),
         '<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="16" '
@@ -1925,7 +1854,7 @@ def generate_contribs_svg(year_stats, merged):
         ),
     ]
 
-    # ---- left: contributions this year ---------------------------------------
+    # ---- contributions this year ---------------------------------------------
     parts.append(
         '<text x="48" y="44" font-family="{font}" font-size="12" '
         'letter-spacing="4" fill="{fill}">THIS YEAR · CONTRIBUTIONS</text>'.format(
@@ -1946,8 +1875,8 @@ def generate_contribs_svg(year_stats, merged):
     )
 
     base_y, max_h = 128, 74
-    slot, bar_w = 19, 13
-    x0 = 310
+    slot, bar_w = 52, 34
+    x0 = 360
     peak = max(year_stats["months"]) or 1
     for i, count in enumerate(year_stats["months"]):
         h = max(3, round(max_h * count / peak)) if count else 3
@@ -1959,65 +1888,9 @@ def generate_contribs_svg(year_stats, merged):
         )
     parts.append(
         '<line x1="{a}" y1="{y}" x2="{b}" y2="{y}" stroke="{s}" stroke-width="1"/>'.format(
-            a=x0 - 6, y=base_y + 0.5, b=x0 + 12 * slot - (slot - bar_w), s=c["card_stroke"]
+            a=x0 - 8, y=base_y + 0.5, b=x0 + 12 * slot - (slot - bar_w), s=c["card_stroke"]
         )
     )
-
-    # ---- divider ---------------------------------------------------------------
-    parts.append(
-        '<line x1="570" y1="32" x2="570" y2="140" stroke="{s}" stroke-width="1"/>'.format(
-            s=c["card_stroke"]
-        )
-    )
-
-    # ---- right: latest merged commit -------------------------------------------
-    parts.append(
-        '<text x="606" y="44" font-family="{font}" font-size="12" '
-        'letter-spacing="4" fill="{fill}">LATEST MERGED COMMIT</text>'.format(
-            font=MONO_FONT, fill=c["muted"]
-        )
-    )
-    if merged:
-        parts.append(
-            '<rect x="606" y="60" width="88" height="26" rx="6" '
-            'fill="{f}" stroke="{s}" stroke-width="1"/>'.format(
-                f=c["panel"], s=c["card_stroke"]
-            )
-        )
-        parts.append(
-            '<text x="650" y="78" text-anchor="middle" font-family="{font}" '
-            'font-size="12.5" font-weight="bold" fill="{fill}">{t}</text>'.format(
-                font=MONO_FONT, fill=c["blue_light"], t=merged["sha7"]
-            )
-        )
-        parts.append(
-            '<text x="708" y="79" font-family="{font}" font-size="13" '
-            'fill="{fill}">{t}</text>'.format(
-                font=MONO_FONT, fill=c["text"], t=_xml_escape(merged["repo"][:26])
-            )
-        )
-        parts.append(
-            '<text x="606" y="112" font-family="{font}" font-size="13.5" '
-            'fill="{fill}">{t}</text>'.format(
-                font=MONO_FONT, fill=c["text"],
-                t=_xml_escape(merged["title"][:54]),
-            )
-        )
-        parts.append('<circle cx="612" cy="133" r="3.5" fill="{g}"/>'.format(g=c["green"]))
-        parts.append(
-            '<text x="624" y="137" font-family="{font}" font-size="11.5" '
-            'fill="{fill}">merged #{n} · {ago} · {oid}</text>'.format(
-                font=MONO_FONT, fill=c["muted"],
-                n=merged["number"], ago=merged["ago"], oid=merged["sha7"],
-            )
-        )
-    else:
-        parts.append(
-            '<text x="606" y="80" font-family="{font}" font-size="13" '
-            'fill="{fill}">no merged pull requests yet</text>'.format(
-                font=MONO_FONT, fill=c["muted"]
-            )
-        )
 
     parts.append("</svg>")
     return "\n".join(parts)
@@ -2115,14 +1988,13 @@ def rebuild_readme(
     """
     Regenerates the README block between the TODAY markers: the hero SVG
     (languages + all-time panels inside, now with a waving-hand intro),
-    the contributions strip SVG (this year + latest merged commit) and a
+    the contributions strip SVG (this year's contributions) and a
     real-time view-counter badge. Featured projects live in a MANUAL
     block outside these markers so you can curate them by hand. The full
     projects grid lives between the PROJECTS markers.
     """
     today_stats = today_contrib_getter()
     year_stats = year_contrib_getter()
-    merged = latest_merged_commit()
 
     # hero banner + panels
     try:
@@ -2147,8 +2019,8 @@ def rebuild_readme(
     with open(HERO_SVG_PATH, "w", encoding="utf-8") as handle:
         handle.write(hero_svg)
 
-    # contributions strip (this year + latest merged commit)
-    contribs_svg = generate_contribs_svg(year_stats, merged)
+    # contributions strip (this year)
+    contribs_svg = generate_contribs_svg(year_stats)
     with open(CONTRIBS_SVG_PATH, "w", encoding="utf-8") as handle:
         handle.write(contribs_svg)
 
@@ -2161,7 +2033,7 @@ def rebuild_readme(
         + "\n</p>\n\n"
         + '<p align="center">\n'
         + '<img src="{}" width="100%" alt="Swadhin Biswas - contributions this '
-        'year and latest merged commit"/>'.format(CONTRIBS_SVG_URL.format(u=USER_NAME))
+        'year"/>'.format(CONTRIBS_SVG_URL.format(u=USER_NAME))
         + "\n</p>\n\n"
         + '<p align="center">\n'
         + '<img src="https://komarev.com/ghpvc/?username={u}'
