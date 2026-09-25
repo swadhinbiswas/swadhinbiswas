@@ -16,8 +16,8 @@ const db = drizzle(client);
 async function main() {
   await db.update(experiences).set({
     role: 'DATA/ Backend Engineer & Co-founder',
-    details: 'Data Engineer & Tech Lead (Boringrats, acquired Nov 2025 — acquirer name under NDA. Co-founder available as reference upon request). Scaled infrastructure to 1M+ active users. Currently building OpencodeHub, an open-source ecosystem democratizing developer tools. Architecting robust data pipelines and production ML systems.'
-  }).where(eq(experiences.company, 'BoringRats'));
+    details: 'Data Engineer & Tech Lead (The Boring Rat, acquired Nov 2025 — acquirer name under NDA. Co-founder available as reference upon request). Scaled infrastructure to 1M+ active users. Currently building OpencodeHub, an open-source ecosystem democratizing developer tools. Architecting robust data pipelines and production ML systems.'
+  }).where(eq(experiences.company, 'The Boring Rat'));
   console.log('Done');
   process.exit(0);
 }

@@ -9,8 +9,8 @@ const client = createClient({
 });
 
 const rows = [
-  { label: "Users Impacted",    value: "1M+",       sub: "Boringrats: built, scaled, acquired", order: 0 },
-  { label: "Acquired '25",      value: "1×",        sub: "Boringrats — acquired Nov 2025",      order: 1 },
+  { label: "Users Impacted",    value: "1M+",       sub: "The Boring Rat: built, scaled, acquired", order: 0 },
+  { label: "Acquired '25",      value: "1×",        sub: "The Boring Rat — acquired Nov 2025",      order: 1 },
   { label: "Production Years",  value: "3+ yrs",    sub: "Data pipelines & ML infra",            order: 2 },
   { label: "Open Source",       value: "12+ repos", sub: "Active contributor",                  order: 3 },
 ];

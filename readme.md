@@ -50,7 +50,7 @@ I write about backend systems, data engineering, and building software from scra
 
 ### Highlights
 
-- Co-founded BoringRats and grew it to **1M+ users** on a Python, FastAPI, and PostgreSQL backend that served **10K+ requests per minute at under 100 ms**. The company was **acquired under NDA in 2025**.
+- Co-founded The Boring Rat and grew it to **1M+ users** on a Python, FastAPI, and PostgreSQL backend that served **10K+ requests per minute at under 100 ms**. The company was **acquired under NDA in 2025**.
 - Published a **JOSS paper** and archived DOI for [Aurora](https://doi.org/10.5281/zenodo.22067754): GSM8K accuracy rose from 47.2% to 55.6% while confidently wrong answers fell from 19.8% to 2.9%.
 - First author on an [arXiv paper](https://arxiv.org/abs/2509.00988) on noise-robust Bengali dialectal speech recognition.
 - I maintain open-source projects with public releases and datasets, including [opengrammar](https://github.com/swadhinbiswas/opengrammar) at 124 stars and [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub) with 668 tests.
@@ -69,7 +69,7 @@ I build and maintain a free self-hosted Git platform with SSH access, CI pipelin
 **2026 to now · Builder · [AegisVision](https://github.com/swadhinbiswas/AegisVision)**
 A multi-camera AI surveillance and behavioural monitoring system that runs on ordinary hardware. It does real-time face recognition with anti-spoofing liveness checks. Python.
 
-**January 2023 to November 2025 · Co-Founder and Lead Data/Backend Engineer · BoringRats** *(acquired, under NDA)*
+**January 2023 to November 2025 · Co-Founder and Lead Data/Backend Engineer · The Boring Rat** *(acquired, under NDA)*
 I owned the backend architecture from the first version to 1M+ users: real-time event ingestion, the analytics warehouse, and MLOps workflows. Python, FastAPI, PostgreSQL, Redis, Docker, and AWS. Our REST APIs served 10K+ requests per minute at under 100 ms.
 
 **January 2021 to December 2022 · Freelance backend and automation engineer**

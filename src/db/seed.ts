@@ -310,21 +310,21 @@ async function seed() {
     }
     console.log(`  ✅ Inserted ${siteConfig.experience.length} experiences`);
 
-    // 4b. Ensure BoringRats experience exists (not in config on first seed)
-    const boringRatsExists = siteConfig.experience.some(e => e.company === 'BoringRats');
-    if (!boringRatsExists) {
+    // 4b. Ensure The Boring Rat experience exists (not in config on first seed)
+    const theBoringRatExists = siteConfig.experience.some(e => e.company === 'The Boring Rat');
+    if (!theBoringRatExists) {
       await db.insert(experiences).values({
-        company: 'BoringRats',
+        company: 'The Boring Rat',
         role: 'DATA/ Backend Engineer & Co-founder',
         url: '',
         startDate: '2023-01-01',
         endDate: '2025-11-01',
-        details: 'Co-founded BoringRats and grew it to 1M+ active users. Built the real-time event ingestion pipelines, the analytics warehouse, and the MLOps workflows, along with the backend systems and infrastructure the product ran on. The company was acquired in November 2025; the acquirer is under NDA and my co-founder is available as a reference.',
+        details: 'Co-founded The Boring Rat and grew it to 1M+ active users. Built the real-time event ingestion pipelines, the analytics warehouse, and the MLOps workflows, along with the backend systems and infrastructure the product ran on. The company was acquired in November 2025; the acquirer is under NDA and my co-founder is available as a reference.',
         order: 100,
         createdAt: now,
         updatedAt: now,
       });
-      console.log('  ✅ Inserted BoringRats experience (default)');
+      console.log('  ✅ Inserted The Boring Rat experience (default)');
     }
 
     // 5. Projects
@@ -383,8 +383,8 @@ console.log('🛠️ Seeding skills...');
     console.log('💬 Seeding testimonials...');
     const testimonialsData = [
       {
-        quote: "Swadhin's ability to architect scalable data systems was instrumental in scaling BoringRats to 1M+ users. His technical leadership and hands-on approach to infrastructure were key factors in our successful acquisition.",
-        name: "BoringRats Team",
+        quote: "Swadhin's ability to architect scalable data systems was instrumental in scaling The Boring Rat to 1M+ users. His technical leadership and hands-on approach to infrastructure were key factors in our successful acquisition.",
+        name: "The Boring Rat Team",
         role: "Co-founded & scaled together. Co-founder available as reference upon request.",
         order: 0,
       },
@@ -403,17 +403,17 @@ console.log('🛠️ Seeding skills...');
     const achievementsData = [
       {
         name: 'Scaled to 1M+ users', slug: 'scaled-to-1m-users', icon: 'trophy', year: '2025',
-        description: 'Co-founded BoringRats and scaled its infrastructure to 1M+ active users. Acquired in November 2025.',
+        description: 'Co-founded The Boring Rat and scaled its infrastructure to 1M+ active users. Acquired in November 2025.',
         url: 'https://www.linkedin.com/in/swadhinbiswas/',
-        story: 'I co-founded BoringRats and owned the backend and data infrastructure from the first monolith to a horizontally scaled system serving 1M+ active users.\n\n- Event-driven architecture on Kafka with idempotent consumers, so messages were neither lost nor processed twice\n- Real-time analytics pipeline (Airflow and Spark) feeding product decisions with sub-minute freshness\n- Read-heavy API layer tuned with Redis caching and connection pooling, holding p99 latency under 250ms\n- Zero-downtime deploys with canary releases, so shipping never interrupted users\n\nThe hard part was the growth curve. What worked at 10K users broke at 100K, and I spent months on capacity planning, backpressure, and database read-path optimization. Designing for ten times the load you have today stopped feeling like overkill.',
+        story: 'I co-founded The Boring Rat and owned the backend and data infrastructure from the first monolith to a horizontally scaled system serving 1M+ active users.\n\n- Event-driven architecture on Kafka with idempotent consumers, so messages were neither lost nor processed twice\n- Real-time analytics pipeline (Airflow and Spark) feeding product decisions with sub-minute freshness\n- Read-heavy API layer tuned with Redis caching and connection pooling, holding p99 latency under 250ms\n- Zero-downtime deploys with canary releases, so shipping never interrupted users\n\nThe hard part was the growth curve. What worked at 10K users broke at 100K, and I spent months on capacity planning, backpressure, and database read-path optimization. Designing for ten times the load you have today stopped feeling like overkill.',
         outcome: '- 1M+ active users served on the platform\n- p99 API latency under 250ms at peak\n- 99.9%+ uptime through the growth phase\n- Infrastructure cost stayed flat while traffic grew 10x\n- The company was acquired in November 2025',
         order: 1,
       },
       {
         name: 'Startup acquired', slug: 'startup-acquired', icon: 'award', year: '2025',
-        description: 'BoringRats was acquired in November 2025. The acquirer\'s name is under NDA, and my co-founder is available as a reference.',
+        description: 'The Boring Rat was acquired in November 2025. The acquirer\'s name is under NDA, and my co-founder is available as a reference.',
         url: 'https://www.linkedin.com/in/swadhinbiswas/',
-        story: 'BoringRats was acquired in November 2025 after several years of growth. The acquirer\'s name is under NDA, and my co-founder can act as a reference.\n\n- The product was bootstrapped with a small team, and I handled backend, data, and infrastructure\n- The technical foundation mattered in the acquisition: architecture that scaled, steady uptime, and product decisions backed by data\n- We kept shipping through due diligence and never missed a release\n\nWhat I took from it: buyers pay for reliability and steady engineering more than for how clever the code is.',
+        story: 'The Boring Rat was acquired in November 2025 after several years of growth. The acquirer\'s name is under NDA, and my co-founder can act as a reference.\n\n- The product was bootstrapped with a small team, and I handled backend, data, and infrastructure\n- The technical foundation mattered in the acquisition: architecture that scaled, steady uptime, and product decisions backed by data\n- We kept shipping through due diligence and never missed a release\n\nWhat I took from it: buyers pay for reliability and steady engineering more than for how clever the code is.',
         outcome: '- The acquisition closed in November 2025\n- The team and product continued through the transition\n- The infrastructure serving 1M+ users was handed over cleanly',
         order: 2,
       },
@@ -445,13 +445,13 @@ console.log('🛠️ Seeding skills...');
       {
         label: "Users reached",
         value: "1M+",
-        sub: "On Boringrats before acquisition",
+        sub: "On The Boring Rat before acquisition",
         order: 0,
       },
       {
         label: "Acquisition",
         value: "2025",
-        sub: "Boringrats, November 2025",
+        sub: "The Boring Rat, November 2025",
         order: 1,
       },
       {
@@ -490,7 +490,7 @@ console.log('🛠️ Seeding skills...');
       },
       {
         key: 'story',
-        value: "I build data pipelines and the MLOps layer around machine learning systems, mostly so raw data turns into something reliable enough to make decisions with. At Boringrats I was the data and backend engineer and a co-founder, and I built the infrastructure that carried the product to 1M+ active users before the company was acquired. These days I split my time between low-latency, cost-efficient data platforms and OpencodeHub, an open-source project for developer tooling. I'm working toward relocating to the EU (Germany, the Netherlands, or Austria)."
+        value: "I build data pipelines and the MLOps layer around machine learning systems, mostly so raw data turns into something reliable enough to make decisions with. At The Boring Rat I was the data and backend engineer and a co-founder, and I built the infrastructure that carried the product to 1M+ active users before the company was acquired. These days I split my time between low-latency, cost-efficient data platforms and OpencodeHub, an open-source project for developer tooling. I'm working toward relocating to the EU (Germany, the Netherlands, or Austria)."
       },
       { key: 'currentFocus', value: siteConfig.bio.currentFocus || 'Data engineering, MLOps, AI systems, and open source.' },
       { key: 'currentlyBuilding', value: siteConfig.bio.currentlyBuilding || 'OpencodeHub, an open-source developer platform.' },
