@@ -73,7 +73,7 @@ A multi-camera AI surveillance and behavioural monitoring system that runs on or
 I owned the backend architecture from the first version to 1M+ users: real-time event ingestion, the analytics warehouse, and MLOps workflows. Python, FastAPI, PostgreSQL, Redis, Docker, and AWS. Our REST APIs served 10K+ requests per minute at under 100 ms.
 
 **January 2021 to December 2022 · Freelance backend and automation engineer**
-I shipped 8+ full-stack projects for SaaS and e-commerce clients in the US and UK. The Django and PostgreSQL APIs handled 10K+ requests a day, and I cut page load times by 40%.
+I shipped 8+ custom software solutions for international clients, primarily SaaS and e-commerce teams in the US and UK. The Django and PostgreSQL APIs handled 10K+ requests a day, and I cut page load times by 40%.
 
 <!-- EXPERIENCE:END -->
 
