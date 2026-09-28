@@ -110,10 +110,10 @@ is the fallback used when the feed is unreachable.
 
 I write about backend systems, data engineering, and building software from scratch on my blog, [blog.swadhin.cv](https://blog.swadhin.cv).
 
+- **[OpenCode wrote 125,000 loose Git objects into my home directory and never committed once](https://blog.swadhin.cv/blog/opencode-btrfs-metadata-exhaustion/)** · 28 Sep 2026
 - **[Designing data pipelines that stay cheap](https://blog.swadhin.cv/blog/designing-data-pipelines-that-stay-cheap/)** · 24 Sep 2026
 - **[Designing an API for 100,000 requests a second](https://blog.swadhin.cv/blog/designing-an-api-for-100000-requests-a-second/)** · 24 Sep 2026
 - **[Flare: self-hosted webmail for my own domain](https://blog.swadhin.cv/blog/flare-self-hosted-webmail/)** · 21 Sep 2026
-- **[A filesystem event log in SQLite](https://blog.swadhin.cv/blog/filesystem-event-log-in-sqlite/)** · 20 Sep 2026
 
 <sub>More at [blog.swadhin.cv](https://blog.swadhin.cv) · [RSS](https://blog.swadhin.cv/rss.xml) · [Atom](https://blog.swadhin.cv/atom.xml)</sub>
 <!-- WRITING:END -->
