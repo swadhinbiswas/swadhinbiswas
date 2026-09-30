@@ -2045,13 +2045,20 @@ def rebuild_readme(
     update_readme(block_html)
 
     # linked projects grid — single source of truth: PROJECTS at the top
+    #
+    # the grid is wrapped in <details> so it stays collapsed by default: it is
+    # the widest block in the README, it does not fit a phone screen, and a
+    # recruiter who has not scrolled that far does not need it. the wrapper
+    # lives here (not in readme.md) because this block is replaced on every run.
     try:
+        repo_count = sum(len(repos) for repos in PROJECTS.values())
         update_readme_section(
             PROJECTS_START_MARKER,
             PROJECTS_END_MARKER,
-            "### More projects\n\n<pre>\n"
+            '<details>\n<summary><b>More projects — all {n} repositories</b></summary>\n'
+            "\n<pre>\n".format(n=repo_count)
             + render_projects_panel()
-            + "\n</pre>",
+            + "\n</pre>\n\n</details>",
         )
         print("projects grid regenerated ({} repositories linked)".format(
             sum(len(repos) for repos in PROJECTS.values())
