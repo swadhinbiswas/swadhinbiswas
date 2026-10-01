@@ -38,17 +38,17 @@
 
 ### About
 
-I build streaming pipelines, lakehouses, and the services around them. Five years in, mostly Python, Go, and SQL — and I like the unglamorous parts: Kafka ingestion, dbt warehouses on DuckDB, GDPR erasure, and schema-contract gates in CI.
+I build streaming pipelines, lakehouses, and the services around them. Five years in now, mostly Python, Go, and SQL. The parts I like are the unglamorous ones: Kafka ingestion, dbt warehouses on DuckDB, GDPR erasure, schema-contract gates in CI.
 
-Right now I maintain [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub), a self-hosted Git platform with CI and merge queues, and [AegisVision](https://github.com/swadhinbiswas/AegisVision), a multi-camera AI surveillance system. My latest research is [Aurora](https://github.com/swadhinbiswas/Aurora), a modular reasoning architecture with a JOSS paper.
+Right now I maintain [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub), a self-hosted Git platform with CI and merge queues, and [AegisVision](https://github.com/swadhinbiswas/AegisVision), a multi-camera AI surveillance system. The latest is [Aurora](https://github.com/swadhinbiswas/Aurora), a modular reasoning architecture with a JOSS paper.
 
-**Languages:** English (professional, daily working language) · Bengali (native) · Hindi (conversational) · German (learning)
+**Languages:** English (daily working language) · Bengali (native) · Hindi (conversational) · German (learning)
 
 ### Track record
 
 | **1M+** | **10K+** | **&lt;100 ms** | **40%** | **668** | **3** |
 |:--:|:--:|:--:|:--:|:--:|:--:|
-| users reached | requests / minute | API latency | faster page loads | tests in one repo | papers & datasets |
+| users reached | requests per minute | API latency | faster page loads | tests in one repo | papers and datasets |
 
 <!--
   experience - EDIT BY HAND. today.py never touches this block.
@@ -60,16 +60,16 @@ Right now I maintain [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub)
 ### Experience
 
 **May 2026 to now · Founder and maintainer · [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub)**
-I build and maintain this end to end: SSH access, CI pipelines, stacked PRs, merge queues, AI-assisted code review. Go and TypeScript, **668 tests**, full end-to-end coverage.
+I build and maintain all of it myself: SSH access, CI pipelines, stacked PRs, merge queues, AI-assisted code review. Go and TypeScript, **668 tests**, with end-to-end coverage.
 
 **2026 to now · Builder · [AegisVision](https://github.com/swadhinbiswas/AegisVision)**
 Multi-camera AI surveillance and behavioural monitoring that runs on ordinary hardware: real-time face recognition with anti-spoofing liveness checks. Python.
 
 **January 2023 to November 2025 · Co-Founder and Lead Data/Backend Engineer · The Boring Rat** *(acquired 2025, under NDA)*
-Took the backend from zero to **1M+ users** as co-founder and lead engineer: real-time event ingestion, the analytics warehouse, MLOps workflows, and the on-call. Python, FastAPI, PostgreSQL, Redis, Docker, AWS — REST APIs at **10K+ requests per minute under 100 ms**.
+Took the backend from zero to **1M+ users**: real-time event ingestion, the analytics warehouse, MLOps workflows, and the on-call. Python, FastAPI, PostgreSQL, Redis, Docker, AWS. REST APIs at **10K+ requests per minute, under 100 ms**.
 
 **January 2021 to December 2022 · Freelance backend and automation engineer**
-Delivered **8+** production systems end to end for US and UK SaaS and e-commerce clients — requirements, delivery, support. Django and PostgreSQL APIs handled 10K+ requests a day, and I cut page load times by **40%**.
+Delivered **8+** production systems for US and UK SaaS and e-commerce clients, from requirements through delivery and support. Django and PostgreSQL APIs handled 10K+ requests a day, and I cut page load times by **40%**.
 
 <sub>B.Sc. Computer Science and Engineering, Daffodil International University, Dhaka · 2022 – 2026 · data structures, algorithms, database systems, machine learning, software engineering</sub>
 
@@ -83,12 +83,12 @@ Delivered **8+** production systems end to end for US and UK SaaS and e-commerce
 <!-- FEATURED:START -->
 ### Featured projects
 
-- **[eu-air-traffic](https://www.swadhin.cv/projects/eu-air-traffic/)** — live EU airspace pipeline on Kafka, dbt, and DuckDB. Tracks ~2,000 aircraft with a 15-minute lake, published as a public Hugging Face dataset and a [Zenodo DOI](https://doi.org/10.5281/zenodo.22790201).
-- **[TerraSentinel](https://www.swadhin.cv/projects/terrasentinel/)** — $0 anomaly detection over free satellite and sensor data. Four public sources into a versioned lake, dbt and DuckDB build seven gold marts, an IsolationForest scores the anomalies, and a Databricks Asset Bundle mirrors the whole pipeline.
-- **[eurostream](https://www.swadhin.cv/projects/eurostream/)** — GDPR-native streaming lakehouse. Six-layer Article 17 erasure runs in **66.95 ms mean** against a 60-second statutory window. Kafka, DuckDB, Turso.
-- **[JustAPI](https://www.swadhin.cv/projects/justapi/)** — Python web framework with a Rust core. **766k req/s** hello-world, **0.48 ms p99**, 12 MB footprint, on PyPI.
-- **[Aurora](https://www.swadhin.cv/projects/aurora/)** — modular reasoning architecture with a [JOSS paper](https://doi.org/10.5281/zenodo.22067754). GSM8K accuracy **47.2% → 55.6%**, confidently wrong answers **19.8% → 2.9%**.
-- **[opengrammar](https://www.swadhin.cv/projects/opengrammar/)** — privacy-first Grammarly alternative. 156k-word offline engine, five runtimes, 124 stars.
+- **[eu-air-traffic](https://www.swadhin.cv/projects/eu-air-traffic/)**: live EU airspace pipeline on Kafka, dbt, and DuckDB. Tracks ~2,000 aircraft with a 15-minute lake, published as a public Hugging Face dataset and a [Zenodo DOI](https://doi.org/10.5281/zenodo.22790201).
+- **[TerraSentinel](https://www.swadhin.cv/projects/terrasentinel/)**: $0 anomaly detection over free satellite and sensor data. Four public sources feed a versioned lake, dbt and DuckDB build seven gold marts, an IsolationForest scores the anomalies, and a Databricks Asset Bundle mirrors the whole pipeline.
+- **[eurostream](https://www.swadhin.cv/projects/eurostream/)**: GDPR-native streaming lakehouse. Six-layer Article 17 erasure runs in **66.95 ms mean** against a 60-second statutory window. Kafka, DuckDB, Turso.
+- **[JustAPI](https://www.swadhin.cv/projects/justapi/)**: Python web framework with a Rust core. **766k req/s** hello-world, **0.48 ms p99**, 12 MB footprint, on PyPI.
+- **[Aurora](https://www.swadhin.cv/projects/aurora/)**: modular reasoning architecture with a [JOSS paper](https://doi.org/10.5281/zenodo.22067754). GSM8K accuracy **47.2% → 55.6%**, confidently wrong answers **19.8% → 2.9%**.
+- **[opengrammar](https://www.swadhin.cv/projects/opengrammar/)**: privacy-first Grammarly alternative. 156k-word offline engine, five runtimes, 124 stars.
 
 <sub>Case studies and architecture notes: [swadhin.cv/projects](https://swadhin.cv/projects)</sub>
 
@@ -96,11 +96,11 @@ Delivered **8+** production systems end to end for US and UK SaaS and e-commerce
 
 ### Research
 
-- **[A Unified Denoising and Adaptation Framework for Self-Supervised Bengali Dialectal ASR](https://arxiv.org/abs/2509.00988)** — first author, with Imran and Tuhin Sheikh. [arXiv:2509.00988](https://arxiv.org/abs/2509.00988) · [PDF](https://arxiv.org/pdf/2509.00988)
+- **[A Unified Denoising and Adaptation Framework for Self-Supervised Bengali Dialectal ASR](https://arxiv.org/abs/2509.00988)**: first author, with Imran and Tuhin Sheikh. [arXiv:2509.00988](https://arxiv.org/abs/2509.00988) · [PDF](https://arxiv.org/pdf/2509.00988)
   WavLM with two-stage fine-tuning, tested from clean audio down to low signal-to-noise ratios; beats fine-tuned wav2vec 2.0 and multilingual Whisper.
-- **[Aurora (ART): A Modular Reasoning Architecture for Reliable and Efficient Neural Systems](https://github.com/swadhinbiswas/Aurora/blob/main/paper/paper.md)** — lead author. [paper](https://github.com/swadhinbiswas/Aurora/blob/main/paper/paper.md) · [DOI](https://doi.org/10.5281/zenodo.22067754)
+- **[Aurora (ART): A Modular Reasoning Architecture for Reliable and Efficient Neural Systems](https://github.com/swadhinbiswas/Aurora/blob/main/paper/paper.md)**: lead author. [paper](https://github.com/swadhinbiswas/Aurora/blob/main/paper/paper.md) · [DOI](https://doi.org/10.5281/zenodo.22067754)
   Six-stage transformer with an explicit uncertainty channel, published in JOSS.
-- **[An Empirical Benchmark Dataset for Paillier-Based Privacy-Preserving REST API Gateways](https://doi.org/10.5281/zenodo.18655966)** — [Zenodo DOI](https://doi.org/10.5281/zenodo.18655966)
+- **[An Empirical Benchmark Dataset for Paillier-Based Privacy-Preserving REST API Gateways](https://doi.org/10.5281/zenodo.18655966)**: [Zenodo DOI](https://doi.org/10.5281/zenodo.18655966)
   Per-request telemetry benchmark for homomorphic-encryption overhead in REST gateways.
 
 <sub>Full list with abstracts: [swadhin.cv/research](https://swadhin.cv/research)</sub>
