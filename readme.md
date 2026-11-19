@@ -60,10 +60,10 @@ Right now I maintain [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub)
 
 ### How I work
 
-- **Boring technology, sharp edges removed.** Kafka, dbt, DuckDB and Postgres are my defaults; the time goes into the parts that wake you up at 2 a.m. — backpressure, schema drift, erasure.
-- **Numbers with a method.** Every performance figure I publish has a script and the hardware behind it — see [JustAPI's benchmark ledger](https://github.com/swadhinbiswas/JustAPI/blob/main/BENCHMARKS.md) and the [case studies](https://swadhin.cv/projects).
-- **Privacy is a design constraint, not a ticket.** GDPR erasure is a layer in the pipeline ([eurostream](https://www.swadhin.cv/projects/eurostream/)), not something bolted on after launch.
-- **Own the whole path.** From the Kafka topic to the dbt mart to the API that serves it — and the on-call that keeps it honest.
+- I stick to boring tools — Kafka, dbt, DuckDB, Postgres — and spend the effort on the things that break at 2 a.m.: backpressure, schema drift, erasure.
+- When I publish a performance number, I publish the script and the hardware with it. See [JustAPI's benchmark ledger](https://github.com/swadhinbiswas/JustAPI/blob/main/BENCHMARKS.md) and the [case studies](https://swadhin.cv/projects).
+- Erasure belongs in the pipeline, not in a support queue. In [eurostream](https://www.swadhin.cv/projects/eurostream/) it is a six-layer path with a measured 66.95 ms mean.
+- I like owning the whole route — from the Kafka topic to the dbt mart to the API that serves it — and being on call for it.
 
 ### What I'm looking for
 
@@ -131,7 +131,7 @@ Delivered **8+** production systems for US and UK SaaS and e-commerce clients, f
 
 ### Research
 
-Three published pieces, each tied to a system I actually built:
+Three published pieces, all tied to systems I built:
 
 - **[A Unified Denoising and Adaptation Framework for Self-Supervised Bengali Dialectal ASR](https://arxiv.org/abs/2509.00988)** — first author with Imran and Tuhin Sheikh. [arXiv:2509.00988](https://arxiv.org/abs/2509.00988) · [PDF](https://arxiv.org/pdf/2509.00988). WavLM with two-stage fine-tuning, tested from clean audio down to low signal-to-noise ratios; it beats fine-tuned wav2vec 2.0 and multilingual Whisper.
 - **[Aurora (ART): A Modular Reasoning Architecture for Reliable and Efficient Neural Systems](https://github.com/swadhinbiswas/Aurora/blob/main/paper/paper.md)** — lead author. [paper](https://github.com/swadhinbiswas/Aurora/blob/main/paper/paper.md) · [DOI](https://doi.org/10.5281/zenodo.22067754). A six-stage transformer with an explicit uncertainty channel, published in JOSS.
