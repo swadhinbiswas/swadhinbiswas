@@ -29,6 +29,8 @@
 <p align="center">
   <a href="https://www.swadhin.cv/cv"><b>CV</b></a> ·
   <a href="https://swadhin.cv"><b>Portfolio</b></a> ·
+  <a href="https://swadhin.cv/projects"><b>Projects</b></a> ·
+  <a href="https://swadhin.cv/research"><b>Research</b></a> ·
   <a href="https://cal.com/swadhinbiswas"><b>Book a call</b></a> ·
   <a href="mailto:swadhinbiswas.dev@gmail.com"><b>Email</b></a> ·
   <a href="https://www.linkedin.com/in/swadhinbiswas">LinkedIn</a> ·
@@ -49,6 +51,12 @@ Right now I maintain [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub)
 | **1M+** | **10K+** | **&lt;100 ms** | **40%** | **668** | **3** |
 |:--:|:--:|:--:|:--:|:--:|:--:|
 | users reached | requests per minute | API latency | faster page loads | tests in one repo | papers and datasets |
+
+### How I work
+
+- **Boring technology, sharp edges removed.** Kafka, dbt, DuckDB and Postgres are my defaults; the time goes into the parts that wake you up at 2 a.m. — backpressure, schema drift, erasure.
+- **Numbers with a method.** The performance figures I publish come with a script and the hardware behind them — see [JustAPI's benchmark ledger](https://github.com/swadhinbiswas/JustAPI/blob/main/BENCHMARKS.md) and the [case studies](https://swadhin.cv/projects).
+- **Privacy is a design constraint, not a ticket.** GDPR erasure is a layer in the pipeline ([eurostream](https://www.swadhin.cv/projects/eurostream/)), not something bolted on after launch.
 
 <!--
   experience - EDIT BY HAND. today.py never touches this block.
@@ -82,6 +90,16 @@ Delivered **8+** production systems for US and UK SaaS and e-commerce clients, f
 -->
 <!-- FEATURED:START -->
 ### Featured projects
+
+<p align="center">
+  <video src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/assets/justapi-banner.mp4"
+         poster="https://raw.githubusercontent.com/swadhinbiswas/JustAPI/main/assets/justapi-hero.svg"
+         width="100%" controls loop muted playsinline></video>
+</p>
+
+<p align="center">
+  <sub><a href="https://github.com/swadhinbiswas/JustAPI"><b>JustAPI</b></a> — Python writes the logic. Rust does everything else. · 9 s, rendered in Rust with <a href="https://github.com/dmtrKovalenko/fframes">fframes</a></sub>
+</p>
 
 - **[eu-air-traffic](https://www.swadhin.cv/projects/eu-air-traffic/)**: live EU airspace pipeline on Kafka, dbt, and DuckDB. Tracks ~2,000 aircraft with a 15-minute lake, published as a public Hugging Face dataset and a [Zenodo DOI](https://doi.org/10.5281/zenodo.22790201).
 - **[TerraSentinel](https://www.swadhin.cv/projects/terrasentinel/)**: $0 anomaly detection over free satellite and sensor data. Four public sources feed a versioned lake, dbt and DuckDB build seven gold marts, an IsolationForest scores the anomalies, and a Databricks Asset Bundle mirrors the whole pipeline.
