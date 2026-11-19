@@ -31,20 +31,26 @@
   <a href="https://swadhin.cv"><b>Portfolio</b></a> ·
   <a href="https://swadhin.cv/projects"><b>Projects</b></a> ·
   <a href="https://swadhin.cv/research"><b>Research</b></a> ·
+  <a href="https://swadhin.cv/skills"><b>Skills</b></a> ·
   <a href="https://cal.com/swadhinbiswas"><b>Book a call</b></a> ·
   <a href="mailto:swadhinbiswas.dev@gmail.com"><b>Email</b></a> ·
   <a href="https://www.linkedin.com/in/swadhinbiswas">LinkedIn</a> ·
   <a href="https://x.com/swadhin_sh">X</a> ·
+  <a href="https://www.youtube.com/@BitsWar">YouTube</a> ·
   <a href="https://blog.swadhin.cv">Blog</a>
 </p>
 
 ### About
 
-I build streaming pipelines, lakehouses, and the services around them. Five years in now, mostly Python, Go, and SQL. The parts I like are the unglamorous ones: Kafka ingestion, dbt warehouses on DuckDB, GDPR erasure, schema-contract gates in CI.
+I build streaming pipelines, lakehouses, and the services around them. Five years in, mostly Python, Go, and SQL. The parts I like are the unglamorous ones: Kafka ingestion, dbt warehouses on DuckDB, GDPR erasure, schema-contract gates in CI.
 
 Right now I maintain [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub), a self-hosted Git platform with CI and merge queues, and [AegisVision](https://github.com/swadhinbiswas/AegisVision), a multi-camera AI surveillance system. The latest is [Aurora](https://github.com/swadhinbiswas/Aurora), a modular reasoning architecture with a JOSS paper.
 
 **Languages:** English (daily working language) · Bengali (native) · Hindi (conversational) · German (learning)
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/assets/profile-now.svg" width="100%" alt="Now — building, learning, and open to roles">
+</p>
 
 ### Track record
 
@@ -55,8 +61,19 @@ Right now I maintain [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub)
 ### How I work
 
 - **Boring technology, sharp edges removed.** Kafka, dbt, DuckDB and Postgres are my defaults; the time goes into the parts that wake you up at 2 a.m. — backpressure, schema drift, erasure.
-- **Numbers with a method.** The performance figures I publish come with a script and the hardware behind them — see [JustAPI's benchmark ledger](https://github.com/swadhinbiswas/JustAPI/blob/main/BENCHMARKS.md) and the [case studies](https://swadhin.cv/projects).
+- **Numbers with a method.** Every performance figure I publish has a script and the hardware behind it — see [JustAPI's benchmark ledger](https://github.com/swadhinbiswas/JustAPI/blob/main/BENCHMARKS.md) and the [case studies](https://swadhin.cv/projects).
 - **Privacy is a design constraint, not a ticket.** GDPR erasure is a layer in the pipeline ([eurostream](https://www.swadhin.cv/projects/eurostream/)), not something bolted on after launch.
+- **Own the whole path.** From the Kafka topic to the dbt mart to the API that serves it — and the on-call that keeps it honest.
+
+### What I'm looking for
+
+| What | Detail |
+|---|---|
+| **Role** | Mid-level Data Engineer, Backend Engineer, or Analytics Engineer |
+| **Where** | Germany · Netherlands · Austria, or remote across the EU |
+| **Start** | Immediately |
+| **Visa** | Needs sponsorship for EU relocation |
+| **Best way in** | [Book a 20-minute call](https://cal.com/swadhinbiswas) or [email me](mailto:swadhinbiswas.dev@gmail.com) |
 
 <!--
   experience - EDIT BY HAND. today.py never touches this block.
@@ -114,12 +131,11 @@ Delivered **8+** production systems for US and UK SaaS and e-commerce clients, f
 
 ### Research
 
-- **[A Unified Denoising and Adaptation Framework for Self-Supervised Bengali Dialectal ASR](https://arxiv.org/abs/2509.00988)**: first author, with Imran and Tuhin Sheikh. [arXiv:2509.00988](https://arxiv.org/abs/2509.00988) · [PDF](https://arxiv.org/pdf/2509.00988)
-  WavLM with two-stage fine-tuning, tested from clean audio down to low signal-to-noise ratios; beats fine-tuned wav2vec 2.0 and multilingual Whisper.
-- **[Aurora (ART): A Modular Reasoning Architecture for Reliable and Efficient Neural Systems](https://github.com/swadhinbiswas/Aurora/blob/main/paper/paper.md)**: lead author. [paper](https://github.com/swadhinbiswas/Aurora/blob/main/paper/paper.md) · [DOI](https://doi.org/10.5281/zenodo.22067754)
-  Six-stage transformer with an explicit uncertainty channel, published in JOSS.
-- **[An Empirical Benchmark Dataset for Paillier-Based Privacy-Preserving REST API Gateways](https://doi.org/10.5281/zenodo.18655966)**: [Zenodo DOI](https://doi.org/10.5281/zenodo.18655966)
-  Per-request telemetry benchmark for homomorphic-encryption overhead in REST gateways.
+Three published pieces, each tied to a system I actually built:
+
+- **[A Unified Denoising and Adaptation Framework for Self-Supervised Bengali Dialectal ASR](https://arxiv.org/abs/2509.00988)** — first author with Imran and Tuhin Sheikh. [arXiv:2509.00988](https://arxiv.org/abs/2509.00988) · [PDF](https://arxiv.org/pdf/2509.00988). WavLM with two-stage fine-tuning, tested from clean audio down to low signal-to-noise ratios; it beats fine-tuned wav2vec 2.0 and multilingual Whisper.
+- **[Aurora (ART): A Modular Reasoning Architecture for Reliable and Efficient Neural Systems](https://github.com/swadhinbiswas/Aurora/blob/main/paper/paper.md)** — lead author. [paper](https://github.com/swadhinbiswas/Aurora/blob/main/paper/paper.md) · [DOI](https://doi.org/10.5281/zenodo.22067754). A six-stage transformer with an explicit uncertainty channel, published in JOSS.
+- **[An Empirical Benchmark Dataset for Paillier-Based Privacy-Preserving REST API Gateways](https://doi.org/10.5281/zenodo.18655966)** — [Zenodo DOI](https://doi.org/10.5281/zenodo.18655966). Per-request telemetry measuring homomorphic-encryption overhead in REST gateways.
 
 <sub>Full list with abstracts: [swadhin.cv/research](https://swadhin.cv/research)</sub>
 
@@ -130,6 +146,11 @@ Delivered **8+** production systems for US and UK SaaS and e-commerce clients, f
 <!-- STACK:START -->
 ### Stack
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/assets/profile-stack.svg" width="100%" alt="Skill wall — languages, data and infra, cloud, backend and AI">
+</p>
+
+
 **Core:** Python · Go · Rust · TypeScript · SQL · Kafka · Spark · Databricks · Airflow · dbt · DuckDB · PostgreSQL · Redis · FastAPI · Django · Docker · AWS (Glue, Redshift, Athena) · Azure (Data Factory) · GCP (Dataflow, Dataproc) · PyTorch
 
 **Working knowledge:** ClickHouse · Kubernetes · Terraform · Airbyte · Dagster · Prometheus · LangChain · OpenAI / local LLM APIs
@@ -139,6 +160,36 @@ Delivered **8+** production systems for US and UK SaaS and e-commerce clients, f
 </p>
 
 <!-- STACK:END -->
+
+### FAQ
+
+<details>
+<summary><b>Have you run anything at real scale?</b></summary>
+
+Yes. I took The Boring Rat's backend from zero to **1M+ users**, with REST APIs at **10K+ requests per minute under 100 ms**, the analytics warehouse behind it, and the on-call. Before that I delivered **8+** production systems for US and UK clients.
+
+</details>
+
+<details>
+<summary><b>What do you actually want next?</b></summary>
+
+A mid-level Data, Backend or Analytics Engineering role where I can own a system end to end — not just a ticket queue. Germany, the Netherlands or Austria are the target; EU remote works too. I need visa sponsorship for relocation.
+
+</details>
+
+<details>
+<summary><b>Are you only a data engineer?</b></summary>
+
+No. The common thread is the path from ingestion to serving: Kafka and dbt on one end, FastAPI/Go services and Postgres on the other, with the CI and privacy gates in between. I write Go and TypeScript too — OpencodeHub is a Git platform with CI and merge queues that I built solo.
+
+</details>
+
+<details>
+<summary><b>Do you write or publish?</b></summary>
+
+Three papers and datasets ([research page](https://swadhin.cv/research)), a JOSS paper for Aurora, and a blog with pieces on API design at 100,000 req/s, cheap data pipelines, and private DNS at home: [blog.swadhin.cv](https://blog.swadhin.cv).
+
+</details>
 
 <!--
   writing - EDIT BY HAND, or let today.py refresh it from the blog RSS feed.

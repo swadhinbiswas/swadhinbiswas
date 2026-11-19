@@ -1,0 +1,61 @@
+<svg width="1200" height="300" viewBox="0 0 1200 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="nowBg" x1="0" y1="0" x2="1200" y2="300" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0b0e1a"/>
+      <stop offset="1" stop-color="#111631"/>
+    </linearGradient>
+    <linearGradient id="nowCard" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#161b22"/>
+      <stop offset="1" stop-color="#0d1117"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="300" fill="url(#nowBg)"/>
+
+  <g font-family="'Segoe UI', Arial, sans-serif">
+    <circle cx="40" cy="40" r="6" fill="#3fb950">
+      <animate attributeName="opacity" values="1;0.35;1" dur="2.6s" repeatCount="indefinite"/>
+    </circle>
+    <text x="60" y="47" font-size="22" font-weight="700" letter-spacing="3" fill="#e6edf3">NOW</text>
+    <text x="1160" y="47" text-anchor="end" font-size="16" fill="#8b949e">Dhaka → EU · available immediately</text>
+
+    <!-- BUILDING -->
+    <g>
+      <animateTransform attributeName="transform" type="translate" from="0 12" to="0 0" dur="0.7s" begin="0.1s" fill="freeze"/>
+      <rect x="20" y="70" width="376" height="210" rx="16" fill="url(#nowCard)" stroke="#30363d"/>
+      <rect x="20" y="70" width="376" height="4" rx="2" fill="#e6522c"/>
+      <text x="44" y="112" font-size="18" font-weight="700" letter-spacing="2" fill="#ff7a3d">BUILDING</text>
+      <text x="44" y="152" font-size="20" font-weight="600" fill="#e6edf3">OpencodeHub</text>
+      <text x="44" y="176" font-size="16" fill="#8b949e">self-hosted Git platform, CI, merge queues</text>
+      <text x="44" y="212" font-size="20" font-weight="600" fill="#e6edf3">AegisVision</text>
+      <text x="44" y="236" font-size="16" fill="#8b949e">multi-camera AI surveillance, ordinary hardware</text>
+      <text x="44" y="266" font-size="16" fill="#8b5cf6">+ Aurora — modular reasoning, JOSS paper</text>
+    </g>
+
+    <!-- LEARNING -->
+    <g>
+      <animateTransform attributeName="transform" type="translate" from="0 12" to="0 0" dur="0.7s" begin="0.22s" fill="freeze"/>
+      <rect x="412" y="70" width="376" height="210" rx="16" fill="url(#nowCard)" stroke="#30363d"/>
+      <rect x="412" y="70" width="376" height="4" rx="2" fill="#22d3ee"/>
+      <text x="436" y="112" font-size="18" font-weight="700" letter-spacing="2" fill="#22d3ee">LEARNING</text>
+      <text x="436" y="152" font-size="20" font-weight="600" fill="#e6edf3">German</text>
+      <text x="436" y="176" font-size="16" fill="#8b949e">conversational, on the way to working</text>
+      <text x="436" y="212" font-size="20" font-weight="600" fill="#e6edf3">WASM plugins</text>
+      <text x="436" y="236" font-size="16" fill="#8b949e">wasmtime-based middleware in JustAPI</text>
+      <text x="436" y="266" font-size="16" fill="#e6522c">+ Kubernetes · Terraform · local LLM APIs</text>
+    </g>
+
+    <!-- OPEN TO -->
+    <g>
+      <animateTransform attributeName="transform" type="translate" from="0 12" to="0 0" dur="0.7s" begin="0.34s" fill="freeze"/>
+      <rect x="804" y="70" width="376" height="210" rx="16" fill="url(#nowCard)" stroke="#30363d"/>
+      <rect x="804" y="70" width="376" height="4" rx="2" fill="#8b5cf6"/>
+      <text x="828" y="112" font-size="18" font-weight="700" letter-spacing="2" fill="#a78bfa">OPEN TO</text>
+      <text x="828" y="152" font-size="20" font-weight="600" fill="#e6edf3">Data / Backend / Analytics Engineer</text>
+      <text x="828" y="182" font-size="16" fill="#8b949e">mid-level, own the system end to end</text>
+      <text x="828" y="216" font-size="20" font-weight="600" fill="#e6edf3">Germany · Netherlands · Austria</text>
+      <text x="828" y="240" font-size="16" fill="#8b949e">or remote across the EU</text>
+      <text x="828" y="266" font-size="16" fill="#22d3ee">visa sponsorship required</text>
+    </g>
+  </g>
+</svg>

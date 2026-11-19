@@ -1,0 +1,102 @@
+<svg width="1200" height="520" viewBox="0 0 1200 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="stackBg" x1="0" y1="0" x2="1200" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0b0e1a"/>
+      <stop offset="1" stop-color="#111631"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="520" fill="url(#stackBg)"/>
+  <g font-family="'Segoe UI', Arial, sans-serif">
+    <text x="40" y="46" font-size="24" font-weight="700" fill="#e6edf3" letter-spacing="2">STACK</text>
+    <text x="1160" y="46" text-anchor="end" font-size="16" fill="#8b949e">the tools I reach for first</text>
+    <g opacity="1">
+      <animate attributeName="opacity" values="0.25;1" dur="0.6s" begin="0.05s" fill="freeze"/>
+      <text x="40" y="128" font-size="19" font-weight="700" letter-spacing="1" fill="#ff7a3d">LANGUAGES</text>
+      <rect x="250" y="90" width="88" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="266" cy="109" r="3.5" fill="#ff7a3d"/>
+      <text x="277" y="115" font-size="18" fill="#e6edf3">Python</text>
+      <rect x="348" y="90" width="49" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="364" cy="109" r="3.5" fill="#ff7a3d"/>
+      <text x="375" y="115" font-size="18" fill="#e6edf3">Go</text>
+      <rect x="408" y="90" width="69" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="424" cy="109" r="3.5" fill="#ff7a3d"/>
+      <text x="435" y="115" font-size="18" fill="#e6edf3">Rust</text>
+      <rect x="486" y="90" width="127" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="502" cy="109" r="3.5" fill="#ff7a3d"/>
+      <text x="513" y="115" font-size="18" fill="#e6edf3">TypeScript</text>
+      <rect x="623" y="90" width="59" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="639" cy="109" r="3.5" fill="#ff7a3d"/>
+      <text x="650" y="115" font-size="18" fill="#e6edf3">SQL</text>
+    </g>
+    <g opacity="1">
+      <animate attributeName="opacity" values="0.25;1" dur="0.6s" begin="0.15s" fill="freeze"/>
+      <text x="40" y="218" font-size="19" font-weight="700" letter-spacing="1" fill="#22d3ee">DATA &amp; INFRA</text>
+      <rect x="250" y="180" width="78" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="266" cy="199" r="3.5" fill="#22d3ee"/>
+      <text x="277" y="205" font-size="18" fill="#e6edf3">Kafka</text>
+      <rect x="338" y="180" width="78" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="354" cy="199" r="3.5" fill="#22d3ee"/>
+      <text x="366" y="205" font-size="18" fill="#e6edf3">Spark</text>
+      <rect x="427" y="180" width="127" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="443" cy="199" r="3.5" fill="#22d3ee"/>
+      <text x="454" y="205" font-size="18" fill="#e6edf3">Databricks</text>
+      <rect x="564" y="180" width="98" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="580" cy="199" r="3.5" fill="#22d3ee"/>
+      <text x="591" y="205" font-size="18" fill="#e6edf3">Airflow</text>
+      <rect x="672" y="180" width="59" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="688" cy="199" r="3.5" fill="#22d3ee"/>
+      <text x="699" y="205" font-size="18" fill="#e6edf3">dbt</text>
+      <rect x="741" y="180" width="88" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="757" cy="199" r="3.5" fill="#22d3ee"/>
+      <text x="768" y="205" font-size="18" fill="#e6edf3">DuckDB</text>
+    </g>
+    <g opacity="1">
+      <animate attributeName="opacity" values="0.25;1" dur="0.6s" begin="0.25s" fill="freeze"/>
+      <text x="40" y="308" font-size="19" font-weight="700" letter-spacing="1" fill="#a78bfa">CLOUD &amp; STORAGE</text>
+      <rect x="250" y="270" width="59" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="266" cy="289" r="3.5" fill="#a78bfa"/>
+      <text x="277" y="295" font-size="18" fill="#e6edf3">AWS</text>
+      <rect x="319" y="270" width="78" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="335" cy="289" r="3.5" fill="#a78bfa"/>
+      <text x="346" y="295" font-size="18" fill="#e6edf3">Azure</text>
+      <rect x="408" y="270" width="59" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="424" cy="289" r="3.5" fill="#a78bfa"/>
+      <text x="435" y="295" font-size="18" fill="#e6edf3">GCP</text>
+      <rect x="477" y="270" width="127" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="493" cy="289" r="3.5" fill="#a78bfa"/>
+      <text x="504" y="295" font-size="18" fill="#e6edf3">PostgreSQL</text>
+      <rect x="614" y="270" width="78" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="630" cy="289" r="3.5" fill="#a78bfa"/>
+      <text x="641" y="295" font-size="18" fill="#e6edf3">Redis</text>
+      <rect x="702" y="270" width="88" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="718" cy="289" r="3.5" fill="#a78bfa"/>
+      <text x="729" y="295" font-size="18" fill="#e6edf3">Docker</text>
+    </g>
+    <g opacity="1">
+      <animate attributeName="opacity" values="0.25;1" dur="0.6s" begin="0.35s" fill="freeze"/>
+      <text x="40" y="398" font-size="19" font-weight="700" letter-spacing="1" fill="#f5a524">BACKEND &amp; AI</text>
+      <rect x="250" y="360" width="98" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="266" cy="379" r="3.5" fill="#f5a524"/>
+      <text x="277" y="385" font-size="18" fill="#e6edf3">FastAPI</text>
+      <rect x="358" y="360" width="88" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="374" cy="379" r="3.5" fill="#f5a524"/>
+      <text x="385" y="385" font-size="18" fill="#e6edf3">Django</text>
+      <rect x="456" y="360" width="98" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="472" cy="379" r="3.5" fill="#f5a524"/>
+      <text x="483" y="385" font-size="18" fill="#e6edf3">PyTorch</text>
+      <rect x="564" y="360" width="117" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="580" cy="379" r="3.5" fill="#f5a524"/>
+      <text x="591" y="385" font-size="18" fill="#e6edf3">LangChain</text>
+      <rect x="691" y="360" width="117" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="707" cy="379" r="3.5" fill="#f5a524"/>
+      <text x="718" y="385" font-size="18" fill="#e6edf3">Terraform</text>
+      <rect x="819" y="360" width="127" height="38" rx="19" fill="#161b22" stroke="#30363d"/>
+      <circle cx="835" cy="379" r="3.5" fill="#f5a524"/>
+      <text x="846" y="385" font-size="18" fill="#e6edf3">Kubernetes</text>
+    </g>
+    <g font-size="16" fill="#8b949e">
+      <text x="40" y="462">Also in the toolkit: ClickHouse · Airbyte · Dagster · Prometheus · OpenAI / local LLM APIs</text>
+      <text x="40" y="492">Full visual wall with icons and proficiency notes → swadhin.cv/skills</text>
+    </g>
+  </g>
+</svg>
