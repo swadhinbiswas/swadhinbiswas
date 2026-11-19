@@ -147,7 +147,7 @@ Three published pieces, all tied to systems I built:
 ### Stack
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/assets/profile-stack.svg" width="100%" alt="Skill wall — languages, data and infra, cloud, backend and AI">
+  <img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/assets/profile-stack.svg" width="100%" alt="Skill tree — languages, data and infra, cloud, backend and AI">
 </p>
 
 
