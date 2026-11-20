@@ -24,7 +24,7 @@
 <text x="50" y="271" font-size="21" font-weight="600" fill="#eef3f8">AegisVision</text>
 <text x="50" y="306" font-size="16" font-weight="400" fill="#9aa8ba">Multi-camera AI surveillance on everyday</text>
 <text x="50" y="329" font-size="16" font-weight="400" fill="#9aa8ba">hardware</text>
-<text x="50" y="386" font-size="15" font-weight="500" fill="#8b5cf6">Aurora — JOSS paper on modular reasoning</text>
+<text x="50" y="386" font-size="15" font-weight="500" fill="#8b5cf6">Aurora: JOSS paper on modular reasoning</text>
 </g>
 <g opacity="1"><animate attributeName="opacity" values="0.35;1" dur="0.6s" fill="freeze"/>
 <rect x="412" y="82" width="376" height="330" rx="14" fill="#111722" stroke="#2a3441"/>
@@ -56,7 +56,7 @@
 <text x="844" y="124" font-size="13" font-weight="700" letter-spacing="2.2" fill="#8b5cf6">OPEN TO</text>
 <text x="826" y="168" font-size="21" font-weight="600" fill="#eef3f8">Data / Backend / Analytics</text>
 <text x="826" y="196" font-size="21" font-weight="600" fill="#eef3f8">Engineer</text>
-<text x="826" y="231" font-size="16" font-weight="400" fill="#9aa8ba">Mid-level — own the system end to end</text>
+<text x="826" y="231" font-size="16" font-weight="400" fill="#9aa8ba">Mid-level, owning the system end to end</text>
 <text x="826" y="276" font-size="21" font-weight="600" fill="#eef3f8">Germany · Netherlands · Austria</text>
 <text x="826" y="311" font-size="16" font-weight="400" fill="#9aa8ba">or remote across the EU</text>
 <text x="826" y="386" font-size="15" font-weight="500" fill="#22d3ee">Visa sponsorship required</text>

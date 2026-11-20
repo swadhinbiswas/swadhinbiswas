@@ -49,7 +49,7 @@ Right now I maintain [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub)
 **Languages:** English (daily working language) · Bengali (native) · Hindi (conversational) · German (learning)
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/assets/profile-now.svg" width="100%" alt="Now — building, learning, and open to roles">
+  <img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/assets/profile-now.svg" width="100%" alt="Now: building, learning, and open to roles">
 </p>
 
 ### Track record
@@ -60,10 +60,10 @@ Right now I maintain [OpencodeHub](https://github.com/swadhinbiswas/OpencodeHub)
 
 ### How I work
 
-- I stick to boring tools — Kafka, dbt, DuckDB, Postgres — and spend the effort on the things that break at 2 a.m.: backpressure, schema drift, erasure.
-- When I publish a performance number, I publish the script and the hardware with it. See [JustAPI's benchmark ledger](https://github.com/swadhinbiswas/JustAPI/blob/main/BENCHMARKS.md) and the [case studies](https://swadhin.cv/projects).
-- Erasure belongs in the pipeline, not in a support queue. In [eurostream](https://www.swadhin.cv/projects/eurostream/) it is a six-layer path with a measured 66.95 ms mean.
-- I like owning the whole route — from the Kafka topic to the dbt mart to the API that serves it — and being on call for it.
+- Kafka, dbt, DuckDB and Postgres are my defaults. I spend the effort on what breaks at 2 a.m.: backpressure, schema drift, erasure.
+- Every performance number I publish has a script and hardware notes next to it. See [JustAPI's benchmark ledger](https://github.com/swadhinbiswas/JustAPI/blob/main/BENCHMARKS.md) and the [case studies](https://swadhin.cv/projects).
+- I treat erasure as pipeline code. In [eurostream](https://www.swadhin.cv/projects/eurostream/) it is a six-layer path with a measured 66.95 ms mean.
+- I like owning the whole route, from the Kafka topic through the dbt mart to the API that serves it, and I take the on-call with it.
 
 ### What I'm looking for
 
@@ -115,7 +115,7 @@ Delivered **8+** production systems for US and UK SaaS and e-commerce clients, f
 </p>
 
 <p align="center">
-  <sub><a href="https://github.com/swadhinbiswas/JustAPI"><b>JustAPI</b></a> — Python writes the logic. Rust does everything else. · 9 s, rendered in Rust with <a href="https://github.com/dmtrKovalenko/fframes">fframes</a></sub>
+  <sub><a href="https://github.com/swadhinbiswas/JustAPI"><b>JustAPI</b></a>: Python writes the logic. Rust does everything else. · 9 s, rendered in Rust with <a href="https://github.com/dmtrKovalenko/fframes">fframes</a></sub>
 </p>
 
 - **[eu-air-traffic](https://www.swadhin.cv/projects/eu-air-traffic/)**: live EU airspace pipeline on Kafka, dbt, and DuckDB. Tracks ~2,000 aircraft with a 15-minute lake, published as a public Hugging Face dataset and a [Zenodo DOI](https://doi.org/10.5281/zenodo.22790201).
@@ -133,9 +133,9 @@ Delivered **8+** production systems for US and UK SaaS and e-commerce clients, f
 
 Three published pieces, all tied to systems I built:
 
-- **[A Unified Denoising and Adaptation Framework for Self-Supervised Bengali Dialectal ASR](https://arxiv.org/abs/2509.00988)** — first author with Imran and Tuhin Sheikh. [arXiv:2509.00988](https://arxiv.org/abs/2509.00988) · [PDF](https://arxiv.org/pdf/2509.00988). WavLM with two-stage fine-tuning, tested from clean audio down to low signal-to-noise ratios; it beats fine-tuned wav2vec 2.0 and multilingual Whisper.
-- **[Aurora (ART): A Modular Reasoning Architecture for Reliable and Efficient Neural Systems](https://github.com/swadhinbiswas/Aurora/blob/main/paper/paper.md)** — lead author. [paper](https://github.com/swadhinbiswas/Aurora/blob/main/paper/paper.md) · [DOI](https://doi.org/10.5281/zenodo.22067754). A six-stage transformer with an explicit uncertainty channel, published in JOSS.
-- **[An Empirical Benchmark Dataset for Paillier-Based Privacy-Preserving REST API Gateways](https://doi.org/10.5281/zenodo.18655966)** — [Zenodo DOI](https://doi.org/10.5281/zenodo.18655966). Per-request telemetry measuring homomorphic-encryption overhead in REST gateways.
+- **[A Unified Denoising and Adaptation Framework for Self-Supervised Bengali Dialectal ASR](https://arxiv.org/abs/2509.00988)**. First author with Imran and Tuhin Sheikh. [arXiv:2509.00988](https://arxiv.org/abs/2509.00988) · [PDF](https://arxiv.org/pdf/2509.00988). WavLM with two-stage fine-tuning, tested from clean audio down to low signal-to-noise ratios; it beats fine-tuned wav2vec 2.0 and multilingual Whisper.
+- **[Aurora (ART): A Modular Reasoning Architecture for Reliable and Efficient Neural Systems](https://github.com/swadhinbiswas/Aurora/blob/main/paper/paper.md)**. Lead author. [paper](https://github.com/swadhinbiswas/Aurora/blob/main/paper/paper.md) · [DOI](https://doi.org/10.5281/zenodo.22067754). A six-stage transformer with an explicit uncertainty channel, published in JOSS.
+- **[An Empirical Benchmark Dataset for Paillier-Based Privacy-Preserving REST API Gateways](https://doi.org/10.5281/zenodo.18655966)**. [Zenodo DOI](https://doi.org/10.5281/zenodo.18655966). Per-request telemetry measuring homomorphic-encryption overhead in REST gateways.
 
 <sub>Full list with abstracts: [swadhin.cv/research](https://swadhin.cv/research)</sub>
 
@@ -147,7 +147,7 @@ Three published pieces, all tied to systems I built:
 ### Stack
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/assets/profile-stack.svg" width="100%" alt="Skill tree — languages, data and infra, cloud, backend and AI">
+  <img src="https://raw.githubusercontent.com/swadhinbiswas/swadhinbiswas/main/assets/profile-stack.svg" width="100%" alt="Skill tree: languages, data and infra, cloud, backend and AI">
 </p>
 
 
@@ -173,14 +173,14 @@ Yes. I took The Boring Rat's backend from zero to **1M+ users**, with REST APIs 
 <details>
 <summary><b>What do you actually want next?</b></summary>
 
-A mid-level Data, Backend or Analytics Engineering role where I can own a system end to end — not just a ticket queue. Germany, the Netherlands or Austria are the target; EU remote works too. I need visa sponsorship for relocation.
+A mid-level Data, Backend or Analytics Engineering role where I own a system from ingestion to the API and take the on-call with it. Germany, the Netherlands or Austria are the target; EU remote works too. I need visa sponsorship for relocation.
 
 </details>
 
 <details>
 <summary><b>Are you only a data engineer?</b></summary>
 
-No. The common thread is the path from ingestion to serving: Kafka and dbt on one end, FastAPI/Go services and Postgres on the other, with the CI and privacy gates in between. I write Go and TypeScript too — OpencodeHub is a Git platform with CI and merge queues that I built solo.
+No. The common thread is the path from ingestion to serving: Kafka and dbt on one end, FastAPI and Go services with Postgres on the other, with the CI and privacy gates in between. I also write Go and TypeScript. OpencodeHub is a Git platform with CI and merge queues that I built solo.
 
 </details>
 
@@ -223,7 +223,7 @@ I write about backend systems, data engineering, and building software from scra
 
 <!-- PROJECTS:START -->
 <details>
-<summary><b>More projects — all 26 repositories</b></summary>
+<summary><b>More projects: all 26 repositories</b></summary>
 
 <pre>
 DATA ENGINEERING                                RESEARCH                                        

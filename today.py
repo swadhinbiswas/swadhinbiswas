@@ -2055,7 +2055,7 @@ def rebuild_readme(
         update_readme_section(
             PROJECTS_START_MARKER,
             PROJECTS_END_MARKER,
-            '<details>\n<summary><b>More projects — all {n} repositories</b></summary>\n'
+            '<details>\n<summary><b>More projects: all {n} repositories</b></summary>\n'
             "\n<pre>\n".format(n=repo_count)
             + render_projects_panel()
             + "\n</pre>\n\n</details>",
